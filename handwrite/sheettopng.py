@@ -7,7 +7,52 @@ import cv2
 # Seq: A-Z, a-z, 0-9, SPECIAL_CHARS
 ALL_CHARS = list(
     itertools.chain(
-        range(1, 181), # sitelen pona testing
+        # rows 1-6
+        range(0xf1900, 0xf1977), # 120 nimi pu; first 6 rows
+
+        # row 7
+       [0xf1990, # cartouche open
+        0xf1991, # cartouche close
+        0xf199c, # middot
+        0xf199d, # colon
+        105,     # i
+        106,     # j
+        107,     # k
+        108,     # l
+        109,     # m
+        112,     # p
+        115,     # s
+        116,     # t
+        117,     # u
+        119,     # w
+        0,0,0,0, 0,0, # (poki jaki)
+
+        # row 8
+        0xf1980, # kijetesantakalu
+        0xf1979, # kin
+        0xf197b, # kipisi
+        0xf1988, # ku
+        0xf1985, # lanpan
+        0xf197c, # leko
+        0xf1987, # misikeke
+        0xf197d, # monsuta
+        0xf1986, # n
+        0xf1978, # namako
+        0xf1981, # soko
+        0xf197e, # tonsi
+        0,0,0,0, 0,0,0,0, # (poki jaki)
+
+        # row 9
+        0xf1983, # epiku
+        0xf197f, # jasima
+        0,       # linluwi
+        0xf19a2, # majuna
+        0xf1982, # meso
+        0xf197a, # oko
+        0,       # su
+        0,0,0,0, 0,0,0,0, 0,0,0,0, 0,], # (poki jaki)
+
+        [0] # idk why this one is necessary!! it crashes without it...
 
         # range(65, 91),
         # range(97, 123),
@@ -49,7 +94,7 @@ class SHEETtoPNG:
             sheet, threshold_value, cols=cols, rows=rows
         )
         self.save_images(
-            characters,
+            characters, # more like cells
             characters_dir,
         )
 
@@ -129,7 +174,6 @@ class SHEETtoPNG:
             for col in range(cols):
                 scan_top  = by + bh*1/12
                 scan_left = bx + bw*2/164 + col*glyph_w
-                print("glyph", row, col)
                 roi = image[int(scan_top ) : int(scan_top  + glyph_h),
                             int(scan_left) : int(scan_left + glyph_w)]
                 characters.append([roi, scan_left, scan_top])
@@ -168,7 +212,9 @@ class SHEETtoPNG:
         # Create directory for each character and save the png for the characters
         # Structure (single sheet): UserProvidedDir/ord(character)/ord(character).png
         # Structure (multiple sheets): UserProvidedDir/sheet_filename/ord(character)/ord(character).png
+        # Kelly note: `characters` is more like `cells`, since not every cell contains a glyph
         for k, images in enumerate(characters):
+            print("cell number", k)
             character = os.path.join(characters_dir, str(ALL_CHARS[k]))
             if not os.path.exists(character):
                 os.mkdir(character)

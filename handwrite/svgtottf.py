@@ -98,7 +98,7 @@ class SVGtoTTF:
             # Get outlines
             src = "{}/{}.svg".format(k, k)
             src = directory + os.sep + src
-            print("importing glyph #", k, sep="")
+            print("importOutlines #", k)
             g.importOutlines(src, ("removeoverlap", "correctdir"))
             g.removeOverlap()
 
