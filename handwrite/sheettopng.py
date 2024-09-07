@@ -7,10 +7,13 @@ import cv2
 # Seq: A-Z, a-z, 0-9, SPECIAL_CHARS
 ALL_CHARS = list(
     itertools.chain(
-        range(65, 91),
-        range(97, 123),
-        range(48, 58),
-        [ord(i) for i in ".,;:!?\"'-+=/%&()[]"],
+        range(1, 181), # sitelen pona testing
+
+        # range(65, 91),
+        # range(97, 123),
+        # range(48, 58),
+        # [ord(i) for i in ".,;:!?\"'-+=/%&()[]"],
+        # range(124, 300) # sitelen pona testing
     )
 )
 
@@ -18,7 +21,8 @@ ALL_CHARS = list(
 class SHEETtoPNG:
     """Converter class to convert input sample sheet to character PNGs."""
 
-    def convert(self, sheet, characters_dir, config, cols=8, rows=10):
+    def convert(self, sheet, characters_dir, config, cols=20, rows=9):
+        print("SHEETtoPNG")
         """Convert a sheet of sample writing input to a custom directory structure of PNGs.
 
         Detect all characters in the sheet as a separate contours and convert each to
@@ -49,7 +53,7 @@ class SHEETtoPNG:
             characters_dir,
         )
 
-    def detect_characters(self, sheet_image, threshold_value, cols=8, rows=10):
+    def detect_characters(self, sheet_image, threshold_value, cols=20, rows=9):
         """Detect contours on the input image and filter them to get only characters.
 
         Uses opencv to threshold the image for better contour detection. After finding all
@@ -103,21 +107,34 @@ class SHEETtoPNG:
             reverse=True,
         )
 
+# START OF KELLY ZONE
+
         # Calculate the bounding of the first contour and approximate the height
         # and width for final cropping.
-        x, y, w, h = cv2.boundingRect(contours[0])
-        space_h, space_w = 7 * h // 16, 7 * w // 16
+        _, _, bw, bh = cv2.boundingRect(contours[0])
+
+        # Each row bounding box (black line) is 164*12, 
+        # with 2 hor padding and 1 ver padding on each side.
+        # There are 20 glyphs per row. Each glyph scan area is 8x10.
+        # The visible gray squares are 7x7, to help with human and scanning errors.
+        # (The unit here is 0.125cm on the printed page, or 0.25cm in the original huge file.)
+        glyph_w, glyph_h = bw*8/164, bh*10/12
 
         # Since amongst all the contours, the expected case is that the 4 sided contours
         # containing the characters should have the maximum area, so we loop through the first
         # rows*colums contours and add them to final list after cropping.
         characters = []
-        for i in range(rows * cols):
-            x, y, w, h = cv2.boundingRect(contours[i])
-            cx, cy = x + w // 2, y + h // 2
+        for row in range(rows):
+            bx, by, bw, bh = cv2.boundingRect(contours[row])
+            for col in range(cols):
+                scan_top  = by + bh*1/12
+                scan_left = bx + bw*2/164 + col*glyph_w
+                print("glyph", row, col)
+                roi = image[int(scan_top ) : int(scan_top  + glyph_h),
+                            int(scan_left) : int(scan_left + glyph_w)]
+                characters.append([roi, scan_left, scan_top])
 
-            roi = image[cy - space_h : cy + space_h, cx - space_w : cx + space_w]
-            characters.append([roi, cx, cy])
+# END OF KELLY ZONE
 
         # Now we have the characters but since they are all mixed up we need to position them.
         # Sort characters based on 'y' coordinate and group them by number of rows at a time. Then

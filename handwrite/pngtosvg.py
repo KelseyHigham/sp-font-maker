@@ -12,6 +12,7 @@ class PNGtoSVG:
     """Converter class to convert character PNGs to BMPs and SVGs."""
 
     def convert(self, directory):
+        print("PNGtoSVG")
         """Call converters on each .png in the provider directory.
 
         Walk through the custom directory containing all .png files
@@ -64,7 +65,7 @@ class PNGtoSVG:
         PotraceNotFound
             Raised if potrace not found in path by shutil.which()
         """
-        img = Image.open(path).convert("RGBA").resize((100, 100))
+        img = Image.open(path).convert("RGBA").resize((100, 125))
 
         # Threshold image to convert each pixel to either black or white
         threshold = 200
