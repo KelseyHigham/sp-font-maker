@@ -6,6 +6,7 @@ import uuid
 
 class SVGtoTTF:
     def convert(self, directory, outdir, config, metadata=None):
+        print("SVGtoTTF")
         """Convert a directory with SVG images to TrueType Font.
 
         Calls a subprocess to the run this script with Fontforge Python
@@ -87,6 +88,9 @@ class SVGtoTTF:
         space = self.font.createMappedChar(ord(" "))
         space.width = 500
 
+        print("Note: If you leave a glyph blank, you'll get a FontForge error like \"I'm")
+        print("      sorry this file is too complex for me to understand (or is erroneous)\".")
+        print("      It's fine, the font still works!")
         for k in self.config["glyphs"]:
             # Create character glyph
             g = self.font.createMappedChar(k)
@@ -94,6 +98,7 @@ class SVGtoTTF:
             # Get outlines
             src = "{}/{}.svg".format(k, k)
             src = directory + os.sep + src
+            print("importing glyph #", k, sep="")
             g.importOutlines(src, ("removeoverlap", "correctdir"))
             g.removeOverlap()
 
@@ -114,9 +119,10 @@ class SVGtoTTF:
                 v[1] = default[1]
 
             if k != "Default":
-                glyph_name = self.unicode_mapping[ord(str(k))]
-                self.font[glyph_name].left_side_bearing = v[0]
-                self.font[glyph_name].right_side_bearing = v[1]
+                if ord(str(k)) in self.unicode_mapping:
+                    glyph_name = self.unicode_mapping[ord(str(k))]
+                    self.font[glyph_name].left_side_bearing = v[0]
+                    self.font[glyph_name].right_side_bearing = v[1]
 
     def set_kerning(self, table):
         """Set kerning values in the font.
@@ -194,10 +200,10 @@ class SVGtoTTF:
         self.add_glyphs(directory)
 
         # bearing table
-        self.set_bearings(self.config["typography_parameters"].get("bearing_table", {}))
+        # self.set_bearings(self.config["typography_parameters"].get("bearing_table", {}))
 
         # kerning table
-        self.set_kerning(self.config["typography_parameters"].get("kerning_table", {}))
+        # self.set_kerning(self.config["typography_parameters"].get("kerning_table", {}))
 
         # Generate font and save as a .ttf file
         filename = self.metadata.get("filename", None) or self.config["props"].get(
