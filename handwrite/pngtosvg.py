@@ -46,7 +46,8 @@ class PNGtoSVG:
         if shutil.which("potrace") is None:
             raise PotraceNotFound("Potrace is either not installed or not in path")
         else:
-            subprocess.run(["potrace", path, "-b", "svg", "-o", path[0:-4] + ".svg"])
+            subprocess.run(["potrace", path, "--backend", "svg", "--output", path[0:-4] + ".svg",])
+            # note: the --margin parameter doesn't help me here
 
     def pngToBmp(self, path):
         """Convert .bmp image to .svg using potrace.
@@ -65,7 +66,7 @@ class PNGtoSVG:
         PotraceNotFound
             Raised if potrace not found in path by shutil.which()
         """
-        img = Image.open(path).convert("RGBA").resize((100, 125))
+        img = Image.open(path).convert("RGBA").resize((400, 500))
 
         # Threshold image to convert each pixel to either black or white
         threshold = 200
