@@ -9,54 +9,53 @@ ALL_CHARS = list(
     itertools.chain(
         # rows 1-6
         range(0xf1900, 0xf1978), # 120 nimi pu; first 6 rows
+        [
+            # row 7
+            0xf1990, # cartouche open
+            0xf1991, # cartouche close
+            0xf199c, # middot
+            0xf199d, # colon
+            105,     # i
+            106,     # j
+            107,     # k
+            108,     # l
+            109,     # m
+            112,     # p
+            115,     # s
+            116,     # t
+            117,     # u
+            119,     # w
+            0,0,0,0, 0,0, # (poki jaki)
 
-        # row 7
-       [0xf1990, # cartouche open
-        0xf1991, # cartouche close
-        0xf199c, # middot
-        0xf199d, # colon
-        105,     # i
-        106,     # j
-        107,     # k
-        108,     # l
-        109,     # m
-        112,     # p
-        115,     # s
-        116,     # t
-        117,     # u
-        119,     # w
-        0,0,0,0, 0,0, # (poki jaki)
+            # row 8
+            0xf1980, # kijetesantakalu
+            0xf1979, # kin
+            0xf197b, # kipisi
+            0xf1988, # ku
+            0xf1985, # lanpan
+            0xf197c, # leko
+            0xf1987, # misikeke
+            0xf197d, # monsuta
+            0xf1986, # n
+            0xf1978, # namako
+            0xf1981, # soko
+            0xf197e, # tonsi
+            0,0,0,0, 0,0,0,0, # (poki jaki)
 
-        # row 8
-        0xf1980, # kijetesantakalu
-        0xf1979, # kin
-        0xf197b, # kipisi
-        0xf1988, # ku
-        0xf1985, # lanpan
-        0xf197c, # leko
-        0xf1987, # misikeke
-        0xf197d, # monsuta
-        0xf1986, # n
-        0xf1978, # namako
-        0xf1981, # soko
-        0xf197e, # tonsi
-        0,0,0,0, 0,0,0,0, # (poki jaki)
+            # row 9
+            0xf1983, # epiku
+            0xf197f, # jasima
+            0,       # linluwi
+            0xf19a2, # majuna
+            0xf1982, # meso
+            0xf197a, # oko
+            0,       # su
+            0,0,0,0, 0,0,0,0, 0,0,0,0, 0, # (poki jaki)
 
-        # row 9
-        0xf1983, # epiku
-        0xf197f, # jasima
-        0,       # linluwi
-        0xf19a2, # majuna
-        0xf1982, # meso
-        0xf197a, # oko
-        0,       # su
-        0,0,0,0, 0,0,0,0, 0,0,0,0, 0,], # (poki jaki)
+            # added after rows are processed
+            0xf1992, # combining cartouche extension
+        ],
 
-        # range(65, 91),
-        # range(97, 123),
-        # range(48, 58),
-        # [ord(i) for i in ".,;:!?\"'-+=/%&()[]"],
-        # range(124, 300) # sitelen pona testing
     )
 )
 
@@ -176,8 +175,6 @@ class SHEETtoPNG:
                             int(scan_left) : int(scan_left + glyph_w)]
                 characters.append([roi, scan_left, scan_top])
 
-# END OF KELLY ZONE
-
         # Now we have the characters but since they are all mixed up we need to position them.
         # Sort characters based on 'y' coordinate and group them by number of rows at a time. Then
         # sort each group based on the 'x' coordinate.
@@ -187,6 +184,17 @@ class SHEETtoPNG:
             sorted_characters.extend(
                 sorted(characters[cols * k : cols * (k + 1)], key=lambda x: x[1])
             )
+
+        # for the middle portion of the cartouche, grab the leftmost 1px column
+        # of the right cartouche. it'll be automatically stretched to the width
+        # of a glyph when it's converted to BMP, then SVG.
+        right_cartouche = sorted_characters[121]
+        scan_left, scan_top = right_cartouche[1], right_cartouche[2]
+        roi = image[int(scan_top ) : int(scan_top  + glyph_h),
+                    int(scan_left) : int(scan_left + 1)]
+        sorted_characters.append([roi, scan_left, scan_top])
+
+# END OF KELLY ZONE
 
         return sorted_characters
 
