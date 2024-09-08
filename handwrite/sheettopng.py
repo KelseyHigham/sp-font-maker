@@ -8,7 +8,7 @@ import cv2
 ALL_CHARS = list(
     itertools.chain(
         # rows 1-6
-        range(0xf1900, 0xf1977), # 120 nimi pu; first 6 rows
+        range(0xf1900, 0xf1978), # 120 nimi pu; first 6 rows
 
         # row 7
        [0xf1990, # cartouche open
@@ -51,8 +51,6 @@ ALL_CHARS = list(
         0xf197a, # oko
         0,       # su
         0,0,0,0, 0,0,0,0, 0,0,0,0, 0,], # (poki jaki)
-
-        [0] # idk why this one is necessary!! it crashes without it...
 
         # range(65, 91),
         # range(97, 123),
@@ -214,7 +212,6 @@ class SHEETtoPNG:
         # Structure (multiple sheets): UserProvidedDir/sheet_filename/ord(character)/ord(character).png
         # Kelly note: `characters` is more like `cells`, since not every cell contains a glyph
         for k, images in enumerate(characters):
-            print("cell number", k)
             character = os.path.join(characters_dir, str(ALL_CHARS[k]))
             if not os.path.exists(character):
                 os.mkdir(character)
