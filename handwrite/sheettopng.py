@@ -53,7 +53,7 @@ ALL_CHARS = list(
             0,0,0,0, 0,0,0,0, 0,0,0,0, 0, # (poki jaki)
 
             # added after rows are processed
-            0xf1992, # combining cartouche extension
+            0xe000, # cartouche extension
         ],
 
     )
@@ -161,6 +161,7 @@ class SHEETtoPNG:
         # The visible gray squares are 7x7, to help with human and scanning errors.
         # (The unit here is 0.125cm on the printed page, or 0.25cm in the original huge file.)
         glyph_w, glyph_h = bw*8/164, bh*10/12
+        left_padding, top_padding = bw*2/164, bh*1/12
 
         # Since amongst all the contours, the expected case is that the 4 sided contours
         # containing the characters should have the maximum area, so we loop through the first
@@ -169,11 +170,11 @@ class SHEETtoPNG:
         for row in range(rows):
             bx, by, bw, bh = cv2.boundingRect(contours[row])
             for col in range(cols):
-                scan_top  = by + bh*1/12
-                scan_left = bx + bw*2/164 + col*glyph_w
-                roi = image[int(scan_top ) : int(scan_top  + glyph_h),
-                            int(scan_left) : int(scan_left + glyph_w)]
-                characters.append([roi, scan_left, scan_top])
+                glyph_top  = by + top_padding
+                glyph_left = bx + left_padding + col*glyph_w
+                roi = image[int(glyph_top ) : int(glyph_top  + glyph_h),
+                            int(glyph_left) : int(glyph_left + glyph_w)]
+                characters.append([roi, glyph_left, glyph_top])
 
         # Now we have the characters but since they are all mixed up we need to position them.
         # Sort characters based on 'y' coordinate and group them by number of rows at a time. Then
@@ -188,11 +189,25 @@ class SHEETtoPNG:
         # for the middle portion of the cartouche, grab the leftmost 1px column
         # of the right cartouche. it'll be automatically stretched to the width
         # of a glyph when it's converted to BMP, then SVG.
+        left_cartouche  = sorted_characters[120]
         right_cartouche = sorted_characters[121]
-        scan_left, scan_top = right_cartouche[1], right_cartouche[2]
-        roi = image[int(scan_top ) : int(scan_top  + glyph_h),
-                    int(scan_left) : int(scan_left + 1)]
-        sorted_characters.append([roi, scan_left, scan_top])
+        glyph_left, glyph_top = right_cartouche[1], right_cartouche[2]
+        roi = image[int(glyph_top ) : int(glyph_top  + glyph_h),
+                    int(glyph_left) : int(glyph_left + 1)]
+        sorted_characters.append([roi, glyph_left, glyph_top])
+
+        # shift the left and right cartouche scan area inward, to match how the gray boxes are shifted        
+        glyph_left = left_cartouche[1] + glyph_w/16
+        roi = image[int(glyph_top ) : int(glyph_top  + glyph_h),
+                    int(glyph_left) : int(glyph_left + glyph_w)]
+        sorted_characters[120][0] = roi
+        sorted_characters[120][1] = glyph_left
+
+        glyph_left = right_cartouche[1] - glyph_w/16
+        roi = image[int(glyph_top ) : int(glyph_top  + glyph_h),
+                    int(glyph_left) : int(glyph_left + glyph_w)]
+        sorted_characters[121][0] = roi
+        sorted_characters[121][1] = glyph_left
 
 # END OF KELLY ZONE
 
