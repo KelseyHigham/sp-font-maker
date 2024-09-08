@@ -91,6 +91,7 @@ class SVGtoTTF:
         print("Note: If you leave a glyph blank, you'll get a FontForge error like \"I'm")
         print("      sorry this file is too complex for me to understand (or is erroneous)\".")
         print("      It's fine, the font still works!")
+
         for k in self.config["glyphs"]:
             # Create character glyph
             g = self.font.createMappedChar(k)
@@ -98,7 +99,7 @@ class SVGtoTTF:
             # Get outlines
             src = "{}/{}.svg".format(k, k)
             src = directory + os.sep + src
-            print("importOutlines #", k)
+            # print("importOutlines #", k)
             g.importOutlines(src, ("removeoverlap", "correctdir"))
             g.removeOverlap()
 
@@ -110,19 +111,27 @@ class SVGtoTTF:
         bearings : dict
             Map from character: [left bearing, right bearing]
         """
-        default = bearings.get("Default", [60, 60])
 
-        for k, v in bearings.items():
-            if v[0] is None:
-                v[0] = default[0]
-            if v[1] is None:
-                v[1] = default[1]
+        for glyph in self.font:
+            print(glyph)
+            self.font[glyph].left_side_bearing = 0  # generally a value between -100, 100
+            self.font[glyph].right_side_bearing = 0 # 0 makes the glyphs touch. maybe add like 50
 
-            if k != "Default":
-                if ord(str(k)) in self.unicode_mapping:
-                    glyph_name = self.unicode_mapping[ord(str(k))]
-                    self.font[glyph_name].left_side_bearing = v[0]
-                    self.font[glyph_name].right_side_bearing = v[1]
+        # The following code is useful if the bearing table is populated.
+        # See the original ascii `handwrite` project.
+        # default = bearings.get("Default", [60, 60])
+
+        # for k, v in bearings.items():
+        #     if v[0] is None:
+        #         v[0] = default[0]
+        #     if v[1] is None:
+        #         v[1] = default[1]
+
+        #     if k != "Default":
+        #         if ord(str(k)) in self.unicode_mapping:
+        #             glyph_name = self.unicode_mapping[ord(str(k))]
+        #             self.font[glyph_name].left_side_bearing = v[0]
+        #             self.font[glyph_name].right_side_bearing = v[1]
 
     def set_kerning(self, table):
         """Set kerning values in the font.
@@ -199,7 +208,13 @@ class SVGtoTTF:
         self.set_properties()
         self.add_glyphs(directory)
 
+        for glyph in self.font:
+            self.font[glyph].width = 700
+            self.font[glyph].vwidth = 875
+
         # bearing table
+        # Bearings position the glyph relative to the edges of the glyph's drawing.
+        # This is useful for variable-width fonts, but not for monospaced fonts.
         # self.set_bearings(self.config["typography_parameters"].get("bearing_table", {}))
 
         # kerning table
