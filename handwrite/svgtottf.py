@@ -85,8 +85,17 @@ class SVGtoTTF:
         directory : str
             Path to directory with SVGs to be converted.
         """
+        bang = self.font.createMappedChar(ord("!"))
+        bang.width = 0
         space = self.font.createMappedChar(ord(" "))
-        space.width = 500
+        space.width = 350
+        comma = self.font.createMappedChar(ord(","))
+        comma.width = 0
+        question = self.font.createMappedChar(ord("?"))
+        question.width = 0
+        ideographic_space = self.font.createMappedChar(0x3000)
+        ideographic_space.width = 700
+        print(0x3000)
 
         print("Note: If you leave a glyph blank, you'll get a FontForge error like \"I'm")
         print("      sorry this file is too complex for me to understand (or is erroneous)\".")
@@ -114,7 +123,7 @@ class SVGtoTTF:
 
         for glyph in self.font:
             print(glyph)
-            self.font[glyph].left_side_bearing = 0  # generally a value between -100, 100
+            self.font[glyph].left_side_bearing = 0  # generally a value between -100, 100.
             self.font[glyph].right_side_bearing = 0 # 0 makes the glyphs touch. maybe add like 50
 
         # The following code is useful if the bearing table is populated.
@@ -208,6 +217,8 @@ class SVGtoTTF:
         self.set_properties()
         self.add_glyphs(directory)
 
+        # bug: this is run after add_glyphs(), so it overrides any zero-width glyphs.
+        # probably just put this snippet into that function
         for glyph in self.font:
             self.font[glyph].width = 700
             self.font[glyph].vwidth = 875
