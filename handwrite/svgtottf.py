@@ -109,6 +109,7 @@ class SVGtoTTF:
             # Get outlines
             src = "{}/{}.svg".format(k, k)
             src = directory + os.sep + src
+            print("\t", k, "         ", end=("\r"+chr(k)+" "+hex(k)+" "+str(k)+" - "))
             # print("importOutlines #", k)
             g.importOutlines(src, ("removeoverlap", "correctdir"))
             g.removeOverlap()
@@ -120,6 +121,7 @@ class SVGtoTTF:
                 g.transform(psMat.translate(0, 
                     self.font.ascent - (self.font.ascent + self.font.descent - (top - bottom)) / 2 - top
                 ))
+        print("                                                                                                         ")
 
     def set_bearings(self, bearings):
         """Add left and right bearing from config
