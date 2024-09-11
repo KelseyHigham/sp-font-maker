@@ -54,6 +54,10 @@ ALL_CHARS = list(
 
             # added after rows are processed
             0xe000, # cartouche extension
+            97,     # a
+            101,    # e
+            110,    # n
+            111,    # o
         ],
 
     )
@@ -208,6 +212,16 @@ class SHEETtoPNG:
                     int(glyph_left) : int(glyph_left + glyph_w)]
         sorted_characters[121][0] = roi
         sorted_characters[121][1] = glyph_left
+
+        # add a, e, n, o
+        a = sorted_characters[0]
+        sorted_characters.append(a)
+        e = sorted_characters[9]
+        sorted_characters.append(e)
+        n = sorted_characters[142]
+        sorted_characters.append(n)
+        o = sorted_characters[68]
+        sorted_characters.append(o)
 
 # END OF KELLY ZONE
 
