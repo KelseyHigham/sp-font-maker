@@ -12,19 +12,25 @@ class PNGtoSVG:
     """Converter class to convert character PNGs to BMPs and SVGs."""
 
     def convert(self, directory):
-        print("PNGtoSVG")
+        print("PNGtoSVG", end="\r")
         """Call converters on each .png in the provider directory.
 
         Walk through the custom directory containing all .png files
         from sheettopng and convert them to png -> bmp -> svg.
         """
+        num_characters = 0
         path = os.walk(directory)
         for root, dirs, files in path:
             for f in files:
                 if f.endswith(".png"):
+                    num_characters += 1
+                    codepoint = int(f[0:-4])
+                    #  
+                    print("PNGtoSVG", chr(codepoint), hex(codepoint), "".join("." for i in range(num_characters//4)), end="\r")
                     self.pngToBmp(root + "/" + f)
                     # self.trim(root + "/" + f[0:-4] + ".bmp")
                     self.bmpToSvg(root + "/" + f[0:-4] + ".bmp")
+        print("PNGtoSVG                                                                      ")
 
     def bmpToSvg(self, path):
         """Convert .bmp image to .svg using potrace.
