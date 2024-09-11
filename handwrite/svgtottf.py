@@ -101,6 +101,7 @@ class SVGtoTTF:
         print("      sorry this file is too complex for me to understand (or is erroneous)\".")
         print("      It's fine, the font still works!")
 
+        import psMat
         for k in self.config["glyphs"]:
             # Create character glyph
             g = self.font.createMappedChar(k)
@@ -111,6 +112,14 @@ class SVGtoTTF:
             # print("importOutlines #", k)
             g.importOutlines(src, ("removeoverlap", "correctdir"))
             g.removeOverlap()
+
+            # Vertically center sitelen pona
+            if 0xf1900 <= k <= 0xf1988 or 0xf19a0 <= k <= 0xf19a3:
+                top    = g.boundingBox()[-1]
+                bottom = g.boundingBox()[1]
+                g.transform(psMat.translate(0, 
+                    self.font.ascent - (self.font.ascent + self.font.descent - (top - bottom)) / 2 - top
+                ))
 
     def set_bearings(self, bearings):
         """Add left and right bearing from config
@@ -207,6 +216,7 @@ class SVGtoTTF:
             self.font = fontforge.font()
         except:
             import fontforge
+            import psMat
 
         with open(config_file) as f:
             self.config = json.load(f)
