@@ -72,7 +72,10 @@ class PNGtoSVG:
         PotraceNotFound
             Raised if potrace not found in path by shutil.which()
         """
-        img = Image.open(path).convert("RGBA").resize((400, 500))
+        glyph_width  = 100
+        glyph_height = 125
+        img = Image.open(path).convert("RGBA").resize((glyph_width, glyph_height))
+        # print("size:", glyph_width, glyph_height)
 
         # Threshold image to convert each pixel to either black or white
         threshold = 200

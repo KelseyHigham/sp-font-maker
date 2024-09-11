@@ -93,9 +93,8 @@ class SVGtoTTF:
         comma.width = 0
         question = self.font.createMappedChar(ord("?"))
         question.width = 0
-        ideographic_space = self.font.createMappedChar(0x3000)
+        ideographic_space = self.font.createMappedChar(ord("　"))
         ideographic_space.width = 700
-        print(0x3000)
 
         print("Note: If you leave a glyph blank, you'll get a FontForge error like \"I'm")
         print("      sorry this file is too complex for me to understand (or is erroneous)\".")
@@ -115,7 +114,8 @@ class SVGtoTTF:
             g.removeOverlap()
 
             # Vertically center sitelen pona
-            if 0xf1900 <= k <= 0xf1988 or 0xf19a0 <= k <= 0xf19a3:
+            # UCSUR:   pu & ku suli                   historical
+            if         0xf1900 <= k <= 0xf1988   or   0xf19a0 <= k <= 0xf19a3:
                 top    = g.boundingBox()[-1]
                 bottom = g.boundingBox()[1]
                 g.transform(psMat.translate(0, 
