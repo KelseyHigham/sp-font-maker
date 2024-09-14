@@ -85,16 +85,6 @@ class SVGtoTTF:
         directory : str
             Path to directory with SVGs to be converted.
         """
-        bang = self.font.createMappedChar(ord("!"))
-        bang.width = 0
-        space = self.font.createMappedChar(ord(" "))
-        space.width = 350
-        comma = self.font.createMappedChar(ord(","))
-        comma.width = 0
-        question = self.font.createMappedChar(ord("?"))
-        question.width = 0
-        ideographic_space = self.font.createMappedChar(ord("　"))
-        ideographic_space.width = 700
 
         print("Note: If you leave a glyph blank, you'll get a FontForge error like \"I'm")
         print("      sorry this file is too complex for me to understand (or is erroneous)\".")
@@ -108,20 +98,65 @@ class SVGtoTTF:
             # Get outlines
             src = "{}/{}.svg".format(k, k)
             src = directory + os.sep + src
-            print("\t", k, "         ", end=("\r"+chr(k)+" "+hex(k)+" "+str(k)+" - "))
-            # print("importOutlines #", k)
+
+            # importOutlines() will print FontForge errors for blank glyphs.
+            # Prepend what glyph they refer to.
+            print("\t", k, "         ", end=("\r" + chr(k) + " " + hex(k) + " " + str(k) + " - "))
             g.importOutlines(src, ("removeoverlap", "correctdir"))
             g.removeOverlap()
 
             # Vertically center sitelen pona
-            # UCSUR:   pu & ku suli                   historical
-            if         0xf1900 <= k <= 0xf1988   or   0xf19a0 <= k <= 0xf19a3:
-                top    = g.boundingBox()[-1]
+            # UCSUR:   pu & ku suli                   historical                     `.` and `:`
+            if         0xf1900 <= k <= 0xf1988   or   0xf19a0 <= k <= 0xf19a3   or   0xf199c <= k <= 0xf199d:
                 bottom = g.boundingBox()[1]
-                g.transform(psMat.translate(0, 
-                    self.font.ascent - (self.font.ascent + self.font.descent - (top - bottom)) / 2 - top
+                top    = g.boundingBox()[3]
+                g.transform(psMat.translate(
+                    0, 
+                    # (ascent-top) - (ascent-height)/2
+                    self.font.ascent - top - (self.font.ascent - self.font.descent - (top - bottom)) / 2
                 ))
+
+            # Horizontally center sitelen pona, middot, colon, letters
+            # UCSUR:   pu & ku suli                   historical                     `.` and `:`                    aeijklmnoptsuw
+            if         0xf1900 <= k <= 0xf1988   or   0xf19a0 <= k <= 0xf19a3   or   0xf199c <= k <= 0xf199d   or   0x61 <= k <= 0x7a:
+                left  = g.boundingBox()[0]
+                right = g.boundingBox()[2]
+                width = right - left
+                g.transform(psMat.translate(
+                    700 - right - (700 - width) / 2, 
+                    0
+                ))
+        # get rid of stray metrics. but it doesn't seem to be working...
         print("                                                                                                         ")
+
+        # originally 800x1000, minus 50 margin on each side for scanning margin
+        # ...though the vertical situation might be more complicated?
+        for glyph in self.font:
+            self.font[glyph].width = 700
+            self.font[glyph].vwidth = 900  # What does this actually do? Does ascent/descent control everything?
+
+            # test centering
+            g = self.font[glyph]
+            print(chr(g.encoding), hex(g.encoding), g.encoding, " - " \
+            #     -50ish                               750ish
+                  "left",   int(g.boundingBox()[0]), "right", int(g.boundingBox()[2]), \
+            #     -200ish                            800ish
+                  "bottom", int(g.boundingBox()[1]),   "top", int(g.boundingBox()[3]))
+
+        # combining cartouche extension
+        self.font[0xf1992].width = 0
+        self.font[0xf1992].transform(psMat.translate(-700, 0))
+
+        bang = self.font.createMappedChar(ord("!"))
+        bang.width = 0
+        space = self.font.createMappedChar(ord(" "))
+        space.width = 350
+        comma = self.font.createMappedChar(ord(","))
+        comma.width = 0
+        question = self.font.createMappedChar(ord("?"))
+        question.width = 0
+        ideographic_space = self.font.createMappedChar(ord("　"))
+        ideographic_space.width = 700
 
     def set_bearings(self, bearings):
         """Add left and right bearing from config
@@ -228,12 +263,6 @@ class SVGtoTTF:
         self.unicode_mapping = {}
         self.set_properties()
         self.add_glyphs(directory)
-
-        # bug: this is run after add_glyphs(), so it overrides any zero-width glyphs.
-        # probably just put this snippet into that function
-        for glyph in self.font:
-            self.font[glyph].width = 700
-            self.font[glyph].vwidth = 875
 
         # bearing table
         # Bearings position the glyph relative to the edges of the glyph's drawing.

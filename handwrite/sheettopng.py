@@ -53,7 +53,8 @@ ALL_CHARS = list(
             0,0,0,0, 0,0,0,0, 0,0,0,0, 0, # (poki jaki)
 
             # added after rows are processed
-            0xe000, # cartouche extension
+            # 0xe000, # cartouche extension, arbitrary codepoint
+            0xf1992, # combining cartouche extension, UCSUR
             97,     # a
             101,    # e
             110,    # n
@@ -218,7 +219,7 @@ class SHEETtoPNG:
         sorted_characters.append(a)
         e = sorted_characters[9]
         sorted_characters.append(e)
-        n = sorted_characters[142]
+        n = sorted_characters[148]
         sorted_characters.append(n)
         o = sorted_characters[68]
         sorted_characters.append(o)
