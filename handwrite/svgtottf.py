@@ -94,7 +94,6 @@ class SVGtoTTF:
         for k in self.config["glyphs"]:
             # Create character glyph
             g = self.font.createMappedChar(k)
-            self.unicode_mapping.setdefault(k, g.glyphname)
             # Get outlines
             src = "{}/{}.svg".format(k, k)
             src = directory + os.sep + src
@@ -158,35 +157,14 @@ class SVGtoTTF:
         ideographic_space = self.font.createMappedChar(ord("　"))
         ideographic_space.width = 700
 
-    def set_bearings(self, bearings):
-        """Add left and right bearing from config
-
-        Parameters
-        ----------
-        bearings : dict
-            Map from character: [left bearing, right bearing]
+    def set_bearings(self):
+        """Add left and right bearing
         """
 
         for glyph in self.font:
             print(glyph)
-            self.font[glyph].left_side_bearing = 0  # generally a value between -100, 100.
-            self.font[glyph].right_side_bearing = 0 # 0 makes the glyphs touch. maybe add like 50
-
-        # The following code is useful if the bearing table is populated.
-        # See the original ascii `handwrite` project.
-        # default = bearings.get("Default", [60, 60])
-
-        # for k, v in bearings.items():
-        #     if v[0] is None:
-        #         v[0] = default[0]
-        #     if v[1] is None:
-        #         v[1] = default[1]
-
-        #     if k != "Default":
-        #         if ord(str(k)) in self.unicode_mapping:
-        #             glyph_name = self.unicode_mapping[ord(str(k))]
-        #             self.font[glyph_name].left_side_bearing = v[0]
-        #             self.font[glyph_name].right_side_bearing = v[1]
+            self.font[glyph].left_side_bearing = 0  # Generally a value between -100, 100.
+            self.font[glyph].right_side_bearing = 0 # 0 makes the glyphs touch. Maybe add like 50
 
     def set_kerning(self, table):
         """Set kerning values in the font.
@@ -260,7 +238,6 @@ class SVGtoTTF:
         self.metadata = json.loads(metadata) or {}
 
         self.font = fontforge.font()
-        self.unicode_mapping = {}
         self.set_properties()
         self.add_glyphs(directory)
 
