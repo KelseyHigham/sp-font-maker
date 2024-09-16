@@ -53,7 +53,6 @@ ALL_CHARS = list(
             0,0,0,0, 0,0,0,0, 0,0,0,0, 0, # (poki jaki)
 
             # added after rows are processed
-            # 0xe000, # cartouche extension, arbitrary codepoint
             0xf1992, # combining cartouche extension, UCSUR
             97,     # a
             101,    # e
@@ -98,6 +97,7 @@ class SHEETtoPNG:
         self.save_images(
             characters, # more like cells
             characters_dir,
+            config
         )
 
     def detect_characters(self, sheet_image, threshold_value, cols=20, rows=9):
@@ -228,7 +228,7 @@ class SHEETtoPNG:
 
         return sorted_characters
 
-    def save_images(self, characters, characters_dir):
+    def save_images(self, characters, characters_dir, config):
         """Create directory for each character and save as PNG.
 
         Creates directory and PNG file for each image as following:
@@ -250,10 +250,15 @@ class SHEETtoPNG:
         # Structure (multiple sheets): UserProvidedDir/sheet_filename/ord(character)/ord(character).png
         # Kelly note: `characters` is more like `cells`, since not every cell contains a glyph
         for k, images in enumerate(characters):
-            character = os.path.join(characters_dir, str(ALL_CHARS[k]))
-            if not os.path.exists(character):
-                os.mkdir(character)
-            cv2.imwrite(
-                os.path.join(character, str(ALL_CHARS[k]) + ".png"),
-                images[0],
-            )
+
+            with open(config) as f:
+                glyphs = json.load(f).get("glyphs-fancy", {})
+                if len(glyphs) > k:
+                    if 'name' in glyphs[k]:
+                        character = os.path.join(characters_dir, glyphs[k]['name'])
+                        if not os.path.exists(character):
+                            os.mkdir(character)
+                        cv2.imwrite(
+                            os.path.join(character, glyphs[k]['name'] + ".png"),
+                            images[0],
+                        )

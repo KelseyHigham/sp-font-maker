@@ -86,47 +86,57 @@ class SVGtoTTF:
             Path to directory with SVGs to be converted.
         """
 
-        print("Note: If you leave a glyph blank, you'll get a FontForge error like \"I'm")
-        print("      sorry this file is too complex for me to understand (or is erroneous)\".")
-        print("      It's fine, the font still works!")
+        # print("Note: If you leave a glyph blank, you'll get a FontForge error like \"I'm")
+        # print("      sorry this file is too complex for me to understand (or is erroneous)\".")
+        # print("      It's fine, the font still works!")
 
         import psMat
-        for k in self.config["glyphs"]:
-            # Create character glyph
-            g = self.font.createMappedChar(k)
-            # Get outlines
-            src = "{}/{}.svg".format(k, k)
-            src = directory + os.sep + src
+        for glyph_object in self.config["glyphs-fancy"]:
+            if 'name' in glyph_object:
+                name = glyph_object['name']
+                if 'codepoint' in glyph_object:
+                    cp = int(glyph_object['codepoint'], 16)
+                else:
+                    cp = 0
 
-            # importOutlines() will print FontForge errors for blank glyphs.
-            # Prepend what glyph they refer to.
-            print("\t", k, "         ", end=("\r" + chr(k) + " " + hex(k) + " " + str(k) + " - "))
-            g.importOutlines(src, ("removeoverlap", "correctdir"))
-            g.removeOverlap()
+                # Create character glyph
+                if cp == 0:
+                    g = self.font.createChar(-1, name)
+                else:
+                    g = self.font.createChar(cp, name)
+                # Get outlines
+                src = "{}/{}.svg".format(name, name)
+                src = directory + os.sep + src
 
-            # Vertically center sitelen pona
-            # UCSUR:   pu & ku suli                   historical                     `.` and `:`
-            if         0xf1900 <= k <= 0xf1988   or   0xf19a0 <= k <= 0xf19a3   or   0xf199c <= k <= 0xf199d:
-                bottom = g.boundingBox()[1]
-                top    = g.boundingBox()[3]
-                g.transform(psMat.translate(
-                    0, 
-                    # (ascent-top) - (ascent-height)/2
-                    self.font.ascent - top - (self.font.ascent - self.font.descent - (top - bottom)) / 2
-                ))
+                # importOutlines() will print FontForge errors for blank glyphs.
+                # Prepend what glyph they refer to.
+                print("", end=("\r" + name.ljust(9, " ") + " - "))
+                g.importOutlines(src, ("removeoverlap", "correctdir"))
+                g.removeOverlap()
 
-            # Horizontally center sitelen pona, middot, colon, letters
-            # UCSUR:   pu & ku suli                   historical                     `.` and `:`                    aeijklmnoptsuw
-            if         0xf1900 <= k <= 0xf1988   or   0xf19a0 <= k <= 0xf19a3   or   0xf199c <= k <= 0xf199d   or   0x61 <= k <= 0x7a:
-                left  = g.boundingBox()[0]
-                right = g.boundingBox()[2]
-                width = right - left
-                g.transform(psMat.translate(
-                    700 - right - (700 - width) / 2, 
-                    0
-                ))
-        # get rid of stray metrics. but it doesn't seem to be working...
-        print("                                                                                                         ")
+                # Vertically center sitelen pona
+                # UCSUR:   pu & ku suli                    historical                      `.` and `:`
+                if         0xf1900 <= cp <= 0xf1988   or   0xf19a0 <= cp <= 0xf19a3   or   0xf199c <= cp <= 0xf199d:
+                    bottom = g.boundingBox()[1]
+                    top    = g.boundingBox()[3]
+                    g.transform(psMat.translate(
+                        0, 
+                        self.font.ascent - top - (self.font.ascent + self.font.descent - (top - bottom)) / 2
+                    ))
+
+                # Horizontally center sitelen pona, middot, colon, letters
+                # UCSUR:   pu & ku suli                    historical                      `.` and `:`                     aeijklmnoptsuw
+                if         0xf1900 <= cp <= 0xf1988   or   0xf19a0 <= cp <= 0xf19a3   or   0xf199c <= cp <= 0xf199d   or   0x61 <= cp <= 0x7a:
+                    left  = g.boundingBox()[0]
+                    right = g.boundingBox()[2]
+                    width = right - left
+                    g.transform(psMat.translate(
+                        700 - right - (700 - width) / 2, 
+                        0
+                    ))
+
+        # get rid of stray metrics
+        print("\r                                                ")
 
         # originally 800x1000, minus 50 margin on each side for scanning margin
         # ...though the vertical situation might be more complicated?
@@ -134,13 +144,19 @@ class SVGtoTTF:
             self.font[glyph].width = 700
             self.font[glyph].vwidth = 900  # What does this actually do? Does ascent/descent control everything?
 
-            # test centering
-            g = self.font[glyph]
-            print(chr(g.encoding), hex(g.encoding), g.encoding, " - " \
-            #     -50ish                               750ish
-                  "left",   int(g.boundingBox()[0]), "right", int(g.boundingBox()[2]), \
-            #     -200ish                            800ish
-                  "bottom", int(g.boundingBox()[1]),   "top", int(g.boundingBox()[3]))
+            # # Test centering
+            # g = self.font[glyph]
+            # # "If the glyph is not in the font’s encoding then a number will be returned beyond the encoding size (or in some cases -1 will be returned)."
+            # # https://fontforge.org/docs/scripting/python/fontforge.html#fontforge.glyph.encoding
+            # if 0 < g.encoding < 0x110000:
+            #     cp = g.encoding
+            # else:
+            #     cp = 0
+            # print(chr(cp), g.glyphname.ljust(9), "- " \
+            # #     -50ish                             750ish
+            #       "left",   int(g.boundingBox()[0]), "right", int(g.boundingBox()[2]), \
+            # #     -200ish                            800ish
+            #       "bottom", int(g.boundingBox()[1]), "top",   int(g.boundingBox()[3]))
 
         # combining cartouche extension
         self.font[0xf1992].width = 0
@@ -225,6 +241,7 @@ class SVGtoTTF:
 
         sys.stderr.write("\nGenerating %s...\n" % outfile)
         self.font.generate(outfile)
+        self.font.save(outfile + ".sfd")
 
     def convert_main(self, config_file, directory, outdir, metadata):
         try:
@@ -232,6 +249,16 @@ class SVGtoTTF:
         except:
             import fontforge
             import psMat
+
+# START OF KELLY ZONE
+
+        # Now that FontForge is imported, thanks to surprisingly complicated incantations at the top of the file,
+        # import the .sfd and examine its lookup tables.
+
+        # structure code around glyph names, not codepoints
+        # also fix vertical centering, and add FontForge file (.sfd) export
+
+# END OF KELLY ZONE
 
         with open(config_file) as f:
             self.config = json.load(f)

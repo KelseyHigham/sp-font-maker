@@ -24,9 +24,7 @@ class PNGtoSVG:
             for f in files:
                 if f.endswith(".png"):
                     num_characters += 1
-                    codepoint = int(f[0:-4])
-                    #  
-                    print("PNGtoSVG", chr(codepoint), hex(codepoint), "".join("." for i in range(num_characters//4)), end="\r")
+                    print("PNGtoSVG", str(f[0:-4]).ljust(14, " ")[:14], "".join("." for i in range(num_characters//8)), end="\r")
                     self.pngToBmp(root + "/" + f)
                     # self.trim(root + "/" + f[0:-4] + ".bmp")
                     self.bmpToSvg(root + "/" + f[0:-4] + ".bmp")
