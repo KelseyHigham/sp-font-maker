@@ -41,7 +41,14 @@ class SVGtoTTF:
             ]
         )
 
-# START OF KELLY ZONE
+
+
+        #    █   ▀               ▄
+        #    █  ▀█  ▄▀▀█   ▀▀▄  ▀█▀  █  █  █▄▀  ▄▀▀▄  ▄▀▀▄
+        #    █   █  █  █  ▄▀▀█   █   █  █  █    █▄▄█   ▀▄
+        #    █   █  ▀▄▄█  ▀▄▄█   ▀▄  ▀▄▄█  █    ▀▄▄   ▀▄▄▀
+        #            ▄▄▀
+        # (someone who knows Python, please put this in its own function)
 
         # Now the font has exported, presumably. 
         # We're back to the `python` environment, not the `ffpython` one, so we can use libraries like fontTools, camelCase.
@@ -50,35 +57,115 @@ class SVGtoTTF:
         # `directory` is the temp directory
 
         self.metadata = json.loads(json.dumps(metadata)) or {}
-        filename = self.metadata.get("filename", None) or self.config["props"].get("filename", None)
+
+        with open(config) as f:
+            self.config = json.load(f)
+
+        filename = (self.metadata.get("filename", None) or self.config["props"].get("filename", None))
         if filename is None:
             raise NameError("filename not found in config file.")
 
+        family = (self.metadata.get("family", None) or filename)
+
         # fontTools: input font file
         infile = str(directory + os.sep + (filename + "_without-ligatures.ttf"))
-        sys.stderr.write("\nGonna read %s\n" % infile)
+        # sys.stderr.write("\nAdding ligatures to %s\n" % infile)
 
         # fontTools: output font file
-        outfile = str(outdir + os.sep + (filename + ".ttf" if not filename.endswith(".ttf") else filename))
+        filename = filename + ".ttf" if not filename.endswith(".ttf") else filename
+        outfile = str(outdir + os.sep + filename)
         while os.path.exists(outfile):
-            outfile = os.path.splitext(outfile)[0] + " (1).ttf"
-        sys.stderr.write("\nGonna write to %s\n" % outfile)
+            filename = os.path.splitext(filename)[0] + " (1).ttf"
+            outfile = outdir + os.sep + filename
 
-        # fontTools: input ligatures file
-        ligatures_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "ligma.fea")
+        #                     ▄         █ ▀
+        #    ▄▀▀ █▄▀ ▄▀▄ ▄▀█ ▀█▀ ▄▀▄    █ █ ▄▀█ ▄▀▀
+        #    ▀▄▄ █   ▀█▄ ▀▄█  ▀▄ ▀█▄    █ █ ▀▄█ ▄█▀
+        #                                   ▄▄▀
+
+        ligatures_string = "feature liga {\n"
+        list_of_ligs = []
+
+        # create ligature lines
+        with open(config) as f:
+            glyphs = json.load(f).get("glyphs-fancy", {})
+            for k in glyphs:
+                if 'ligature' in k:
+                    # create tuples of ligature text, followed by ligature length by tokens
+                    list_of_ligs.append((
+                        "  sub " + k['ligature'] + " by " + k['name'] + ";", 
+                        len(k['ligature'].split(' '))
+                    ))
+                    list_of_ligs.append((
+                        "  sub " + k['ligature'] + " space by " + k['name'] + ";", 
+                        len(k['ligature'].split(' ')) + 1
+                    ))
+
+        # sort them by number of tokens
+        list_of_ligs.sort(reverse=True, key=lambda x: x[1])
+
+        # add to our cool string
+        for line in list_of_ligs:
+            ligatures_string += line[0] + "\n"
+
+        ligatures_string += "} liga;"
+        # print(ligatures_string)
 
         from fontTools import ttLib  # camelCase!
         tt = ttLib.TTFont(infile)
-        print(tt['maxp'].numGlyphs)
-        print(tt['OS/2'].achVendID)
-        print(tt['head'].unitsPerEm)
-
         from fontTools.feaLib import builder  # camelCase!
-        newfontmaybe = builder.addOpenTypeFeatures(tt, ligatures_file)
-        tt.save(outfile) # this step might be redundant?
+        builder.addOpenTypeFeaturesFromString(tt, ligatures_string)
+        sys.stderr.write("\nGenerating %s...\n" % outfile)
+        tt.save(outfile)
+
+        example_web_page = open(outdir + os.sep + family + ".html", "w", encoding="utf-8")
+        example_web_page.write(
+"""
+<style type=\"text/css\">
+    @font-face {
+        font-family: '""" + family + """';
+        src: url('""" + filename + """')
+    }
+    * {
+        font-family: '""" + family + """';
+        font-size: 48px;
+    }
+    h1 {
+        font-family: "Chalkboard SE", "Comic Sans MS", sans-serif;
+    }
+</style>
+<h1>""" + family + " tan " + "mama ona" + """</h1>
+nasin sitelen sin a!<br><br>
+a akesi ala alasa ale anpa ante anu awen e en esun ijo ike ilo insa jaki jan jelo jo<br>
+kala kalama kama kasi ken kepeken kili kiwen ko kon kule kulupu kute la lape laso lawa len lete li<br>
+lili linja lipu loje lon luka lukin lupa ma mama mani meli mi mije moku moli monsi mu mun musi<br>
+mute nanpa nasa nasin nena ni nimi noka o olin ona open pakala pali palisa pan pana pi pilin pimeja<br>
+pini pipi poka poki pona pu sama seli selo seme sewi sijelo sike sin sina sinpin sitelen sona soweli suli<br>
+suno supa suwi tan taso tawa telo tenpo toki tomo tu unpa uta utala walo wan waso wawa weka wile<br>
+[].:ijklmpstuw<br>
+kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi<br>
+epiku jasima linluwi majuna meso oko su<br><br>
+
+ilo li pali e sitelen ni:<br>
+jan [sama olin namako jaki ala] li sitelen e pu kepeken wawa mute.<br>
+󱤑󱦐󱥖󱥅󱥸󱤐󱤂󱦑󱤧󱥠󱤉󱥕󱤙󱥵󱤼󱦜<br><br>
+mi pona e pali kepeken sitelen _ kepeken sitelen 󱦒:<br>
+jan [sama_olin_namako_jaki_ala_] li sitelen e pu kepeken wawa mute.<br>
+󱤑󱦐󱥖󱦒󱥅󱦒󱥸󱦒󱤐󱦒󱤂󱦒󱦑󱤧󱥠󱤉󱥕󱤙󱥵󱤼󱦜<br><br>
+sina pona tan lukin a!
+"""
+        )
+        example_web_page.close()
 
 
-# END OF KELLY ZONE
+
+        #        █  █   ▀               ▄
+        #       █   █  ▀█  ▄▀▀█   ▀▀▄  ▀█▀  █  █  █▄▀  ▄▀▀▄  ▄▀▀▄
+        #      █    █   █  █  █  ▄▀▀█   █   █  █  █    █▄▄█   ▀▄
+        #     █     █   █  ▀▄▄█  ▀▄▄█   ▀▄  ▀▄▄█  █    ▀▄▄   ▀▄▄▀
+        #    █              ▄▄▀
+
+
 
     def set_properties(self):
         """Set metadata of the font from config."""
@@ -153,9 +240,17 @@ class SVGtoTTF:
                 g.importOutlines(src, ("removeoverlap", "correctdir"))
                 g.removeOverlap()
 
-                # Vertically center sitelen pona
-                # UCSUR:   pu & ku suli                    historical                      `.` and `:`
-                if         0xf1900 <= cp <= 0xf1988   or   0xf19a0 <= cp <= 0xf19a3   or   0xf199c <= cp <= 0xf199d:
+                # Vertically center sitelen pona, middot, colon
+                if (    
+                    0xf1900 <= cp <= 0xf1988 or      # pu & ku suli
+                    0xf19a0 <= cp <= 0xf19a3 or      # historical
+                    cp == 0xf199c or cp == 0x2e or   # period
+                    cp == 0xf199d or cp == 0x3a or   # colon
+                    cp == 0x61 or                    # a
+                    cp == 0x65 or                    # e
+                    cp == 0x6e or                    # n
+                    cp == 0x6f                       # o
+                ):
                     bottom = g.boundingBox()[1]
                     top    = g.boundingBox()[3]
                     g.transform(psMat.translate(
@@ -164,8 +259,13 @@ class SVGtoTTF:
                     ))
 
                 # Horizontally center sitelen pona, middot, colon, letters
-                # UCSUR:   pu & ku suli                    historical                      `.` and `:`                     aeijklmnoptsuw
-                if         0xf1900 <= cp <= 0xf1988   or   0xf19a0 <= cp <= 0xf19a3   or   0xf199c <= cp <= 0xf199d   or   0x61 <= cp <= 0x7a:
+                if (
+                    0xf1900 <= cp <= 0xf1988 or      # pu & ku suli
+                    0xf19a0 <= cp <= 0xf19a3 or      # historical
+                    cp == 0xf199c or cp == 0x2e or   # period
+                    cp == 0xf199d or cp == 0x3a or   # colon
+                    0x61 <= cp <= 0x7a               # aeijklmnopstuw
+                ):
                     left  = g.boundingBox()[0]
                     right = g.boundingBox()[2]
                     width = right - left
@@ -200,6 +300,8 @@ class SVGtoTTF:
         # combining cartouche extension
         self.font[0xf1992].width = 0
         self.font[0xf1992].transform(psMat.translate(-700, 0))
+        self.font[0x5f].width = 0
+        self.font[0x5f].transform(psMat.translate(-700, 0))
 
         bang = self.font.createMappedChar(ord("!"))
         bang.width = 0
@@ -279,7 +381,8 @@ class SVGtoTTF:
         # while os.path.exists(outfile):
         #     outfile = os.path.splitext(outfile)[0] + " (1).ttf"
 
-        sys.stderr.write("\nGenerating %s...\n" % outfile)
+        # Generate font, but without ligatures yet, to temporary directory
+        # sys.stderr.write("\nCreating %s\n" % outfile)
         self.font.generate(outfile)
         self.font.save(outfile + ".sfd")
 

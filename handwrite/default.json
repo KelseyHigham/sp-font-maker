@@ -410,7 +410,7 @@
     {"codepoint": "0xf1920", "name": "PU-kute", "ligature": "k u t e"}, 
     {"codepoint": "0xf1921", "name": "PU-la", "ligature": "l a"}, 
     {"codepoint": "0xf1922", "name": "PU-lape", "ligature": "l a p e"}, 
-    {"codepoint": "0xf1923", "name": "PU-las", "ligature": "l a s"}, 
+    {"codepoint": "0xf1923", "name": "PU-laso", "ligature": "l a s o"}, 
     {"codepoint": "0xf1924", "name": "PU-lawa", "ligature": "l a w a"}, 
     {"codepoint": "0xf1925", "name": "PU-len", "ligature": "l e n"}, 
     {"codepoint": "0xf1926", "name": "PU-lete", "ligature": "l e t e"}, 
@@ -496,8 +496,8 @@
     {"codepoint": "0xf1976", "name": "PU-weka", "ligature": "w e k a"}, 
     {"codepoint": "0xf1977", "name": "PU-wile", "ligature": "w i l e"},
 
-    {"codepoint": "0xf1990", "name": "SP-cartouche-open"},
-    {"codepoint": "0xf1991", "name": "SP-cartouche-close"},
+    {"codepoint": "0xf1990", "name": "SP-cartouche-open", "ligature": "bracketleft"},
+    {"codepoint": "0xf1991", "name": "SP-cartouche-close", "ligature": "bracketright"},
     {"codepoint": "0xf199c", "name": "SP-middot"},
     {"codepoint": "0xf199d", "name": "SP-colon"},
     {"codepoint": "0x69", "name": "i"},
@@ -563,7 +563,12 @@
     {"codepoint": "0x61", "name": "a"},
     {"codepoint": "0x65", "name": "e"},
     {"codepoint": "0x6e", "name": "n"},
-    {"codepoint": "0x6f", "name": "o"}
+    {"codepoint": "0x6f", "name": "o"},
+    {"codepoint": "0x5b", "name": "bracketleft"},
+    {"codepoint": "0x5f", "name": "underscore"},
+    {"codepoint": "0x5d", "name": "bracketright"},
+    {"codepoint": "0x2e", "name": "period"},
+    {"codepoint": "0x3a", "name": "colon"}
   ],
   "note": "Remember, the last item shouldn't have a comma!"
 }

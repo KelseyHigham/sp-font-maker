@@ -214,7 +214,7 @@ class SHEETtoPNG:
         sorted_characters[121][0] = roi
         sorted_characters[121][1] = glyph_left
 
-        # add a, e, n, o
+        # add Latin a e n o
         a = sorted_characters[0]
         sorted_characters.append(a)
         e = sorted_characters[9]
@@ -223,6 +223,19 @@ class SHEETtoPNG:
         sorted_characters.append(n)
         o = sorted_characters[68]
         sorted_characters.append(o)
+
+        # add Latin [ _ ] . :
+        bracketleft  = sorted_characters[120]
+        sorted_characters.append(bracketleft)
+        underscore   = sorted_characters[180]
+        sorted_characters.append(underscore)
+        bracketright = sorted_characters[121]
+        sorted_characters.append(bracketright)
+        period = sorted_characters[122]
+        sorted_characters.append(period)
+        colon  = sorted_characters[123]
+        sorted_characters.append(colon)
+
 
 # END OF KELLY ZONE
 
