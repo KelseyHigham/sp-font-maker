@@ -12,6 +12,10 @@ class SVGtoTTF:
         Calls a subprocess to the run this script with Fontforge Python
         environment, because the FontForge libraries don't work in regular Python.
 
+        Then uses regular Python, and fontTools, to apply ligatures.
+
+        Then outputs a web page with examples of the font.
+
         Parameters
         ----------
         directory : str
@@ -147,11 +151,11 @@ kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi<b
 epiku jasima linluwi majuna meso oko su<br><br>
 
 ilo li pali e sitelen ni:<br>
-jan [sama olin namako jaki ala] li sitelen e pu kepeken wawa mute.<br>
-󱤑󱦐󱥖󱥅󱥸󱤐󱤂󱦑󱤧󱥠󱤉󱥕󱤙󱥵󱤼󱦜<br><br>
+　jan [sama olin namako jaki ala] li sitelen e pu kepeken wawa mute.<br>
+　󱤑󱦐󱥖󱥅󱥸󱤐󱤂󱦑󱤧󱥠󱤉󱥕󱤙󱥵󱤼󱦜<br><br>
 mi pona e pali kepeken sitelen _ kepeken sitelen 󱦒:<br>
-jan [sama_olin_namako_jaki_ala_] li sitelen e pu kepeken wawa mute.<br>
-󱤑󱦐󱥖󱦒󱥅󱦒󱥸󱦒󱤐󱦒󱤂󱦒󱦑󱤧󱥠󱤉󱥕󱤙󱥵󱤼󱦜<br><br>
+　jan [sama_olin_namako_jaki_ala_] li sitelen e pu kepeken wawa mute.<br>
+　󱤑󱦐󱥖󱦒󱥅󱦒󱥸󱦒󱤐󱦒󱤂󱦒󱦑󱤧󱥠󱤉󱥕󱤙󱥵󱤼󱦜<br><br>
 sina pona tan lukin a!
 """
         )
