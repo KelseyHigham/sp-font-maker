@@ -10,7 +10,7 @@ class SVGtoTTF:
         """Convert a directory with SVG images to TrueType Font.
 
         Calls a subprocess to the run this script with Fontforge Python
-        environment.
+        environment, because the FontForge libraries don't work in regular Python.
 
         Parameters
         ----------
@@ -40,6 +40,45 @@ class SVGtoTTF:
                 json.dumps(metadata),
             ]
         )
+
+# START OF KELLY ZONE
+
+        # Now the font has exported, presumably. 
+        # We're back to the `python` environment, not the `ffpython` one, so we can use libraries like fontTools, camelCase.
+        import fontTools  # camelCase!
+
+        # `directory` is the temp directory
+
+        self.metadata = json.loads(json.dumps(metadata)) or {}
+        filename = self.metadata.get("filename", None) or self.config["props"].get("filename", None)
+        if filename is None:
+            raise NameError("filename not found in config file.")
+
+        # fontTools: input font file
+        infile = str(directory + os.sep + (filename + "_without-ligatures.ttf"))
+        sys.stderr.write("\nGonna read %s\n" % infile)
+
+        # fontTools: output font file
+        outfile = str(outdir + os.sep + (filename + ".ttf" if not filename.endswith(".ttf") else filename))
+        while os.path.exists(outfile):
+            outfile = os.path.splitext(outfile)[0] + " (1).ttf"
+        sys.stderr.write("\nGonna write to %s\n" % outfile)
+
+        # fontTools: input ligatures file
+        ligatures_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "ligma.fea")
+
+        from fontTools import ttLib  # camelCase!
+        tt = ttLib.TTFont(infile)
+        print(tt['maxp'].numGlyphs)
+        print(tt['OS/2'].achVendID)
+        print(tt['head'].unitsPerEm)
+
+        from fontTools.feaLib import builder  # camelCase!
+        newfontmaybe = builder.addOpenTypeFeatures(tt, ligatures_file)
+        tt.save(outfile) # this step might be redundant?
+
+
+# END OF KELLY ZONE
 
     def set_properties(self):
         """Set metadata of the font from config."""
@@ -213,7 +252,7 @@ class SVGtoTTF:
             offsets = [0 if x is None else x for x in flatten_list(kerning_table)]
             self.font.addKerningClass("kern", "kern-1", rows, cols, offsets)
 
-    def generate_font_file(self, filename, outdir, config_file):
+    def generate_font_file(self, filename, outdir, config_file, directory):
         """Output TTF file.
 
         Additionally checks for multiple outputs and duplicates.
@@ -231,13 +270,14 @@ class SVGtoTTF:
             raise NameError("filename not found in config file.")
 
         outfile = str(
-            outdir
+            directory
             + os.sep
-            + (filename + ".ttf" if not filename.endswith(".ttf") else filename)
+            # + (filename + ".ttf" if not filename.endswith(".ttf") else filename)
+            + (filename + "_without-ligatures.ttf")
         )
 
-        while os.path.exists(outfile):
-            outfile = os.path.splitext(outfile)[0] + " (1).ttf"
+        # while os.path.exists(outfile):
+        #     outfile = os.path.splitext(outfile)[0] + " (1).ttf"
 
         sys.stderr.write("\nGenerating %s...\n" % outfile)
         self.font.generate(outfile)
@@ -249,16 +289,6 @@ class SVGtoTTF:
         except:
             import fontforge
             import psMat
-
-# START OF KELLY ZONE
-
-        # Now that FontForge is imported, thanks to surprisingly complicated incantations at the top of the file,
-        # import the .sfd and examine its lookup tables.
-
-        # structure code around glyph names, not codepoints
-        # also fix vertical centering, and add FontForge file (.sfd) export
-
-# END OF KELLY ZONE
 
         with open(config_file) as f:
             self.config = json.load(f)
@@ -280,7 +310,7 @@ class SVGtoTTF:
         filename = self.metadata.get("filename", None) or self.config["props"].get(
             "filename", None
         )
-        self.generate_font_file(str(filename), outdir, config_file)
+        self.generate_font_file(str(filename), outdir, config_file, directory)
 
 
 if __name__ == "__main__":

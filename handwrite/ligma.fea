@@ -1,0 +1,6 @@
+feature liga {
+  sub a k e s i by PU-akesi;
+  sub a l a s a by PU-alasa;
+  sub a l a by PU-ala;
+  sub a by PU-a;
+} liga;
