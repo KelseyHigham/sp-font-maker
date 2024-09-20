@@ -124,6 +124,24 @@ class SVGtoTTF:
         sys.stderr.write("\nGenerating %s...\n" % outfile)
         tt.save(outfile)
 
+        #        █  █   ▀               ▄
+        #       █   █  ▀█  ▄▀▀█   ▀▀▄  ▀█▀  █  █  █▄▀  ▄▀▀▄  ▄▀▀▄
+        #      █    █   █  █  █  ▄▀▀█   █   █  █  █    █▄▄█   ▀▄
+        #     █     █   █  ▀▄▄█  ▀▄▄█   ▀▄  ▀▄▄█  █    ▀▄▄   ▀▄▄▀
+        #    █              ▄▄▀
+
+
+
+
+
+
+
+         #              █
+         # █   █  ▄▀▀▄  █▀▀▄       █▀▀▄   ▀▀▄  ▄▀▀█  ▄▀▀▄
+         # █ █ █  █▄▄█  █  █       █  █  ▄▀▀█  █  █  █▄▄█
+         #  █ █   ▀▄▄   █▄▄▀       █▄▄▀  ▀▄▄█  ▀▄▄█  ▀▄▄
+         #                         █            ▄▄▀
+
         example_web_page = open(outdir + os.sep + family + ".html", "w", encoding="utf-8")
         example_web_page.write(
 """
@@ -133,7 +151,7 @@ class SVGtoTTF:
         src: url('""" + filename + """')
     }
     * {
-        font-family: '""" + family + """';
+        font-family: '""" + family + """', 'Chalkboard SE', 'Comic Sans MS', sans-serif;
         font-size: 48px;
         line-height: 1em;
     }
@@ -150,7 +168,7 @@ lili linja lipu loje lon luka lukin lupa ma mama mani meli mi mije moku moli mon
 mute nanpa nasa nasin nena ni nimi noka o olin ona open pakala pali palisa pan pana pi pilin pimeja<br>
 pini pipi poka poki pona pu sama seli selo seme sewi sijelo sike sin sina sinpin sitelen sona soweli suli<br>
 suno supa suwi tan taso tawa telo tenpo toki tomo tu unpa uta utala walo wan waso wawa weka wile<br>
-[].:ijklmpstuw<br>
+[].:ijklmpst,uw<br>
 kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi<br>
 epiku jasima linluwi majuna meso oko su<br><br>
 
@@ -167,17 +185,74 @@ mi pona e pali kepeken sitelen _, kepeken sitelen 󱦒:<br>
 
 sina pona tan lukin
 <p>License: ???</p>
+
+<span style="white-space: break-spaces">
+　󱥪󱤧󱤖
+　　　󱥧󱥺󱤫󱥮󱥍󱦗󱤑󱥳󱦘
+　　󱤧󱥠󱥜󱥦
+　　　󱤬󱤅󱥟
+　󱥆󱤧󱥷󱥩󱤰
+󱥨󱥆󱤧󱤈󱤬󱥛
+　　󱤧󱥐
+　　　󱤬󱤥
+　　󱤧󱥶
+󱥡󱤡
+　󱥴󱤊󱤔󱤊󱥑
+　󱤊󱤁󱤊󱥢󱤄󱤧󱤘󱥌󱥖
+󱥨󱥎󱥍󱦗󱤑󱥁󱦘󱤧󱥣󱤡
+　　　　　　　󱥪󱤮󱤧󱥝
+　　　　　　　　　󱤧󱥵
+　　　　　　　　　󱤧󱥘󱤉󱤌󱥒
+　　　　　　　　　　　󱤉󱥭󱤉󱥃󱤉󱥥󱤶
+　　　　　　　　　　　󱤉󱥋󱤉󱥓󱤛󱤉󱤸
+　　　　　　　　　　　󱤉󱤭󱤉󱤤󱤉󱥀
+　　　　　　　　　　　󱤉󱤠󱤉󱤩󱥚󱥹
+󱤣󱤦󱥁󱤧󱤨󱤉󱥗󱤏
+　　　󱤧󱤢󱤉󱤍󱥬
+　　　󱤧󱥇󱤉󱤆
+　　　󱤧󱤋󱤉󱤜󱤐　　　　　「　󱤀
+　　　　　󱤉󱤹󱥇　　　　　　󱤀󱦗　　　　　　󱦘　」
+
+󱤝󱥍󱦗󱤞󱤂󱦘󱤧󱥧󱥰
+　　　　󱤧󱤕󱥱󱤬󱥪
+　　　　󱤧󱤽󱤼
+　　　　󱤧󱥩󱤺
+　　　　󱤧󱥈󱤾󱤉󱥤󱥚
+󱥏󱤷󱤧󱤖󱥸󱤉󱤿󱥫　　　　　「󱤴󱥈」
+
+
+󱥔󱥄󱤙󱤃󱥙
+　󱤲󱤇󱥯
+󱤇󱥕󱤇󱥂󱤆󱤧󱥖󱤚
+　　　　　　󱥧󱤗󱥍󱦗󱤪󱤒󱤷󱦘
+「󱥞󱥷󱤂󱥁
+　󱥞󱥷󱤱󱤉󱤻
+　󱥞󱥷󱥅󱤉󱤳
+　　　　󱤉󱤵󱤉󱥾」　　　　󱥆󱤧󱤓󱤉󱤎󱥊
+　　　　　　　　　　　　　　　　　󱤉󱥟󱥭
+　　　　　　　　　　　　　　　󱤧󱥉󱤉󱤯
+　　　　　　　　　　　　　　󱥪󱤧󱤖󱥶
+　　　　　　　　　　　　　　󱤣󱤧󱤖󱥲
+　　　　　　　　　　　　　　󱤑󱤧󱥩󱤯
+　　　　　　　　　　　　　　　󱤧󱥩󱤿󱥇
+　　　　　　　　　　　　　　　󱤧󱥩󱤟
+　　　　　　　　　　　　　　󱥔󱤖󱤧󱥷󱤉󱥵
+　　　　　　　　　　　　　󱥨󱤣󱥶󱤧󱤖󱤘󱤉󱥁
+</span>
 """
         )
         example_web_page.close()
 
 
+     #     █              █
+     #    █  █   █  ▄▀▀▄  █▀▀▄       █▀▀▄   ▀▀▄  ▄▀▀█  ▄▀▀▄
+     #   █   █ █ █  █▄▄█  █  █       █  █  ▄▀▀█  █  █  █▄▄█
+     #  █     █ █   ▀▄▄   █▄▄▀       █▄▄▀  ▀▄▄█  ▀▄▄█  ▀▄▄
+     # █                             █            ▄▄▀
 
-        #        █  █   ▀               ▄
-        #       █   █  ▀█  ▄▀▀█   ▀▀▄  ▀█▀  █  █  █▄▀  ▄▀▀▄  ▄▀▀▄
-        #      █    █   █  █  █  ▄▀▀█   █   █  █  █    █▄▄█   ▀▄
-        #     █     █   █  ▀▄▄█  ▀▄▄█   ▀▄  ▀▄▄█  █    ▀▄▄   ▀▄▄▀
-        #    █              ▄▄▀
+
+
+
 
 
 
