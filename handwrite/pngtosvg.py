@@ -89,8 +89,11 @@ class PNGtoSVG:
     def trim(self, im_path):
         im = Image.open(im_path)
         bg = Image.new(im.mode, im.size, im.getpixel((0, 0)))
+        bg.save(im_path + "_bg.bmp")
         diff = ImageChops.difference(im, bg)
+        diff.save(im_path + "_diff.bmp")
         bbox = list(diff.getbbox())
+        print(im_path, bbox)
         bbox[0] -= 1
         bbox[1] -= 1
         bbox[2] += 1

@@ -164,7 +164,8 @@ class SHEETtoPNG:
         # with 2 hor padding and 1 ver padding on each side.
         # There are 20 glyphs per row. Each glyph scan area is 8x10.
         # The visible gray squares are 7x7, to help with human and scanning errors.
-        # (The unit here is 0.125cm on the printed page, or 0.25cm in the original huge file.)
+        # (The unit here is roughly 0.125cm on the printed page,
+        # or 0.25cm in the original huge file.)
         glyph_w, glyph_h = bw*8/164, bh*10/12
         left_padding, top_padding = bw*2/164, bh*1/12
 
@@ -275,3 +276,47 @@ class SHEETtoPNG:
                             os.path.join(character, glyphs[k]['name'] + ".png"),
                             images[0],
                         )
+
+        # Trim cartouche characters
+        self.pad_right(characters_dir, "SP-cartouche-open")
+        self.pad_right(characters_dir, "bracketleft")
+        
+        self.pad_left (characters_dir, "SP-cartouche-close")
+        self.pad_left (characters_dir, "bracketright")
+
+        self.pad_right(characters_dir, "SP-cartouche-middle")
+        self.pad_left (characters_dir, "SP-cartouche-middle")
+        self.pad_right(characters_dir, "underscore")
+        self.pad_left (characters_dir, "underscore")
+
+    def pad_right(self, characters_dir, char_name):
+        from PIL import Image, ImageDraw
+        char_img = Image.open(characters_dir + char_name + "/" + char_name + ".png")
+        char_img = char_img.resize((int(char_img.height * 0.8), char_img.height))
+        draw = ImageDraw.Draw(char_img)
+        bbox = char_img.getbbox()
+        width = char_img.width
+        draw.rectangle(
+            (
+                (bbox[2] - width//24, bbox[1]), 
+                (bbox[2], bbox[3])
+            ),
+            fill="white"
+        )
+        char_img.save(characters_dir + char_name + "/" + char_name + ".png")
+
+    def pad_left(self, characters_dir, char_name):
+        from PIL import Image, ImageDraw
+        char_img = Image.open(characters_dir + char_name + "/" + char_name + ".png")
+        char_img = char_img.resize((int(char_img.height * 0.8), char_img.height))
+        draw = ImageDraw.Draw(char_img)
+        bbox = char_img.getbbox()
+        width = char_img.width
+        draw.rectangle(
+            (
+                (bbox[0], bbox[1]), 
+                (bbox[0] + width//24, bbox[3])
+            ),
+            fill="white"
+        )
+        char_img.save(characters_dir + char_name + "/" + char_name + ".png")

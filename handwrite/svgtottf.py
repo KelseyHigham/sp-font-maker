@@ -105,6 +105,8 @@ class SVGtoTTF:
                         len(k['ligature'].split(' ')) + 1
                     ))
 
+        list_of_ligs.append(("  sub comma space by zerowidth;", 2))
+
         # sort them by number of tokens
         list_of_ligs.sort(reverse=True, key=lambda x: x[1])
 
@@ -133,13 +135,15 @@ class SVGtoTTF:
     * {
         font-family: '""" + family + """';
         font-size: 48px;
+        line-height: 1em;
     }
-    h1 {
+    h1, p {
         font-family: "Chalkboard SE", "Comic Sans MS", sans-serif;
     }
 </style>
-<h1>""" + family + " tan " + "mama ona" + """</h1>
+<h1>""" + family + ", tan " + "mama ona" + """</h1>
 nasin sitelen sin a!<br><br>
+
 a akesi ala alasa ale anpa ante anu awen e en esun ijo ike ilo insa jaki jan jelo jo<br>
 kala kalama kama kasi ken kepeken kili kiwen ko kon kule kulupu kute la lape laso lawa len lete li<br>
 lili linja lipu loje lon luka lukin lupa ma mama mani meli mi mije moku moli monsi mu mun musi<br>
@@ -153,10 +157,16 @@ epiku jasima linluwi majuna meso oko su<br><br>
 ilo li pali e sitelen ni:<br>
 　jan [sama olin namako jaki ala] li sitelen e pu kepeken wawa mute.<br>
 　󱤑󱦐󱥖󱥅󱥸󱤐󱤂󱦑󱤧󱥠󱤉󱥕󱤙󱥵󱤼󱦜<br><br>
-mi pona e pali kepeken sitelen _ kepeken sitelen 󱦒:<br>
+
+mi pona e pali kepeken sitelen _, kepeken sitelen 󱦒:<br>
 　jan [sama_olin_namako_jaki_ala_] li sitelen e pu kepeken wawa mute.<br>
 　󱤑󱦐󱥖󱦒󱥅󱦒󱥸󱦒󱤐󱦒󱤂󱦒󱦑󱤧󱥠󱤉󱥕󱤙󱥵󱤼󱦜<br><br>
-sina pona tan lukin a!
+[<span style="color: red; opacity: .5;">]</span>[.]<br>
+[<span style="color: red; opacity: .5;">._</span>][.._.]<br>
+[<span style="color: red; opacity: .5;">._</span><span style="color: yellow; opacity: .5;">._</span><span style="color: blue; opacity: .5;">._</span>]<br>
+
+sina pona tan lukin
+<p>License: ???</p>
 """
         )
         example_web_page.close()
@@ -307,16 +317,19 @@ sina pona tan lukin a!
         self.font[0x5f].width = 0
         self.font[0x5f].transform(psMat.translate(-700, 0))
 
-        bang = self.font.createMappedChar(ord("!"))
+        # later i should move these into default.json
+        bang = self.font.createChar(ord("!"), "exclamation")
         bang.width = 0
-        space = self.font.createMappedChar(ord(" "))
-        space.width = 350
-        comma = self.font.createMappedChar(ord(","))
+        space = self.font.createChar(ord(" "), "space")
+        space.width = 700
+        comma = self.font.createChar(ord(","), "comma")
         comma.width = 0
-        question = self.font.createMappedChar(ord("?"))
+        question = self.font.createChar(ord("?"), "question")
         question.width = 0
-        ideographic_space = self.font.createMappedChar(ord("　"))
+        ideographic_space = self.font.createChar(ord("　"))
         ideographic_space.width = 700
+        zero_width = self.font.createChar(-1, "zerowidth")
+        zero_width.width = 0
 
     def set_bearings(self):
         """Add left and right bearing
