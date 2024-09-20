@@ -45,15 +45,10 @@ class SVGtoTTF:
             ]
         )
 
+        self.add_ligatures(directory, outdir, config, metadata)
 
 
-        #    █   ▀               ▄
-        #    █  ▀█  ▄▀▀█   ▀▀▄  ▀█▀  █  █  █▄▀  ▄▀▀▄  ▄▀▀▄
-        #    █   █  █  █  ▄▀▀█   █   █  █  █    █▄▄█   ▀▄
-        #    █   █  ▀▄▄█  ▀▄▄█   ▀▄  ▀▄▄█  █    ▀▄▄   ▀▄▄▀
-        #            ▄▄▀
-        # (someone who knows Python, please put this in its own function)
-
+    def add_ligatures(self, directory, outdir, config, metadata=None):
         # Now the font has exported, presumably. 
         # We're back to the `python` environment, not the `ffpython` one, so we can use libraries like fontTools, camelCase.
         import fontTools  # camelCase!
@@ -81,12 +76,7 @@ class SVGtoTTF:
         while os.path.exists(outfile):
             filename = os.path.splitext(filename)[0] + " (1).ttf"
             outfile = outdir + os.sep + filename
-
-        #                     ▄         █ ▀
-        #    ▄▀▀ █▄▀ ▄▀▄ ▄▀█ ▀█▀ ▄▀▄    █ █ ▄▀█ ▄▀▀
-        #    ▀▄▄ █   ▀█▄ ▀▄█  ▀▄ ▀█▄    █ █ ▀▄█ ▄█▀
-        #                                   ▄▄▀
-
+            
         ligatures_string = "feature liga {\n"
         list_of_ligs = []
 
@@ -124,24 +114,9 @@ class SVGtoTTF:
         sys.stderr.write("\nGenerating %s...\n" % outfile)
         tt.save(outfile)
 
-        #        █  █   ▀               ▄
-        #       █   █  ▀█  ▄▀▀█   ▀▀▄  ▀█▀  █  █  █▄▀  ▄▀▀▄  ▄▀▀▄
-        #      █    █   █  █  █  ▄▀▀█   █   █  █  █    █▄▄█   ▀▄
-        #     █     █   █  ▀▄▄█  ▀▄▄█   ▀▄  ▀▄▄█  █    ▀▄▄   ▀▄▄▀
-        #    █              ▄▄▀
+        self.generate_web_page(outdir, filename, family)
 
-
-
-
-
-
-
-         #              █
-         # █   █  ▄▀▀▄  █▀▀▄       █▀▀▄   ▀▀▄  ▄▀▀█  ▄▀▀▄
-         # █ █ █  █▄▄█  █  █       █  █  ▄▀▀█  █  █  █▄▄█
-         #  █ █   ▀▄▄   █▄▄▀       █▄▄▀  ▀▄▄█  ▀▄▄█  ▀▄▄
-         #                         █            ▄▄▀
-
+    def generate_web_page(self, outdir, filename, family):
         example_web_page = open(outdir + os.sep + family + ".html", "w", encoding="utf-8")
         example_web_page.write(
 """
@@ -242,19 +217,6 @@ sina pona tan lukin
 """
         )
         example_web_page.close()
-
-
-     #     █              █
-     #    █  █   █  ▄▀▀▄  █▀▀▄       █▀▀▄   ▀▀▄  ▄▀▀█  ▄▀▀▄
-     #   █   █ █ █  █▄▄█  █  █       █  █  ▄▀▀█  █  █  █▄▄█
-     #  █     █ █   ▀▄▄   █▄▄▀       █▄▄▀  ▀▄▄█  ▀▄▄█  ▀▄▄
-     # █                             █            ▄▄▀
-
-
-
-
-
-
 
     def set_properties(self):
         """Set metadata of the font from config."""
@@ -393,18 +355,36 @@ sina pona tan lukin
         self.font[0x5f].transform(psMat.translate(-700, 0))
 
         # later i should move these into default.json
-        bang = self.font.createChar(ord("!"), "exclamation")
-        bang.width = 0
+        # spaces
         space = self.font.createChar(ord(" "), "space")
         space.width = 700
+        ideographic_space = self.font.createChar(ord("　"))
+        ideographic_space.width = 700
+        # zero-width
+        bang = self.font.createChar(ord("!"), "exclamation")
+        bang.width = 0
         comma = self.font.createChar(ord(","), "comma")
         comma.width = 0
         question = self.font.createChar(ord("?"), "question")
         question.width = 0
-        ideographic_space = self.font.createChar(ord("　"))
-        ideographic_space.width = 700
         zero_width = self.font.createChar(-1, "zerowidth")
         zero_width.width = 0
+        # todo: add "start of long pi" as an additional codepoint for the "pi" glyph
+        # todo: then add "end of long pi" here
+        sp_stacking_joiner = self.font.createChar(0xf1995)
+        sp_stacking_joiner.width = 0
+        sp_scaling_joiner = self.font.createChar(0xf1996)
+        sp_scaling_joiner.width = 0
+        sp_start_of_long_glyph = self.font.createChar(0xf1997)
+        sp_start_of_long_glyph.width = 0
+        sp_end_of_long_glyph = self.font.createChar(0xf1998)
+        sp_end_of_long_glyph.width = 0
+        sp_combining_long_glyph_extension = self.font.createChar(0xf1999)
+        sp_combining_long_glyph_extension.width = 0
+        sp_start_of_reverse_long_glyph = self.font.createChar(0xf199a)
+        sp_start_of_reverse_long_glyph.width = 0
+        sp_end_of_reverse_long_glyph = self.font.createChar(0xf199b)
+        sp_end_of_reverse_long_glyph.width = 0
 
     def set_bearings(self):
         """Add left and right bearing
