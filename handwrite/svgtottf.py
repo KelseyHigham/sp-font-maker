@@ -76,7 +76,7 @@ class SVGtoTTF:
         while os.path.exists(outfile):
             filename = os.path.splitext(filename)[0] + " (1).ttf"
             outfile = outdir + os.sep + filename
-            
+
         ligatures_string = "feature liga {\n"
         list_of_ligs = []
 
@@ -162,6 +162,9 @@ sina pona tan lukin
 <p>License: ???</p>
 
 <span style="white-space: break-spaces">
+telo oko li ken ante e pilin
+tan jan [kiwen en][tomo awen mi insa]:
+
 　󱥪󱤧󱤖
 　　　󱥧󱥺󱤫󱥮󱥍󱦗󱤑󱥳󱦘
 　　󱤧󱥠󱥜󱥦
