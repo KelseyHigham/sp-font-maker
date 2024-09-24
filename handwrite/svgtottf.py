@@ -158,7 +158,7 @@ lili linja lipu loje lon luka lukin lupa ma mama mani meli mi mije moku moli mon
 mute nanpa nasa nasin nena ni nimi noka o olin ona open pakala pali palisa pan pana pi pilin pimeja<br>
 pini pipi poka poki pona pu sama seli selo seme sewi sijelo sike sin sina sinpin sitelen sona soweli suli<br>
 suno supa suwi tan taso tawa telo tenpo toki tomo tu unpa uta utala walo wan waso wawa weka wile<br>
-[].:ijklmpst,uw<br>
+[].:ijklmpst,uwte to<br>
 kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi<br>
 epiku jasima linluwi majuna meso oko su<br><br>
 
@@ -178,6 +178,8 @@ sina pona tan lukin
 <p>License: <a href='""" + licenseurl + """'>""" + license + """</a></p>
 <span class="tp">
 <span style="white-space: break-spaces">
+mi pana e <a href="https://example.com/">nasin tawa lipu ante</a> e <a href="https://example.com">nasin tawa lipu [en sama a n pona o]</a> e <a href="https://example.com">sitelen nasa i j k</a>
+
 telo oko li ken ante e pilin
 tan jan [kiwen en][tomo awen mi insa]:
 
