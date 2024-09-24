@@ -2,6 +2,7 @@ import sys
 import os
 import json
 import uuid
+import datetime
 
 
 class SVGtoTTF:
@@ -66,6 +67,17 @@ class SVGtoTTF:
 
         family = (self.metadata.get("family", None) or filename)
 
+        designer = self.metadata.get("designer", None) or self.config["props"].get("designer", "jan pi toki pona")
+
+        license = self.metadata.get("license", None) or self.config["sfnt_names"].get("License", "All rights reserved")
+        licenseurl = self.metadata.get("licenseurl", None) or self.config["sfnt_names"].get("License URL", "")
+        if license == "ofl":
+            license = "SIL Open Font License, Version 1.1"
+            licenseurl = "https://openfontlicense.org"
+        if license == "cc0":
+            license = "CC0 1.0 Universal"
+            licenseurl = "https://creativecommons.org/publicdomain/zero/1.0/"
+
         # fontTools: input font file
         infile = str(directory + os.sep + (filename + "_without-ligatures.ttf"))
         # sys.stderr.write("\nAdding ligatures to %s\n" % infile)
@@ -114,9 +126,9 @@ class SVGtoTTF:
         sys.stderr.write("\nGenerating %s...\n" % outfile)
         tt.save(outfile)
 
-        self.generate_web_page(outdir, filename, family)
+        self.generate_web_page(outdir, filename, family, designer, license, licenseurl)
 
-    def generate_web_page(self, outdir, filename, family):
+    def generate_web_page(self, outdir, filename, family, designer, license, licenseurl):
         example_web_page = open(outdir + os.sep + family + ".html", "w", encoding="utf-8")
         example_web_page.write(
 """
@@ -126,15 +138,18 @@ class SVGtoTTF:
         src: url('""" + filename + """')
     }
     * {
-        font-family: '""" + family + """', 'Chalkboard SE', 'Comic Sans MS', sans-serif;
         font-size: 48px;
         line-height: 1em;
+    }
+    .tp {
+        font-family: '""" + family + """', 'Chalkboard SE', 'Comic Sans MS', sans-serif;
     }
     h1, p {
         font-family: "Chalkboard SE", "Comic Sans MS", sans-serif;
     }
 </style>
-<h1>""" + family + ", tan " + "mama ona" + """</h1>
+<h1>""" + family + ", tan " + designer + """</h1>
+<span class="tp">
 nasin sitelen sin a!<br><br>
 
 a akesi ala alasa ale anpa ante anu awen e en esun ijo ike ilo insa jaki jan jelo jo<br>
@@ -159,8 +174,9 @@ mi pona e pali kepeken sitelen _, kepeken sitelen 󱦒:<br>
 [<span style="color: red; opacity: .5;">._</span><span style="color: yellow; opacity: .5;">._</span><span style="color: blue; opacity: .5;">._</span>]<br>
 
 sina pona tan lukin
-<p>License: ???</p>
-
+</span>
+<p>License: <a href='""" + licenseurl + """'>""" + license + """</a></p>
+<span class="tp">
 <span style="white-space: break-spaces">
 telo oko li ken ante e pilin
 tan jan [kiwen en][tomo awen mi insa]:
@@ -216,7 +232,7 @@ tan jan [kiwen en][tomo awen mi insa]:
 　　　　　　　　　　　　　　　󱤧󱥩󱤟
 　　　　　　　　　　　　　　󱥔󱤖󱤧󱥷󱤉󱥵
 　　　　　　　　　　　　　󱥨󱤣󱥶󱤧󱤖󱤘󱤉󱥁
-</span>
+</span></span>
 """
         )
         example_web_page.close()
@@ -224,12 +240,16 @@ tan jan [kiwen en][tomo awen mi insa]:
     def set_properties(self):
         """Set metadata of the font from config."""
         props = self.config["props"]
+        sfnt_names = self.config["sfnt_names"]
         lang = props.get("lang", "English (US)")
         fontname = self.metadata.get("filename", None) or props.get(
             "filename", "Example"
         )
-        family = self.metadata.get("family", None) or fontname
-        style = self.metadata.get("style", None) or props.get("style", "Regular")
+        family = self.metadata.get("family", None) or sfnt_names.get("Family", "MyFont") or fontname
+        style = props.get("style", "Regular")
+        designer = self.metadata.get("designer", None) or props.get("designer", "jan pi toki pona")
+        license = self.metadata.get("license", None) or sfnt_names.get("License", "All rights reserved")
+        licenseurl = self.metadata.get("licenseurl", None) or sfnt_names.get("License URL", "")
 
         self.font.familyname = fontname
         self.font.fontname = fontname + "-" + style
@@ -242,16 +262,30 @@ tan jan [kiwen en][tomo awen mi insa]:
                     v = tuple(v)
                 setattr(self.font, k, v)
 
+        # idk where the list of string IDs is actually documented
+        # if i can't find a string ID, i can use a numeric ID instead:
+        # https://learn.microsoft.com/en-us/typography/opentype/otspec140/name#name-ids
         if self.config.get("sfnt_names", None):
             self.config["sfnt_names"]["Family"] = family
             self.config["sfnt_names"]["Fullname"] = family + " " + style
-            self.config["sfnt_names"]["PostScriptName"] = family + "-" + style
+            self.config["sfnt_names"]["PostScriptName"] = family.replace(" ", "-") + "-" + style
             self.config["sfnt_names"]["SubFamily"] = style
+            self.config["sfnt_names"]["Designer"] = designer
+            self.config["sfnt_names"]["Copyright"] = "(C) Copyright " + designer + ", " + str(datetime.datetime.now().year)
+            self.config["sfnt_names"]["License"] = license
+            self.config["sfnt_names"]["License URL"] = licenseurl
+            if license == "ofl":
+                self.config["sfnt_names"]["License"] = "SIL Open Font License, Version 1.1"
+                self.config["sfnt_names"]["License URL"] = "https://openfontlicense.org"
+            if license == "cc0":
+                self.config["sfnt_names"]["License"] = "CC0 1.0 Universal"
+                self.config["sfnt_names"]["License URL"] = "https://creativecommons.org/publicdomain/zero/1.0/"
+
 
         self.config["sfnt_names"]["UniqueID"] = family + " " + str(uuid.uuid4())
 
         for k, v in self.config.get("sfnt_names", {}).items():
-            self.font.appendSFNTName(str(lang), str(k), str(v))
+            self.font.appendSFNTName(str(lang), k, v)
 
     def add_glyphs(self, directory):
         """Read and add SVG images as glyphs to the font.

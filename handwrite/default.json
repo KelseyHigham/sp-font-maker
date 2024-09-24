@@ -7,16 +7,18 @@
     "encoding": "UnicodeFull",
     "lang": "English (US)",
     "filename": "MyFont",
-    "style": "Regular"
+    "style": "Regular",
+    "designer": "me"
   },
   "sfnt_names": {
-    "Copyright": "tan jan pi toki pona",
+    "Copyright": "(C) Copyright me, this year",
     "Family": "MyFont",
-    "SubFamily": "Regular",
     "UniqueID": "MyFont 2021-02-04",
     "Fullname": "MyFont Regular",
     "Version": "Version 1.0",
-    "PostScriptName": "MyFont-Regular"
+    "PostScriptName": "MyFont-Regular",
+    "License": "All rights reserved",
+    "License URL": ""
   },
   "glyphs": [
     989440,

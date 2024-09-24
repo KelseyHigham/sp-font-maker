@@ -42,17 +42,19 @@ def main():
     parser.add_argument("input_path", help="Path to sample sheet")
     parser.add_argument("output_directory", help="Directory Path to save font output")
     parser.add_argument(
-        "--directory",
-        help="Generate additional files to this path (Temp by default)",
+        "--debug-directory",
+        help="Generate in-progress PNGs, BMPs, SVGs, SFDs, and TTFs to this path (Temp by default)",
         default=None,
     )
-    parser.add_argument("--config", help="Use custom configuration file", default=None)
-    parser.add_argument("--filename", help="Font File name", default=None)
-    parser.add_argument("--family", help="Font Family name", default=None)
-    parser.add_argument("--style", help="Font Style name", default=None)
+    parser.add_argument("--filename", help="Font File name (\"MyFont\" by default)", default=None)
+    parser.add_argument("--family", help="Font Family name (filename by default)", default=None)
+    parser.add_argument("--designer", help="Font Designer name (\"me\" by default)", default=None)
+    parser.add_argument("--license", help="Font License. (`--license ofl` and `--license cc0` will populate License and LicenseURL appropriately. OFL recommended. \"All rights reserved\" by default, so nobody can legally use your font.)", default=None)
+    parser.add_argument("--license-url", help="Font License URL (\"\" by default)", default=None)
+
 
     args = parser.parse_args()
-    metadata = {"filename": args.filename, "family": args.family, "style": args.style}
+    metadata = {"filename": args.filename, "family": args.family, "designer": args.designer, "license": args.license, "licenseurl": args.license_url}
     converters(
-        args.input_path, args.output_directory, args.directory, args.config, metadata
-    )
+        args.input_path, args.output_directory, args.debug_directory, None, metadata
+    ) 
