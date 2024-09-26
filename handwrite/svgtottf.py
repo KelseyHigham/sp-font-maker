@@ -91,6 +91,7 @@ class SVGtoTTF:
 
         ligatures_string = "feature liga {\n"
         list_of_ligs = []
+        list_of_cartoucheable_glyphs = []
 
         # create ligature lines
         with open(config) as f:
@@ -106,6 +107,7 @@ class SVGtoTTF:
                         "  sub " + k['ligature'] + " space by " + k['name'] + ";", 
                         len(k['ligature'].split(' ')) + 1
                     ))
+                    list_of_cartoucheable_glyphs.append(k['name'])
 
         list_of_ligs.append(("  sub comma space by zerowidth;", 2))
 
@@ -117,7 +119,31 @@ class SVGtoTTF:
             ligatures_string += line[0] + "\n"
 
         ligatures_string += "} liga;"
-        # print(ligatures_string)
+        ligatures_string += """
+
+@cartoucheableGlyph = [
+  a e i j k l m n o p s t u w
+  middotTok colonTok
+  period colon space exclamation question underscore
+"""
+        for word in list_of_cartoucheable_glyphs:
+            if (word != "cartoucheStartTok" and
+                word != "cartoucheEndTok"):
+                ligatures_string += "  " + word + "\n"
+
+        ligatures_string += """
+];
+
+lookup add_cartouche_middle {
+  sub   @cartoucheableGlyph   by   @cartoucheableGlyph cartoucheMiddleTok;
+} add_cartouche_middle;
+
+feature ccmp {
+  sub   cartoucheStartTok  [@cartoucheableGlyph]'   lookup add_cartouche_middle;
+  sub   cartoucheMiddleTok [@cartoucheableGlyph]'   lookup add_cartouche_middle;
+} ccmp;
+"""
+        print(ligatures_string)
 
         from fontTools import ttLib  # camelCase!
         tt = ttLib.TTFont(infile)
@@ -150,30 +176,20 @@ class SVGtoTTF:
 </style>
 <h1>""" + family + ", tan " + designer + """</h1>
 <span class="tp">
-nasin sitelen sin a!<br><br>
-
 a akesi ala alasa ale anpa ante anu awen e en esun ijo ike ilo insa jaki jan jelo jo<br>
 kala kalama kama kasi ken kepeken kili kiwen ko kon kule kulupu kute la lape laso lawa len lete li<br>
 lili linja lipu loje lon luka lukin lupa ma mama mani meli mi mije moku moli monsi mu mun musi<br>
 mute nanpa nasa nasin nena ni nimi noka o olin ona open pakala pali palisa pan pana pi pilin pimeja<br>
 pini pipi poka poki pona pu sama seli selo seme sewi sijelo sike sin sina sinpin sitelen sona soweli suli<br>
 suno supa suwi tan taso tawa telo tenpo toki tomo tu unpa uta utala walo wan waso wawa weka wile<br>
-[].:ijklmpst,uwte to<br>
+[].:ijklmpst,uw,te to<br>
 kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi<br>
 epiku jasima linluwi majuna meso oko su<br><br>
 
-ilo li pali e sitelen ni:<br>
-　jan [sama olin namako jaki ala] li sitelen e pu kepeken wawa mute.<br>
-　󱤑󱦐󱥖󱥅󱥸󱤐󱤂󱦑󱤧󱥠󱤉󱥕󱤙󱥵󱤼󱦜<br><br>
-
-mi pona e pali kepeken sitelen _, kepeken sitelen 󱦒:<br>
-　jan [sama_olin_namako_jaki_ala_] li sitelen e pu kepeken wawa mute.<br>
-　󱤑󱦐󱥖󱦒󱥅󱦒󱥸󱦒󱤐󱦒󱤂󱦒󱦑󱤧󱥠󱤉󱥕󱤙󱥵󱤼󱦜<br><br>
+jan [sama olin namako jaki ala] li sitelen e pu kepeken wawa mute.<br>
 [<span style="color: red; opacity: .5;">]</span>[.]<br>
 [<span style="color: red; opacity: .5;">._</span>][.._.]<br>
 [<span style="color: red; opacity: .5;">._</span><span style="color: yellow; opacity: .5;">._</span><span style="color: blue; opacity: .5;">._</span>]<br>
-
-sina pona tan lukin
 </span>
 <p>License: <a href='""" + licenseurl + """'>""" + license + """</a></p>
 <span class="tp">
@@ -371,7 +387,7 @@ tan jan [kiwen en][tomo awen mi insa]:
         # ...though the vertical situation might be more complicated?
         for glyph in self.font:
             self.font[glyph].width = 700
-            self.font[glyph].vwidth = 900  # What does this actually do? Does ascent/descent control everything?
+            self.font[glyph].vwidth = 900  # used in vertical writing. might need to revise
 
             # # Test centering
             # g = self.font[glyph]

@@ -278,14 +278,14 @@ class SHEETtoPNG:
                         )
 
         # Trim cartouche characters
-        self.pad_right(characters_dir, "S.cartouche-open")
+        self.pad_right(characters_dir, "cartoucheopenTok")
         self.pad_right(characters_dir, "bracketleft")
         
-        self.pad_left (characters_dir, "S.cartouche-close")
+        self.pad_left (characters_dir, "cartouchecloseTok")
         self.pad_left (characters_dir, "bracketright")
 
-        self.pad_right(characters_dir, "S.cartouche-middle")
-        self.pad_left (characters_dir, "S.cartouche-middle")
+        self.pad_right(characters_dir, "cartouchemiddleTok")
+        self.pad_left (characters_dir, "cartouchemiddleTok")
         self.pad_right(characters_dir, "underscore")
         self.pad_left (characters_dir, "underscore")
 
