@@ -79,7 +79,7 @@ class SVGtoTTF:
             licenseurl = "https://creativecommons.org/publicdomain/zero/1.0/"
 
         # fontTools: input font file
-        infile = str(directory + os.sep + (filename + "_without-ligatures.ttf"))
+        infile = str(directory + os.sep + (filename + " without ligatures.ttf"))
         # sys.stderr.write("\nAdding ligatures to %s\n" % infile)
 
         # fontTools: output font file
@@ -131,8 +131,7 @@ class SVGtoTTF:
                 word != "cartoucheEndTok"):
                 ligatures_string += "  " + word + "\n"
 
-        ligatures_string += """
-];
+        ligatures_string += """];
 
 lookup add_cartouche_middle {
   sub   @cartoucheableGlyph   by   @cartoucheableGlyph cartoucheMiddleTok;
@@ -143,7 +142,11 @@ feature ccmp {
   sub   cartoucheMiddleTok [@cartoucheableGlyph]'   lookup add_cartouche_middle;
 } ccmp;
 """
-        print(ligatures_string)
+        # print(ligatures_string)
+        feature_file = open(directory + os.sep + family + ".fea", "w", encoding="utf-8")
+        feature_file.write(ligatures_string)
+        feature_file.close()
+
 
         from fontTools import ttLib  # camelCase!
         tt = ttLib.TTFont(infile)
@@ -187,9 +190,6 @@ kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi<b
 epiku jasima linluwi majuna meso oko su<br><br>
 
 jan [sama olin namako jaki ala] li sitelen e pu kepeken wawa mute.<br>
-[<span style="color: red; opacity: .5;">]</span>[.]<br>
-[<span style="color: red; opacity: .5;">._</span>][.._.]<br>
-[<span style="color: red; opacity: .5;">._</span><span style="color: yellow; opacity: .5;">._</span><span style="color: blue; opacity: .5;">._</span>]<br>
 </span>
 <p>License: <a href='""" + licenseurl + """'>""" + license + """</a></p>
 <span class="tp">
@@ -263,7 +263,7 @@ tan jan [kiwen en][tomo awen mi insa]:
         fontname = self.metadata.get("filename", None) or props.get(
             "filename", "Example"
         )
-        family = self.metadata.get("family", None) or sfnt_names.get("Family", "MyFont") or fontname
+        family = self.metadata.get("family", None) or fontname
         style = props.get("style", "Regular")
         designer = self.metadata.get("designer", None) or props.get("designer", "jan pi toki pona")
         license = self.metadata.get("license", None) or sfnt_names.get("License", "All rights reserved")
@@ -502,7 +502,7 @@ tan jan [kiwen en][tomo awen mi insa]:
             directory
             + os.sep
             # + (filename + ".ttf" if not filename.endswith(".ttf") else filename)
-            + (filename + "_without-ligatures.ttf")
+            + (filename + " without ligatures.ttf")
         )
 
         # while os.path.exists(outfile):
@@ -511,7 +511,7 @@ tan jan [kiwen en][tomo awen mi insa]:
         # Generate font, but without ligatures yet, to temporary directory
         # sys.stderr.write("\nCreating %s\n" % outfile)
         self.font.generate(outfile)
-        self.font.save(outfile + ".sfd")
+        self.font.save(outfile[0:-4] + ".sfd")
 
     def convert_main(self, config_file, directory, outdir, metadata):
         try:

@@ -49,7 +49,7 @@ def main():
     parser.add_argument("--filename", help="Font File name (\"MyFont\" by default)", default=None)
     parser.add_argument("--family", help="Font Family name (filename by default)", default=None)
     parser.add_argument("--designer", help="Font Designer name (\"me\" by default)", default=None)
-    parser.add_argument("--license", help="Font License. (`--license ofl` and `--license cc0` will populate License and LicenseURL appropriately. OFL recommended. \"All rights reserved\" by default, so nobody can legally use your font.)", default=None)
+    parser.add_argument("--license", help="Font License. (`--license ofl` and `--license cc0` will populate License and LicenseURL appropriately. \"All rights reserved\" by default.)", default=None)
     parser.add_argument("--license-url", help="Font License URL (\"\" by default)", default=None)
 
 

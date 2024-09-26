@@ -215,7 +215,7 @@ class SHEETtoPNG:
         sorted_characters[121][0] = roi
         sorted_characters[121][1] = glyph_left
 
-        # add Latin a e n o
+        # add Latin a e n o, necessary for ligatures
         a = sorted_characters[0]
         sorted_characters.append(a)
         e = sorted_characters[9]
@@ -225,7 +225,7 @@ class SHEETtoPNG:
         o = sorted_characters[68]
         sorted_characters.append(o)
 
-        # add Latin [ _ ] . :
+        # add Latin [ _ ] . :, necessary for ligatures
         bracketleft  = sorted_characters[120]
         sorted_characters.append(bracketleft)
         underscore   = sorted_characters[180]
@@ -278,21 +278,22 @@ class SHEETtoPNG:
                         )
 
         # Trim cartouche characters
-        self.pad_right(characters_dir, "cartoucheopenTok")
+        self.pad_right(characters_dir, "cartoucheStartTok")
         self.pad_right(characters_dir, "bracketleft")
         
-        self.pad_left (characters_dir, "cartouchecloseTok")
+        self.pad_left (characters_dir, "cartoucheEndTok")
         self.pad_left (characters_dir, "bracketright")
 
-        self.pad_right(characters_dir, "cartouchemiddleTok")
-        self.pad_left (characters_dir, "cartouchemiddleTok")
-        self.pad_right(characters_dir, "underscore")
-        self.pad_left (characters_dir, "underscore")
+        self.pad_right(characters_dir, "cartoucheMiddleTok", True)
+        self.pad_left (characters_dir, "cartoucheMiddleTok", True)
+        self.pad_right(characters_dir, "underscore", True)
+        self.pad_left (characters_dir, "underscore", True)
 
-    def pad_right(self, characters_dir, char_name):
+    def pad_right(self, characters_dir, char_name, resize=False):
         from PIL import Image, ImageDraw
         char_img = Image.open(characters_dir + char_name + "/" + char_name + ".png")
-        char_img = char_img.resize((int(char_img.height * 0.8), char_img.height))
+        if resize:
+            char_img = char_img.resize((int(char_img.height * 0.8), char_img.height))
         draw = ImageDraw.Draw(char_img)
         bbox = char_img.getbbox()
         width = char_img.width
@@ -305,10 +306,11 @@ class SHEETtoPNG:
         )
         char_img.save(characters_dir + char_name + "/" + char_name + ".png")
 
-    def pad_left(self, characters_dir, char_name):
+    def pad_left(self, characters_dir, char_name, resize=False):
         from PIL import Image, ImageDraw
         char_img = Image.open(characters_dir + char_name + "/" + char_name + ".png")
-        char_img = char_img.resize((int(char_img.height * 0.8), char_img.height))
+        if resize:
+            char_img = char_img.resize((int(char_img.height * 0.8), char_img.height))
         draw = ImageDraw.Draw(char_img)
         bbox = char_img.getbbox()
         width = char_img.width
