@@ -103,13 +103,20 @@ class SVGtoTTF:
                         "  sub " + k['ligature'] + " by " + k['name'] + ";", 
                         len(k['ligature'].split(' '))
                     ))
-                    list_of_ligs.append((
-                        "  sub " + k['ligature'] + " space by " + k['name'] + ";", 
-                        len(k['ligature'].split(' ')) + 1
-                    ))
+                    # # If you make ligatures of the format `p o n a space`, 
+                    # # the spacing is incorrect in every browser on iPhone and iPad, as well as Safari for macOS.
+                    # # So I just make the space character zero-width instead,
+                    # # which is redundant with `p o n a space` ligatures.
+                    # list_of_ligs.append((
+                    #     "  sub " + k['ligature'] + " space by " + k['name'] + ";", 
+                    #     len(k['ligature'].split(' ')) + 1
+                    # ))
                     list_of_cartoucheable_glyphs.append(k['name'])
 
         list_of_ligs.append(("  sub comma space by zerowidth;", 2))
+        list_of_ligs.append(("  sub space space by ideographicspace;", 2))
+        list_of_ligs.append(("  sub exclamation space by ideographicspace;", 2))
+        list_of_ligs.append(("  sub question space by ideographicspace;", 2))
 
         # sort them by number of tokens
         list_of_ligs.sort(reverse=True, key=lambda x: x[1])
@@ -161,6 +168,7 @@ feature ccmp {
         example_web_page = open(outdir + os.sep + family + ".html", "w", encoding="utf-8")
         example_web_page.write(
 """
+<meta charset="utf-8" />
 <style type=\"text/css\">
     @font-face {
         font-family: '""" + family + """';
@@ -169,6 +177,8 @@ feature ccmp {
     * {
         font-size: 48px;
         line-height: 1em;
+        background-color: #334;
+        color: white;
     }
     .tp {
         font-family: '""" + family + """', 'Chalkboard SE', 'Comic Sans MS', sans-serif;
@@ -187,17 +197,20 @@ pini pipi poka poki pona pu sama seli selo seme sewi sijelo sike sin sina sinpin
 suno supa suwi tan taso tawa telo tenpo toki tomo tu unpa uta utala walo wan waso wawa weka wile<br>
 [].:ijklmpst,uw,te to<br>
 kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi<br>
-epiku jasima linluwi majuna meso oko su<br><br>
-
-jan [sama olin namako jaki ala] li sitelen e pu kepeken wawa mute.<br>
+epiku jasima linluwi majuna meso oko su<br>
 </span>
+<p class="tp">
+󱤑󱦐󱥖󱥅󱥸󱤐󱤂󱦑󱤧󱥠󱤉󱥕󱤙󱥵󱤼󱦜<br><br>
+mi pana e <a href="https://example.com/">nasin tawa lipu ante</a> e <a href="https://example.com">nasin tawa lipu [en sama a n pona o]</a><br>
+</p>
 <p>License: <a href='""" + licenseurl + """'>""" + license + """</a></p>
 <span class="tp">
 <span style="white-space: break-spaces">
-mi pana e <a href="https://example.com/">nasin tawa lipu ante</a> e <a href="https://example.com">nasin tawa lipu [en sama a n pona o]</a> e <a href="https://example.com">sitelen nasa i j k</a>
 
-telo oko li ken ante e pilin
-tan jan [kiwen en][tomo awen mi insa]:
+󱥬󱥁󱤧󱤙󱥂󱥕󱤄
+
+󱥪󱥺󱤧󱤘󱤆󱤉󱥎
+󱥧󱤑󱦐󱤛󱤊󱦑󱦐󱥭󱤈󱤴󱤏󱦑󱦝
 
 　󱥪󱤧󱤖
 　　　󱥧󱥺󱤫󱥮󱥍󱦗󱤑󱥳󱦘
@@ -346,7 +359,16 @@ tan jan [kiwen en][tomo awen mi insa]:
                 g.importOutlines(src, ("removeoverlap", "correctdir"))
                 g.removeOverlap()
 
+
+                # shift by the left margin. (i'm not actually sure why this is necessary, but it looks wrong without it)
+                # (like, why don't i have to shift it vertically??)
+                g.transform(psMat.translate(
+                    -50, 
+                    0
+                ))
+
                 # Vertically center sitelen pona, middot, colon
+                # Todo: just center everything *except* certain glyphs
                 if (    
                     0xf1900 <= cp <= 0xf1988 or      # pu & ku suli
                     0xf19a0 <= cp <= 0xf19a3 or      # historical
@@ -363,8 +385,10 @@ tan jan [kiwen en][tomo awen mi insa]:
                         0, 
                         self.font.ascent - top - (self.font.ascent + self.font.descent - (top - bottom)) / 2
                     ))
+                    x = 1
 
                 # Horizontally center sitelen pona, middot, colon, letters
+                # Todo: just center everything *except* certain glyphs
                 if (
                     0xf1900 <= cp <= 0xf1988 or      # pu & ku suli
                     0xf19a0 <= cp <= 0xf19a3 or      # historical
@@ -379,6 +403,24 @@ tan jan [kiwen en][tomo awen mi insa]:
                         700 - right - (700 - width) / 2, 
                         0
                     ))
+                    x = 1
+
+                # Scale everything up so that the glyphs are 1em tall, instead of the cartouches
+                g.transform(psMat.translate(
+                    -350,
+                    -375
+                ))
+                g.transform(psMat.scale(1/7*10))
+                g.transform(psMat.translate(
+                    500, 
+                    500
+                ))
+
+
+
+                # print(g.width, g.vwidth)
+                g.width = 1000
+                g.vwidth = 1000
 
         # get rid of stray metrics
         print("\r                                                ")
@@ -386,8 +428,11 @@ tan jan [kiwen en][tomo awen mi insa]:
         # originally 800x1000, minus 50 margin on each side for scanning margin
         # ...though the vertical situation might be more complicated?
         for glyph in self.font:
-            self.font[glyph].width = 700
-            self.font[glyph].vwidth = 900  # used in vertical writing. might need to revise
+            # self.font[glyph].width = 700
+            # self.font[glyph].vwidth = 900  # used in vertical writing. might need to revise
+            # self.font[glyph].width = 1000
+            # self.font[glyph].vwidth = 1000  # used in vertical writing. might need to revise
+            x = 1
 
             # # Test centering
             # g = self.font[glyph]
@@ -403,19 +448,20 @@ tan jan [kiwen en][tomo awen mi insa]:
             # #     -200ish                            800ish
             #       "bottom", int(g.boundingBox()[1]), "top",   int(g.boundingBox()[3]))
 
-        # combining cartouche extension
+        # combining cartouche extension (the middle of the cartouche)
         self.font[0xf1992].width = 0
-        self.font[0xf1992].transform(psMat.translate(-700, 0))
+        self.font[0xf1992].transform(psMat.translate(-1000, 0))
         self.font[0x5f].width = 0
-        self.font[0x5f].transform(psMat.translate(-700, 0))
+        self.font[0x5f].transform(psMat.translate(-1000, 0))
 
         # later i should move these into default.json
         # spaces
+        ideographic_space = self.font.createChar(ord("　"), "ideographicspace")
+        ideographic_space.width = 1000
         space = self.font.createChar(ord(" "), "space")
-        space.width = 700
-        ideographic_space = self.font.createChar(ord("　"))
-        ideographic_space.width = 700
-        # zero-width
+        space.width = 0
+
+        # other zero-width
         bang = self.font.createChar(ord("!"), "exclamation")
         bang.width = 0
         comma = self.font.createChar(ord(","), "comma")
@@ -440,46 +486,6 @@ tan jan [kiwen en][tomo awen mi insa]:
         sp_start_of_reverse_long_glyph.width = 0
         sp_end_of_reverse_long_glyph = self.font.createChar(0xf199b)
         sp_end_of_reverse_long_glyph.width = 0
-
-    def set_bearings(self):
-        """Add left and right bearing
-        """
-
-        for glyph in self.font:
-            print(glyph)
-            self.font[glyph].left_side_bearing = 0  # Generally a value between -100, 100.
-            self.font[glyph].right_side_bearing = 0 # 0 makes the glyphs touch. Maybe add like 50
-
-    def set_kerning(self, table):
-        """Set kerning values in the font.
-
-        Parameters
-        ----------
-        table : dict
-            Config dictionary with kerning values/autokern bool.
-        """
-        rows = table["rows"]
-        rows = [list(i) if i != None else None for i in rows]
-        cols = table["cols"]
-        cols = [list(i) if i != None else None for i in cols]
-
-        self.font.addLookup("kern", "gpos_pair", 0, [["kern", [["latn", ["dflt"]]]]])
-
-        if table.get("autokern", True):
-            self.font.addKerningClass(
-                "kern", "kern-1", table.get("seperation", 0), rows, cols, True
-            )
-        else:
-            kerning_table = table.get("table", False)
-            if not kerning_table:
-                raise ValueError("Kerning offsets not found in the config file.")
-            flatten_list = (
-                lambda y: [x for a in y for x in flatten_list(a)]
-                if type(y) is list
-                else [y]
-            )
-            offsets = [0 if x is None else x for x in flatten_list(kerning_table)]
-            self.font.addKerningClass("kern", "kern-1", rows, cols, offsets)
 
     def generate_font_file(self, filename, outdir, config_file, directory):
         """Output TTF file.
@@ -527,14 +533,6 @@ tan jan [kiwen en][tomo awen mi insa]:
         self.font = fontforge.font()
         self.set_properties()
         self.add_glyphs(directory)
-
-        # bearing table
-        # Bearings position the glyph relative to the edges of the glyph's drawing.
-        # This is useful for variable-width fonts, but not for monospaced fonts.
-        # self.set_bearings(self.config["typography_parameters"].get("bearing_table", {}))
-
-        # kerning table
-        # self.set_kerning(self.config["typography_parameters"].get("kerning_table", {}))
 
         # Generate font and save as a .ttf file
         filename = self.metadata.get("filename", None) or self.config["props"].get(
