@@ -9,6 +9,6 @@ Fill out this image, and send it to someone who's managed to install the script.
 
 I don't really know how Python works. Someone please help me to make these instructions easier!!!
 
-1. Use the English version's instructions for installing the *development* version of handwrite.
+1. Use [the English version's instructions](https://www.builtree.org/handwrite/contributing/) for installing the *development* version of handwrite.
 2. `pip install fonttools`
-3. Use `handwrite -h` to see instructions on using the command-line tool. Some of those fields are necessary for naming your font correctly. The others aren't...
+3. Use `handwrite -h` to see instructions on using the command-line tool. Some of those fields are necessary for naming your font correctly, and a friendly license is necessary for putting your font on Linku.
