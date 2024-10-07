@@ -105,6 +105,7 @@ class SVGtoTTF:
                     ))
                     # # If you make ligatures of the format `p o n a space`, 
                     # # the spacing is incorrect in every browser on iPhone and iPad, as well as Safari for macOS.
+                    # # (The browser correctly renders the ligature, but incorrectly renders an additional space.)
                     # # So I just make the space character zero-width instead,
                     # # which is redundant with `p o n a space` ligatures.
                     # list_of_ligs.append((
@@ -130,24 +131,31 @@ class SVGtoTTF:
 
 @cartoucheableGlyph = [
   a e i j k l m n o p s t u w
-  middotTok colonTok
   period colon space exclamation question underscore
 """
         for word in list_of_cartoucheable_glyphs:
             if (word != "cartoucheStartTok" and
-                word != "cartoucheEndTok"):
+                word != "cartoucheEndTok"
+            ):
                 ligatures_string += "  " + word + "\n"
 
         ligatures_string += """];
 
 lookup add_cartouche_middle {
+  # Add a cartouche middle after the glyph.
+  # (The cartouche middle is zero-width and extends to the left,
+  #  surrounding the glyph.)
   sub   @cartoucheableGlyph   by   @cartoucheableGlyph cartoucheMiddleTok;
 } add_cartouche_middle;
 
-feature ccmp {
+# idk what keyword to use here. liga, calt, ccmp, something else?
+feature calt {
+  # If a glyph follows a cartouche start, add a cartouche middle after the glyph.
   sub   cartoucheStartTok  [@cartoucheableGlyph]'   lookup add_cartouche_middle;
+
+  # If a glyph follows a cartouche middle, add a cartouche middle after the glyph.
   sub   cartoucheMiddleTok [@cartoucheableGlyph]'   lookup add_cartouche_middle;
-} ccmp;
+} calt;
 """
         # print(ligatures_string)
         feature_file = open(directory + os.sep + family + ".fea", "w", encoding="utf-8")
@@ -165,7 +173,7 @@ feature ccmp {
         self.generate_web_page(outdir, filename, family, designer, license, licenseurl)
 
     def generate_web_page(self, outdir, filename, family, designer, license, licenseurl):
-        example_web_page = open(outdir + os.sep + family + ".html", "w", encoding="utf-8")
+        example_web_page = open(outdir + os.sep + family.replace(" ", "-") + ".html", "w", encoding="utf-8")
         example_web_page.write(
 """
 <meta charset="utf-8" />
@@ -174,10 +182,12 @@ feature ccmp {
         font-family: '""" + family + """';
         src: url('""" + filename + """')
     }
+    body {
+        background-color: #334;
+    }
     * {
         font-size: 48px;
-        line-height: 1em;
-        background-color: #334;
+        /*line-height: 1em;*/
         color: white;
     }
     .tp {
@@ -200,8 +210,7 @@ kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi<b
 epiku jasima linluwi majuna meso oko su<br>
 </span>
 <p class="tp">
-󱤑󱦐󱥖󱥅󱥸󱤐󱤂󱦑󱤧󱥠󱤉󱥕󱤙󱥵󱤼󱦜<br><br>
-mi pana e <a href="https://example.com/">nasin tawa lipu ante</a> e <a href="https://example.com">nasin tawa lipu [en sama a n pona o]</a><br>
+󱤑󱦐󱥖󱥅󱥸󱤐󱤂󱦑󱤧󱥠󱤉󱥕󱤙󱥵󱤼󱦜
 </p>
 <p>License: <a href='""" + licenseurl + """'>""" + license + """</a></p>
 <span class="tp">
@@ -210,7 +219,7 @@ mi pana e <a href="https://example.com/">nasin tawa lipu ante</a> e <a href="htt
 󱥬󱥁󱤧󱤙󱥂󱥕󱤄
 
 󱥪󱥺󱤧󱤘󱤆󱤉󱥎
-󱥧󱤑󱦐󱤛󱤊󱦑󱦐󱥭󱤈󱤴󱤏󱦑󱦝
+󱥧󱤑󱦐󱤛󱤊󱦑󱦐󱥭󱤇󱤴󱤏󱦑󱦝
 
 　󱥪󱤧󱤖
 　　　󱥧󱥺󱤫󱥮󱥍󱦗󱤑󱥳󱦘

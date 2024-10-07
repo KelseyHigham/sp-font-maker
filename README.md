@@ -1,4 +1,4 @@
-Handwrite sitelen pona, based on the [English version](https://github.com/builtree/handwrite).
+SP Font Maker, based on the English-language [Handwrite](https://github.com/builtree/handwrite).
 
 # Usage instructions
 
