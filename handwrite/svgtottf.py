@@ -118,6 +118,7 @@ class SVGtoTTF:
         list_of_ligs.append(("  sub space space by ideographicspace;", 2))
         list_of_ligs.append(("  sub exclamation space by ideographicspace;", 2))
         list_of_ligs.append(("  sub question space by ideographicspace;", 2))
+        list_of_ligs.append(("  sub l i n u w i by linluwiTok;", 6))
 
         # sort them by number of tokens
         list_of_ligs.sort(reverse=True, key=lambda x: x[1])
@@ -526,11 +527,11 @@ function redrawTextarea(e) {
         ampersand.width = 0
         # todo: add "start of long pi" as an additional codepoint for the "pi" glyph
         # todo: then add "end of long pi" here
-        sp_stacking_joiner = self.font.createChar(0xf1995)
+        sp_stacking_joiner = self.font.createChar(0xf1995, "stackJoinTok")
         sp_stacking_joiner.width = 0
-        sp_scaling_joiner = self.font.createChar(0xf1996)
+        sp_scaling_joiner = self.font.createChar(0xf1996, "scaleJoinTok")
         sp_scaling_joiner.width = 0
-        zerowidthjoiner = self.font.createChar(0x200d)
+        zerowidthjoiner = self.font.createChar(0x200d, "zerowidthjoiner")
         zerowidthjoiner.width = 0
         sp_start_of_long_glyph = self.font.createChar(0xf1997)
         sp_start_of_long_glyph.width = 0
