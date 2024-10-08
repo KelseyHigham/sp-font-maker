@@ -72,10 +72,10 @@ class PNGtoSVG:
         """
         # glyph_width  = 40 # faster & lower quality, for testing
         # glyph_height = 50
-        glyph_width  = 100 # just right
-        glyph_height = 125
-        # glyph_width  = 200 # too high quality. slow, picks up corner pixels on the old template
-        # glyph_height = 250
+        # glyph_width  = 100 # just right
+        # glyph_height = 125
+        glyph_width  = 200 # too high quality. slow, picks up corner pixels on the old template
+        glyph_height = 250
         # glyph_width  = 400 # way too high quality!!!
         # glyph_height = 500
         img = Image.open(path).convert("RGBA").resize((glyph_width, glyph_height))

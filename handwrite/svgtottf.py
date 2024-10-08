@@ -225,9 +225,9 @@ lili linja lipu loje lon luka lukin lupa ma mama mani meli mi mije moku moli mon
 mute nanpa nasa nasin nena ni nimi noka o olin ona open pakala pali palisa pan pana pi pilin pimeja<br>
 pini pipi poka poki pona pu sama seli selo seme sewi sijelo sike sin sina sinpin sitelen sona soweli suli<br>
 suno supa suwi tan taso tawa telo tenpo toki tomo tu unpa uta utala walo wan waso wawa weka wile<br>
-[].:ijklmpst,uw,te to<br>
-kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi<br>
-epiku jasima linluwi majuna meso oko su<br>
+[].:ijklmpst,uw,te to　susu isi ta<br>
+kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi　usawi jule kepa nita kan ka nula<br>
+epiku jasima linluwi majuna meso oko su　tenpi kulupu-mun omekapo joku kiki puwa ponpon powe monumentalise pomotolo sala taki<br>
 </span>
 <p class="tp">
 󱤑󱦐󱥖󱥅󱥸󱤐󱤂󱦑󱤧󱥠󱤉󱥕󱤙󱥵󱤼󱦜
