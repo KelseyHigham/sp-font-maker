@@ -425,6 +425,7 @@ function redrawTextarea(e) {
 
                 # Vertically center sitelen pona, middot, colon
                 # Todo: just center everything *except* certain glyphs
+                    # do NOT center a-z, cartouches, long pi, te/to
                 if (    
                     0xf1900 <= cp <= 0xf1988 or      # pu & ku suli
                     0xf19a0 <= cp <= 0xf19a3 or      # historical
@@ -445,6 +446,7 @@ function redrawTextarea(e) {
 
                 # Horizontally center sitelen pona, middot, colon, letters
                 # Todo: just center everything *except* certain glyphs
+                    # do NOT center cartouches, long pi, te/to
                 if (
                     0xf1900 <= cp <= 0xf1988 or      # pu & ku suli
                     0xf19a0 <= cp <= 0xf19a3 or      # historical
