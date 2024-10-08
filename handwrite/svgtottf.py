@@ -196,14 +196,14 @@ feature calt {
     h1, p {
         font-family: "Chalkboard SE", "Comic Sans MS", sans-serif;
     }
-      textarea {
+    textarea {
         font-size: 1em; 
-        width: 100%; 
+        width: 20em; 
         height: 100%; 
-        background-color: #111; 
+        background-color: #223; 
         color: white; 
         padding: 1em;
-      }
+    }
 </style>
 <h1>""" + family + ", tan " + designer + """</h1>
 <span class="tp">
@@ -220,7 +220,6 @@ epiku jasima linluwi majuna meso oko su<br>
 <p class="tp">
 󱤑󱦐󱥖󱥅󱥸󱤐󱤂󱦑󱤧󱥠󱤉󱥕󱤙󱥵󱤼󱦜
 </p>
-<textarea>mu</textarea>
 <p>License: <a href='""" + licenseurl + """'>""" + license + """</a></p>
 <span class="tp">
 <span style="white-space: break-spaces">
@@ -281,7 +280,34 @@ epiku jasima linluwi majuna meso oko su<br>
 　　　　　　　　　　　　　　　󱤧󱥩󱤟
 　　　　　　　　　　　　　　󱥔󱤖󱤧󱥷󱤉󱥵
 　　　　　　　　　　　　　󱥨󱤣󱥶󱤧󱤖󱤘󱤉󱥁
+
+
+<textarea class="tp">sina ken sitelen wile lon ni</textarea>
 </span></span>
+
+<script>
+/*  workaround for Chromium
+
+    Chrome has a bug where ligatures aren't properly applied at typing-time. for example, if you type "pona", it erroneously shows a p followed by a sideways 6, rather than one smile.
+    i work around this by refreshing the textarea after every keystroke.
+    i refresh the textarea by changing one property, back and forth between two values that will result in the same appearance on most modern devices.
+*/
+
+const textarea = document.querySelector('textarea');
+var cssToggle = false;
+
+textarea.addEventListener('input', redrawTextarea);
+
+function redrawTextarea(e) {
+  if (cssToggle) {
+    textarea.style.fontVariantLigatures = 'normal';
+    cssToggle = false;
+  } else {
+    textarea.style.fontVariantLigatures = 'common-ligatures';
+    cssToggle = true;
+  }
+}
+</script>
 """
         )
         example_web_page.close()
