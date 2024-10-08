@@ -526,6 +526,8 @@ function redrawTextarea(e) {
         sp_stacking_joiner.width = 0
         sp_scaling_joiner = self.font.createChar(0xf1996)
         sp_scaling_joiner.width = 0
+        zerowidthjoiner = self.font.createChar(0x200d)
+        zerowidthjoiner.width = 0
         sp_start_of_long_glyph = self.font.createChar(0xf1997)
         sp_start_of_long_glyph.width = 0
         sp_end_of_long_glyph = self.font.createChar(0xf1998)
