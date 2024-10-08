@@ -196,6 +196,14 @@ feature calt {
     h1, p {
         font-family: "Chalkboard SE", "Comic Sans MS", sans-serif;
     }
+      textarea {
+        font-size: 1em; 
+        width: 100%; 
+        height: 100%; 
+        background-color: #111; 
+        color: white; 
+        padding: 1em;
+      }
 </style>
 <h1>""" + family + ", tan " + designer + """</h1>
 <span class="tp">
@@ -212,6 +220,7 @@ epiku jasima linluwi majuna meso oko su<br>
 <p class="tp">
 󱤑󱦐󱥖󱥅󱥸󱤐󱤂󱦑󱤧󱥠󱤉󱥕󱤙󱥵󱤼󱦜
 </p>
+<textarea>mu</textarea>
 <p>License: <a href='""" + licenseurl + """'>""" + license + """</a></p>
 <span class="tp">
 <span style="white-space: break-spaces">
