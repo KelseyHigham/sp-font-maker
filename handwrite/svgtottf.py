@@ -504,6 +504,8 @@ function redrawTextarea(e) {
         ideographic_space.width = 1000
         space = self.font.createChar(ord(" "), "space")
         space.width = 0
+        zero_width = self.font.createChar(0x200b, "zerowidth")
+        zero_width.width = 0
 
         # other zero-width
         bang = self.font.createChar(ord("!"), "exclamation")
@@ -512,8 +514,12 @@ function redrawTextarea(e) {
         comma.width = 0
         question = self.font.createChar(ord("?"), "question")
         question.width = 0
-        zero_width = self.font.createChar(-1, "zerowidth")
-        zero_width.width = 0
+        hyphen = self.font.createChar(ord("-"), "hyphen")
+        hyphen.width = 0
+        plus = self.font.createChar(ord("+"), "plus")
+        plus.width = 0
+        caret = self.font.createChar(ord("^"), "caret")
+        caret.width = 0
         # todo: add "start of long pi" as an additional codepoint for the "pi" glyph
         # todo: then add "end of long pi" here
         sp_stacking_joiner = self.font.createChar(0xf1995)
