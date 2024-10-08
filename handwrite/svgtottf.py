@@ -520,6 +520,8 @@ function redrawTextarea(e) {
         plus.width = 0
         caret = self.font.createChar(ord("^"), "caret")
         caret.width = 0
+        ampersand = self.font.createChar(ord("&"), "ampersand")
+        ampersand.width = 0
         # todo: add "start of long pi" as an additional codepoint for the "pi" glyph
         # todo: then add "end of long pi" here
         sp_stacking_joiner = self.font.createChar(0xf1995)
