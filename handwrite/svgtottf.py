@@ -119,6 +119,18 @@ class SVGtoTTF:
         list_of_ligs.append(("  sub exclamation space by ideographicspace;", 2))
         list_of_ligs.append(("  sub question space by ideographicspace;", 2))
 
+        list_of_ligs.append(("  sub k e p e by kepekenTok;", 4))
+        list_of_ligs.append(("  sub k e p e n by kepekenTok;", 5))
+        list_of_ligs.append(("  sub m i s i k e by misikekeTok;", 6))
+        list_of_ligs.append(("  sub n a m a by namakoTok;", 4))
+        list_of_ligs.append(("  sub l i n u w i by linluwiTok;", 6))
+        list_of_ligs.append(("  sub k u l u p u plus m u n by kulupuTok_munTok;", 10))
+        list_of_ligs.append(("  sub k u l u p u caret m u n by kulupuTok_munTok;", 10))
+        list_of_ligs.append(("  sub k u l u p u ampersand m u n by kulupuTok_munTok;", 10))
+        list_of_ligs.append(("  sub kulupuTok zerowidthjoiner munTok by kulupuTok_munTok;", 3))
+        list_of_ligs.append(("  sub kulupuTok sp_stacking_joiner munTok by kulupuTok_munTok;", 3))
+        list_of_ligs.append(("  sub kulupuTok sp_scaling_joiner munTok by kulupuTok_munTok;", 3))
+
         # sort them by number of tokens
         list_of_ligs.sort(reverse=True, key=lambda x: x[1])
 
