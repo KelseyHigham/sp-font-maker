@@ -4,66 +4,6 @@ import json
 
 import cv2
 
-# Seq: A-Z, a-z, 0-9, SPECIAL_CHARS
-ALL_CHARS = list(
-    itertools.chain(
-        # rows 1-6
-        range(0xf1900, 0xf1978), # 120 nimi pu; first 6 rows
-        [
-            # row 7
-            0xf1990, # cartouche open
-            0xf1991, # cartouche close
-            0xf199c, # middot
-            0xf199d, # colon
-            105,     # i
-            106,     # j
-            107,     # k
-            108,     # l
-            109,     # m
-            112,     # p
-            115,     # s
-            116,     # t
-            117,     # u
-            119,     # w
-            0,0,0,0, 0,0, # (poki jaki)
-
-            # row 8
-            0xf1980, # kijetesantakalu
-            0xf1979, # kin
-            0xf197b, # kipisi
-            0xf1988, # ku
-            0xf1985, # lanpan
-            0xf197c, # leko
-            0xf1987, # misikeke
-            0xf197d, # monsuta
-            0xf1986, # n
-            0xf1978, # namako
-            0xf1981, # soko
-            0xf197e, # tonsi
-            0,0,0,0, 0,0,0,0, # (poki jaki)
-
-            # row 9
-            0xf1983, # epiku
-            0xf197f, # jasima
-            0,       # linluwi
-            0xf19a2, # majuna
-            0xf1982, # meso
-            0xf197a, # oko
-            0,       # su
-            0,0,0,0, 0,0,0,0, 0,0,0,0, 0, # (poki jaki)
-
-            # added after rows are processed
-            0xf1992, # combining cartouche extension, UCSUR
-            97,     # a
-            101,    # e
-            110,    # n
-            111,    # o
-        ],
-
-    )
-)
-
-
 class SHEETtoPNG:
     """Converter class to convert input sample sheet to character PNGs."""
 
@@ -92,7 +32,6 @@ class SHEETtoPNG:
         if os.path.isdir(sheet):
             raise IsADirectoryError("Sheet parameter should not be a directory.")
         characters = self.detect_characters(
-            sheet, threshold_value, cols=cols, rows=rows
         )
         self.save_images(
             characters, # more like cells
