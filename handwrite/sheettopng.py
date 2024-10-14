@@ -40,7 +40,7 @@ class SHEETtoPNG:
             config
         )
 
-    def detect_characters(self, sheet_image, threshold_value, cols=20, rows=9):
+    def detect_characters(self, characters_dir, sheet_image, threshold_value, cols=20, rows=9):
         """Detect contours on the input image and filter them to get only characters.
 
         Uses opencv to threshold the image for better contour detection. After finding all
@@ -69,12 +69,16 @@ class SHEETtoPNG:
 
         # Read the image and convert to grayscale
         image = cv2.imread(sheet_image)
+        cv2.imwrite(os.path.join(characters_dir, "1 image" + ".png"), image)
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        cv2.imwrite(os.path.join(characters_dir, "2 gray" + ".png"), gray)
 
         # Threshold and filter the image for better contour detection
         _, thresh = cv2.threshold(gray, threshold_value, 255, 1)
+        cv2.imwrite(os.path.join(characters_dir, "3 thresh" + ".png"), thresh)
         close_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
         close = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, close_kernel, iterations=2)
+        cv2.imwrite(os.path.join(characters_dir, "4 close" + ".png"), close)
 
         # Search for contours.
         contours, h = cv2.findContours(
@@ -94,7 +98,31 @@ class SHEETtoPNG:
             reverse=True,
         )
 
+        for row in range(rows):
+            print(contours[row])
+
 # START OF KELLY ZONE
+
+        # output the initial 9 rows as images
+
+        row_images = []
+        for row in range(rows):
+            left, top, width, height = cv2.boundingRect(contours[row])
+            roi = image[
+                top : top  + height,
+                left: left + width
+            ]
+            row_images.append([roi, left, top])
+
+        row_images.sort(key=lambda x: x[2])
+
+        row_dir = os.path.join(characters_dir, "9 rows")
+        if not os.path.exists(row_dir):
+            os.mkdir(row_dir)
+        for row in range(rows):
+            cv2.imwrite(os.path.join(row_dir, "row" + str(row+1) + ".png"), row_images[row][0])
+
+
 
         # Calculate the bounding of the first contour and approximate the height
         # and width for final cropping.
@@ -114,12 +142,15 @@ class SHEETtoPNG:
         # rows*colums contours and add them to final list after cropping.
         characters = []
         for row in range(rows):
+            # TODO: save rows to debug directory, for debugging
             bx, by, bw, bh = cv2.boundingRect(contours[row])
             for col in range(cols):
                 glyph_top  = by + top_padding
                 glyph_left = bx + left_padding + col*glyph_w
-                roi = image[int(glyph_top ) : int(glyph_top  + glyph_h),
-                            int(glyph_left) : int(glyph_left + glyph_w)]
+                roi = image[
+                    int(glyph_top ) : int(glyph_top  + glyph_h),
+                    int(glyph_left) : int(glyph_left + glyph_w)
+                ]
                 characters.append([roi, glyph_left, glyph_top])
 
         # Now we have the characters but since they are all mixed up we need to position them.
@@ -202,22 +233,26 @@ class SHEETtoPNG:
         # Create directory for each character and save the png for the characters
         # Structure (single sheet): UserProvidedDir/ord(character)/ord(character).png
         # Structure (multiple sheets): UserProvidedDir/sheet_filename/ord(character)/ord(character).png
-        # Kelly note: `characters` is more like `cells`, since not every cell contains a glyph
-        for k, images in enumerate(characters):
+            # Kelly note: `characters` is more like `cells`, since not every cell contains a glyph
+        for cellNum, images in enumerate(characters):
 
             with open(config) as f:
-                glyphs = json.load(f).get("glyphs-fancy", {})
-                if len(glyphs) > k:
-                    if 'name' in glyphs[k]:
-                        character = os.path.join(characters_dir, glyphs[k]['name'])
+                glyphList = json.load(f).get("glyphs-fancy", {})
+                curMetadatum = glyphList[cellNum]
+                if len(glyphList) > cellNum:
+                    if 'name' in curMetadatum:
+                        character = os.path.join(characters_dir, curMetadatum['name'])
                         if not os.path.exists(character):
                             os.mkdir(character)
+                        # print(character, curMetadatum['name'] + ".png")
                         cv2.imwrite(
-                            os.path.join(character, glyphs[k]['name'] + ".png"),
+                            os.path.join(character, curMetadatum['name'] + ".png"),
                             images[0],
                         )
 
         # Trim cartouche characters
+            # We'll have to do the same thing for long pi
+            # and any other character that spans two cells
         self.pad_right(characters_dir, "cartoucheStartTok")
         self.pad_right(characters_dir, "bracketleft")
         
