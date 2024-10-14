@@ -32,6 +32,7 @@ class SHEETtoPNG:
         if os.path.isdir(sheet):
             raise IsADirectoryError("Sheet parameter should not be a directory.")
         characters = self.detect_characters(
+            characters_dir, sheet, threshold_value, cols=cols, rows=rows
         )
         self.save_images(
             characters, # more like cells
