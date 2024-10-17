@@ -98,8 +98,8 @@ class SHEETtoPNG:
             reverse=True,
         )
 
-        for row in range(rows):
-            print(contours[row])
+        # for row in range(rows):
+        #     print(contours[row])
 
 # START OF KELLY ZONE
 
@@ -266,7 +266,7 @@ class SHEETtoPNG:
 
     def pad_right(self, characters_dir, char_name, resize=False):
         from PIL import Image, ImageDraw
-        char_img = Image.open(characters_dir + char_name + "/" + char_name + ".png")
+        char_img = Image.open(characters_dir + "/" + char_name + "/" + char_name + ".png")
         if resize:
             char_img = char_img.resize((int(char_img.height * 0.8), char_img.height))
         draw = ImageDraw.Draw(char_img)
@@ -279,11 +279,11 @@ class SHEETtoPNG:
             ),
             fill="white"
         )
-        char_img.save(characters_dir + char_name + "/" + char_name + ".png")
+        char_img.save(characters_dir + "/" + char_name + "/" + char_name + ".png")
 
     def pad_left(self, characters_dir, char_name, resize=False):
         from PIL import Image, ImageDraw
-        char_img = Image.open(characters_dir + char_name + "/" + char_name + ".png")
+        char_img = Image.open(characters_dir + "/" + char_name + "/" + char_name + ".png")
         if resize:
             char_img = char_img.resize((int(char_img.height * 0.8), char_img.height))
         draw = ImageDraw.Draw(char_img)
@@ -296,4 +296,4 @@ class SHEETtoPNG:
             ),
             fill="white"
         )
-        char_img.save(characters_dir + char_name + "/" + char_name + ".png")
+        char_img.save(characters_dir + "/" + char_name + "/" + char_name + ".png")
