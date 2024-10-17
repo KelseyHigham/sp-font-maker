@@ -1,5 +1,7 @@
 SP Font Maker, based on the English-language [Handwrite](https://github.com/builtree/handwrite).
 
+[SP Font Maker homepage](https://wasokeli.github.io/sp-font-maker/), with tips and examples!
+
 # Usage instructions
 
 Fill out this image, and send it to someone who's managed to install the script. They'll give you your font file:
