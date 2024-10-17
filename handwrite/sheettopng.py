@@ -7,7 +7,7 @@ import cv2
 class SHEETtoPNG:
     """Converter class to convert input sample sheet to character PNGs."""
 
-    def convert(self, sheet, characters_dir, config, cols=20, rows=9):
+    def convert(self, sheet, characters_dir, config, metadata, cols=20, rows=9):
         print("SHEETtoPNG")
         """Convert a sheet of sample writing input to a custom directory structure of PNGs.
 

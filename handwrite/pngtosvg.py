@@ -2,6 +2,8 @@ from PIL import Image, ImageChops
 import os
 import shutil
 import subprocess
+import json
+
 
 
 class PotraceNotFound(Exception):
@@ -11,7 +13,7 @@ class PotraceNotFound(Exception):
 class PNGtoSVG:
     """Converter class to convert character PNGs to BMPs and SVGs."""
 
-    def convert(self, directory):
+    def convert(self, metadata, directory):
         print("PNGtoSVG", end="\r")
         """Call converters on each .png in the provider directory.
 
@@ -25,7 +27,7 @@ class PNGtoSVG:
                 if f.endswith(".png"):
                     num_characters += 1
                     print("PNGtoSVG", str(f[0:-4]).ljust(14, " ")[:14], "".join("." for i in range(num_characters//8)), end="\r")
-                    self.pngToBmp(root + "/" + f)
+                    self.pngToBmp(root + "/" + f, metadata)
                     # self.trim(root + "/" + f[0:-4] + ".bmp")
                     self.bmpToSvg(root + "/" + f[0:-4] + ".bmp")
         print("PNGtoSVG                                                                      ")
@@ -53,7 +55,7 @@ class PNGtoSVG:
             subprocess.run(["potrace", path, "--backend", "svg", "--output", path[0:-4] + ".svg",])
             # note: the --margin parameter doesn't help me here
 
-    def pngToBmp(self, path):
+    def pngToBmp(self, path, metadata):
         """Convert .bmp image to .svg using potrace.
 
         Converts the passed .bmp file to .svg using the potrace
@@ -70,16 +72,25 @@ class PNGtoSVG:
         PotraceNotFound
             Raised if potrace not found in path by shutil.which()
         """
-        # glyph_width  = 40 # faster & lower quality, for testing
-        # glyph_height = 50
-        glyph_width  = 100 # just right
-        glyph_height = 125
-        # glyph_width  = 200 # too high quality. slow, picks up corner pixels on the old template
-        # glyph_height = 250
-        # glyph_width  = 400 # way too high quality!!!
-        # glyph_height = 500
+
+        from packaging.version import Version
+        sheet_version = metadata.get("sheetversion") or "99999999.999999.999999"
+        if Version(sheet_version) < Version("2.2"):
+            # scan old versions with lower quality, to avoid picking up corner pixels from the gray boxes
+            # (i think 2.2 is when te/to was added, so the version with the box improvement would have been somewhere before that...)
+            glyph_width  = 100
+            glyph_height = 125
+        else:
+            # glyph_width  = 40 # faster & lower quality, for testing
+            # glyph_height = 50
+            # glyph_width  = 100
+            # glyph_height = 125
+            glyph_width  = 200 # good balance
+            glyph_height = 250
+            # glyph_width  = 400 # no visible improvement
+            # glyph_height = 500
+            
         img = Image.open(path).convert("RGBA").resize((glyph_width, glyph_height))
-        # print("size:", glyph_width, glyph_height)
 
         # Threshold image to convert each pixel to either black or white
         threshold = 200

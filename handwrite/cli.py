@@ -9,8 +9,8 @@ from handwrite import SVGtoTTF
 
 
 def run(sheet, output_directory, characters_dir, config, metadata):
-    SHEETtoPNG().convert(sheet, characters_dir, config)
-    PNGtoSVG().convert(directory=characters_dir)
+    SHEETtoPNG().convert(sheet, characters_dir, config, metadata)
+    PNGtoSVG().convert(metadata, directory=characters_dir)
     SVGtoTTF().convert(characters_dir, output_directory, config, metadata)
 
 
@@ -52,9 +52,17 @@ def main():
     parser.add_argument("--license", help="Font License. (`--license ofl` and `--license cc0` will populate License and LicenseURL appropriately. \"All rights reserved\" by default.)", default=None)
     parser.add_argument("--license-url", help="Font License URL (\"\" by default)", default=None)
     # TODO: add --sheet-version argument
+    parser.add_argument("--sheet-version", help="Sheet version", default=None)
 
     args = parser.parse_args()
-    metadata = {"filename": args.filename, "family": args.family, "designer": args.designer, "license": args.license, "licenseurl": args.license_url}
+    metadata = {
+        "filename": args.filename, 
+        "family": args.family, 
+        "designer": args.designer, 
+        "license": args.license, 
+        "licenseurl": args.license_url, 
+        "sheetversion": args.sheet_version
+    }
     converters(
         args.input_path, args.output_directory, args.debug_directory, None, metadata
     ) 
