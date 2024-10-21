@@ -123,27 +123,24 @@ class SHEETtoPNG:
             cv2.imwrite(os.path.join(row_dir, "row" + str(row+1) + ".png"), row_images[row][0])
 
 
-
-        # Calculate the bounding of the first contour and approximate the height
-        # and width for final cropping.
-        _, _, bw, bh = cv2.boundingRect(contours[0])
-
-        # Each row bounding box (black line) is 164*12, 
-        # with 2 hor padding and 1 ver padding on each side.
-        # There are 20 glyphs per row. Each glyph scan area is 8x10.
-        # The visible gray squares are 7x7, to help with human and scanning errors.
-        # (The unit here is roughly 0.125cm on the printed page,
-        # or 0.25cm in the original huge file.)
-        glyph_w, glyph_h = bw*8/164, bh*10/12
-        left_padding, top_padding = bw*2/164, bh*1/12
-
         # Since amongst all the contours, the expected case is that the 4 sided contours
         # containing the characters should have the maximum area, so we loop through the first
         # rows*colums contours and add them to final list after cropping.
         characters = []
         for row in range(rows):
-            # TODO: save rows to debug directory, for debugging
+            # Calculate the bounding of the contour and approximate the height
+            # and width for final cropping.
             bx, by, bw, bh = cv2.boundingRect(contours[row])
+
+            # Each row bounding box (black line) is 164*12, 
+            # with 2 hor padding and 1 ver padding on each side.
+            # There are 20 glyphs per row. Each glyph scan area is 8x10.
+            # The visible gray squares are 7x7, to help with human and scanning errors.
+            # (The unit here is roughly 0.125cm on the printed page,
+            # or 0.25cm in the original huge file.)
+            glyph_w, glyph_h = bw*8/164, bh*10/12
+            left_padding, top_padding = bw*2/164, bh*1/12
+
             for col in range(cols):
                 glyph_top  = by + top_padding
                 glyph_left = bx + left_padding + col*glyph_w

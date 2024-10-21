@@ -208,6 +208,18 @@ feature calt {
 </style>
 <h1>""" + family + ", tan " + designer + """</h1>
 <span class="tp">
+<!-- spacing test -->
+<!--a　akesi　ala　alasa　ale　anpa　ante　anu　awen　e　en　esun　ijo　ike　ilo　insa　jaki　jan　jelo　jo<br>
+kala　kalama　kama　kasi　ken　kepeken　kili　kiwen　ko　kon　kule　kulupu　kute　la　lape　laso　lawa　len　lete　li<br>
+lili　linja　lipu　loje　lon　luka　lukin　lupa　ma　mama　mani　meli　mi　mije　moku　moli　monsi　mu　mun　musi<br>
+mute　nanpa　nasa　nasin　nena　ni　nimi　noka　o　olin　ona　open　pakala　pali　palisa　pan　pana　pi　pilin　pimeja<br>
+pini　pipi　poka　poki　pona　pu　sama　seli　selo　seme　sewi　sijelo　sike　sin　sina　sinpin　sitelen　sona　soweli　suli<br>
+suno　supa　suwi　tan　taso　tawa　telo　tenpo　toki　tomo　tu　unpa　uta　utala　walo　wan　waso　wawa　weka　wile<br>
+[　]　.　:　i　j　k　l　m　p　s　t　u　w　te　to<br>
+kijetesantakalu　kin　kipisi　ku　lanpan　leko　misikeke　monsuta　n　namako　soko　tonsi<br>
+epiku　jasima　linluwi　majuna　meso　oko　su<br><br>-->
+
+<!-- word list -->
 a akesi ala alasa ale anpa ante anu awen e en esun ijo ike ilo insa jaki jan jelo jo<br>
 kala kalama kama kasi ken kepeken kili kiwen ko kon kule kulupu kute la lape laso lawa len lete li<br>
 lili linja lipu loje lon luka lukin lupa ma mama mani meli mi mije moku moli monsi mu mun musi<br>
@@ -216,7 +228,7 @@ pini pipi poka poki pona pu sama seli selo seme sewi sijelo sike sin sina sinpin
 suno supa suwi tan taso tawa telo tenpo toki tomo tu unpa uta utala walo wan waso wawa weka wile<br>
 [].:ijklmpst,uw,te to<br>
 kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi<br>
-epiku jasima linluwi majuna meso oko su<br>
+epiku jasima linluwi majuna meso oko su<br><br>
 </span>
 <p class="tp">
 󱤑󱦐󱥖󱥅󱥸󱤐󱤂󱦑󱤧󱥠󱤉󱥕󱤙󱥵󱤼󱦜
