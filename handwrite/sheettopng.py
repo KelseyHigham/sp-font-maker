@@ -71,11 +71,11 @@ class SHEETtoPNG:
         image = cv2.imread(sheet_image)
         cv2.imwrite(os.path.join(characters_dir, "1 image" + ".png"), image)
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        cv2.imwrite(os.path.join(characters_dir, "2 gray" + ".png"), gray)
+        cv2.imwrite(os.path.join(characters_dir, "2 grayscale" + ".png"), gray)
 
         # Threshold and filter the image for better contour detection
         _, thresh = cv2.threshold(gray, threshold_value, 255, 1)
-        cv2.imwrite(os.path.join(characters_dir, "3 thresh" + ".png"), thresh)
+        cv2.imwrite(os.path.join(characters_dir, "3 threshold" + ".png"), thresh)
         close_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
         close = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, close_kernel, iterations=2)
         cv2.imwrite(os.path.join(characters_dir, "4 close" + ".png"), close)
@@ -103,7 +103,7 @@ class SHEETtoPNG:
 
 # START OF KELLY ZONE
 
-        # output the initial 9 rows as images
+        # output the initial 9 rows as images, for debug purposes
 
         row_images = []
         for row in range(rows):

@@ -453,11 +453,12 @@ function redrawTextarea(e) {
                     x = 1
 
                 # Scale everything up so that the glyphs are 1em tall, instead of the cartouches
+                # The scaling center is the baseline, far left
                 g.transform(psMat.translate(
                     -350,
                     -375
                 ))
-                g.transform(psMat.scale(1/7*10))
+                g.transform(psMat.scale(1/7*10)) # divide by the SAFE area height; multiply by the SCAN area height
                 g.transform(psMat.translate(
                     500, 
                     500
