@@ -76,10 +76,12 @@ class PNGtoSVG:
         from packaging.version import Version
         sheet_version = metadata.get("sheetversion") or "99999999.999999.999999"
         if Version(sheet_version) < Version("2.1"):
+            # SHEET VERSION 2.0
             # scan 2.0.x sheets with lower quality, to avoid picking up corner pixels from the gray boxes
             glyph_width  = 100
             glyph_height = 125
-        else:
+        elif Version(sheet_version) < Version("3"):
+            # SHEET VERSION 2.1
             # glyph_width  = 40 # faster & lower quality, for testing
             # glyph_height = 50
             # glyph_width  = 100
@@ -88,6 +90,19 @@ class PNGtoSVG:
             glyph_height = 250
             # glyph_width  = 400 # no visible improvement
             # glyph_height = 500
+        else:
+            # SHEET VERSION 3
+            # glyph_width  = 36 # faster & lower quality, for testing
+            # glyph_height = 48
+            # glyph_width  = 72
+            # glyph_height = 96
+            glyph_width  = 144 # good balance, probably
+            glyph_height = 192
+            # glyph_width  = 288 # no visible improvement, probably
+            # glyph_height = 384
+            # glyph_width  = 576 # really huge, probably
+            # glyph_height = 768
+
 
         img = Image.open(path).convert("RGBA").resize((glyph_width, glyph_height))
 

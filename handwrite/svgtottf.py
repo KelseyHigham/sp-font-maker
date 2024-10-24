@@ -30,6 +30,8 @@ class SVGtoTTF:
         """
         import subprocess
         import platform
+        from packaging.version import Version
+        sheet_version = metadata.get("sheetversion") or "99999999.999999.999999"
 
         subprocess.run(
             (
@@ -43,6 +45,9 @@ class SVGtoTTF:
                 directory,
                 outdir,
                 json.dumps(metadata),
+                str(Version(sheet_version).major),
+                str(Version(sheet_version).minor),
+                str(Version(sheet_version).micro)
             ]
         )
 
@@ -188,7 +193,7 @@ feature calt {
     }
     * {
         font-size: 48px;
-        /*line-height: 1em;*/
+        line-height: 1.5em;
         color: white;
     }
     .tp {
@@ -207,6 +212,10 @@ feature calt {
     }
 </style>
 <h1>""" + family + ", tan " + designer + """</h1>
+
+<!-- Latin test -->
+<!--<h1>jelo <span class="tp">awen e</span></h1>-->
+
 <span class="tp">
 <!-- spacing test -->
 <!--a　akesi　ala　alasa　ale　anpa　ante　anu　awen　e　en　esun　ijo　ike　ilo　insa　jaki　jan　jelo　jo<br>
@@ -218,6 +227,11 @@ suno　supa　suwi　tan　taso　tawa　telo　tenpo　toki　tomo　tu　unpa�
 [　]　.　:　i　j　k　l　m　p　s　t　u　w　te　to<br>
 kijetesantakalu　kin　kipisi　ku　lanpan　leko　misikeke　monsuta　n　namako　soko　tonsi<br>
 epiku　jasima　linluwi　majuna　meso　oko　su<br><br>-->
+
+<!-- cartouche test -->
+<!--[<span style="color: red; opacity: .5;">]</span>[.]<br>
+[<span style="color: red; opacity: .5;">._</span>][.._.]<br>
+[<span style="color: red; opacity: .5;">._</span><span style="color: yellow; opacity: .5;">._</span><span style="color: blue; opacity: .5;">._</span>]<br><br>-->
 
 <!-- word list -->
 a akesi ala alasa ale anpa ante anu awen e en esun ijo ike ilo insa jaki jan jelo jo<br>
@@ -231,12 +245,13 @@ kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi<b
 epiku jasima linluwi majuna meso oko su<br><br>
 </span>
 <p class="tp">
+<!-- jan [sama olin namako jaki ala] li sitelen e pu kepeken wawa mute. -->
 󱤑󱦐󱥖󱥅󱥸󱤐󱤂󱦑󱤧󱥠󱤉󱥕󱤙󱥵󱤼󱦜
 </p>
 <p>License: <a href='""" + licenseurl + """'>""" + license + """</a></p>
 <span class="tp">
 <span style="white-space: break-spaces">
-
+<!-- telo oko li ken ante e pilin, by jan Ke Tami -->
 󱥬󱥁󱤧󱤙󱥂󱥕󱤄
 
 󱥪󱥺󱤧󱤘󱤆󱤉󱥎
@@ -375,7 +390,7 @@ function redrawTextarea(e) {
         for k, v in self.config.get("sfnt_names", {}).items():
             self.font.appendSFNTName(str(lang), k, v)
 
-    def add_glyphs(self, directory):
+    def add_glyphs(self, directory, metadata, version_major, version_minor, version_patch):
         """Read and add SVG images as glyphs to the font.
 
         Walks through the provided directory and uses each ord(character).svg file
@@ -416,11 +431,19 @@ function redrawTextarea(e) {
                 g.importOutlines(src, ("removeoverlap", "correctdir"))
                 g.removeOverlap()
 
+                if version_major <3:
+                    # SHEET VERSION 2 metrics, before scaling (BS) up so that the glyph is the full em height
+                    bs_scan_hor_padding = 50
+                    bs_glyph_wh = 700
+                else:
+                    # SHEET VERSION 3 metrics, before scaling (BS) up so that the glyph is the full em height
+                    bs_scan_hor_padding = 125
+                    bs_glyph_wh = 500
 
                 # shift by the left margin. (i'm not actually sure why this is necessary, but it looks wrong without it)
                 # (like, why don't i have to shift it vertically??)
                 g.transform(psMat.translate(
-                    -50, 
+                    -bs_scan_hor_padding, 
                     0
                 ))
 
@@ -459,7 +482,7 @@ function redrawTextarea(e) {
                     right = g.boundingBox()[2]
                     width = right - left
                     g.transform(psMat.translate(
-                        700 - right - (700 - width) / 2, 
+                        bs_glyph_wh - right - (bs_glyph_wh - width) / 2, 
                         0
                     ))
                     x = 1
@@ -467,10 +490,10 @@ function redrawTextarea(e) {
                 # Scale everything up so that the glyphs are 1em tall, instead of the cartouches
                 # The scaling center is the baseline, far left
                 g.transform(psMat.translate(
-                    -350,
-                    -375
+                    -bs_glyph_wh / 2, # 700/2
+                    -(bs_glyph_wh + bs_scan_hor_padding) / 2  # (700+50)/2
                 ))
-                g.transform(psMat.scale(1/7*10)) # divide by the SAFE area height; multiply by the SCAN area height
+                g.transform(psMat.scale(1 / bs_glyph_wh * 1000)) # divide by the SAFE area height; multiply by the SCAN area height
                 g.transform(psMat.translate(
                     500, 
                     500
@@ -589,7 +612,7 @@ function redrawTextarea(e) {
         self.font.generate(outfile)
         self.font.save(outfile[0:-4] + ".sfd")
 
-    def convert_main(self, config_file, directory, outdir, metadata):
+    def convert_main(self, config_file, directory, outdir, metadata, v_major, v_minor, v_patch):
         try:
             self.font = fontforge.font()
         except:
@@ -602,7 +625,7 @@ function redrawTextarea(e) {
 
         self.font = fontforge.font()
         self.set_properties()
-        self.add_glyphs(directory)
+        self.add_glyphs(directory, metadata, int(v_major), int(v_minor), int(v_patch))
 
         # Generate font and save as a .ttf file
         filename = self.metadata.get("filename", None) or self.config["props"].get(
@@ -612,6 +635,6 @@ function redrawTextarea(e) {
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 5:
+    if len(sys.argv) != 8:
         raise ValueError("Incorrect call to SVGtoTTF")
-    SVGtoTTF().convert_main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+    SVGtoTTF().convert_main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7])

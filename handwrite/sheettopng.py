@@ -1,8 +1,8 @@
 import os
 import itertools
 import json
-
 import cv2
+from packaging.version import Version
 
 class SHEETtoPNG:
     """Converter class to convert input sample sheet to character PNGs."""
@@ -32,15 +32,16 @@ class SHEETtoPNG:
         if os.path.isdir(sheet):
             raise IsADirectoryError("Sheet parameter should not be a directory.")
         characters = self.detect_characters(
-            characters_dir, sheet, threshold_value, cols=cols, rows=rows
+            characters_dir, sheet, threshold_value, metadata, cols=cols, rows=rows
         )
         self.save_images(
             characters, # more like cells
             characters_dir,
-            config
+            config,
+            metadata
         )
 
-    def detect_characters(self, characters_dir, sheet_image, threshold_value, cols=20, rows=9):
+    def detect_characters(self, characters_dir, sheet_image, threshold_value, metadata, cols=20, rows=9):
         """Detect contours on the input image and filter them to get only characters.
 
         Uses opencv to threshold the image for better contour detection. After finding all
@@ -116,7 +117,8 @@ class SHEETtoPNG:
 
         row_images.sort(key=lambda x: x[2])
 
-        row_dir = os.path.join(characters_dir, "9 rows")
+        # row_dir = os.path.join(characters_dir, "9 rows")
+        row_dir = os.path.join(characters_dir)
         if not os.path.exists(row_dir):
             os.mkdir(row_dir)
         for row in range(rows):
@@ -130,25 +132,55 @@ class SHEETtoPNG:
         for row in range(rows):
             # Calculate the bounding of the contour and approximate the height
             # and width for final cropping.
-            bx, by, bw, bh = cv2.boundingRect(contours[row])
+            row_x, row_y, row_w, row_h = cv2.boundingRect(contours[row])
 
-            # Each row bounding box (black line) is 164*12, 
-            # with 2 hor padding and 1 ver padding on each side.
-            # There are 20 glyphs per row. Each glyph scan area is 8x10.
-            # The visible gray squares are 7x7, to help with human and scanning errors.
-            # (The unit here is roughly 0.125cm on the printed page,
-            # or 0.25cm in the original huge file.)
-            glyph_w, glyph_h = bw*8/164, bh*10/12
-            left_padding, top_padding = bw*2/164, bh*1/12
+            sheet_version = metadata.get("sheetversion") or "99999999.999999.999999"
+            if Version(sheet_version) < Version("3"):
+                # SHEET VERSION 2:
+                # The grid unit here is roughly 0.125cm on the printed page, or 0.25cm in the original huge file.
+                # Each row bounding box (black line) is 164*12, 
+                grid_row_w = 164
+                grid_row_h = 12
+                # with 2 hor padding and 1 ver padding on each side.
+                grid_hor_padding = 2
+                grid_ver_padding = 1
+                # There are 20 glyphs per row. Each glyph scan area is 8x10.
+                grid_scan_w = 8
+                grid_scan_h = 10
+                # The visible gray squares are 7x7, to help with human and scanning errors.
+                grid_glyph_w = 7
+                grid_scan_hor_padding = 0.5
+            else:
+                # SHEET VERSION 3:
+                # The grid unit here is roughly 1/6cm on the printed page, or 1/3cm in the original huge file.
+                # Each row bounding box (black line) is 126x12,
+                grid_row_w = 126
+                grid_row_h = 12
+                # with 3 hor padding and 2 ver padding on each side.
+                grid_hor_padding = 3
+                grid_ver_padding = 2
+                # There are 20 glyphs per row. Each glyph scan area is 6x8.
+                grid_scan_w = 6
+                grid_scan_h = 8
+                # The visible gray squares are 4x4, to help with human and scanning errors.
+                grid_glyph_w = 4
+                grid_scan_hor_padding = 1
+
+            # Convert glyph and padding from grid cells into pixels,
+            # using the measured size of each row
+            glyph_w      = grid_scan_w      * row_w/grid_row_w
+            glyph_h      = grid_scan_h      * row_h/grid_row_h
+            left_padding = grid_hor_padding * row_w/grid_row_w
+            top_padding  = grid_ver_padding * row_h/grid_row_h
 
             for col in range(cols):
-                glyph_top  = by + top_padding
-                glyph_left = bx + left_padding + col*glyph_w
+                glyph_top  = row_y + top_padding
+                glyph_left = row_x + left_padding + col*glyph_w
                 roi = image[
                     int(glyph_top ) : int(glyph_top  + glyph_h),
                     int(glyph_left) : int(glyph_left + glyph_w)
                 ]
-                characters.append([roi, glyph_left, glyph_top])
+                characters.append([roi, glyph_left, glyph_top, glyph_w, glyph_h])
 
         # Now we have the characters but since they are all mixed up we need to position them.
         # Sort characters based on 'y' coordinate and group them by number of rows at a time. Then
@@ -165,19 +197,20 @@ class SHEETtoPNG:
         # of a glyph when it's converted to BMP, then SVG.
         left_cartouche  = sorted_characters[120]
         right_cartouche = sorted_characters[121]
-        glyph_left, glyph_top = right_cartouche[1], right_cartouche[2]
+        glyph_left, glyph_top, glyph_w, glyph_h = right_cartouche[1], right_cartouche[2], right_cartouche[3], right_cartouche[4]
         roi = image[int(glyph_top ) : int(glyph_top  + glyph_h),
                     int(glyph_left) : int(glyph_left + 1)]
-        sorted_characters.append([roi, glyph_left, glyph_top])
+        sorted_characters.append([roi, glyph_left, glyph_top, glyph_w, glyph_h])
 
-        # shift the left and right cartouche scan area inward, to match how the gray boxes are shifted        
-        glyph_left = left_cartouche[1] + glyph_w/16
+        # shift the left and right cartouche scan area inward, to match how the gray boxes are shifted
+        # glyph_left = left_cartouche[1] + glyph_w/16
+        glyph_left = left_cartouche[1] + grid_scan_hor_padding * glyph_w/grid_scan_w
         roi = image[int(glyph_top ) : int(glyph_top  + glyph_h),
                     int(glyph_left) : int(glyph_left + glyph_w)]
         sorted_characters[120][0] = roi
         sorted_characters[120][1] = glyph_left
 
-        glyph_left = right_cartouche[1] - glyph_w/16
+        glyph_left = right_cartouche[1] - grid_scan_hor_padding * glyph_w/grid_scan_w
         roi = image[int(glyph_top ) : int(glyph_top  + glyph_h),
                     int(glyph_left) : int(glyph_left + glyph_w)]
         sorted_characters[121][0] = roi
@@ -210,7 +243,7 @@ class SHEETtoPNG:
 
         return sorted_characters
 
-    def save_images(self, characters, characters_dir, config):
+    def save_images(self, characters, characters_dir, config, metadata):
         """Create directory for each character and save as PNG.
 
         Creates directory and PNG file for each image as following:
@@ -250,47 +283,59 @@ class SHEETtoPNG:
         # Trim cartouche characters
             # We'll have to do the same thing for long pi
             # and any other character that spans two cells
-        self.pad_right(characters_dir, "cartoucheStartTok")
-        self.pad_right(characters_dir, "bracketleft")
+        self.pad("right", characters_dir, metadata, "cartoucheStartTok")
+        self.pad("right", characters_dir, metadata, "bracketleft")
         
-        self.pad_left (characters_dir, "cartoucheEndTok")
-        self.pad_left (characters_dir, "bracketright")
+        self.pad("left",  characters_dir, metadata, "cartoucheEndTok")
+        self.pad("left",  characters_dir, metadata, "bracketright")
 
-        self.pad_right(characters_dir, "cartoucheMiddleTok", True)
-        self.pad_left (characters_dir, "cartoucheMiddleTok", True)
-        self.pad_right(characters_dir, "underscore", True)
-        self.pad_left (characters_dir, "underscore", True)
+        self.pad("right", characters_dir, metadata, "cartoucheMiddleTok", True)
+        self.pad("left",  characters_dir, metadata, "cartoucheMiddleTok", True)
+        self.pad("right", characters_dir, metadata, "underscore", True)
+        self.pad("left",  characters_dir, metadata, "underscore", True)
 
-    def pad_right(self, characters_dir, char_name, resize=False):
+    def pad(self, side, characters_dir, metadata, char_name, resize=False):
         from PIL import Image, ImageDraw
         char_img = Image.open(characters_dir + "/" + char_name + "/" + char_name + ".png")
-        if resize:
-            char_img = char_img.resize((int(char_img.height * 0.8), char_img.height))
-        draw = ImageDraw.Draw(char_img)
-        bbox = char_img.getbbox()
-        width = char_img.width
-        draw.rectangle(
-            (
-                (bbox[2] - width//24, bbox[1]), 
-                (bbox[2], bbox[3])
-            ),
-            fill="white"
-        )
-        char_img.save(characters_dir + "/" + char_name + "/" + char_name + ".png")
 
-    def pad_left(self, characters_dir, char_name, resize=False):
-        from PIL import Image, ImageDraw
-        char_img = Image.open(characters_dir + "/" + char_name + "/" + char_name + ".png")
+        # resize the cartouche middle from 1px wide to the standard width (for a given sheet version)
+        sheet_version = metadata.get("sheetversion") or "99999999.999999.999999"
+        if Version(sheet_version) < Version("3"):
+            # SHEET VERSION 2: Each glyph scan area is 8x10.
+            grid_scan_w = 8
+            grid_scan_h = 10
+            # The visible gray squares are 7x7, to help with human and scanning errors.
+            grid_glyph_w = 7
+            grid_scan_hor_padding = 0.5
+        else:
+            # SHEET VERSION 3: Each glyph scan area is 6x18.
+            grid_scan_w = 6
+            grid_scan_h = 8
+            # The visible gray squares are 4x4, to help with human and scanning errors.
+            grid_glyph_w = 4
+            grid_scan_hor_padding = 1
         if resize:
-            char_img = char_img.resize((int(char_img.height * 0.8), char_img.height))
+            char_img = char_img.resize((int(char_img.height * grid_scan_w/grid_scan_h), char_img.height))
+
         draw = ImageDraw.Draw(char_img)
-        bbox = char_img.getbbox()
-        width = char_img.width
-        draw.rectangle(
-            (
-                (bbox[0], bbox[1]), 
-                (bbox[0] + width//24, bbox[3])
-            ),
-            fill="white"
-        )
+        left, top, right, bottom = 0, 0, char_img.width, char_img.height
+        in_pixels = char_img.width/grid_scan_w
+        if side == "left":
+            draw.rectangle(
+                (
+                    (     left,                                                                    top        ), 
+                    #             scan padding                      cartouche overlap
+                    (     left  + grid_scan_hor_padding*in_pixels - grid_glyph_w*in_pixels/42,     bottom     )
+                ),
+                fill="white"
+            )
+        if side == "right":
+            draw.rectangle(
+                (
+                    #             scan padding                      cartouche overlap
+                    (     right - grid_scan_hor_padding*in_pixels + grid_glyph_w*in_pixels/42,     top        ), 
+                    (     right,                                                                   bottom     )
+                ),
+                fill="white"
+            )
         char_img.save(characters_dir + "/" + char_name + "/" + char_name + ".png")
