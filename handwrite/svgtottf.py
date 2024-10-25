@@ -94,7 +94,11 @@ class SVGtoTTF:
             filename = os.path.splitext(filename)[0] + " (1).ttf"
             outfile = outdir + os.sep + filename
 
-        ligatures_string = "feature liga {\n"
+        ligatures_string = """languagesystem DFLT dflt; # this part is apparently necessary so that people can edit the font in fontforge after??
+languagesystem latn dflt;
+
+feature liga {
+"""
         list_of_ligs = []
         list_of_cartoucheable_glyphs = []
 
@@ -214,7 +218,7 @@ feature calt {
 <h1>""" + family + ", tan " + designer + """</h1>
 
 <!-- Latin test -->
-<!--<h1>jelo <span class="tp">awen e</span></h1>-->
+<!-- <h1>Latin test: jelo <span class="tp">ijklmpstuw awen e lipu</span></h1> -->
 
 <span class="tp">
 <!-- spacing test -->
@@ -490,8 +494,8 @@ function redrawTextarea(e) {
                 # Scale everything up so that the glyphs are 1em tall, instead of the cartouches
                 # The scaling center is the baseline, far left
                 g.transform(psMat.translate(
-                    -bs_glyph_wh / 2, # 700/2
-                    -(bs_glyph_wh + bs_scan_hor_padding) / 2  # (700+50)/2
+                    -bs_glyph_wh / 2,
+                    -375 # i'm not totally sure why this magic number works tbh
                 ))
                 g.transform(psMat.scale(1 / bs_glyph_wh * 1000)) # divide by the SAFE area height; multiply by the SCAN area height
                 g.transform(psMat.translate(
