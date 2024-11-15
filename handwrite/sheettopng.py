@@ -70,16 +70,16 @@ class SHEETtoPNG:
 
         # Read the image and convert to grayscale
         image = cv2.imread(sheet_image)
-        cv2.imwrite(os.path.join(characters_dir, "1 image" + ".png"), image)
+        cv2.imwrite(os.path.join(characters_dir, "analysis step 1 - image" + ".png"), image)
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        cv2.imwrite(os.path.join(characters_dir, "2 grayscale" + ".png"), gray)
+        cv2.imwrite(os.path.join(characters_dir, "analysis step 2 - grayscale" + ".png"), gray)
 
         # Threshold and filter the image for better contour detection
         _, thresh = cv2.threshold(gray, threshold_value, 255, 1)
-        cv2.imwrite(os.path.join(characters_dir, "3 threshold" + ".png"), thresh)
+        cv2.imwrite(os.path.join(characters_dir, "analysis step 3 - threshold" + ".png"), thresh)
         close_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
         close = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, close_kernel, iterations=2)
-        cv2.imwrite(os.path.join(characters_dir, "4 close" + ".png"), close)
+        cv2.imwrite(os.path.join(characters_dir, "analysis step 4 - close" + ".png"), close)
 
         # Search for contours.
         contours, h = cv2.findContours(
@@ -122,7 +122,7 @@ class SHEETtoPNG:
         if not os.path.exists(row_dir):
             os.mkdir(row_dir)
         for row in range(rows):
-            cv2.imwrite(os.path.join(row_dir, "row" + str(row+1) + ".png"), row_images[row][0])
+            cv2.imwrite(os.path.join(row_dir, "analysis step 5 - row" + str(row+1) + ".png"), row_images[row][0])
 
 
         # Since amongst all the contours, the expected case is that the 4 sided contours
