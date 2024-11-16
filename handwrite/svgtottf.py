@@ -215,7 +215,7 @@ feature calt {
         padding: 1em;
     }
 </style>
-<h1>""" + family + ", tan " + designer + """</h1>
+<h1>""" + "<a href='" + filename + "'>" + family + "</a>, tan " + designer + """</h1>
 
 <!-- Latin test -->
 <!-- <h1>Latin test: jelo <span class="tp">ijklmpstuw awen e lipu</span></h1> -->
