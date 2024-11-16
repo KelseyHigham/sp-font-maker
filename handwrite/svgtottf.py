@@ -172,13 +172,70 @@ feature calt {
         feature_file.write(ligatures_string)
         feature_file.close()
 
-
         from fontTools import ttLib  # camelCase!
         tt = ttLib.TTFont(infile)
         from fontTools.feaLib import builder  # camelCase!
         builder.addOpenTypeFeaturesFromString(tt, ligatures_string)
         sys.stderr.write("\nGenerating %s...\n" % outfile)
         tt.save(outfile)
+
+
+
+        from datetime import datetime
+        ilo_linku_toml_file = open(directory + os.sep + family + ".toml", "w", encoding="utf-8")
+        ilo_linku_toml_file.write('''#:schema ../../api/generated/font.json
+id        = "''' + family + '''"
+name      = "''' + family + '''"
+filename  = "''' + filename + '''"
+creator   = ["''' + designer + '''"]
+license   = "''' + license + '''"
+ligatures = true
+ucsur     = true
+writing_system = "sitelen pona"
+
+last_updated = "''' + datetime.now().strftime("%Y-%m") + '''"
+version      = "1"
+
+features = [
+  "ASCII transcription and codepoints",
+  "UCSUR-compliant",
+  "cartouches",
+
+  # "incomplete",
+  # "variable weight",
+
+  # Not implemented in SP Font Maker:
+  # "all ku suli",                   # kokosila
+  # "all ku suli and UCSUR words",   # apeja, pake, powe
+  # "community requested nimisin",
+  # "name glyphs",
+  # "long pi",
+  # "character variants",
+  # "randomized jaki",
+  # "ZWJ sequences",
+  # "tuki tiki",
+]
+
+# Pick one style, or put multiple comma-separated styles in quotes.
+style = "handwritten"
+# style = "alternate design"
+# style = "uniform line weight"
+# style = "pixelated"
+# style = "handdrawn"
+# style = "serif"
+# style = "sans-serif"
+# style = "faux 3d"
+# style = "unspecified"
+
+[links]
+# Autofilled for Kelly. If you're not Kelly, these URLs are inaccurate. But you can make them accurate, with a GitHub pull request!
+# fontfile = "https://github.com/wasokeli/sp-font-maker/raw/main/''' + filename.replace(" ", "%20") + '''"
+# repo     = "https://github.com/wasokeli/wasokeli.github.io/tree/main/sp-font-maker"
+# webpage  = "https://wasokeli.github.io/sp-font-maker/''' + family.replace(" ", "-") + '''.html"
+''')
+        feature_file.close()
+
+
 
         self.generate_web_page(outdir, filename, family, designer, license, licenseurl)
 
