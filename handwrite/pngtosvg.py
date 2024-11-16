@@ -96,11 +96,11 @@ class PNGtoSVG:
             # glyph_height = 48
             # glyph_width  = 72
             # glyph_height = 96
-            glyph_width  = 144 # good balance, probably
-            glyph_height = 192
-            # glyph_width  = 288 # no visible improvement, probably
-            # glyph_height = 384
-            # glyph_width  = 576 # really huge, probably
+            # glyph_width  = 144
+            # glyph_height = 192
+            glyph_width  = 288 # good balance
+            glyph_height = 384
+            # glyph_width  = 576 # no visible improvement and really huge, probably?
             # glyph_height = 768
 
 
