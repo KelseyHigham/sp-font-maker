@@ -51,8 +51,7 @@ def main():
     parser.add_argument("--designer", help="Font Designer name (\"me\" by default)", default=None)
     parser.add_argument("--license", help="Font License. (`--license ofl` and `--license cc0` will populate License and LicenseURL appropriately. \"All rights reserved\" by default.)", default=None)
     parser.add_argument("--license-url", help="Font License URL (\"\" by default)", default=None)
-    # TODO: add --sheet-version argument
-    parser.add_argument("--sheet-version", help="Sheet version", default=None)
+    parser.add_argument("--sheet-version", help="Sheet version (latest by default)", default=None)
 
     args = parser.parse_args()
     metadata = {
