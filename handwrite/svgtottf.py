@@ -229,7 +229,7 @@ style = "handwritten"
 
 [links]
 # Autofilled for Kelly. If you're not Kelly, these URLs are inaccurate. But you can make them accurate, with a GitHub pull request!
-# fontfile = "https://github.com/wasokeli/sp-font-maker/raw/main/''' + filename.replace(" ", "%20") + '''"
+# fontfile = "https://github.com/wasokeli/wasokeli.github.io/raw/main/sp-font-maker/''' + filename.replace(" ", "%20") + '''"
 # repo     = "https://github.com/wasokeli/wasokeli.github.io/tree/main/sp-font-maker"
 # webpage  = "https://wasokeli.github.io/sp-font-maker/''' + family.replace(" ", "-") + '''.html"
 ''')
