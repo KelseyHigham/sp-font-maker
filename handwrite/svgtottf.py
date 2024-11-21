@@ -77,10 +77,10 @@ class SVGtoTTF:
         license = self.metadata.get("license", None) or self.config["sfnt_names"].get("License", "All rights reserved")
         licenseurl = self.metadata.get("licenseurl", None) or self.config["sfnt_names"].get("License URL", "")
         if license == "ofl":
-            license = "SIL Open Font License, Version 1.1"
+            license = "OFL-1.1"
             licenseurl = "https://openfontlicense.org"
         if license == "cc0":
-            license = "CC0 1.0 Universal"
+            license = "CC0-1.0"
             licenseurl = "https://creativecommons.org/publicdomain/zero/1.0/"
 
         # fontTools: input font file
@@ -439,10 +439,10 @@ function redrawTextarea(e) {
             self.config["sfnt_names"]["License"] = license
             self.config["sfnt_names"]["License URL"] = licenseurl
             if license == "ofl":
-                self.config["sfnt_names"]["License"] = "OFL-1.1"
+                self.config["sfnt_names"]["License"] = "SIL Open Font License, Version 1.1"
                 self.config["sfnt_names"]["License URL"] = "https://openfontlicense.org"
             if license == "cc0":
-                self.config["sfnt_names"]["License"] = "CC0-1.0"
+                self.config["sfnt_names"]["License"] = "CC0 1.0 Universal"
                 self.config["sfnt_names"]["License URL"] = "https://creativecommons.org/publicdomain/zero/1.0/"
 
 
