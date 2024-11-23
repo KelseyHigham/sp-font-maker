@@ -216,15 +216,9 @@ class SHEETtoPNG:
         sorted_characters[121][0] = roi
         sorted_characters[121][1] = glyph_left
 
-        # add Latin a e n o, necessary for ligatures
-        a = sorted_characters[0]
-        sorted_characters.append(a)
-        e = sorted_characters[9]
-        sorted_characters.append(e)
-        n = sorted_characters[148]
-        sorted_characters.append(n)
-        o = sorted_characters[68]
-        sorted_characters.append(o)
+        # add ali
+        ali = sorted_characters[4]
+        sorted_characters.append(ali)
 
         # add Latin [ _ ] . :, necessary for ligatures
         bracketleft  = sorted_characters[120]
@@ -238,6 +232,33 @@ class SHEETtoPNG:
         colon  = sorted_characters[123]
         sorted_characters.append(colon)
 
+        # add Latin a e n o, necessary for ligatures
+        a = sorted_characters[0]
+        sorted_characters.append(a)
+        e = sorted_characters[9]
+        sorted_characters.append(e)
+        n = sorted_characters[148]
+        sorted_characters.append(n)
+        o = sorted_characters[68]
+        sorted_characters.append(o)
+
+        # add uppercase IJKLMPSTUW, for Pingo and name glyphs
+        for i,c in enumerate("ijklmpstuw"):
+            sorted_characters.append(sorted_characters[124+i])
+
+        # add uppercase AENO
+        uppercase_a = sorted_characters[0]
+        sorted_characters.append(uppercase_a)
+        uppercase_e = sorted_characters[9]
+        sorted_characters.append(uppercase_e)
+        uppercase_n = sorted_characters[148]
+        sorted_characters.append(uppercase_n)
+        uppercase_o = sorted_characters[68]
+        sorted_characters.append(uppercase_o)
+
+        # g for Pingo
+        g = sorted_characters[126]
+        sorted_characters.append(g)
 
 # END OF KELLY ZONE
 
@@ -263,7 +284,9 @@ class SHEETtoPNG:
         # Create directory for each character and save the png for the characters
         # Structure (single sheet): UserProvidedDir/ord(character)/ord(character).png
         # Structure (multiple sheets): UserProvidedDir/sheet_filename/ord(character)/ord(character).png
-            # Kelly note: `characters` is more like `cells`, since not every cell contains a glyph
+            # Kelly note: the script does not support multiple sheets, actually
+
+        # Kelly note: `characters` is more like `cells`, since not every cell contains a glyph
         for cellNum, images in enumerate(characters):
 
             with open(config) as f:

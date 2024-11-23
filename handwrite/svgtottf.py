@@ -6,7 +6,7 @@ import datetime
 
 
 class SVGtoTTF:
-    def convert(self, directory, outdir, config, metadata=None):
+    def convert(self, directory, outdir, config, metadata=None, other_words_string=None):
         print("SVGtoTTF")
         """Convert a directory with SVG images to TrueType Font.
 
@@ -51,10 +51,10 @@ class SVGtoTTF:
             ]
         )
 
-        self.add_ligatures(directory, outdir, config, metadata)
+        self.add_ligatures(directory, outdir, config, metadata, other_words_string)
 
 
-    def add_ligatures(self, directory, outdir, config, metadata=None):
+    def add_ligatures(self, directory, outdir, config, metadata=None, other_words_string=None):
         # Now the font has exported, presumably. 
         # We're back to the `python` environment, not the `ffpython` one, so we can use libraries like fontTools, camelCase.
         import fontTools  # camelCase!
@@ -74,6 +74,8 @@ class SVGtoTTF:
 
         designer = self.metadata.get("designer", None) or self.config["props"].get("designer", "jan pi toki pona")
 
+        # for generating the ilo Linku TOML files for each font,
+        # we use short license codes from the SPDX License List: https://spdx.org/licenses/
         license = self.metadata.get("license", None) or self.config["sfnt_names"].get("License", "All rights reserved")
         licenseurl = self.metadata.get("licenseurl", None) or self.config["sfnt_names"].get("License URL", "")
         if license == "ofl":
@@ -237,9 +239,16 @@ style = "handwritten"
 
 
 
-        self.generate_web_page(outdir, filename, family, designer, license, licenseurl)
+        self.generate_web_page(outdir, filename, family, designer, license, licenseurl, other_words_string)
 
-    def generate_web_page(self, outdir, filename, family, designer, license, licenseurl):
+    def generate_web_page(self, outdir, filename, family, designer, license, licenseurl, other_words_string=None):
+        other_words = []
+        if other_words_string:
+            other_words = other_words_string.split()
+            for word_index, word in enumerate(other_words):
+                if word == "_":
+                    other_words[word_index] = "　"
+
         example_web_page = open(outdir + os.sep + family.replace(" ", "-") + ".html", "w", encoding="utf-8")
         example_web_page.write(
 """
@@ -301,9 +310,9 @@ lili linja lipu loje lon luka lukin lupa ma mama mani meli mi mije moku moli mon
 mute nanpa nasa nasin nena ni nimi noka o olin ona open pakala pali palisa pan pana pi pilin pimeja<br>
 pini pipi poka poki pona pu sama seli selo seme sewi sijelo sike sin sina sinpin sitelen sona soweli suli<br>
 suno supa suwi tan taso tawa telo tenpo toki tomo tu unpa uta utala walo wan waso wawa weka wile<br>
-[].:ijklmpst,uw,te to<br>
-kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi<br>
-epiku jasima linluwi majuna meso oko su<br><br>
+[].:ijklmpst,uw,te to""" + " ".join(other_words[0:4]) + """<br>
+kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi""" + " ".join(other_words[4:12]) + """<br>
+epiku jasima linluwi majuna meso oko su""" + " ".join(other_words[12:25]) + """<br><br>
 </span>
 <p class="tp">
 <!-- jan [sama olin namako jaki ala] li sitelen e pu kepeken wawa mute. -->
@@ -510,16 +519,15 @@ function redrawTextarea(e) {
 
                 # Vertically center sitelen pona, middot, colon
                 # Todo: just center everything *except* certain glyphs
-                    # do NOT center a-z, cartouches, long pi, te/to
-                if (    
-                    0xf1900 <= cp <= 0xf1988 or      # pu & ku suli
-                    0xf19a0 <= cp <= 0xf19a3 or      # historical
-                    cp == 0xf199c or cp == 0x2e or   # period
-                    cp == 0xf199d or cp == 0x3a or   # colon
-                    cp == 0x61 or                    # a
-                    cp == 0x65 or                    # e
-                    cp == 0x6e or                    # n
-                    cp == 0x6f                       # o
+                    # do NOT center a-z, cartouches, long pi, te/to, (period?)
+                if not (
+                    0x41 <= cp <= 0x5a or            # A-Z
+                    0x61 <= cp <= 0x7a or            # a-z
+                    cp == 0xf1990 or cp == 0x5b or   # cartouche start
+                    cp == 0xf1991 or cp == 0x5d or   # cartouche end
+                    cp == 0xf1992 or cp == 0x5f or   # cartouche middle
+                    cp == 0x300c or                  # te (open quote)
+                    cp == 0x300d                     # to (close quote)
                 ):
                     bottom = g.boundingBox()[1]
                     top    = g.boundingBox()[3]
@@ -531,13 +539,13 @@ function redrawTextarea(e) {
 
                 # Horizontally center sitelen pona, middot, colon, letters
                 # Todo: just center everything *except* certain glyphs
-                    # do NOT center cartouches, long pi, te/to
-                if (
-                    0xf1900 <= cp <= 0xf1988 or      # pu & ku suli
-                    0xf19a0 <= cp <= 0xf19a3 or      # historical
-                    cp == 0xf199c or cp == 0x2e or   # period
-                    cp == 0xf199d or cp == 0x3a or   # colon
-                    0x61 <= cp <= 0x7a               # aeijklmnopstuw
+                    # do NOT center cartouches, long pi, te/to, (period?)
+                if not (
+                    cp == 0xf1990 or cp == 0x5b or   # cartouche start
+                    cp == 0xf1991 or cp == 0x5d or   # cartouche end
+                    cp == 0xf1992 or cp == 0x5f or   # cartouche middle
+                    cp == 0x300c or                  # te (open quote)
+                    cp == 0x300d                     # to (close quote)
                 ):
                     left  = g.boundingBox()[0]
                     right = g.boundingBox()[2]

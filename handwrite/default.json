@@ -213,15 +213,37 @@
 
 
     {"codepoint": "0xf1992", "name": "cartoucheMiddleTok"},
-    {"codepoint": "0x61", "name": "a"},
-    {"codepoint": "0x65", "name": "e"},
-    {"codepoint": "0x6e", "name": "n"},
-    {"codepoint": "0x6f", "name": "o"},
+
+    {"name": "aliTok", "ligature": "a l i"}, 
+
     {"codepoint": "0x5b", "name": "bracketleft"},
     {"codepoint": "0x5f", "name": "underscore"},
     {"codepoint": "0x5d", "name": "bracketright"},
     {"codepoint": "0x2e", "name": "period"},
-    {"codepoint": "0x3a", "name": "colon"}
+    {"codepoint": "0x3a", "name": "colon"},
+
+    {"codepoint": "0x61", "name": "a"},
+    {"codepoint": "0x65", "name": "e"},
+    {"codepoint": "0x6e", "name": "n"},
+    {"codepoint": "0x6f", "name": "o"},
+
+    {"codepoint": "0x49", "name": "I"},
+    {"codepoint": "0x4a", "name": "J"},
+    {"codepoint": "0x4b", "name": "K"},
+    {"codepoint": "0x4c", "name": "L"},
+    {"codepoint": "0x4d", "name": "M"},
+    {"codepoint": "0x50", "name": "P"},
+    {"codepoint": "0x53", "name": "S"},
+    {"codepoint": "0x54", "name": "T"},
+    {"codepoint": "0x55", "name": "U"},
+    {"codepoint": "0x57", "name": "W"},
+
+    {"codepoint": "0x41", "name": "A"},
+    {"codepoint": "0x45", "name": "E"},
+    {"codepoint": "0x4e", "name": "N"},
+    {"codepoint": "0x4f", "name": "O"},
+
+    {"codepoint": "0x67", "name": "g"}
   ],
   "note": "Remember, the last item shouldn't have a comma!"
 }
