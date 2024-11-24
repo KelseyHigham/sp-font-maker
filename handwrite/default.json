@@ -243,7 +243,10 @@
     {"codepoint": "0x4e", "name": "N"},
     {"codepoint": "0x4f", "name": "O"},
 
-    {"codepoint": "0x67", "name": "g"}
+    {"codepoint": "0x67", "name": "g"},
+    {"codepoint": "0x79", "name": "y"},
+    {"codepoint": "0x76", "name": "v"},
+    {"codepoint": "0x56", "name": "V"}
   ],
   "note": "Remember, the last item shouldn't have a comma!"
 }

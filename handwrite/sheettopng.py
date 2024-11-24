@@ -259,6 +259,15 @@ class SHEETtoPNG:
         # g for Pingo
         g = sorted_characters[126]
         sorted_characters.append(g)
+        # y for yupekosi
+        y = sorted_characters[125]
+        sorted_characters.append(y)
+        # v for Vivi
+        v = sorted_characters[133]
+        sorted_characters.append(v)
+        # V for Vivi
+        uppercase_v = sorted_characters[133]
+        sorted_characters.append(uppercase_v)
 
 # END OF KELLY ZONE
 
