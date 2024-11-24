@@ -256,18 +256,31 @@ class SHEETtoPNG:
         uppercase_o = sorted_characters[68]
         sorted_characters.append(uppercase_o)
 
-        # g for Pingo
+        # g for Pingo, shown as k
         g = sorted_characters[126]
         sorted_characters.append(g)
-        # y for yupekosi
+        # y for yupekosi, shown as j
         y = sorted_characters[125]
         sorted_characters.append(y)
-        # v for Vivi
+        # v for Vivi, shown as w
         v = sorted_characters[133]
         sorted_characters.append(v)
-        # V for Vivi
+        # V for Vivi, shown as w
         uppercase_v = sorted_characters[133]
         sorted_characters.append(uppercase_v)
+
+        # for adding future unofficial letters:
+        # letter, glyph index, codepoint
+        # b 129 62
+        # c 130 63
+        # d 131 64
+        # f 129 66
+        # h 126 68
+        # q 126 71
+        # r 133 72
+        # x 130 78
+        # z 130 7a
+
 
 # END OF KELLY ZONE
 
