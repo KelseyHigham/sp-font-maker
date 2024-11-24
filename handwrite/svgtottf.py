@@ -92,9 +92,9 @@ class SVGtoTTF:
         # fontTools: output font file
         filename = filename + ".ttf" if not filename.endswith(".ttf") else filename
         outfile = str(outdir + os.sep + filename)
-        while os.path.exists(outfile):
-            filename = os.path.splitext(filename)[0] + " (1).ttf"
-            outfile = outdir + os.sep + filename
+        # while os.path.exists(outfile):
+        #     filename = os.path.splitext(filename)[0] + " (1).ttf"
+        #     outfile = outdir + os.sep + filename
 
         ligatures_string = """languagesystem DFLT dflt; # this part is apparently necessary so that people can edit the font in fontforge after??
 languagesystem latn dflt;
@@ -205,14 +205,14 @@ features = [
 
   # "incomplete",
   # "variable weight",
+  # "name glyphs",
+  # "character variants",
 
   # Not implemented in SP Font Maker:
   # "all ku suli",                   # kokosila
   # "all ku suli and UCSUR words",   # apeja, pake, powe
   # "community requested nimisin",
-  # "name glyphs",
   # "long pi",
-  # "character variants",
   # "randomized jaki",
   # "ZWJ sequences",
   # "tuki tiki",

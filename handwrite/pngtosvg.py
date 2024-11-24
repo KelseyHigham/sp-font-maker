@@ -92,14 +92,23 @@ class PNGtoSVG:
             # glyph_height = 500
         else:
             # SHEET VERSION 3
+
+            # print("scanning at low quality")
             # glyph_width  = 36 # faster & lower quality, for testing
             # glyph_height = 48
+
+            # print("scanning at low quality")
             # glyph_width  = 72
             # glyph_height = 96
+
+            # print("scanning at low quality")
             # glyph_width  = 144
             # glyph_height = 192
+
             glyph_width  = 288 # good balance
             glyph_height = 384
+
+            # print("scanning at unnecessarily high quality")
             # glyph_width  = 576 # no visible improvement and really huge, probably?
             # glyph_height = 768
 
