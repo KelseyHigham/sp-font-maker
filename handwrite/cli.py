@@ -55,6 +55,17 @@ def converters(sheet, output_directory, directory=None, config=None, metadata=No
                     if letter == ",": letters[letter_index] = "comma"
                     if letter == "!": letters[letter_index] = "exclamation"
                     if letter == "?": letters[letter_index] = "question"
+                    if letter == "0": letters[letter_index] = "zero"
+                    if letter == "1": letters[letter_index] = "one"
+                    if letter == "2": letters[letter_index] = "two"
+                    if letter == "3": letters[letter_index] = "three"
+                    if letter == "4": letters[letter_index] = "four"
+                    if letter == "5": letters[letter_index] = "five"
+                    if letter == "6": letters[letter_index] = "six"
+                    if letter == "7": letters[letter_index] = "seven"
+                    if letter == "8": letters[letter_index] = "eight"
+                    if letter == "9": letters[letter_index] = "nine"
+                # word = "".join(letters)
                 font_data['glyphs-fancy'][blank_cells[word_index]] = {"name": word + "Tok", "ligature": " ".join(letters)}
 
     with open(config, "w") as file:
