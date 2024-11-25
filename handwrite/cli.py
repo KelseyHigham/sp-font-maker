@@ -100,12 +100,14 @@ def main():
 populate License and LicenseURL appropriately. \"All rights reserved\" by default.)", default=None)
     parser.add_argument("--license-url", help="Font License URL (\"\" by default)", default=None)
     parser.add_argument("--sheet-version", help="Sheet version (latest by default)", default=None)
-    parser.add_argument("--other-words", help="List of other words in the blank cells. \
-Use _ to ignore a cell. (Example: \
+    parser.add_argument("--other-words", help="""List of other words in the custom cells. Use _ to ignore a cell.
+
+IMPORTANT: The empty space to the left of each custom row is one of the custom cells. You can draw there! If you didn't draw there, put a _ for each one, like in this example:
+
 `--other-words \"\
 _ kiki kokosila usawi \
 _ api Keli melome Pingo penpo poni snoweli \
-_ kan kulijo misa molusa oke pa panke polinpin tona wa wasoweli waken\"`)", default=None)
+_ kan kulijo misa molusa oke pa panke polinpin tona wa wasoweli waken\"`)""", default=None)
 
     args = parser.parse_args()
     metadata = {
