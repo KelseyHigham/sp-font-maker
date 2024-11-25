@@ -84,6 +84,7 @@ def converters(sheet, output_directory, directory=None, config=None, metadata=No
 
 
 def main():
+    print("If you get errors, try `handwrite --help`. Also check the analysis PNGs in the debug directory.")
     parser = argparse.ArgumentParser()
     parser.add_argument("input_path", help="Path to sample sheet")
     parser.add_argument("output_directory", help="Directory Path to save font output")
