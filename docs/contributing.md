@@ -21,7 +21,7 @@
 3. Clone the repository or your fork
 
     ```console
-    git clone https://github.com/builtree/handwrite
+    git clone https://github.com/KelseyHigham/sp-font-maker
     ```
 
 4. (Optional) Make a virtual environment and activate it
@@ -60,7 +60,7 @@ You are ready to go!
 3. Clone the repository or your fork
 
     ```console
-    git clone https://github.com/builtree/handwrite
+    git clone https://github.com/KelseyHigham/sp-font-maker
     ```
 
 4. (Optional) Make a virtual environment and activate it
