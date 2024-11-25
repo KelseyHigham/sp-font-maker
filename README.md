@@ -11,7 +11,7 @@ Fill out this image, and send it to someone who's managed to install the script.
 
 I don't really know how Python works. Someone please help me to make these instructions easier!!!
 
-1. Use [the English version's instructions](https://web.archive.org/web/https://www.builtree.org/handwrite/contributing/) for installing the *development* version of handwrite.
+1. Use [the English version's instructions](https://github.com/KelseyHigham/sp-font-maker/blob/dev/docs/contributing.md) for installing the *development* version of handwrite.
 2. Add the FontForge folder (probably `C:\Program Files (x86)\FontForgeBuilds\bin` on Windows) to your path. (Open the Start menu and type "path")
 3. `pip install fonttools`
 4. Use `handwrite -h` to see instructions on using the command-line tool.
