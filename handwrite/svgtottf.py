@@ -527,7 +527,8 @@ function redrawTextarea(e) {
                     cp == 0xf1991 or cp == 0x5d or   # cartouche end
                     cp == 0xf1992 or cp == 0x5f or   # cartouche middle
                     cp == 0x300c or                  # te (open quote)
-                    cp == 0x300d                     # to (close quote)
+                    cp == 0x300d or                  # to (close quote)
+                    cp == 0xf199c or cp == 0x2e      # period
                 ):
                     bottom = g.boundingBox()[1]
                     top    = g.boundingBox()[3]
@@ -545,7 +546,9 @@ function redrawTextarea(e) {
                     cp == 0xf1991 or cp == 0x5d or   # cartouche end
                     cp == 0xf1992 or cp == 0x5f or   # cartouche middle
                     cp == 0x300c or                  # te (open quote)
-                    cp == 0x300d                     # to (close quote)
+                    cp == 0x300d or                  # to (close quote)
+                    cp == 0xf199c or cp == 0x2e or   # period
+                    cp == 0xf199d or cp == 0x3a      # colon
                 ):
                     left  = g.boundingBox()[0]
                     right = g.boundingBox()[2]
