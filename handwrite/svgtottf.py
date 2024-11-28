@@ -518,8 +518,7 @@ function redrawTextarea(e) {
                 ))
 
                 # Vertically center sitelen pona, middot, colon
-                # Todo: just center everything *except* certain glyphs
-                    # do NOT center a-z, cartouches, long pi, te/to, (period?)
+                # Do NOT center a-z, cartouches, long pi, te/to, (period?)
                 if not (
                     0x41 <= cp <= 0x5a or            # A-Z
                     0x61 <= cp <= 0x7a or            # a-z
@@ -527,7 +526,7 @@ function redrawTextarea(e) {
                     cp == 0xf1991 or cp == 0x5d or   # cartouche end
                     cp == 0xf1992 or cp == 0x5f or   # cartouche middle
                     cp == 0x300c or                  # te (open quote)
-                    cp == 0x300d or                  # to (close quote)
+                    cp == 0x300d                     # to (close quote)
                     # cp == 0xf199c or cp == 0x2e      # period
                 ):
                     bottom = g.boundingBox()[1]
@@ -539,14 +538,13 @@ function redrawTextarea(e) {
                     x = 1
 
                 # Horizontally center sitelen pona, middot, colon, letters
-                # Todo: just center everything *except* certain glyphs
-                    # do NOT center cartouches, long pi, te/to, (period?)
+                # Do NOT center cartouches, long pi, te/to, (period?)
                 if not (
                     cp == 0xf1990 or cp == 0x5b or   # cartouche start
                     cp == 0xf1991 or cp == 0x5d or   # cartouche end
                     cp == 0xf1992 or cp == 0x5f or   # cartouche middle
                     cp == 0x300c or                  # te (open quote)
-                    cp == 0x300d or                  # to (close quote)
+                    cp == 0x300d                     # to (close quote)
                     # cp == 0xf199c or cp == 0x2e or   # period
                     # cp == 0xf199d or cp == 0x3a      # colon
                 ):
