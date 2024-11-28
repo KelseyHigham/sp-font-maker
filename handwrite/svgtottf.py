@@ -429,6 +429,18 @@ function redrawTextarea(e) {
         self.font.fullname = fontname + " " + style
         self.font.encoding = props.get("encoding", "UnicodeFull")
 
+        self.font.os2_typoascent_add  = 0  
+        self.font.os2_typodescent_add = 0 
+        self.font.os2_typoascent      = 1200
+        self.font.os2_typodescent     = -300
+        self.font.os2_typolinegap     = 0
+
+        self.font.hhea_ascent_add  = 0
+        self.font.hhea_descent_add = 0
+        self.font.hhea_ascent      = 1200
+        self.font.hhea_descent     = -300
+        self.font.hhea_linegap     = 0
+
         for k, v in props.items():
             if hasattr(self.font, k):
                 if isinstance(v, list):
@@ -533,7 +545,7 @@ function redrawTextarea(e) {
                     top    = g.boundingBox()[3]
                     g.transform(psMat.translate(
                         0, 
-                        self.font.ascent - top - (self.font.ascent + self.font.descent - (top - bottom)) / 2
+                        self.font.ascent - top - ((self.font.ascent + self.font.descent) - (top - bottom)) / 2
                     ))
                     x = 1
 
@@ -559,21 +571,43 @@ function redrawTextarea(e) {
 
                 # Scale everything up so that the glyphs are 1em tall, instead of the cartouches
                 # The scaling center is the baseline, far left
+
+                def debug_metrics(word_to_debug):
+                    if name == word_to_debug:
+                        print("\n", g.width, g.vwidth)
+                        bottom = g.boundingBox()[1]
+                        top    = g.boundingBox()[3]
+                        print(
+                            "top", int(top),
+                            "bottom", int(bottom),
+                            "sum", int(top-bottom),
+                            "ratio", -top/bottom
+                        )
+
+                debug_metrics("lupaTok")
+
+                # move glyphs to where rescaling happens:
+                # the left side of the glyph, at the height of the baseline
                 g.transform(psMat.translate(
                     -bs_glyph_wh / 2,
-                    -375 # i'm not totally sure why this magic number works tbh
+                    # -375 # i'm not totally sure why this magic number works tbh
+                    #      # it no longer seems to work?? weird
+                    200-500 # works for sheet v2
                 ))
+                debug_metrics("lupaTok")
+
                 g.transform(psMat.scale(1 / bs_glyph_wh * 1000)) # divide by the SAFE area height; multiply by the SCAN area height
+                debug_metrics("lupaTok")
+
                 g.transform(psMat.translate(
                     500, 
-                    500
+                    500-200
                 ))
+                debug_metrics("lupaTok")
 
-
-
-                # print(g.width, g.vwidth)
                 g.width = 1000
                 g.vwidth = 1000
+                debug_metrics("lupaTok")
 
         # get rid of stray metrics
         print("\r                                                ")
