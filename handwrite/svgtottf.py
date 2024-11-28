@@ -410,6 +410,74 @@ function redrawTextarea(e) {
         )
         example_web_page.close()
 
+
+
+        # # test ilo Linku rendering
+
+        # from PIL import Image, ImageDraw, ImageFont
+        # from PIL import features
+
+        # # Check if RAQM support is enabled in Pillow
+        # if features.check_feature('raqm'):
+        #     print("RAQM support is enabled in Pillow.")
+        # else:
+        #     print("RAQM support is NOT enabled in Pillow. Linku rendering is probably borked.")
+
+        # from typing import Any, Dict, List, Literal
+        # BgStyle = Literal["outline"] | Literal["background"]
+        # Color = tuple[int, int, int]
+        # ColorAlpha = tuple[int, int, int, int]
+
+        # def display(text: str, font_path: str, font_size: int, color: Color, bgstyle: BgStyle):
+        #     STROKE_WIDTH = round((font_size / 133) * 5)
+        #     LINE_SPACING = round((font_size / 2))
+
+        #     HPAD = round(font_size / 30)
+        #     # NOTE: the VPAD is high because keli's font tool produces fonts which cut off on the top otherwise
+        #     VPAD = round(font_size / 4) + 5
+
+        #     BLACK: ColorAlpha = (0x36, 0x39, 0x3F, 0xFF)
+        #     WHITE: ColorAlpha = (0xF0, 0xF0, 0xF0, 0xFF)
+        #     TRANSPARENT: ColorAlpha = (0, 0, 0, 0)
+
+        #     stroke_color = BLACK if True else WHITE
+        #     bg_color = stroke_color if bgstyle == "background" else TRANSPARENT
+
+        #     font = ImageFont.truetype(font_path, font_size)
+        #     d = ImageDraw.Draw(Image.new("RGBA", (0, 0), (0, 0, 0, 0)))
+        #     x, y, w, h = d.multiline_textbbox(
+        #         (0, 0),
+        #         text=text,
+        #         font=font,
+        #         spacing=LINE_SPACING,
+        #         stroke_width=STROKE_WIDTH,
+        #         font_size=font_size,
+        #     )
+        #     image = Image.new(
+        #         mode="RGBA",
+        #         size=(w + (HPAD * 2), h + (VPAD * 2)),
+        #         color=bg_color,
+        #     )
+        #     d = ImageDraw.Draw(image)
+        #     d.multiline_text(
+        #         (HPAD, VPAD),
+        #         text,
+        #         font=font,
+        #         fill=color,
+        #         spacing=LINE_SPACING,
+        #         stroke_width=STROKE_WIDTH,
+        #         stroke_fill=stroke_color,
+        #     )
+        #     image.save(outdir + os.sep + "LINKU TEST - " + family + ".png")
+
+        # display(
+        #     "󱤴󱥴󱦐󱤗󱤋󱤦󱤎󱦑󱤀", 
+        #     outdir + os.sep + family + ".ttf",
+        #     72,
+        #     (0x0C, 0xAF, 0xF5),
+        #     "outline"
+        # )
+
     def set_properties(self):
         """Set metadata of the font from config."""
         props = self.config["props"]
