@@ -83,18 +83,18 @@ class PNGtoSVG:
         elif Version(sheet_version) < Version("3"):
             # SHEET VERSION 2.1
 
-            if os.path.basename(path) == "a.png":
-                print("⚠️ scanning at low quality")
-            glyph_width  = 40 # faster & lower quality, for testing
-            glyph_height = 50
+            # if os.path.basename(path) == "a.png":
+            #     print("⚠️ scanning at low quality")
+            # glyph_width  = 40 # faster & lower quality, for testing
+            # glyph_height = 50
 
             # if os.path.basename(path) == "a.png":
             #     print("⚠️ scanning at low quality")
             # glyph_width  = 100
             # glyph_height = 125
 
-            # glyph_width  = 200 # good balance
-            # glyph_height = 250
+            glyph_width  = 200 # good balance
+            glyph_height = 250
 
             # if os.path.basename(path) == "a.png":
             #     print("⚠️ scanning at unnecessarily high quality")
