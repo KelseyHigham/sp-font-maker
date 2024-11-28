@@ -82,33 +82,48 @@ class PNGtoSVG:
             glyph_height = 125
         elif Version(sheet_version) < Version("3"):
             # SHEET VERSION 2.1
-            # glyph_width  = 40 # faster & lower quality, for testing
-            # glyph_height = 50
+
+            if os.path.basename(path) == "a.png":
+                print("⚠️ scanning at low quality")
+            glyph_width  = 40 # faster & lower quality, for testing
+            glyph_height = 50
+
+            # if os.path.basename(path) == "a.png":
+            #     print("⚠️ scanning at low quality")
             # glyph_width  = 100
             # glyph_height = 125
-            glyph_width  = 200 # good balance
-            glyph_height = 250
+
+            # glyph_width  = 200 # good balance
+            # glyph_height = 250
+
+            # if os.path.basename(path) == "a.png":
+            #     print("⚠️ scanning at unnecessarily high quality")
             # glyph_width  = 400 # no visible improvement
             # glyph_height = 500
+
         else:
             # SHEET VERSION 3
 
-            # print("scanning at low quality")
+            # if os.path.basename(path) == "a.png":
+            #     print("⚠️ scanning at low quality")
             # glyph_width  = 36 # faster & lower quality, for testing
             # glyph_height = 48
 
-            # print("scanning at low quality")
+            # if os.path.basename(path) == "a.png":
+            #     print("⚠️ scanning at low quality")
             # glyph_width  = 72
             # glyph_height = 96
 
-            # print("scanning at low quality")
+            # if os.path.basename(path) == "a.png":
+            #     print("⚠️ scanning at low quality")
             # glyph_width  = 144
             # glyph_height = 192
 
             glyph_width  = 288 # good balance
             glyph_height = 384
 
-            # print("scanning at unnecessarily high quality")
+            # if os.path.basename(path) == "a.png":
+            #     print("⚠️ scanning at unnecessarily high quality")
             # glyph_width  = 576 # no visible improvement and really huge, probably?
             # glyph_height = 768
 
