@@ -600,8 +600,16 @@ function redrawTextarea(e) {
                 # Vertically center sitelen pona, middot, colon
                 # Do NOT center a-z, cartouches, long pi, te/to, (period?)
                 if not (
-                    0x41 <= cp <= 0x5a or            # A-Z
-                    0x61 <= cp <= 0x7a or            # a-z
+                    (0x41 <= cp <= 0x5a              # A-Z
+                        and cp != 0x41                   # A
+                        and cp != 0x45                   # E
+                        and cp != 0x4e                   # N
+                        and cp != 0x4f) or               # O
+                    (0x61 <= cp <= 0x7a              # a-z
+                        and cp != 0x61                   # a
+                        and cp != 0x65                   # e
+                        and cp != 0x6e                   # n
+                        and cp != 0x6f) or               # o
                     cp == 0xf1990 or cp == 0x5b or   # cartouche start
                     cp == 0xf1991 or cp == 0x5d or   # cartouche end
                     cp == 0xf1992 or cp == 0x5f or   # cartouche middle
