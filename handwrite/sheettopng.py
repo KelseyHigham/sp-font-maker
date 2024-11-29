@@ -221,7 +221,52 @@ class SHEETtoPNG:
                     int(glyph_top ) : int(glyph_top  + glyph_h),
                     int(glyph_left) : int(glyph_left + glyph_w)
                 ]
+
+                # funny algorithm to center glyph scan areas while scanning.
+                # this helps if groups of glyphs are uniformly shifted left or right,
+                # which can happen when physical paper is bent.
+                # normally bent paper will result in glyphs bleeding into each other's scan areas.
+                # this mostly mitigates that.
+
+                # don't apply this algorithm to the cartouche and te/to, which it breaks
+                # don't apply this algorithm to ijklmpstuw, where it's mostly useless
+                if row != 6:
+                    # we wanna find the center of gravity of the cell
+                    # and we'll use that to move the cell
+                    # to avoid like, scanning one pixel of a neighboring glyph
+                    old_glyph_left = glyph_left
+                    new_glyph_left = glyph_left
+                    old_glyph_top = glyph_top
+                    new_glyph_top = glyph_top
+                    gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+                    _, thresh = cv2.threshold(gray, threshold_value, 255, 1)
+                    # this is where the magic happens
+                    # i call it magic because i don't understand it
+                    moments = cv2.moments(thresh)
+                    if moments['m00'] != 0:
+                        centroid_x = moments['m10']/moments['m00']
+                        centroid_y = moments['m01']/moments['m00']
+                        # print("shift:", int(centroid_x - glyph_w/2), int(centroid_y - glyph_h/2))
+                        new_glyph_left = glyph_left + (centroid_x - glyph_w/2)
+                        new_glyph_top  = glyph_top  + (centroid_y - glyph_h/2)
+
+                        # toggle this line to toggle the algorithm, 
+                        # while still previewing the algorithm on "analysis PREVIEW.png".
+                        # note that i'm only implementing horizontal shift, 
+                        # not the vertical shift that that sheet implies.
+                        glyph_left = glyph_left + (centroid_x - glyph_w/2)
+
+                        roi = image[
+                            int(glyph_top ) : int(glyph_top  + glyph_h),
+                            int(glyph_left) : int(glyph_left + glyph_w)
+                        ]
+
                 characters.append([roi, glyph_left, glyph_top, glyph_w, glyph_h])
+                debug_draw.rectangle([old_glyph_left, old_glyph_top, old_glyph_left+glyph_w, old_glyph_top+glyph_h], 
+                    outline=(0x00, 0xff, 0x00))
+                debug_draw.rectangle([new_glyph_left, new_glyph_top, new_glyph_left+glyph_w, new_glyph_top+glyph_h], 
+                    outline=(0xff, 0x00, 0x00))
+
         debug_image.save(os.path.join(characters_dir, "analysis PREVIEW" + ".png"))
 
         # Now we have the characters but since they are all mixed up we need to position them.
