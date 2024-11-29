@@ -88,22 +88,24 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("input_path", help="Path to sample sheet")
     parser.add_argument("output_directory", help="Directory Path to save font output")
-    parser.add_argument("--debug-directory", help="Generate in-progress PNGs, BMPs, SVGs, SFDs, and TTFs to this path (Temp by default)", default=None)
+    parser.add_argument("--debug-directory", help="Generate in-progress PNGs, BMPs, SVGs, SFDs, and TTFs to this path \
+        (Temp by default)", default=None)
     parser.add_argument("--filename", help="Font File name (\"MyFont\" by default)", default=None)
     parser.add_argument("--family", help="Font Family name (filename by default)", default=None)
     parser.add_argument("--designer", help="Font Designer name (\"me\" by default)", default=None)
-    parser.add_argument("--license", help="Font License. (`--license ofl` and `--license cc0` will \
-populate License and LicenseURL appropriately. \"All rights reserved\" by default.)", default=None)
+    parser.add_argument("--license", help="Font License. \
+        (`--license ofl` and `--license cc0` will populate License and LicenseURL appropriately. \
+        IMPORTANT: The command line tool defaults to \"All rights reserved\", even though the sheet defaults to OFL.)", default=None)
     parser.add_argument("--license-url", help="Font License URL (\"\" by default)", default=None)
     parser.add_argument("--sheet-version", help="Sheet version (latest by default)", default=None)
     parser.add_argument("--other-words", help="""List of other words in the custom cells. Use _ to ignore a cell.
 
-IMPORTANT: The empty space to the left of each custom row is one of the custom cells. You can draw there! If you didn't draw there, put a _ for each one, like in this example:
+        IMPORTANT: Add a _ to the left of every custom row, where the empty space is.
 
-`--other-words \"\
-_ kiki kokosila usawi \
-_ api Keli melome Pingo penpo poni snoweli \
-_ kan kulijo misa molusa oke pa panke polinpin tona wa wasoweli waken\"`)""", default=None)
+        Example: `--other-words \"\
+        _ kiki kokosila usawi \
+        _ api Keli melome Pingo penpo poni snoweli \
+        _ kan kulijo misa molusa oke pa panke polinpin tona wa wasoweli waken\"`)""", default=None)
 
     args = parser.parse_args()
     metadata = {
