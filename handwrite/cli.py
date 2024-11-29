@@ -42,13 +42,13 @@ def converters(sheet, output_directory, directory=None, config=None, metadata=No
         print(other_words[0:4])
         print(other_words[4:12])
         print(other_words[12:25])
-        blank_cells = [ # indices of the blank cells on the page
+        blank_cells = [ # default.json indices of the blank cells on the page
                                                          136, 137, 138, 139, # 4 cells
                                      152, 153, 154, 155, 156, 157, 158, 159, # 8 cells
             167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179  # 13 cells
         ]
 
-        for word_index, word in enumerate(other_words):
+        for position, word in enumerate(other_words):
             if word != "_":
                 letters = list(word)
                 for letter_index, letter in enumerate(letters):
@@ -75,17 +75,32 @@ def converters(sheet, output_directory, directory=None, config=None, metadata=No
                 # also "one" and "nine" are valid toki pona, and may rarely cause name collisions.
                 # word = "".join(letters)
 
+                glyph_json = font_data['glyphs-fancy']
 
                 if   word == "apeja":
-                    font_data['glyphs-fancy'][blank_cells[word_index]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": "0xf19a1"}
+                    glyph_json[blank_cells[position]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": "0xf19a1"}
                 elif word == "kokosila":
-                    font_data['glyphs-fancy'][blank_cells[word_index]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": "0xf1984"}
+                    glyph_json[blank_cells[position]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": "0xf1984"}
                 elif word == "pake":
-                    font_data['glyphs-fancy'][blank_cells[word_index]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": "0xf19a0"}
+                    glyph_json[blank_cells[position]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": "0xf19a0"}
                 elif word == "powe":
-                    font_data['glyphs-fancy'][blank_cells[word_index]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": "0xf19a3"}
+                    glyph_json[blank_cells[position]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": "0xf19a3"}
                 else:
-                    font_data['glyphs-fancy'][blank_cells[word_index]] = {"name": word + "Tok", "ligature": " ".join(letters)}
+                    # check if it's a redraw of an existing sheet glyph
+                    for default_glyph in glyph_json:
+                        if 'name' in default_glyph:
+                            if default_glyph['name'] == word + "Tok":
+                                if 'codepoint' in default_glyph:
+                                    glyph_json[blank_cells[position]]['codepoint'] = default_glyph['codepoint']
+                                    del default_glyph['codepoint']
+                                del default_glyph['name']
+                                if 'ligature' in default_glyph:
+                                    del default_glyph['ligature']
+                                # todo: replace ASCII a e n o A E N O, too
+                                # todo: remove redundant glyphs from the preview web page
+                                # probably never: allow replacing anything from row[6]
+                    glyph_json[blank_cells[position]]['name'] = word + "Tok"
+                    glyph_json[blank_cells[position]]['ligature'] = " ".join(letters)
 
     with open(config, "w") as file:
         json.dump(font_data, file, indent=4)
