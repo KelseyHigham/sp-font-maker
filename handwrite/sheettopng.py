@@ -132,8 +132,7 @@ class SHEETtoPNG:
             # Draw the contour
             debug_draw.polygon(contour_pil, outline="lime", width=2)
 
-        # output the initial 9 rows as images, for debug purposes
-
+        # output the biggest 9 rows as images, for debug purposes
         row_images = []
         for row in range(rows):
             left, top, width, height = cv2.boundingRect(contours[row])
@@ -164,6 +163,8 @@ class SHEETtoPNG:
         for row in range(rows):
             cv2.imwrite(os.path.join(row_dir, "analysis step 5 - row" + str(row+1) + ".png"), row_images[row][0])
 
+        # sort the biggest 9 rows, top-to-bottom
+        contours[0:9] = sorted(contours[0:9], key=lambda cnt: cv2.boundingRect(cnt)[1])
 
         # Since amongst all the contours, the expected case is that the 4 sided contours
         # containing the characters should have the maximum area, so we loop through the first
@@ -262,7 +263,7 @@ class SHEETtoPNG:
                         # while still previewing the algorithm on "analysis PREVIEW.png".
                         # (note that i'm only implementing horizontal shift, 
                         # not the vertical shift that that sheet implies.)
-                        # glyph_left = glyph_left + x_shift
+                        glyph_left = glyph_left + x_shift
 
                         roi = image[
                             int(glyph_top ) : int(glyph_top  + glyph_h),
@@ -280,10 +281,13 @@ class SHEETtoPNG:
         # Now we have the characters but since they are all mixed up we need to position them.
         # Sort characters based on 'y' coordinate and group them by number of rows at a time. Then
         # sort each group based on the 'x' coordinate.
+
+        # sort all glyphs by y
         characters.sort(key=lambda x: x[2])
         sorted_characters = []
         for row_id in range(rows):
             sorted_characters.extend(
+                # sort groups of 20 glyphs by x
                 sorted(characters[cols * row_id : cols * (row_id + 1)], key=lambda x: x[1])
             )
 
