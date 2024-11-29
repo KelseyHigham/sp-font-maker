@@ -88,11 +88,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("input_path", help="Path to sample sheet")
     parser.add_argument("output_directory", help="Directory Path to save font output")
-    parser.add_argument(
-        "--debug-directory",
-        help="Generate in-progress PNGs, BMPs, SVGs, SFDs, and TTFs to this path (Temp by default)",
-        default=None,
-    )
+    parser.add_argument("--debug-directory", help="Generate in-progress PNGs, BMPs, SVGs, SFDs, and TTFs to this path (Temp by default)", default=None)
     parser.add_argument("--filename", help="Font File name (\"MyFont\" by default)", default=None)
     parser.add_argument("--family", help="Font Family name (filename by default)", default=None)
     parser.add_argument("--designer", help="Font Designer name (\"me\" by default)", default=None)

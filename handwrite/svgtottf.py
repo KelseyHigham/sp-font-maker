@@ -288,15 +288,15 @@ style = "handwritten"
 
 <span class="tp">
 <!-- spacing test -->
-<!--a　akesi　ala　alasa　ale　anpa　ante　anu　awen　e　en　esun　ijo　ike　ilo　insa　jaki　jan　jelo　jo<br>
-kala　kalama　kama　kasi　ken　kepeken　kili　kiwen　ko　kon　kule　kulupu　kute　la　lape　laso　lawa　len　lete　li<br>
-lili　linja　lipu　loje　lon　luka　lukin　lupa　ma　mama　mani　meli　mi　mije　moku　moli　monsi　mu　mun　musi<br>
-mute　nanpa　nasa　nasin　nena　ni　nimi　noka　o　olin　ona　open　pakala　pali　palisa　pan　pana　pi　pilin　pimeja<br>
-pini　pipi　poka　poki　pona　pu　sama　seli　selo　seme　sewi　sijelo　sike　sin　sina　sinpin　sitelen　sona　soweli　suli<br>
-suno　supa　suwi　tan　taso　tawa　telo　tenpo　toki　tomo　tu　unpa　uta　utala　walo　wan　waso　wawa　weka　wile<br>
-[　]　.　:　i　j　k　l　m　p　s　t　u　w　te　to<br>
-kijetesantakalu　kin　kipisi　ku　lanpan　leko　misikeke　monsuta　n　namako　soko　tonsi<br>
-epiku　jasima　linluwi　majuna　meso　oko　su<br><br>-->
+<!--a　　akesi　　ala　　alasa　　ale　　anpa　　ante　　anu　　awen　　e　　en　　esun　　ijo　　ike　　ilo　　insa　　jaki　　jan　　jelo　　jo<br>
+kala　　kalama　　kama　　kasi　　ken　　kepeken　　kili　　kiwen　　ko　　kon　　kule　　kulupu　　kute　　la　　lape　　laso　　lawa　　len　　lete　　li<br>
+lili　　linja　　lipu　　loje　　lon　　luka　　lukin　　lupa　　ma　　mama　　mani　　meli　　mi　　mije　　moku　　moli　　monsi　　mu　　mun　　musi<br>
+mute　　nanpa　　nasa　　nasin　　nena　　ni　　nimi　　noka　　o　　olin　　ona　　open　　pakala　　pali　　palisa　　pan　　pana　　pi　　pilin　　pimeja<br>
+pini　　pipi　　poka　　poki　　pona　　pu　　sama　　seli　　selo　　seme　　sewi　　sijelo　　sike　　sin　　sina　　sinpin　　sitelen　　sona　　soweli　　suli<br>
+suno　　supa　　suwi　　tan　　taso　　tawa　　telo　　tenpo　　toki　　tomo　　tu　　unpa　　uta　　utala　　walo　　wan　　waso　　wawa　　weka　　wile<br>
+[　　]　　.　　:　　i　　j　　k　　l　　m　　p　　s　　t　　u　　w　　te　　to<br>
+kijetesantakalu　　kin　　kipisi　　ku　　lanpan　　leko　　misikeke　　monsuta　　n　　namako　　soko　　tonsi<br>
+epiku　　jasima　　linluwi　　majuna　　meso　　oko　　su<br><br>-->
 
 <!-- cartouche test -->
 <!--[<span style="color: red; opacity: .5;">]</span>[.]<br>
@@ -386,7 +386,8 @@ epiku jasima linluwi majuna meso oko su""" + " ".join(other_words[12:25]) + """<
 <script>
 /*  workaround for Chromium
 
-    Chrome has a bug where ligatures aren't properly applied at typing-time. for example, if you type "pona", it erroneously shows a p followed by a sideways 6, rather than one smile.
+    Chrome has a bug where ligatures aren't properly applied at typing-time. 
+    for example, if you type "pona", it erroneously shows a p followed by a sideways 6, rather than one smile.
     i work around this by refreshing the textarea after every keystroke.
     i refresh the textarea by changing one property, back and forth between two values that will result in the same appearance on most modern devices.
 */
@@ -660,7 +661,7 @@ function redrawTextarea(e) {
                             "ratio", -top/bottom
                         )
 
-                debug_metrics("lupaTok")
+                # debug_metrics("lupaTok")
 
                 # move glyphs to where rescaling happens:
                 # the left side of the glyph, at the height of the baseline
@@ -670,20 +671,20 @@ function redrawTextarea(e) {
                     #      # it no longer seems to work?? weird
                     200-500 # works for sheet v2
                 ))
-                debug_metrics("lupaTok")
+                # debug_metrics("lupaTok")
 
                 g.transform(psMat.scale(1 / bs_glyph_wh * 1000)) # divide by the SAFE area height; multiply by the SCAN area height
-                debug_metrics("lupaTok")
+                # debug_metrics("lupaTok")
 
                 g.transform(psMat.translate(
                     500, 
                     500-200
                 ))
-                debug_metrics("lupaTok")
+                # debug_metrics("lupaTok")
 
                 g.width = 1000
                 g.vwidth = 1000
-                debug_metrics("lupaTok")
+                # debug_metrics("lupaTok")
 
         # get rid of stray metrics
         print("\r                                                ")
