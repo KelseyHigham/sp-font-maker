@@ -369,7 +369,7 @@ class SHEETtoPNG:
         sorted_characters.append(uppercase_v)
 
         # for adding future unofficial letters:
-        # letter, glyph index, codepoint
+        # letter, glyph index, codepoint for default.json
         # b 129 62
         # c 130 63
         # d 131 64

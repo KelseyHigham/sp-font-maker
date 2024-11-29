@@ -69,8 +69,23 @@ def converters(sheet, output_directory, directory=None, config=None, metadata=No
                     if letter == "7": letters[letter_index] = "seven"
                     if letter == "8": letters[letter_index] = "eight"
                     if letter == "9": letters[letter_index] = "nine"
+
+                # todo, fix bug: since i'm NOT running this line of code, we can end up with -+^&,!? in filenames.
+                # but if i run it, we'll end up with glyph names like "tokihyphenponaTok", which is weird.
+                # also "one" and "nine" are valid toki pona, and may rarely cause name collisions.
                 # word = "".join(letters)
-                font_data['glyphs-fancy'][blank_cells[word_index]] = {"name": word + "Tok", "ligature": " ".join(letters)}
+
+
+                if   word == "apeja":
+                    font_data['glyphs-fancy'][blank_cells[word_index]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": "0xf19a1"}
+                elif word == "kokosila":
+                    font_data['glyphs-fancy'][blank_cells[word_index]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": "0xf1984"}
+                elif word == "pake":
+                    font_data['glyphs-fancy'][blank_cells[word_index]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": "0xf19a0"}
+                elif word == "powe":
+                    font_data['glyphs-fancy'][blank_cells[word_index]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": "0xf19a3"}
+                else:
+                    font_data['glyphs-fancy'][blank_cells[word_index]] = {"name": word + "Tok", "ligature": " ".join(letters)}
 
     with open(config, "w") as file:
         json.dump(font_data, file, indent=4)
