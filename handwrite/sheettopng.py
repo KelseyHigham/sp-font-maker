@@ -262,7 +262,7 @@ class SHEETtoPNG:
                         # while still previewing the algorithm on "analysis PREVIEW.png".
                         # (note that i'm only implementing horizontal shift, 
                         # not the vertical shift that that sheet implies.)
-                        glyph_left = glyph_left + x_shift
+                        # glyph_left = glyph_left + x_shift
 
                         roi = image[
                             int(glyph_top ) : int(glyph_top  + glyph_h),
