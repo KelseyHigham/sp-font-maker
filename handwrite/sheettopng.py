@@ -103,6 +103,22 @@ class SHEETtoPNG:
         #     print(contours[row])
 
 # START OF KELLY ZONE
+        import math
+        def small_rect(contour):
+            # find a smaller rect,
+            # with the aspect ratio of boundingRect,
+            # but the area of contourArea
+            # (doesn't help)
+            left, top, width, height = cv2.boundingRect(contour)
+            area         = cv2.contourArea(contour)
+            aspect_ratio = width/height
+            center_x = left + width/2
+            center_y = top + height/2
+            width_s  = math.sqrt(area*aspect_ratio)
+            height_s = math.sqrt(area/aspect_ratio)
+            left_s = center_x - width_s/2
+            top_s  = center_y - height_s/2
+            return left_s, top_s, width_s, height_s
 
         # for debug imaging
         from PIL import Image, ImageDraw
@@ -121,13 +137,24 @@ class SHEETtoPNG:
         row_images = []
         for row in range(rows):
             left, top, width, height = cv2.boundingRect(contours[row])
+            # left_s, top_s, width_s, height_s = small_rect(contours[row])
+
             roi = image[
                 top : top  + height,
                 left: left + width
             ]
             row_images.append([roi, left, top])
 
+            # # doesn't help
+            # roi = image[
+            #     int(top_s) : int(top_s  + height_s),
+            #     int(left_s): int(left_s + width_s)
+            # ]
+            # row_images.append([roi, left_s, top_s])
+
             debug_draw.rectangle([left, top, left+width, top+height], outline=(0xff, 0x00, 0x00))
+            # debug_draw.rectangle([left_s, top_s, left_s+width_s, top_s+height_s], outline=(0x00, 0x00, 0xff))
+
         row_images.sort(key=lambda x: x[2])
 
         # row_dir = os.path.join(characters_dir, "9 rows")
@@ -146,6 +173,7 @@ class SHEETtoPNG:
             # Calculate the bounding of the contour and approximate the height
             # and width for final cropping.
             row_x, row_y, row_w, row_h = cv2.boundingRect(contours[row])
+            # row_x, row_y, row_w, row_h = small_rect(contours[row]) # doesn't help
 
             sheet_version = metadata.get("sheetversion") or "99999999.999999.999999"
             if Version(sheet_version) < Version("3"):
