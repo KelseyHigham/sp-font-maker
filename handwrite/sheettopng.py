@@ -122,7 +122,7 @@ class SHEETtoPNG:
 
         # for debug imaging
         from PIL import Image, ImageDraw
-        debug_image = Image.open(sheet_image)
+        debug_image = Image.open(sheet_image).convert("RGB")
         debug_draw = ImageDraw.Draw(debug_image)
 
         # Draw each contour on the image
@@ -130,7 +130,7 @@ class SHEETtoPNG:
             # Convert the contour to a list of tuples for PIL
             contour_pil = [tuple(point[0]) for point in contour]
             # Draw the contour
-            debug_draw.polygon(contour_pil, outline=(0x00, 0xff, 0x00), width=2)
+            debug_draw.polygon(contour_pil, outline="lime", width=2)
 
         # output the initial 9 rows as images, for debug purposes
 
@@ -152,8 +152,8 @@ class SHEETtoPNG:
             # ]
             # row_images.append([roi, left_s, top_s])
 
-            debug_draw.rectangle([left, top, left+width, top+height], outline=(0xff, 0x00, 0x00))
-            # debug_draw.rectangle([left_s, top_s, left_s+width_s, top_s+height_s], outline=(0x00, 0x00, 0xff))
+            debug_draw.rectangle([left, top, left+width, top+height], outline="red")
+            # debug_draw.rectangle([left_s, top_s, left_s+width_s, top_s+height_s], outline="blue")
 
         row_images.sort(key=lambda x: x[2])
 
@@ -271,9 +271,9 @@ class SHEETtoPNG:
 
                 characters.append([roi, glyph_left, glyph_top, glyph_w, glyph_h])
                 debug_draw.rectangle([old_glyph_left, old_glyph_top, old_glyph_left+glyph_w, old_glyph_top+glyph_h], 
-                    outline=(0x00, 0xff, 0x00))
+                    outline="lime")
                 debug_draw.rectangle([new_glyph_left, new_glyph_top, new_glyph_left+glyph_w, new_glyph_top+glyph_h], 
-                    outline=(0xff, 0x00, 0x00))
+                    outline="red")
 
         debug_image.save(os.path.join(characters_dir, "analysis PREVIEW" + ".png"))
 
@@ -282,9 +282,9 @@ class SHEETtoPNG:
         # sort each group based on the 'x' coordinate.
         characters.sort(key=lambda x: x[2])
         sorted_characters = []
-        for k in range(rows):
+        for row_id in range(rows):
             sorted_characters.extend(
-                sorted(characters[cols * k : cols * (k + 1)], key=lambda x: x[1])
+                sorted(characters[cols * row_id : cols * (row_id + 1)], key=lambda x: x[1])
             )
 
         # for the middle portion of the cartouche, grab the leftmost 1px column

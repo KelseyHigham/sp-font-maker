@@ -16,11 +16,15 @@ def run(sheet, output_directory, characters_dir, config, metadata, other_words_s
 
 
 def converters(sheet, output_directory, directory=None, config=None, metadata=None, other_words_string=None):
+    # debug/temp directory
     if not directory:
         directory = tempfile.mkdtemp()
         isTempdir = True
     else:
         isTempdir = False
+    if not os.path.isdir(directory):
+        print("Debug directory does not exist. Creating it at", directory)
+        os.makedirs(directory, exist_ok=True)
 
     if config is None:
         default_config = os.path.join(
