@@ -104,6 +104,18 @@ class SHEETtoPNG:
 
 # START OF KELLY ZONE
 
+        # for debug imaging
+        from PIL import Image, ImageDraw
+        debug_image = Image.open(sheet_image)
+        debug_draw = ImageDraw.Draw(debug_image)
+
+        # Draw each contour on the image
+        for contour in contours:
+            # Convert the contour to a list of tuples for PIL
+            contour_pil = [tuple(point[0]) for point in contour]
+            # Draw the contour
+            debug_draw.polygon(contour_pil, outline=(0x00, 0xff, 0x00), width=2)
+
         # output the initial 9 rows as images, for debug purposes
 
         row_images = []
@@ -115,6 +127,7 @@ class SHEETtoPNG:
             ]
             row_images.append([roi, left, top])
 
+            debug_draw.rectangle([left, top, left+width, top+height], outline=(0xff, 0x00, 0x00))
         row_images.sort(key=lambda x: x[2])
 
         # row_dir = os.path.join(characters_dir, "9 rows")
@@ -181,6 +194,7 @@ class SHEETtoPNG:
                     int(glyph_left) : int(glyph_left + glyph_w)
                 ]
                 characters.append([roi, glyph_left, glyph_top, glyph_w, glyph_h])
+        debug_image.save(os.path.join(characters_dir, "analysis PREVIEW" + ".png"))
 
         # Now we have the characters but since they are all mixed up we need to position them.
         # Sort characters based on 'y' coordinate and group them by number of rows at a time. Then
