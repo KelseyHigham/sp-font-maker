@@ -214,6 +214,7 @@ class SHEETtoPNG:
             left_padding = grid_hor_padding * row_w/grid_row_w
             top_padding  = grid_ver_padding * row_h/grid_row_h
 
+            prev_x_shift = 0
             for col in range(cols):
                 glyph_top  = row_y + top_padding
                 glyph_left = row_x + left_padding + col*glyph_w
@@ -246,15 +247,22 @@ class SHEETtoPNG:
                     if moments['m00'] != 0:
                         centroid_x = moments['m10']/moments['m00']
                         centroid_y = moments['m01']/moments['m00']
+                        x_shift = (centroid_x - glyph_w/2)
+                        y_shift = (centroid_y - glyph_h/2)
+                        if col != 0:
+                            # avoid large deviations glyph-to-glyph, 
+                            # by nudging halfway towards the previous glyph's shift
+                            x_shift = (x_shift + prev_x_shift)/2
+                        prev_x_shift = x_shift
                         # print("shift:", int(centroid_x - glyph_w/2), int(centroid_y - glyph_h/2))
-                        new_glyph_left = glyph_left + (centroid_x - glyph_w/2)
-                        new_glyph_top  = glyph_top  + (centroid_y - glyph_h/2)
+                        new_glyph_left = glyph_left + x_shift
+                        new_glyph_top  = glyph_top  + y_shift
 
                         # toggle this line to toggle the algorithm, 
                         # while still previewing the algorithm on "analysis PREVIEW.png".
                         # note that i'm only implementing horizontal shift, 
                         # not the vertical shift that that sheet implies.
-                        glyph_left = glyph_left + (centroid_x - glyph_w/2)
+                        glyph_left = glyph_left + x_shift
 
                         roi = image[
                             int(glyph_top ) : int(glyph_top  + glyph_h),
