@@ -96,7 +96,8 @@ def converters(sheet, output_directory, directory=None, config=None, metadata=No
                                 del default_glyph['name']
                                 if 'ligature' in default_glyph:
                                     del default_glyph['ligature']
-                                # todo: replace ASCII a e n o A E N O, too
+                                # todo: replace ASCII A E N O, too
+                                    # lowercase seems to work already
                                 # todo: remove redundant glyphs from the preview web page
                                 # probably never: allow replacing anything from row[6]
                     glyph_json[blank_cells[position]]['name'] = word + "Tok"

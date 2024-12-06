@@ -130,6 +130,48 @@ feature liga {
         list_of_ligs.append(("  sub exclamation space by ideographicspace;", 2))
         list_of_ligs.append(("  sub question space by ideographicspace;", 2))
         list_of_ligs.append(("  sub l i n u w i by linluwiTok;", 6))
+        # directional ni: extra ligatures to cover both v> and >v, and niv
+        list_of_ligs.append(("  sub n i west v      by niTok.SW;", 4))
+        list_of_ligs.append(("  sub n i west north  by niTok.NW;", 4))
+        list_of_ligs.append(("  sub n i east north  by niTok.NE;", 4))
+        list_of_ligs.append(("  sub n i east v      by niTok.SE;", 4))
+        list_of_ligs.append(("  sub n i v by niTok;", 3))
+        # directional akesi: extra ligatures to cover both ^> and >^, and akesi^
+        list_of_ligs.append(("  sub a k e s i west v      by akesiTok.SW;", 4))
+        list_of_ligs.append(("  sub a k e s i west north  by akesiTok.NW;", 4))
+        list_of_ligs.append(("  sub a k e s i east north  by akesiTok.NE;", 4))
+        list_of_ligs.append(("  sub a k e s i east v      by akesiTok.SE;", 4))
+        list_of_ligs.append(("  sub a k e s i north by akesiTok;", 3))
+        # directional pipi: extra ligatures to cover both ^> and >^, and pipi^
+        list_of_ligs.append(("  sub p i p i west v      by pipiTok.SW;", 4))
+        list_of_ligs.append(("  sub p i p i west north  by pipiTok.NW;", 4))
+        list_of_ligs.append(("  sub p i p i east north  by pipiTok.NE;", 4))
+        list_of_ligs.append(("  sub p i p i east v      by pipiTok.SE;", 4))
+        list_of_ligs.append(("  sub p i p i north by pipiTok;", 3))
+        # directional kala: extra ligatures to cover both ^> and >^, and kala>
+        list_of_ligs.append(("  sub k a l a west v      by kalaTok.SW;", 4))
+        list_of_ligs.append(("  sub k a l a west north  by kalaTok.NW;", 4))
+        list_of_ligs.append(("  sub k a l a east north  by kalaTok.NE;", 4))
+        list_of_ligs.append(("  sub k a l a east v      by kalaTok.SE;", 4))
+        list_of_ligs.append(("  sub k a l a east by kalaTok;", 3))
+        # directional kijetesantakalu: extra ligatures to cover both ^> and >^, and kijetesantakalu>
+        list_of_ligs.append(("  sub k i j e t e s a n t a k a l u west v      by kijetesantakaluTok.SW;", 4))
+        list_of_ligs.append(("  sub k i j e t e s a n t a k a l u west north  by kijetesantakaluTok.NW;", 4))
+        list_of_ligs.append(("  sub k i j e t e s a n t a k a l u east north  by kijetesantakaluTok.NE;", 4))
+        list_of_ligs.append(("  sub k i j e t e s a n t a k a l u east v      by kijetesantakaluTok.SE;", 4))
+        list_of_ligs.append(("  sub k i j e t e s a n t a k a l u east by kijetesantakaluTok;", 3))
+        # directional soweli: extra ligatures to cover both ^> and >^, and soweli>
+        list_of_ligs.append(("  sub s o w e l i west v      by soweliTok.SW;", 4))
+        list_of_ligs.append(("  sub s o w e l i west north  by soweliTok.NW;", 4))
+        list_of_ligs.append(("  sub s o w e l i east north  by soweliTok.NE;", 4))
+        list_of_ligs.append(("  sub s o w e l i east v      by soweliTok.SE;", 4))
+        list_of_ligs.append(("  sub s o w e l i east by soweliTok;", 3))
+        # directional waso: extra ligatures to cover both ^> and >^, and waso>
+        list_of_ligs.append(("  sub w a s o west v      by wasoTok.SW;", 4))
+        list_of_ligs.append(("  sub w a s o west north  by wasoTok.NW;", 4))
+        list_of_ligs.append(("  sub w a s o east north  by wasoTok.NE;", 4))
+        list_of_ligs.append(("  sub w a s o east v      by wasoTok.SE;", 4))
+        list_of_ligs.append(("  sub w a s o east by wasoTok;", 3))
 
         # sort them by number of tokens
         list_of_ligs.sort(reverse=True, key=lambda x: x[1])
@@ -207,11 +249,11 @@ features = [
   # "variable weight",
   # "name glyphs",
   # "character variants",
-
-  # Not implemented in SP Font Maker:
   # "all ku suli",                   # kokosila
   # "all ku suli and UCSUR words",   # apeja, pake, powe
   # "community requested nimisin",
+
+  # Not implemented in SP Font Maker:
   # "long pi",
   # "randomized jaki",
   # "ZWJ sequences",
@@ -738,8 +780,12 @@ function redrawTextarea(e) {
         hyphen.width = 0
         plus = self.font.createChar(ord("+"), "plus")
         plus.width = 0
-        caret = self.font.createChar(ord("^"), "caret")
-        caret.width = 0
+        caret = self.font.createChar(ord("^"), "north")
+        caret.width = 1000
+        caret = self.font.createChar(ord("<"), "west")
+        caret.width = 1000
+        caret = self.font.createChar(ord(">"), "east")
+        caret.width = 1000
         ampersand = self.font.createChar(ord("&"), "ampersand")
         ampersand.width = 0
         for number, name in enumerate(["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]):

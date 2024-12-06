@@ -272,9 +272,9 @@ class SHEETtoPNG:
 
                 characters.append([roi, glyph_left, glyph_top, glyph_w, glyph_h])
                 debug_draw.rectangle([old_glyph_left, old_glyph_top, old_glyph_left+glyph_w, old_glyph_top+glyph_h], 
-                    outline="lime")
+                    outline="lime", width=2)
                 debug_draw.rectangle([new_glyph_left, new_glyph_top, new_glyph_left+glyph_w, new_glyph_top+glyph_h], 
-                    outline="red")
+                    outline="red", width=2)
 
         debug_image.save(os.path.join(characters_dir, "analysis PREVIEW" + ".png"))
 
@@ -290,6 +290,22 @@ class SHEETtoPNG:
                 # sort groups of 20 glyphs by x
                 sorted(characters[cols * row_id : cols * (row_id + 1)], key=lambda x: x[1])
             )
+
+
+
+        # █▀▀▀  █   █  ▀▀█▀▀  █▀▀▀▄    █
+        # █▄▄    ▀▄▀     █    █   █   █ █
+        # █      ▄▀▄     █    █▀█▀   █▄▄▄█
+        # █▄▄▄  █   █    █    █  ▀▄  █   █
+
+        # ▄▀▀▀▄  █    █   █  █▀▀▀▄  █   █  ▄▀▀▀▄
+        # █      █     █ █   █   █  █▄▄▄█  ▀▄▄▄
+        # █  ▀█  █      █    █▀▀▀   █   █      █
+        # ▀▄▄▄▀  █▄▄▄   █    █      █   █  ▀▄▄▄▀
+        # These are appended to the glyph list, and they need to be kept
+        # in sync with default.json, line 216: "cartoucheMiddleTok"
+        
+
 
         # for the middle portion of the cartouche, grab the leftmost 1px column
         # of the right cartouche. it'll be automatically stretched to the width
@@ -318,6 +334,31 @@ class SHEETtoPNG:
         # add ali
         ali = sorted_characters[4]
         sorted_characters.append(ali)
+
+        # directional glyphs
+        ni = sorted_characters[65]
+        for i in range(7): # 8 directions; diagonal alts are in svgtottf.py
+            sorted_characters.append(ni)
+        akesi = sorted_characters[1]
+        for i in range(7): # 8 directions; diagonal alts are in svgtottf.py
+            sorted_characters.append(akesi)
+        pipi = sorted_characters[81]
+        for i in range(7): # 8 directions; diagonal alts are in svgtottf.py
+            sorted_characters.append(pipi)
+        kala = sorted_characters[20]
+        for i in range(7): # 8 directions; diagonal alts are in svgtottf.py
+            sorted_characters.append(kala)
+        kijetesantakalu = sorted_characters[140]
+        for i in range(7): # 8 directions; diagonal alts are in svgtottf.py
+            sorted_characters.append(kijetesantakalu)
+        soweli = sorted_characters[98]
+        for i in range(7): # 8 directions; diagonal alts are in svgtottf.py
+            sorted_characters.append(soweli)
+        waso = sorted_characters[116]
+        for i in range(7): # 8 directions; diagonal alts are in svgtottf.py
+            sorted_characters.append(waso)
+
+        # Latin characters
 
         # add Latin [ _ ] . :, necessary for ligatures
         bracketleft  = sorted_characters[120]
@@ -438,6 +479,71 @@ class SHEETtoPNG:
         self.pad("right", characters_dir, metadata, "underscore", True)
         self.pad("left",  characters_dir, metadata, "underscore", True)
 
+        self.rotate(characters_dir, metadata, False,  45, "niTok.SE")
+        self.rotate(characters_dir, metadata, False,  90, "niTok.E")
+        self.rotate(characters_dir, metadata, False, 135, "niTok.NE")
+        self.rotate(characters_dir, metadata, False, 180, "niTok.N")
+        self.rotate(characters_dir, metadata, False, 225, "niTok.NW")
+        self.rotate(characters_dir, metadata, False, 270, "niTok.W")
+        self.rotate(characters_dir, metadata, False, 315, "niTok.SW")
+
+        self.rotate(characters_dir, metadata, False,  45, "akesiTok.NW")
+        self.rotate(characters_dir, metadata, False,  90, "akesiTok.W")
+        self.rotate(characters_dir, metadata, False, 135, "akesiTok.SW")
+        self.rotate(characters_dir, metadata, False, 180, "akesiTok.S")
+        self.rotate(characters_dir, metadata, False, 225, "akesiTok.SE")
+        self.rotate(characters_dir, metadata, False, 270, "akesiTok.E")
+        self.rotate(characters_dir, metadata, False, 315, "akesiTok.NE")
+
+        self.rotate(characters_dir, metadata, False,  45, "pipiTok.NW")
+        self.rotate(characters_dir, metadata, False,  90, "pipiTok.W")
+        self.rotate(characters_dir, metadata, False, 135, "pipiTok.SW")
+        self.rotate(characters_dir, metadata, False, 180, "pipiTok.S")
+        self.rotate(characters_dir, metadata, False, 225, "pipiTok.SE")
+        self.rotate(characters_dir, metadata, False, 270, "pipiTok.E")
+        self.rotate(characters_dir, metadata, False, 315, "pipiTok.NE")
+
+        self.rotate(characters_dir, metadata, False,  45, "kalaTok.NE")
+        self.rotate(characters_dir, metadata, False,  90, "kalaTok.N")
+        self.rotate(characters_dir, metadata, True,  315, "kalaTok.NW")
+        self.rotate(characters_dir, metadata, True,    0, "kalaTok.W")
+        self.rotate(characters_dir, metadata, True,   45, "kalaTok.SW")
+        self.rotate(characters_dir, metadata, False, 270, "kalaTok.S")
+        self.rotate(characters_dir, metadata, False, 315, "kalaTok.SE")
+
+        self.rotate(characters_dir, metadata, False,  45, "kijetesantakaluTok.NE")
+        self.rotate(characters_dir, metadata, False,  90, "kijetesantakaluTok.N")
+        self.rotate(characters_dir, metadata, True,  315, "kijetesantakaluTok.NW")
+        self.rotate(characters_dir, metadata, True,    0, "kijetesantakaluTok.W")
+        self.rotate(characters_dir, metadata, True,   45, "kijetesantakaluTok.SW")
+        self.rotate(characters_dir, metadata, False, 270, "kijetesantakaluTok.S")
+        self.rotate(characters_dir, metadata, False, 315, "kijetesantakaluTok.SE")
+
+        self.rotate(characters_dir, metadata, False,  45, "soweliTok.NE")
+        self.rotate(characters_dir, metadata, False,  90, "soweliTok.N")
+        self.rotate(characters_dir, metadata, True,  315, "soweliTok.NW")
+        self.rotate(characters_dir, metadata, True,    0, "soweliTok.W")
+        self.rotate(characters_dir, metadata, True,   45, "soweliTok.SW")
+        self.rotate(characters_dir, metadata, False, 270, "soweliTok.S")
+        self.rotate(characters_dir, metadata, False, 315, "soweliTok.SE")
+
+        self.rotate(characters_dir, metadata, False,  45, "wasoTok.NE")
+        self.rotate(characters_dir, metadata, False,  90, "wasoTok.N")
+        self.rotate(characters_dir, metadata, True,  315, "wasoTok.NW")
+        self.rotate(characters_dir, metadata, True,    0, "wasoTok.W")
+        self.rotate(characters_dir, metadata, True,   45, "wasoTok.SW")
+        self.rotate(characters_dir, metadata, False, 270, "wasoTok.S")
+        self.rotate(characters_dir, metadata, False, 315, "wasoTok.SE")
+
+    def rotate(self, characters_dir, metadata, flip, degrees_ccw, char_name):
+        from PIL import Image, ImageDraw
+        char_img = Image.open(characters_dir + "/" + char_name + "/" + char_name + ".png")
+        if flip:
+            char_img = char_img.transpose(method=Image.Transpose.FLIP_LEFT_RIGHT)
+        # bilinear might not be the strat; test with different fonts
+        char_img = char_img.rotate(angle=degrees_ccw, fillcolor=(0xF0, 0xF0, 0xF0, 0xFF), resample=Image.Resampling.BILINEAR)
+        char_img.save(characters_dir + "/" + char_name + "/" + char_name + ".png")
+
     def pad(self, side, characters_dir, metadata, char_name, resize=False):
         from PIL import Image, ImageDraw
         char_img = Image.open(characters_dir + "/" + char_name + "/" + char_name + ".png")
@@ -459,6 +565,9 @@ class SHEETtoPNG:
             grid_glyph_w = 4
             grid_scan_hor_padding = 1
         if resize:
+            # default bicubic resampling gives us round caps on the cartouche extension
+            # which lowers the chance of overlap artifacts, from stacked antialiasing on one pixel
+            # like in Arabic or Latin cursive font design
             char_img = char_img.resize((int(char_img.height * grid_scan_w/grid_scan_h), char_img.height))
 
         draw = ImageDraw.Draw(char_img)
