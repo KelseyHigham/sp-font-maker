@@ -128,7 +128,12 @@ class PNGtoSVG:
             # glyph_height = 768
 
 
-        img = Image.open(path).convert("RGBA").resize((glyph_width, glyph_height))
+        pixel = metadata.get("pixel") or False
+        if pixel:
+            resample = Image.Resampling.NEAREST
+        else:
+            resample = Image.Resampling.BICUBIC
+        img = Image.open(path).convert("RGBA").resize((glyph_width, glyph_height), resample=resample)
 
         # Threshold image to convert each pixel to either black or white
         threshold = 200

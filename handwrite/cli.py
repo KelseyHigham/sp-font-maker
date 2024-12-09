@@ -141,6 +141,7 @@ def main():
         _ kiki kokosila usawi \
         _ api Keli melome Pingo penpo poni snoweli \
         _ kan kulijo misa molusa oke pa panke polinpin tona wa wasoweli waken\"`)""", default=None)
+    parser.add_argument("--pixel", action='store_true', help="Pixel font (experimental, false by default)", default=False)
 
     args = parser.parse_args()
     metadata = {
@@ -149,7 +150,8 @@ def main():
         "designer": args.designer, 
         "license": args.license, 
         "licenseurl": args.license_url, 
-        "sheetversion": args.sheet_version
+        "sheetversion": args.sheet_version,
+        "pixel": args.pixel
     }
     converters(
         args.input_path, args.output_directory, args.debug_directory, None, metadata, args.other_words

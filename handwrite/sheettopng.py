@@ -86,6 +86,38 @@ class SHEETtoPNG:
             close, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
         )
 
+        # for debug imaging
+        from PIL import Image, ImageDraw
+        debug_image = Image.open(sheet_image).convert("RGB")
+        debug_draw = ImageDraw.Draw(debug_image)
+        pixel = metadata.get("pixel") or False
+        if pixel:
+            debug_width = 1
+        else:
+            debug_width = 2 
+
+        # # Draw each *non-rectangular* contour on the image
+        # for i, contour in enumerate(contours):
+        #     # Convert the contour to a list of tuples for PIL
+        #     contour_pil = [tuple(point[0]) for point in contour]
+        #     # Draw the contour
+        #     if len(contour_pil) > 1:
+        #         # print(i)
+        #         debug_draw.polygon(contour_pil, outline="blue", width=debug_width) # slow
+        #         # debug_image.save(os.path.join(characters_dir, "analysis PREVIEW" + ".png")) # slower
+        #         x = 1
+
+        # Just reverse sort by area, for debug drawing.
+        contours = sorted(contours, key=cv2.contourArea, reverse=True)
+        for maybe_row in range(rows*2):
+            if len(contours) > maybe_row:
+                contour_pil = [tuple(point[0]) for point in contours[maybe_row]]
+                if len(contour_pil) > 1:
+                    # print(maybe_row)
+                    debug_draw.polygon(contour_pil, outline="blue", width=debug_width)
+                    x = 1
+        # debug_image.save(os.path.join(characters_dir, "analysis PREVIEW" + ".png"))
+
         # Filter contours based on number of sides and then reverse sort by area.
         contours = sorted(
             filter(
@@ -120,21 +152,20 @@ class SHEETtoPNG:
             top_s  = center_y - height_s/2
             return left_s, top_s, width_s, height_s
 
-        # for debug imaging
-        from PIL import Image, ImageDraw
-        debug_image = Image.open(sheet_image).convert("RGB")
-        debug_draw = ImageDraw.Draw(debug_image)
-
-        # Draw each contour on the image
-        for contour in contours:
+        # Draw each row contour on the image
+        for i, contour in enumerate(contours):
+            # print(i)
             # Convert the contour to a list of tuples for PIL
             contour_pil = [tuple(point[0]) for point in contour]
+            # print(contour) # this is fine. actually it looks wrong but the resulting bbox is right
             # Draw the contour
-            debug_draw.polygon(contour_pil, outline="lime", width=2)
+            debug_draw.polygon(contour_pil, outline="red", width=debug_width)
+        # debug_image.save(os.path.join(characters_dir, "analysis PREVIEW" + ".png"))
 
         # output the biggest 9 rows as images, for debug purposes
         row_images = []
         for row in range(rows):
+            # print(row)
             left, top, width, height = cv2.boundingRect(contours[row])
             # left_s, top_s, width_s, height_s = small_rect(contours[row])
 
@@ -151,8 +182,9 @@ class SHEETtoPNG:
             # ]
             # row_images.append([roi, left_s, top_s])
 
-            debug_draw.rectangle([left, top, left+width, top+height], outline="red")
+            debug_draw.rectangle([left, top, left+width, top+height], outline="lime")
             # debug_draw.rectangle([left_s, top_s, left_s+width_s, top_s+height_s], outline="blue")
+            # debug_image.save(os.path.join(characters_dir, "analysis PREVIEW" + ".png"))
 
         row_images.sort(key=lambda x: x[2])
 
@@ -174,6 +206,7 @@ class SHEETtoPNG:
             # Calculate the bounding of the contour and approximate the height
             # and width for final cropping.
             row_x, row_y, row_w, row_h = cv2.boundingRect(contours[row])
+            # print(row_x, row_y, row_w, row_h)
             # row_x, row_y, row_w, row_h = small_rect(contours[row]) # doesn't help
 
             sheet_version = metadata.get("sheetversion") or "99999999.999999.999999"
@@ -210,15 +243,23 @@ class SHEETtoPNG:
 
             # Convert glyph and padding from grid cells into pixels,
             # using the measured size of each row
-            glyph_w      = grid_scan_w      * row_w/grid_row_w
-            glyph_h      = grid_scan_h      * row_h/grid_row_h
-            left_padding = grid_hor_padding * row_w/grid_row_w
-            top_padding  = grid_ver_padding * row_h/grid_row_h
+            #                    █                       ▀               █                   ▄        █
+            # █▀▄▀▄   ▀▀▄  █  █  █▀▀▄  ▄▀▀▄       █▀▀▄  ▀█  ▀▄ ▄▀  ▄▀▀▄  █        ▀▀▄  █▄▀  ▀█▀       █▀▀▄  █  █  ▄▀▀█
+            # █ █ █  ▄▀▀█  █  █  █  █  █▄▄█       █  █   █    █    █▄▄█  █       ▄▀▀█  █     █        █  █  █  █  █  █
+            # █ █ █  ▀▄▄█  ▀▄▄█  █▄▄▀  ▀▄▄        █▄▄▀   █  ▄▀ ▀▄  ▀▄▄   █       ▀▄▄█  █     ▀▄       █▄▄▀  ▀▄▄█  ▀▄▄█
+            #               ▄▄▀                   █                                                                ▄▄▀
+            # import math
+            glyph_w      =     grid_scan_w      * row_w/grid_row_w
+            glyph_h      =     grid_scan_h      * row_h/grid_row_h
+            left_padding = int(grid_hor_padding * row_w/grid_row_w)
+            top_padding  =     grid_ver_padding * row_h/grid_row_h
+            # print(glyph_w, glyph_h, left_padding, top_padding)
 
             prev_x_shift = 0
             for col in range(cols):
                 glyph_top  = row_y + top_padding
                 glyph_left = row_x + left_padding + col*glyph_w
+                # print("row" + str(row) + ", col" + str(col) + ": " + str(glyph_left))
                 roi = image[
                     int(glyph_top ) : int(glyph_top  + glyph_h),
                     int(glyph_left) : int(glyph_left + glyph_w)
@@ -230,58 +271,90 @@ class SHEETtoPNG:
                 # normally bent paper will result in glyphs bleeding into each other's scan areas.
                 # this mostly mitigates that.
 
-                # don't apply this algorithm to the cartouche and te/to, which it breaks
-                # don't apply this algorithm to ijklmpstuw, where it's mostly useless
-                if row != 6:
-                    # we wanna find the center of gravity of the cell
-                    # and we'll use that to move the cell
-                    # to avoid like, scanning one pixel of a neighboring glyph
-                    old_glyph_left = glyph_left
-                    new_glyph_left = glyph_left
-                    old_glyph_top = glyph_top
-                    new_glyph_top = glyph_top
-                    gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
-                    _, thresh = cv2.threshold(gray, threshold_value, 255, 1)
-                    # this is where the magic happens
-                    # i call it magic because i don't understand it
-                    moments = cv2.moments(thresh)
-                    if moments['m00'] != 0:
-                        centroid_x = moments['m10']/moments['m00']
-                        centroid_y = moments['m01']/moments['m00']
-                        x_shift = (centroid_x - glyph_w/2)
-                        y_shift = (centroid_y - glyph_h/2)
-                        if col != 0:
-                            # avoid large deviations glyph-to-glyph, 
-                            # by nudging halfway towards the previous glyph's shift
-                            x_shift = (x_shift + prev_x_shift)/2
-                        prev_x_shift = x_shift
-                        # print("shift:", int(centroid_x - glyph_w/2), int(centroid_y - glyph_h/2))
-                        new_glyph_left = glyph_left + x_shift
-                        new_glyph_top  = glyph_top  + y_shift
+                #        ▀               █                   ▄        █                      █
+                # █▀▀▄  ▀█  ▀▄ ▄▀  ▄▀▀▄  █        ▀▀▄  █▄▀  ▀█▀       █▀▀▄  █  █  ▄▀▀█       █▀▀▄  ▄▀▀▄  █▄▀  ▄▀▀▄
+                # █  █   █    █    █▄▄█  █       ▄▀▀█  █     █        █  █  █  █  █  █       █  █  █▄▄█  █    █▄▄█
+                # █▄▄▀   █  ▄▀ ▀▄  ▀▄▄   █       ▀▄▄█  █     ▀▄       █▄▄▀  ▀▄▄█  ▀▄▄█       █  █  ▀▄▄   █    ▀▄▄
+                # █                                                                ▄▄▀
+                # we wanna find the center of gravity of the cell
+                # and we'll use that to move the cell
+                # to avoid like, scanning one pixel of a neighboring glyph
+                old_glyph_left = glyph_left
+                new_glyph_left = glyph_left
+                old_glyph_top = glyph_top
+                new_glyph_top = glyph_top
+                gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+                _, thresh = cv2.threshold(gray, threshold_value, 255, 1)
+                # this is where the magic happens
+                # i call it magic because i don't understand it
+                moments = cv2.moments(thresh)
+                if moments['m00'] != 0:
+                    centroid_x = moments['m10']/moments['m00']
+                    centroid_y = moments['m01']/moments['m00']
+                    x_shift = (centroid_x - glyph_w/2)
+                    y_shift = (centroid_y - glyph_h/2)
+                    if col != 0:
+                        # avoid large deviations glyph-to-glyph, 
+                        # by nudging halfway towards the previous glyph's shift
+                        x_shift = (x_shift + prev_x_shift)/2
+                        # TODO: am i actually *resetting* x_shift for new rows??
+                        #       if not, extreme x_shift on the right side could affect glyphs on the left side
+                    prev_x_shift = x_shift
+                    # print("shift:", int(centroid_x - glyph_w/2), int(centroid_y - glyph_h/2))
+                    new_glyph_left = glyph_left + x_shift
+                    new_glyph_top  = glyph_top  + y_shift
 
+                    # don't apply this algorithm to the cartouche and te/to, which it breaks
+                    # don't apply this algorithm to ijklmpstuw, where it's mostly useless
+                    # don't apply this algorithm to pixel art, where it's useless at best
+                    centered = True
+                    if row == 6:
+                        if (col == 0  or # cartouche
+                            col == 1  or 
+                            col == 14 or # te/to
+                            col == 15):
+                            centered = False
+                            # print("not centered:", row, col)
+                            # TODO: reset x_shift after cartouches and te/to
+                            #       so that it doesn't affect the letters and custom nimi
+                            # ALTERNATELY, keep it in place, to help with paper scanned sheets...?
+                            # maybe just... don't *affect* x_shift during cartouches and te/to...
+                    if centered and not pixel:
                         # toggle this line to toggle the algorithm, 
                         # while still previewing the algorithm on "analysis PREVIEW.png".
                         # (note that i'm only implementing horizontal shift, 
                         # not the vertical shift that that sheet implies.)
+                        # (also note that cartouche and te/to are shown as shifted,
+                        # even though they're not.)
+                        #    (actually this might not be the case anymore.)
                         glyph_left = glyph_left + x_shift
+                        x = 1
 
-                        roi = image[
-                            int(glyph_top ) : int(glyph_top  + glyph_h),
-                            int(glyph_left) : int(glyph_left + glyph_w)
-                        ]
+                    roi = image[
+                        int(glyph_top ) : int(glyph_top  + glyph_h),
+                        int(glyph_left) : int(glyph_left + glyph_w)
+                    ]
 
                 characters.append([roi, glyph_left, glyph_top, glyph_w, glyph_h])
                 debug_draw.rectangle([old_glyph_left, old_glyph_top, old_glyph_left+glyph_w, old_glyph_top+glyph_h], 
-                    outline="lime", width=2)
-                debug_draw.rectangle([new_glyph_left, new_glyph_top, new_glyph_left+glyph_w, new_glyph_top+glyph_h], 
-                    outline="red", width=2)
+                    outline="lime", width=debug_width)
+                if not pixel:
+                    debug_draw.rectangle([glyph_left, new_glyph_top, glyph_left+glyph_w, new_glyph_top+glyph_h], 
+                        outline="red", width=debug_width)
+                # # i don't understand the following result, but it scares me...
+                # # why are the first 3 custom boxes treated as not centered?
+                # if centered: 
+                #     debug_draw.rectangle([glyph_left, new_glyph_top, glyph_left+glyph_w, new_glyph_top+glyph_h], 
+                #         outline="red", fill="red", width=debug_width)
+                # debug_image.save(os.path.join(characters_dir, "analysis PREVIEW" + ".png")) # every glyph
+            # debug_image.save(os.path.join(characters_dir, "analysis PREVIEW" + ".png")) # every row
 
-        debug_image.save(os.path.join(characters_dir, "analysis PREVIEW" + ".png"))
+        debug_image.save(os.path.join(characters_dir, "analysis PREVIEW" + ".png")) # after processing
 
         # Now we have the characters but since they are all mixed up we need to position them.
         # Sort characters based on 'y' coordinate and group them by number of rows at a time. Then
         # sort each group based on the 'x' coordinate.
-
+        # (Kelly note: this might be redundant?)
         # sort all glyphs by y
         characters.sort(key=lambda x: x[2])
         sorted_characters = []
@@ -573,22 +646,34 @@ class SHEETtoPNG:
         draw = ImageDraw.Draw(char_img)
         left, top, right, bottom = 0, 0, char_img.width, char_img.height
         in_pixels = char_img.width/grid_scan_w
-        if side == "left":
-            draw.rectangle(
-                (
-                    (     left,                                                                    top        ), 
-                    #             scan padding                      cartouche overlap
-                    (     left  + grid_scan_hor_padding*in_pixels - grid_glyph_w*in_pixels/42,     bottom     )
-                ),
-                fill="white"
-            )
-        if side == "right":
-            draw.rectangle(
-                (
-                    #             scan padding                      cartouche overlap
-                    (     right - grid_scan_hor_padding*in_pixels + grid_glyph_w*in_pixels/42,     top        ), 
-                    (     right,                                                                   bottom     )
-                ),
-                fill="white"
-            )
+        #        ▀               █                   ▄        █
+        # █▀▀▄  ▀█  ▀▄ ▄▀  ▄▀▀▄  █        ▀▀▄  █▄▀  ▀█▀       █▀▀▄  █  █  ▄▀▀█
+        # █  █   █    █    █▄▄█  █       ▄▀▀█  █     █        █  █  █  █  █  █
+        # █▄▄▀   █  ▄▀ ▀▄  ▀▄▄   █       ▀▄▄█  █     ▀▄       █▄▄▀  ▀▄▄█  ▀▄▄█
+        # █                                                                ▄▄▀
+            # we need to still draw padding
+            # but for font sizes that aren't divisible by 4, like 6px and 10px,
+            # we'll have uneven padding on the left and right
+            # (because the left padding is 4.5 for 6px, and maybe 7.5 for 10px?)
+            # so we need to calculate it in a way that's consistent with the padding on each scanned glyph
+        pixel = metadata.get("pixel") or False
+        if not pixel:
+            if side == "left":
+                draw.rectangle(
+                    (
+                        (     left,                                                                    top        ), 
+                        #             scan padding                      cartouche overlap
+                        (     left  + grid_scan_hor_padding*in_pixels - grid_glyph_w*in_pixels/42,     bottom     )
+                    ),
+                    fill="white"
+                )
+            if side == "right":
+                draw.rectangle(
+                    (
+                        #             scan padding                      cartouche overlap
+                        (     right - grid_scan_hor_padding*in_pixels + grid_glyph_w*in_pixels/42,     top        ), 
+                        (     right,                                                                   bottom     )
+                    ),
+                    fill="white"
+                )
         char_img.save(characters_dir + "/" + char_name + "/" + char_name + ".png")

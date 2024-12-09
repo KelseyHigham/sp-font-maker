@@ -54,6 +54,13 @@ class SVGtoTTF:
         self.add_ligatures(directory, outdir, config, metadata, other_words_string)
 
 
+
+    # █   ▀               ▄
+    # █  ▀█  ▄▀▀█   ▀▀▄  ▀█▀  █  █  █▄▀  ▄▀▀▄  ▄▀▀▄
+    # █   █  █  █  ▄▀▀█   █   █  █  █    █▄▄█   ▀▄
+    # █   █  ▀▄▄█  ▀▄▄█   ▀▄  ▀▄▄█  █    ▀▄▄   ▀▄▄▀
+    #         ▄▄▀
+
     def add_ligatures(self, directory, outdir, config, metadata=None, other_words_string=None):
         # Now the font has exported, presumably. 
         # We're back to the `python` environment, not the `ffpython` one, so we can use libraries like fontTools, camelCase.
@@ -220,10 +227,15 @@ feature calt {
         tt = ttLib.TTFont(infile)
         from fontTools.feaLib import builder  # camelCase!
         builder.addOpenTypeFeaturesFromString(tt, ligatures_string)
-        sys.stderr.write("\nGenerating %s...\n" % outfile)
+        sys.stderr.write("Generating %s...\n" % outfile)
         tt.save(outfile)
 
 
+
+        #    ▄                █
+        #   ▀█▀  ▄▀▀▄  █▀▄▀▄  █
+        #    █   █  █  █ █ █  █
+        # ▄  ▀▄  ▀▄▄▀  █ █ █  █
 
         from datetime import datetime
         ilo_linku_toml_file = open(directory + os.sep + family + ".toml", "w", encoding="utf-8")
@@ -277,11 +289,20 @@ style = "handwritten"
 # repo     = "https://github.com/wasokeli/wasokeli.github.io/tree/main/sp-font-maker"
 # webpage  = "https://wasokeli.github.io/sp-font-maker/''' + family.replace(" ", "-") + '''.html"
 ''')
-        feature_file.close()
+        print("Generating " + directory + os.sep + family + ".toml for ilo Linku...")
+        ilo_linku_toml_file.close()
 
-
+        print("If you're Kelly, give this to " + designer + ": https://wasokeli.github.io/sp-font-maker/" + family.replace(" ", "-") + "\n")
 
         self.generate_web_page(outdir, filename, family, designer, license, licenseurl, other_words_string)
+
+
+
+    #              █
+    # █   █  ▄▀▀▄  █▀▀▄       █▀▀▄   ▀▀▄  ▄▀▀█  ▄▀▀▄
+    # █ █ █  █▄▄█  █  █       █  █  ▄▀▀█  █  █  █▄▄█
+    #  █ █   ▀▄▄   █▄▄▀       █▄▄▀  ▀▄▄█  ▀▄▄█  ▀▄▄
+    #                         █            ▄▄▀
 
     def generate_web_page(self, outdir, filename, family, designer, license, licenseurl, other_words_string=None):
         other_words = []
@@ -422,7 +443,8 @@ epiku jasima linluwi majuna meso oko su""" + " ".join(other_words[12:25]) + """<
 　　　　　　　　　　　　　󱥨󱤣󱥶󱤧󱤖󱤘󱤉󱥁
 
 
-<textarea class="tp">sina ken sitelen wile lon ni</textarea>
+<textarea class="tp">sina ken sitelen wile lon ni
+</textarea>
 </span></span>
 
 <script>
@@ -455,7 +477,16 @@ function redrawTextarea(e) {
 
 
 
+        #  ▀  █             █      ▀        █                                         ▀
+        # ▀█  █  ▄▀▀▄       █     ▀█  █▀▀▄  █ ▄▀  █  █       █▀▀▄  █▄▀  ▄▀▀▄  █   █  ▀█  ▄▀▀▄  █   █
+        #  █  █  █  █       █      █  █  █  █▀▄   █  █       █  █  █    █▄▄█   █ █    █  █▄▄█  █ █ █
+        #  █  █  ▀▄▄▀       █▄▄▄   █  █  █  █  █  ▀▄▄█       █▄▄▀  █    ▀▄▄     █     █  ▀▄▄    █ █
+        #                                                    █
         # # test ilo Linku rendering
+        # # disabled because i don't have RAQM, so i can't test it
+        # # and it seems to be hard to install on Windows
+        # # and i don't want to bother with WSL
+        # # i probably should though...
 
         # from PIL import Image, ImageDraw, ImageFont
         # from PIL import features
@@ -521,6 +552,50 @@ function redrawTextarea(e) {
         #     "outline"
         # )
 
+
+
+
+
+
+
+
+
+     # ▄▀▄  ▄▀▄  ▄▀▄                              █                  █▀▀▀▄         ▄   █                      ▄▀▄  ▄▀▄  ▄▀▄
+     #                     █▄▀  ▄▀▀▄  ▄▀▀█  █  █  █   ▀▀▄  █▄▀       █   █  █  █  ▀█▀  █▀▀▄  ▄▀▀▄  █▀▀▄
+     #                     █    █▄▄█  █  █  █  █  █  ▄▀▀█  █         █▀▀▀   █  █   █   █  █  █  █  █  █
+     #                     █    ▀▄▄   ▀▄▄█  ▀▄▄█  █  ▀▄▄█  █         █      ▀▄▄█   ▀▄  █  █  ▀▄▄▀  █  █
+     #                                 ▄▄▀                                   ▄▄▀
+
+
+
+
+
+
+
+# i might be mistaken about this...
+
+
+
+
+
+
+     #                           █▀▀▀               ▄   █▀▀▀                              █▀▀▀▄         ▄   █
+     # █   █  █   █  █   █       █▄▄   ▄▀▀▄  █▀▀▄  ▀█▀  █▄▄   ▄▀▀▄  █▄▀  ▄▀▀█  ▄▀▀▄       █   █  █  █  ▀█▀  █▀▀▄  ▄▀▀▄  █▀▀▄       █   █  █   █  █   █
+     #  █ █    █ █    █ █        █     █  █  █  █   █   █     █  █  █    █  █  █▄▄█       █▀▀▀   █  █   █   █  █  █  █  █  █        █ █    █ █    █ █
+     #   █      █      █         █     ▀▄▄▀  █  █   ▀▄  █     ▀▄▄▀  █    ▀▄▄█  ▀▄▄        █      ▀▄▄█   ▀▄  █  █  ▀▄▄▀  █  █         █      █      █
+     #                                                                    ▄▄▀                     ▄▄▀
+
+
+
+
+
+
+     #              ▄                                           ▄    ▀
+     # ▄▀▀▄  ▄▀▀▄  ▀█▀       █▀▀▄  █▄▀  ▄▀▀▄  █▀▀▄  ▄▀▀▄  █▄▀  ▀█▀  ▀█  ▄▀▀▄  ▄▀▀▄
+     #  ▀▄   █▄▄█   █        █  █  █    █  █  █  █  █▄▄█  █     █    █  █▄▄█   ▀▄
+     # ▀▄▄▀  ▀▄▄    ▀▄       █▄▄▀  █    ▀▄▄▀  █▄▄▀  ▀▄▄   █     ▀▄   █  ▀▄▄   ▀▄▄▀
+     #                       █                █
+
     def set_properties(self):
         """Set metadata of the font from config."""
         props = self.config["props"]
@@ -577,13 +652,20 @@ function redrawTextarea(e) {
                 self.config["sfnt_names"]["License"] = "CC0 1.0 Universal"
                 self.config["sfnt_names"]["License URL"] = "https://creativecommons.org/publicdomain/zero/1.0/"
 
-
         self.config["sfnt_names"]["UniqueID"] = family + " " + str(uuid.uuid4())
 
         for k, v in self.config.get("sfnt_names", {}).items():
             self.font.appendSFNTName(str(lang), k, v)
 
-    def add_glyphs(self, directory, metadata, version_major, version_minor, version_patch):
+
+
+    #          █     █             █              █
+    #  ▀▀▄  ▄▀▀█  ▄▀▀█       ▄▀▀█  █  █  █  █▀▀▄  █▀▀▄  ▄▀▀▄
+    # ▄▀▀█  █  █  █  █       █  █  █  █  █  █  █  █  █   ▀▄
+    # ▀▄▄█  ▀▄▄█  ▀▄▄█       ▀▄▄█  █  ▀▄▄█  █▄▄▀  █  █  ▀▄▄▀
+    #                         ▄▄▀      ▄▄▀  █
+
+    def add_glyphs(self, directory, version_major, version_minor, version_patch):
         """Read and add SVG images as glyphs to the font.
 
         Walks through the provided directory and uses each ord(character).svg file
@@ -640,6 +722,8 @@ function redrawTextarea(e) {
                     0
                 ))
 
+                pixel = self.metadata.get("pixel") or False
+                
                 # Vertically center sitelen pona, middot, colon
                 # Do NOT center a-z, cartouches, long pi, te/to, (period?)
                 if not (
@@ -660,13 +744,14 @@ function redrawTextarea(e) {
                     cp == 0x300d                     # to (close quote)
                     # or cp == 0xf199c or cp == 0x2e   # period
                 ):
-                    bottom = g.boundingBox()[1]
-                    top    = g.boundingBox()[3]
-                    g.transform(psMat.translate(
-                        0, 
-                        self.font.ascent - top - ((self.font.ascent + self.font.descent) - (top - bottom)) / 2
-                    ))
-                    x = 1
+                    if not pixel:
+                        bottom = g.boundingBox()[1]
+                        top    = g.boundingBox()[3]
+                        g.transform(psMat.translate(
+                            0, 
+                            self.font.ascent - top - ((self.font.ascent + self.font.descent) - (top - bottom)) / 2
+                        ))
+                        x = 1
 
                 # Horizontally center sitelen pona, middot, colon, letters
                 # Do NOT center cartouches, long pi, te/to, (period?)
@@ -678,15 +763,16 @@ function redrawTextarea(e) {
                     cp == 0x300d                     # to (close quote)
                     # or cp == 0xf199c or cp == 0x2e   # period
                     # or cp == 0xf199d or cp == 0x3a   # colon
-                ):
-                    left  = g.boundingBox()[0]
-                    right = g.boundingBox()[2]
-                    width = right - left
-                    g.transform(psMat.translate(
-                        bs_glyph_wh - right - (bs_glyph_wh - width) / 2, 
-                        0
-                    ))
-                    x = 1
+                ):                
+                    if not pixel:
+                        left  = g.boundingBox()[0]
+                        right = g.boundingBox()[2]
+                        width = right - left
+                        g.transform(psMat.translate(
+                            bs_glyph_wh - right - (bs_glyph_wh - width) / 2, 
+                            0
+                        ))
+                        x = 1
 
                 # Scale everything up so that the glyphs are 1em tall, instead of the cartouches
                 # The scaling center is the baseline, far left
@@ -811,6 +897,14 @@ function redrawTextarea(e) {
         sp_end_of_reverse_long_glyph = self.font.createChar(0xf199b)
         sp_end_of_reverse_long_glyph.width = 0
 
+
+
+    #                                    ▄               ▄▀▀              ▄         ▄▀▀  ▀  █
+    # ▄▀▀█  ▄▀▀▄  █▀▀▄  ▄▀▀▄  █▄▀  ▀▀▄  ▀█▀  ▄▀▀▄       ▀█▀  ▄▀▀▄  █▀▀▄  ▀█▀       ▀█▀  ▀█  █  ▄▀▀▄
+    # █  █  █▄▄█  █  █  █▄▄█  █   ▄▀▀█   █   █▄▄█        █   █  █  █  █   █         █    █  █  █▄▄█
+    # ▀▄▄█  ▀▄▄   █  █  ▀▄▄   █   ▀▄▄█   ▀▄  ▀▄▄         █   ▀▄▄▀  █  █   ▀▄        █    █  █  ▀▄▄
+    #  ▄▄▀
+
     def generate_font_file(self, filename, outdir, config_file, directory):
         """Output TTF file.
 
@@ -843,6 +937,13 @@ function redrawTextarea(e) {
         self.font.generate(outfile)
         self.font.save(outfile[0:-4] + ".sfd")
 
+
+
+    #                                      ▄                        ▀
+    # ▄▀▀▄  ▄▀▀▄  █▀▀▄  █   █  ▄▀▀▄  █▄▀  ▀█▀         █▀▄▀▄   ▀▀▄  ▀█  █▀▀▄
+    # █     █  █  █  █   █ █   █▄▄█  █     █          █ █ █  ▄▀▀█   █  █  █
+    # ▀▄▄▀  ▀▄▄▀  █  █    █    ▀▄▄   █     ▀▄         █ █ █  ▀▄▄█   █  █  █
+    #                                         ▄▄▄▄▄▄▄
     def convert_main(self, config_file, directory, outdir, metadata, v_major, v_minor, v_patch):
         try:
             self.font = fontforge.font()
@@ -856,7 +957,7 @@ function redrawTextarea(e) {
 
         self.font = fontforge.font()
         self.set_properties()
-        self.add_glyphs(directory, metadata, int(v_major), int(v_minor), int(v_patch))
+        self.add_glyphs(directory, int(v_major), int(v_minor), int(v_patch))
 
         # Generate font and save as a .ttf file
         filename = self.metadata.get("filename", None) or self.config["props"].get(
