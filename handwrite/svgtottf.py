@@ -313,6 +313,13 @@ style = "handwritten"
                     other_words[word_index] = "　"
 
         example_web_page = open(outdir + os.sep + family.replace(" ", "-") + ".html", "w", encoding="utf-8")
+
+        # # this fails because i'm feeding it a relative path on the command line... hmm...
+        # # and now it fails because the "C:" part doesn't get underlined on the C
+        # # also it needs to have forward slashes
+        # # uuuggghhhh
+        # print("Local web page: file:///" + os.path.abspath(outdir + os.sep + family.replace(" ", "-") + ".html"))
+
         example_web_page.write(
 """
 <meta charset="utf-8" />
