@@ -388,12 +388,28 @@ class SHEETtoPNG:
         left_cartouche  = sorted_characters[120]
         right_cartouche = sorted_characters[121]
         glyph_left, glyph_top, glyph_w, glyph_h = right_cartouche[1], right_cartouche[2], right_cartouche[3], right_cartouche[4]
-        roi = image[int(glyph_top ) : int(glyph_top  + glyph_h),
-                    int(glyph_left) : int(glyph_left + 1)]
-        sorted_characters.append([roi, glyph_left, glyph_top, glyph_w, glyph_h])
+        cartouche_middle_glyph_left = glyph_left
+
+        roi = image[int(glyph_top                  ) : int(glyph_top                   + glyph_h),
+                    int(cartouche_middle_glyph_left) : int(cartouche_middle_glyph_left + 1)]
+        sorted_characters.append([roi, cartouche_middle_glyph_left, glyph_top, glyph_w, glyph_h])
+
+        #        ▀               █                   ▄        █
+        # █▀▀▄  ▀█  ▀▄ ▄▀  ▄▀▀▄  █        ▀▀▄  █▄▀  ▀█▀       █▀▀▄  █  █  ▄▀▀█
+        # █  █   █    █    █▄▄█  █       ▄▀▀█  █     █        █  █  █  █  █  █
+        # █▄▄▀   █  ▄▀ ▀▄  ▀▄▄   █       ▀▄▄█  █     ▀▄       █▄▄▀  ▀▄▄█  ▀▄▄█
+        # █                                                                ▄▄▀
 
         # shift the left and right cartouche scan area inward, to match how the gray boxes are shifted
         # glyph_left = left_cartouche[1] + glyph_w/16
+        print(grid_scan_hor_padding * glyph_w/grid_scan_w)
+        if pixel:
+            right_scan_padding = math.floor(grid_scan_hor_padding * glyph_w/grid_scan_w)
+            left_scan_padding  = math.ceil( grid_scan_hor_padding * glyph_w/grid_scan_w)
+        else:
+            right_scan_padding = grid_scan_hor_padding * glyph_w/grid_scan_w
+            left_scan_padding  = grid_scan_hor_padding * glyph_w/grid_scan_w
+
         glyph_left = left_cartouche[1] + grid_scan_hor_padding * glyph_w/grid_scan_w
         roi = image[int(glyph_top ) : int(glyph_top  + glyph_h),
                     int(glyph_left) : int(glyph_left + glyph_w)]
