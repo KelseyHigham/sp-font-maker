@@ -385,6 +385,8 @@ class SHEETtoPNG:
         # for the middle portion of the cartouche, grab the leftmost 1px column
         # of the right cartouche. it'll be automatically stretched to the width
         # of a glyph when it's converted to BMP, then SVG.
+
+        # cartouches
         left_cartouche  = sorted_characters[120]
         right_cartouche = sorted_characters[121]
         glyph_left, glyph_top, glyph_w, glyph_h = right_cartouche[1], right_cartouche[2], right_cartouche[3], right_cartouche[4]
@@ -400,7 +402,7 @@ class SHEETtoPNG:
         # █▄▄▀   █  ▄▀ ▀▄  ▀▄▄   █       ▀▄▄█  █     ▀▄       █▄▄▀  ▀▄▄█  ▀▄▄█
         # █                                                                ▄▄▀
 
-        # shift the left and right cartouche scan area inward, to match how the gray boxes are shifted
+        # shift the open and close cartouche scan area inward, to match how the gray boxes are shifted
         # glyph_left = left_cartouche[1] + glyph_w/16
         print(grid_scan_hor_padding * glyph_w/grid_scan_w)
         if pixel:
