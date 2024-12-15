@@ -248,11 +248,13 @@ class SHEETtoPNG:
             # █ █ █  ▄▀▀█  █  █  █  █  █▄▄█       █  █   █    █    █▄▄█  █       ▄▀▀█  █     █        █  █  █  █  █  █
             # █ █ █  ▀▄▄█  ▀▄▄█  █▄▄▀  ▀▄▄        █▄▄▀   █  ▄▀ ▀▄  ▀▄▄   █       ▀▄▄█  █     ▀▄       █▄▄▀  ▀▄▄█  ▀▄▄█
             #               ▄▄▀                   █                                                                ▄▄▀
-            # import math
-            glyph_w      =     grid_scan_w      * row_w/grid_row_w
-            glyph_h      =     grid_scan_h      * row_h/grid_row_h
-            left_padding = int(grid_hor_padding * row_w/grid_row_w)
-            top_padding  =     grid_ver_padding * row_h/grid_row_h
+            import math
+            glyph_w      =            grid_scan_w      * row_w/grid_row_w
+            glyph_h      =            grid_scan_h      * row_h/grid_row_h
+            # math.floor ensures that a left-aligned pixel glyph is
+            # horizontally centered on the scan area, which is cute
+            left_padding = math.floor(grid_hor_padding * row_w/grid_row_w)
+            top_padding  =            grid_ver_padding * row_h/grid_row_h
             # print(glyph_w, glyph_h, left_padding, top_padding)
 
             prev_x_shift = 0
@@ -644,23 +646,31 @@ class SHEETtoPNG:
             # (because the left padding is 1.5 for 6px, and 2.5 for 10px)
             # so we need to calculate it in a way that's consistent with the padding on each scanned glyph
         pixel = metadata.get("pixel") or False
+        import math
+        if pixel:
+            left_scan_padding  = math.ceil( grid_scan_hor_padding*in_pixels)
+            right_scan_padding = math.floor(grid_scan_hor_padding*in_pixels)
+            cartouche_overlap  = 1
+        else:
+            left_scan_padding  = grid_scan_hor_padding*in_pixels
+            right_scan_padding = grid_scan_hor_padding*in_pixels
+            cartouche_overlap  = grid_glyph_w*in_pixels/42
         if not pixel:
             if side == "left":
                 draw.rectangle(
-                    (
-                        (     left,                                                                    top        ), 
-                        #             scan padding                      cartouche overlap
-                        (     left  + grid_scan_hor_padding*in_pixels - grid_glyph_w*in_pixels/42,     bottom     )
-                    ),
+                    ((left,                                         top   ), 
+                     (left + left_scan_padding - cartouche_overlap, bottom)),
                     fill="white"
                 )
             if side == "right":
                 draw.rectangle(
-                    (
-                        #             scan padding                      cartouche overlap
-                        (     right - grid_scan_hor_padding*in_pixels + grid_glyph_w*in_pixels/42,     top        ), 
-                        (     right,                                                                   bottom     )
-                    ),
+                    ((right - right_scan_padding + cartouche_overlap, top   ), 
+                     (right,                                          bottom)),
                     fill="white"
                 )
+        else:
+            if side == "left":
+                print("pad the left side of", char_name, "by", math.ceil(grid_scan_hor_padding*in_pixels))
+            if side == "right":
+                print("pad the right side of", char_name, "by", math.floor(grid_scan_hor_padding*in_pixels))
         char_img.save(characters_dir + "/" + char_name + "/" + char_name + ".png")
