@@ -309,10 +309,10 @@ class SHEETtoPNG:
                     # don't apply this algorithm to pixel art, where it's useless at best
                     centered = True
                     if row == 6:
-                        if (col == 0  or # cartouche
-                            col == 1  or 
-                            col == 14 or # te/to
-                            col == 15):
+                        if (col == 0  or # cartouche open
+                            col == 1  or # cartouche close
+                            col == 14 or # te
+                            col == 15):  # to
                             centered = False
                             # print("not centered:", row, col)
                             # TODO: reset x_shift after cartouches and te/to
@@ -408,27 +408,20 @@ class SHEETtoPNG:
         sorted_characters.append(sorted_characters[4]) # ali
 
         # directional glyphs
-        ni = sorted_characters[65]
         for i in range(7): # 8 directions; diagonal alts are in svgtottf.py
-            sorted_characters.append(ni)
-        akesi = sorted_characters[1]
+            sorted_characters.append(sorted_characters[65])  # ni
         for i in range(7):
-            sorted_characters.append(akesi)
-        pipi = sorted_characters[81]
+            sorted_characters.append(sorted_characters[1])   # akesi
         for i in range(7):
-            sorted_characters.append(pipi)
-        kala = sorted_characters[20]
+            sorted_characters.append(sorted_characters[81])  # pipi
         for i in range(7):
-            sorted_characters.append(kala)
-        kijetesantakalu = sorted_characters[140]
+            sorted_characters.append(sorted_characters[20])  # kala
         for i in range(7):
-            sorted_characters.append(kijetesantakalu)
-        soweli = sorted_characters[98]
+            sorted_characters.append(sorted_characters[140]) # kijetesantakalu
         for i in range(7):
-            sorted_characters.append(soweli)
-        waso = sorted_characters[116]
+            sorted_characters.append(sorted_characters[98])  # soweli
         for i in range(7):
-            sorted_characters.append(waso)
+            sorted_characters.append(sorted_characters[116]) # waso
 
         # Latin characters
 
@@ -450,41 +443,42 @@ class SHEETtoPNG:
             sorted_characters.append(sorted_characters[124+i])
 
         # add uppercase AENO
-        sorted_characters.append(sorted_characters[0]) # uppercase_a
-        sorted_characters.append(sorted_characters[9]) # uppercase_e
-        sorted_characters.append(sorted_characters[148]) # uppercase_n
-        sorted_characters.append(sorted_characters[68]) # uppercase_o
+        sorted_characters.append(sorted_characters[0]) # A
+        sorted_characters.append(sorted_characters[9]) # E
+        sorted_characters.append(sorted_characters[148]) # N
+        sorted_characters.append(sorted_characters[68]) # O
 
         # g for Pingo, shown as k
-        sorted_characters.append(sorted_characters[126]) # g
+        sorted_characters.append(sorted_characters[126]) # g, shown as k
         # y for yupekosi, shown as j
-        sorted_characters.append(sorted_characters[125]) # y
+        sorted_characters.append(sorted_characters[125]) # y, shown as j
         # v for Vivi, shown as w
-        sorted_characters.append(sorted_characters[133]) # v
+        sorted_characters.append(sorted_characters[133]) # v, shown as w
         # V for Vivi, shown as w
-        sorted_characters.append(sorted_characters[133]) # uppercase_v
+        sorted_characters.append(sorted_characters[133]) # V, shown as w
         # G
-        sorted_characters.append(sorted_characters[126]) # uppercase_g
+        sorted_characters.append(sorted_characters[126]) # G, shown as k
         # Y
-        sorted_characters.append(sorted_characters[125]) # uppercase_y
-        sorted_characters.append(sorted_characters[129]) # b
-        sorted_characters.append(sorted_characters[129]) # B        
-        sorted_characters.append(sorted_characters[130]) # c
-        sorted_characters.append(sorted_characters[130]) # C        
-        sorted_characters.append(sorted_characters[131]) # d
-        sorted_characters.append(sorted_characters[131]) # D        
-        sorted_characters.append(sorted_characters[129]) # f
-        sorted_characters.append(sorted_characters[129]) # F        
-        sorted_characters.append(sorted_characters[126]) # h
-        sorted_characters.append(sorted_characters[126]) # H        
-        sorted_characters.append(sorted_characters[126]) # q
-        sorted_characters.append(sorted_characters[126]) # Q        
-        sorted_characters.append(sorted_characters[133]) # r
-        sorted_characters.append(sorted_characters[133]) # R        
-        sorted_characters.append(sorted_characters[130]) # x
-        sorted_characters.append(sorted_characters[130]) # X
-        sorted_characters.append(sorted_characters[130]) # z
-        sorted_characters.append(sorted_characters[130]) # Z
+        sorted_characters.append(sorted_characters[125]) # Y, shown as j
+
+        sorted_characters.append(sorted_characters[129]) # b, shown as p
+        sorted_characters.append(sorted_characters[129]) # B, shown as p
+        sorted_characters.append(sorted_characters[130]) # c, shown as s
+        sorted_characters.append(sorted_characters[130]) # C, shown as s
+        sorted_characters.append(sorted_characters[131]) # d, shown as t
+        sorted_characters.append(sorted_characters[131]) # D, shown as t
+        sorted_characters.append(sorted_characters[129]) # f, shown as p
+        sorted_characters.append(sorted_characters[129]) # F, shown as p
+        sorted_characters.append(sorted_characters[126]) # h, shown as k
+        sorted_characters.append(sorted_characters[126]) # H, shown as k
+        sorted_characters.append(sorted_characters[126]) # q, shown as k
+        sorted_characters.append(sorted_characters[126]) # Q, shown as k
+        sorted_characters.append(sorted_characters[133]) # r, shown as w
+        sorted_characters.append(sorted_characters[133]) # R, shown as w
+        sorted_characters.append(sorted_characters[130]) # x, shown as s
+        sorted_characters.append(sorted_characters[130]) # X, shown as s
+        sorted_characters.append(sorted_characters[130]) # z, shown as s
+        sorted_characters.append(sorted_characters[130]) # Z, shown as s
         
 
 
@@ -624,7 +618,7 @@ class SHEETtoPNG:
             grid_glyph_w = 7
             grid_scan_hor_padding = 0.5
         else:
-            # SHEET VERSION 3: Each glyph scan area is 6x18.
+            # SHEET VERSION 3: Each glyph scan area is 6x8.
             grid_scan_w = 6
             grid_scan_h = 8
             # The visible gray squares are 4x4, to help with human and scanning errors.
@@ -647,7 +641,7 @@ class SHEETtoPNG:
             # we need to still draw padding
             # but for font sizes that aren't divisible by 4, like 6px and 10px,
             # we'll have uneven padding on the left and right
-            # (because the left padding is 4.5 for 6px, and maybe 7.5 for 10px?)
+            # (because the left padding is 1.5 for 6px, and 2.5 for 10px)
             # so we need to calculate it in a way that's consistent with the padding on each scanned glyph
         pixel = metadata.get("pixel") or False
         if not pixel:
