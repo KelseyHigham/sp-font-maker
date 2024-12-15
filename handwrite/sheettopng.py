@@ -376,7 +376,7 @@ class SHEETtoPNG:
         # █  ▀█  █      █    █▀▀▀   █   █      █
         # ▀▄▄▄▀  █▄▄▄   █    █      █   █  ▀▄▄▄▀
         # These are appended to the glyph list, and they need to be kept
-        # in sync with default.json, line 216: "cartoucheMiddleTok"
+        # in sync with default.json, starting from line 216: "cartoucheMiddleTok"
         
 
 
@@ -405,94 +405,87 @@ class SHEETtoPNG:
         sorted_characters[121][1] = glyph_left
 
         # add ali
-        ali = sorted_characters[4]
-        sorted_characters.append(ali)
+        sorted_characters.append(sorted_characters[4]) # ali
 
         # directional glyphs
         ni = sorted_characters[65]
         for i in range(7): # 8 directions; diagonal alts are in svgtottf.py
             sorted_characters.append(ni)
         akesi = sorted_characters[1]
-        for i in range(7): # 8 directions; diagonal alts are in svgtottf.py
+        for i in range(7):
             sorted_characters.append(akesi)
         pipi = sorted_characters[81]
-        for i in range(7): # 8 directions; diagonal alts are in svgtottf.py
+        for i in range(7):
             sorted_characters.append(pipi)
         kala = sorted_characters[20]
-        for i in range(7): # 8 directions; diagonal alts are in svgtottf.py
+        for i in range(7):
             sorted_characters.append(kala)
         kijetesantakalu = sorted_characters[140]
-        for i in range(7): # 8 directions; diagonal alts are in svgtottf.py
+        for i in range(7):
             sorted_characters.append(kijetesantakalu)
         soweli = sorted_characters[98]
-        for i in range(7): # 8 directions; diagonal alts are in svgtottf.py
+        for i in range(7):
             sorted_characters.append(soweli)
         waso = sorted_characters[116]
-        for i in range(7): # 8 directions; diagonal alts are in svgtottf.py
+        for i in range(7):
             sorted_characters.append(waso)
 
         # Latin characters
 
         # add Latin [ _ ] . :, necessary for ligatures
-        bracketleft  = sorted_characters[120]
-        sorted_characters.append(bracketleft)
-        underscore   = sorted_characters[180]
-        sorted_characters.append(underscore)
-        bracketright = sorted_characters[121]
-        sorted_characters.append(bracketright)
-        period = sorted_characters[122]
-        sorted_characters.append(period)
-        colon  = sorted_characters[123]
-        sorted_characters.append(colon)
+        sorted_characters.append(sorted_characters[120]) # bracketleft 
+        sorted_characters.append(sorted_characters[180]) # underscore  
+        sorted_characters.append(sorted_characters[121]) # bracketright
+        sorted_characters.append(sorted_characters[122]) # period
+        sorted_characters.append(sorted_characters[123]) # colon 
 
         # add Latin a e n o, necessary for ligatures
-        a = sorted_characters[0]
-        sorted_characters.append(a)
-        e = sorted_characters[9]
-        sorted_characters.append(e)
-        n = sorted_characters[148]
-        sorted_characters.append(n)
-        o = sorted_characters[68]
-        sorted_characters.append(o)
+        sorted_characters.append(sorted_characters[0]) # a
+        sorted_characters.append(sorted_characters[9]) # e
+        sorted_characters.append(sorted_characters[148]) # n
+        sorted_characters.append(sorted_characters[68]) # o
 
         # add uppercase IJKLMPSTUW, for Pingo and name glyphs
         for i,c in enumerate("ijklmpstuw"):
             sorted_characters.append(sorted_characters[124+i])
 
         # add uppercase AENO
-        uppercase_a = sorted_characters[0]
-        sorted_characters.append(uppercase_a)
-        uppercase_e = sorted_characters[9]
-        sorted_characters.append(uppercase_e)
-        uppercase_n = sorted_characters[148]
-        sorted_characters.append(uppercase_n)
-        uppercase_o = sorted_characters[68]
-        sorted_characters.append(uppercase_o)
+        sorted_characters.append(sorted_characters[0]) # uppercase_a
+        sorted_characters.append(sorted_characters[9]) # uppercase_e
+        sorted_characters.append(sorted_characters[148]) # uppercase_n
+        sorted_characters.append(sorted_characters[68]) # uppercase_o
 
         # g for Pingo, shown as k
-        g = sorted_characters[126]
-        sorted_characters.append(g)
+        sorted_characters.append(sorted_characters[126]) # g
         # y for yupekosi, shown as j
-        y = sorted_characters[125]
-        sorted_characters.append(y)
+        sorted_characters.append(sorted_characters[125]) # y
         # v for Vivi, shown as w
-        v = sorted_characters[133]
-        sorted_characters.append(v)
+        sorted_characters.append(sorted_characters[133]) # v
         # V for Vivi, shown as w
-        uppercase_v = sorted_characters[133]
-        sorted_characters.append(uppercase_v)
-
-        # for adding future unofficial letters:
-        # letter, glyph index, codepoint for default.json
-        # b 129 62
-        # c 130 63
-        # d 131 64
-        # f 129 66
-        # h 126 68
-        # q 126 71
-        # r 133 72
-        # x 130 78
-        # z 130 7a
+        sorted_characters.append(sorted_characters[133]) # uppercase_v
+        # G
+        sorted_characters.append(sorted_characters[126]) # uppercase_g
+        # Y
+        sorted_characters.append(sorted_characters[125]) # uppercase_y
+        sorted_characters.append(sorted_characters[129]) # b
+        sorted_characters.append(sorted_characters[129]) # B        
+        sorted_characters.append(sorted_characters[130]) # c
+        sorted_characters.append(sorted_characters[130]) # C        
+        sorted_characters.append(sorted_characters[131]) # d
+        sorted_characters.append(sorted_characters[131]) # D        
+        sorted_characters.append(sorted_characters[129]) # f
+        sorted_characters.append(sorted_characters[129]) # F        
+        sorted_characters.append(sorted_characters[126]) # h
+        sorted_characters.append(sorted_characters[126]) # H        
+        sorted_characters.append(sorted_characters[126]) # q
+        sorted_characters.append(sorted_characters[126]) # Q        
+        sorted_characters.append(sorted_characters[133]) # r
+        sorted_characters.append(sorted_characters[133]) # R        
+        sorted_characters.append(sorted_characters[130]) # x
+        sorted_characters.append(sorted_characters[130]) # X
+        sorted_characters.append(sorted_characters[130]) # z
+        sorted_characters.append(sorted_characters[130]) # Z
+        
 
 
 # END OF KELLY ZONE

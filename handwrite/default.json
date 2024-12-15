@@ -302,7 +302,28 @@
     {"codepoint": "0x67", "name": "g"},
     {"codepoint": "0x79", "name": "y"},
     {"codepoint": "0x76", "name": "v"},
-    {"codepoint": "0x56", "name": "V"}
+    {"codepoint": "0x56", "name": "V"},
+    {"codepoint": "0x47", "name": "G"},
+    {"codepoint": "0x59", "name": "Y"},
+
+    {"codepoint": "0x62", "name": "b"},
+    {"codepoint": "0x42", "name": "B"},
+    {"codepoint": "0x63", "name": "c"},
+    {"codepoint": "0x43", "name": "C"},
+    {"codepoint": "0x64", "name": "d"},
+    {"codepoint": "0x44", "name": "D"},
+    {"codepoint": "0x66", "name": "f"},
+    {"codepoint": "0x46", "name": "F"},
+    {"codepoint": "0x68", "name": "h"},
+    {"codepoint": "0x48", "name": "H"},
+    {"codepoint": "0x71", "name": "q"},
+    {"codepoint": "0x51", "name": "Q"},
+    {"codepoint": "0x72", "name": "r"},
+    {"codepoint": "0x52", "name": "R"},
+    {"codepoint": "0x78", "name": "x"},
+    {"codepoint": "0x58", "name": "X"},
+    {"codepoint": "0x7a", "name": "z"},
+    {"codepoint": "0x5a", "name": "Z"}
   ],
   "note": "Remember, the last item shouldn't have a comma!"
 }
