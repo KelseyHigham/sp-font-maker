@@ -243,15 +243,10 @@ class SHEETtoPNG:
 
             # Convert glyph and padding from grid cells into pixels,
             # using the measured size of each row
-            #                    █                       ▀               █                   ▄        █
-            # █▀▄▀▄   ▀▀▄  █  █  █▀▀▄  ▄▀▀▄       █▀▀▄  ▀█  ▀▄ ▄▀  ▄▀▀▄  █        ▀▀▄  █▄▀  ▀█▀       █▀▀▄  █  █  ▄▀▀█
-            # █ █ █  ▄▀▀█  █  █  █  █  █▄▄█       █  █   █    █    █▄▄█  █       ▄▀▀█  █     █        █  █  █  █  █  █
-            # █ █ █  ▀▄▄█  ▀▄▄█  █▄▄▀  ▀▄▄        █▄▄▀   █  ▄▀ ▀▄  ▀▄▄   █       ▀▄▄█  █     ▀▄       █▄▄▀  ▀▄▄█  ▀▄▄█
-            #               ▄▄▀                   █                                                                ▄▄▀
             import math
             glyph_w      =            grid_scan_w      * row_w/grid_row_w
             glyph_h      =            grid_scan_h      * row_h/grid_row_h
-            # math.floor ensures that a left-aligned pixel glyph is
+            # math.floor ensures that a left-aligned pixel font glyph is
             # horizontally centered on the scan area, which is cute
             left_padding = math.floor(grid_hor_padding * row_w/grid_row_w)
             top_padding  =            grid_ver_padding * row_h/grid_row_h
@@ -273,11 +268,6 @@ class SHEETtoPNG:
                 # normally bent paper will result in glyphs bleeding into each other's scan areas.
                 # this mostly mitigates that.
 
-                #        ▀               █                   ▄        █                      █
-                # █▀▀▄  ▀█  ▀▄ ▄▀  ▄▀▀▄  █        ▀▀▄  █▄▀  ▀█▀       █▀▀▄  █  █  ▄▀▀█       █▀▀▄  ▄▀▀▄  █▄▀  ▄▀▀▄
-                # █  █   █    █    █▄▄█  █       ▄▀▀█  █     █        █  █  █  █  █  █       █  █  █▄▄█  █    █▄▄█
-                # █▄▄▀   █  ▄▀ ▀▄  ▀▄▄   █       ▀▄▄█  █     ▀▄       █▄▄▀  ▀▄▄█  ▀▄▄█       █  █  ▀▄▄   █    ▀▄▄
-                # █                                                                ▄▄▀
                 # we wanna find the center of gravity of the cell
                 # and we'll use that to move the cell
                 # to avoid like, scanning one pixel of a neighboring glyph
@@ -371,18 +361,12 @@ class SHEETtoPNG:
         # cartouches
         open_cartouche  = sorted_characters[120]
         close_cartouche = sorted_characters[121]
-        glyph_left, glyph_top, glyph_w, glyph_h = close_cartouche[1], close_cartouche[2], close_cartouche[3], close_cartouche[4]
-        cartouche_middle_glyph_left = glyph_left
-
-        #        ▀               █                   ▄        █
-        # █▀▀▄  ▀█  ▀▄ ▄▀  ▄▀▀▄  █        ▀▀▄  █▄▀  ▀█▀       █▀▀▄  █  █  ▄▀▀█
-        # █  █   █    █    █▄▄█  █       ▄▀▀█  █     █        █  █  █  █  █  █
-        # █▄▄▀   █  ▄▀ ▀▄  ▀▄▄   █       ▀▄▄█  █     ▀▄       █▄▄▀  ▀▄▄█  ▀▄▄█
-        # █                                                                ▄▄▀
+        glyph_left, glyph_top, glyph_w, glyph_h = open_cartouche[1], open_cartouche[2], open_cartouche[3], open_cartouche[4]
+        cartouche_middle_glyph_left = glyph_left + glyph_w - 1
 
         # shift the open and close cartouche scan area inward, to match how the gray boxes are shifted
         # glyph_left = open_cartouche[1] + glyph_w/16
-        print(grid_scan_hor_padding * glyph_w/grid_scan_w)
+        # print("horizontal padding", grid_scan_hor_padding * glyph_w/grid_scan_w)
         if pixel:
             right_scan_padding = math.floor(grid_scan_hor_padding * glyph_w/grid_scan_w)
             left_scan_padding  = math.ceil( grid_scan_hor_padding * glyph_w/grid_scan_w)
@@ -423,6 +407,7 @@ class SHEETtoPNG:
         # of a glyph when it's converted to BMP, then SVG.
         roi = image[int(glyph_top                  ) : int(glyph_top                   + glyph_h),
                     int(cartouche_middle_glyph_left) : int(cartouche_middle_glyph_left + 1)]
+        #                                                                    # bug? vv
         sorted_characters.append([roi, cartouche_middle_glyph_left, glyph_top, glyph_w, glyph_h])
 
         # add ali
@@ -444,7 +429,7 @@ class SHEETtoPNG:
         for i in range(7):
             sorted_characters.append(sorted_characters[116]) # waso
 
-        # Latin characters
+        # Latin characters. organize these better later...
 
         # add Latin [ _ ] . :, necessary for ligatures
         sorted_characters.append(sorted_characters[120]) # bracketleft 
@@ -654,42 +639,37 @@ class SHEETtoPNG:
         draw = ImageDraw.Draw(char_img)
         left, top, right, bottom = 0, 0, char_img.width, char_img.height
         in_pixels = char_img.width/grid_scan_w
-        #        ▀               █                   ▄        █
-        # █▀▀▄  ▀█  ▀▄ ▄▀  ▄▀▀▄  █        ▀▀▄  █▄▀  ▀█▀       █▀▀▄  █  █  ▄▀▀█
-        # █  █   █    █    █▄▄█  █       ▄▀▀█  █     █        █  █  █  █  █  █
-        # █▄▄▀   █  ▄▀ ▀▄  ▀▄▄   █       ▀▄▄█  █     ▀▄       █▄▄▀  ▀▄▄█  ▀▄▄█
-        # █                                                                ▄▄▀
-            # we need to still draw padding
-            # but for font sizes that aren't divisible by 4, like 6px and 10px,
-            # we'll have uneven padding on the left and right
-            # (because the left padding is 1.5 for 6px, and 2.5 for 10px)
-            # so we need to calculate it in a way that's consistent with the padding on each scanned glyph
+
         pixel = metadata.get("pixel") or False
         import math
+
+        # for pixel fonts, we need to still draw padding.
+        # but for font sizes that aren't divisible by 4, like 6px and 10px,
+        # we'll have uneven padding on the left and right.
+        # (because the left padding is 1.5 for 6px, and 2.5 for 10px.)
+        # so we need to calculate it in a way that's consistent with the padding on each scanned glyph.
+
+        # this accidentally works perfectly.
+        # but if i revise the code to make more sense,
+        # it'll break, and require more complication to return to the desired behavior.
         if pixel:
-            left_scan_padding  = math.ceil( grid_scan_hor_padding*in_pixels)
-            right_scan_padding = math.floor(grid_scan_hor_padding*in_pixels)
+            left_scan_padding  = math.floor( grid_scan_hor_padding*in_pixels)
+            right_scan_padding = math.ceil(grid_scan_hor_padding*in_pixels)
             cartouche_overlap  = 1
         else:
             left_scan_padding  = grid_scan_hor_padding*in_pixels
             right_scan_padding = grid_scan_hor_padding*in_pixels
             cartouche_overlap  = grid_glyph_w*in_pixels/42
-        if not pixel:
-            if side == "left":
-                draw.rectangle(
-                    ((left,                                         top   ), 
-                     (left + left_scan_padding - cartouche_overlap, bottom)),
-                    fill="white"
-                )
-            if side == "right":
-                draw.rectangle(
-                    ((right - right_scan_padding + cartouche_overlap, top   ), 
-                     (right,                                          bottom)),
-                    fill="white"
-                )
-        else:
-            if side == "left":
-                print("pad the left side of", char_name, "by", math.ceil(grid_scan_hor_padding*in_pixels))
-            if side == "right":
-                print("pad the right side of", char_name, "by", math.floor(grid_scan_hor_padding*in_pixels))
+        if side == "left":
+            draw.rectangle(
+                ((left,                                         top   ), 
+                 (left + left_scan_padding - cartouche_overlap, bottom)),
+                fill="white"
+            )
+        if side == "right":
+            draw.rectangle(
+                ((right - right_scan_padding + cartouche_overlap, top   ), 
+                 (right,                                          bottom)),
+                fill="white"
+            )
         char_img.save(characters_dir + "/" + char_name + "/" + char_name + ".png")
