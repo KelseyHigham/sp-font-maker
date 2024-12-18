@@ -136,7 +136,7 @@ class PNGtoSVG:
         img = Image.open(path).convert("RGBA").resize((glyph_width, glyph_height), resample=resample)
 
         # Threshold image to convert each pixel to either black or white
-        threshold = 200
+        threshold = 127
         data = []
         for pix in list(img.getdata()):
             if pix[0] >= threshold and pix[1] >= threshold and pix[3] >= threshold:
