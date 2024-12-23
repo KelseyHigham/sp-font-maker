@@ -601,6 +601,13 @@ class SHEETtoPNG:
         self.rotate(characters_dir, metadata, False, 270, "wasoTok.S")
         self.rotate(characters_dir, metadata, False, 315, "wasoTok.SE")
 
+
+
+    #             ▄          ▄
+    # █▄▀  ▄▀▀▄  ▀█▀   ▀▀▄  ▀█▀  ▄▀▀▄
+    # █    █  █   █   ▄▀▀█   █   █▄▄█
+    # █    ▀▄▄▀   ▀▄  ▀▄▄█   ▀▄  ▀▄▄
+    
     def rotate(self, characters_dir, metadata, flip, degrees_ccw, char_name):
         from PIL import Image, ImageDraw
         char_img = Image.open(characters_dir + "/" + char_name + "/" + char_name + ".png")
@@ -609,6 +616,8 @@ class SHEETtoPNG:
         # bilinear might not be the strat; test with different fonts
         char_img = char_img.rotate(angle=degrees_ccw, fillcolor=(0xF0, 0xF0, 0xF0, 0xFF), resample=Image.Resampling.BILINEAR)
         char_img.save(characters_dir + "/" + char_name + "/" + char_name + ".png")
+
+
 
     def pad(self, side, characters_dir, metadata, char_name, resize=False):
         from PIL import Image, ImageDraw

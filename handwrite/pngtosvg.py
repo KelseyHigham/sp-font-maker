@@ -135,11 +135,13 @@ class PNGtoSVG:
             resample = Image.Resampling.BICUBIC
         img = Image.open(path).convert("RGBA").resize((glyph_width, glyph_height), resample=resample)
 
-        # Threshold image to convert each pixel to either black or white
-        # Recently changed from 200 to 127, which *might* break lots of things
-        # Particularly fonts with lighter stroke colors, like... Topo's i think?
-        # Uhhhh maybe i should revert this, until i can create a command line argument for it...
-        threshold = 200
+        # Threshold image to convert each pixel to either black or white.
+        # Changed from 200 to 127, which makes two of the 2.0.0 fonts look worse, but improves just about everything newer.
+        if Version(sheet_version) > Version("2"):
+            threshold = 127
+        else:
+            threshold = 200
+
         data = []
         for pix in list(img.getdata()):
             if pix[0] >= threshold and pix[1] >= threshold and pix[3] >= threshold:
