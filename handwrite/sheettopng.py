@@ -78,7 +78,14 @@ class SHEETtoPNG:
         _, thresh = cv2.threshold(gray, threshold_value, 255, 1)
         cv2.imwrite(os.path.join(characters_dir, "analysis step 3 - threshold" + ".png"), thresh)
         close_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
-        close = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, close_kernel, iterations=2)
+
+        pixel = metadata.get("pixel") or False
+        if pixel:
+            iterations = 0
+        else:
+            iterations = 2
+        close = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, close_kernel, iterations=iterations)
+
         cv2.imwrite(os.path.join(characters_dir, "analysis step 4 - close" + ".png"), close)
 
         # Search for contours.
@@ -90,7 +97,6 @@ class SHEETtoPNG:
         from PIL import Image, ImageDraw
         debug_image = Image.open(sheet_image).convert("RGB")
         debug_draw = ImageDraw.Draw(debug_image)
-        pixel = metadata.get("pixel") or False
         if pixel:
             debug_width = 1
         else:
