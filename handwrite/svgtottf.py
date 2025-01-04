@@ -284,7 +284,7 @@ style = "handwritten"
 # style = "unspecified"
 
 [links]
-# Autofilled for Kelly. If you're not Kelly, these URLs are inaccurate. But you can make them accurate, with a GitHub pull request!
+# Autofilled for Kelly. If you're not Kelly, these URLs are inaccurate; upload the font to a website like neocities.org or github.io
 # fontfile = "https://github.com/wasokeli/wasokeli.github.io/raw/main/sp-font-maker/''' + filename.replace(" ", "%20") + '''"
 # repo     = "https://github.com/wasokeli/wasokeli.github.io/tree/main/sp-font-maker"
 # webpage  = "https://wasokeli.github.io/sp-font-maker/''' + family.replace(" ", "-") + '''.html"
@@ -881,6 +881,14 @@ function redrawTextarea(e) {
         caret.width = 1000
         ampersand = self.font.createChar(ord("&"), "ampersand")
         ampersand.width = 0
+        opencurly = self.font.createChar(ord("{"), "opencurly")
+        opencurly.width = 0
+        closecurly = self.font.createChar(ord("}"), "closecurly")
+        closecurly.width = 0
+        openparen = self.font.createChar(ord("("), "openparen")
+        openparen.width = 0
+        closeparen = self.font.createChar(ord(")"), "closeparen")
+        closeparen.width = 0
         for number, name in enumerate(["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]):
             digit = self.font.createChar(ord(str(number)), name)
             digit.width = 0

@@ -54,7 +54,9 @@ def converters(sheet, output_directory, directory=None, config=None, metadata=No
                 for letter_index, letter in enumerate(letters):
                     if letter == "-": letters[letter_index] = "hyphen"
                     if letter == "+": letters[letter_index] = "plus"
-                    if letter == "^": letters[letter_index] = "caret"
+                    if letter == "^": letters[letter_index] = "north"
+                    if letter == "<": letters[letter_index] = "west"
+                    if letter == ">": letters[letter_index] = "east"
                     if letter == "&": letters[letter_index] = "ampersand"
                     if letter == ",": letters[letter_index] = "comma"
                     if letter == "!": letters[letter_index] = "exclamation"
@@ -69,11 +71,17 @@ def converters(sheet, output_directory, directory=None, config=None, metadata=No
                     if letter == "7": letters[letter_index] = "seven"
                     if letter == "8": letters[letter_index] = "eight"
                     if letter == "9": letters[letter_index] = "nine"
+                    if letter == "{": letters[letter_index] = "opencurly"
+                    if letter == "}": letters[letter_index] = "closecurly"
+                    if letter == "(": letters[letter_index] = "openparen"
+                    if letter == ")": letters[letter_index] = "closeparen"
+                    if letter == "[": letters[letter_index] = "bracketleft"
+                    if letter == "]": letters[letter_index] = "bracketright"
 
-                # todo, fix bug: since i'm NOT running this line of code, we can end up with -+^&,!? in filenames.
-                # but if i run it, we'll end up with glyph names like "tokihyphenponaTok", which is weird.
+                # todo, fix bug: if i DON'T run this line of code, then we can end up with -+^&,!? in filenames.
+                # but since i run it, we end up with glyph names like "tokihyphenponaTok", which is weird.
                 # also "one" and "nine" are valid toki pona, and may rarely cause name collisions.
-                # word = "".join(letters)
+                word = "".join(letters)
 
                 glyph_json = font_data['glyphs-fancy']
 
@@ -86,6 +94,7 @@ def converters(sheet, output_directory, directory=None, config=None, metadata=No
                 elif word == "powe":
                     glyph_json[blank_cells[position]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": "0xf19a3"}
                 else:
+
                     # check if it's a redraw of an existing sheet glyph
                     for default_glyph in glyph_json:
                         if 'name' in default_glyph:
@@ -100,6 +109,7 @@ def converters(sheet, output_directory, directory=None, config=None, metadata=No
                                     # lowercase seems to work already
                                 # todo: remove redundant glyphs from the preview web page
                                 # probably never: allow replacing anything from row[6]
+
                     glyph_json[blank_cells[position]]['name'] = word + "Tok"
                     glyph_json[blank_cells[position]]['ligature'] = " ".join(letters)
 
