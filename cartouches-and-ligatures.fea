@@ -1,0 +1,313 @@
+# Adobe feature file format
+# This is normally generated and applied in svgtottf.py, to include any custom words needed by the font.
+# It's normally applied using fontTools, but it can be applied manually with FontForge.
+
+languagesystem DFLT dflt; # This part is apparently necessary so that
+languagesystem latn dflt; # people can edit the font in FontForge after?
+
+feature liga {
+  sub k i j e t e s a n t a k a l u by kijetesantakaluTok;
+  sub m i s i k e k e by misikekeTok;
+  sub k e p e k e n by kepekenTok;
+  sub s i t e l e n by sitelenTok;
+  sub m o n s u t a by monsutaTok;
+  sub l i n l u w i by linluwiTok;
+  sub k a l a m a by kalamaTok;
+  sub k u l u p u by kulupuTok;
+  sub p a k a l a by pakalaTok;
+  sub p a l i s a by palisaTok;
+  sub p i m e j a by pimejaTok;
+  sub s i j e l o by sijeloTok;
+  sub s i n p i n by sinpinTok;
+  sub s o w e l i by soweliTok;
+  sub k i p i s i by kipisiTok;
+  sub l a n p a n by lanpanTok;
+  sub n a m a k o by namakoTok;
+  sub j a s i m a by jasimaTok;
+  sub m a j u n a by majunaTok;
+  sub a k e s i by akesiTok;
+  sub a l a s a by alasaTok;
+  sub k i w e n by kiwenTok;
+  sub l i n j a by linjaTok;
+  sub l u k i n by lukinTok;
+  sub m o n s i by monsiTok;
+  sub n a n p a by nanpaTok;
+  sub n a s i n by nasinTok;
+  sub p i l i n by pilinTok;
+  sub t e n p o by tenpoTok;
+  sub u t a l a by utalaTok;
+  sub t o n s i by tonsiTok;
+  sub e p i k u by epikuTok;
+  sub a n p a by anpaTok;
+  sub a n t e by anteTok;
+  sub a w e n by awenTok;
+  sub e s u n by esunTok;
+  sub i n s a by insaTok;
+  sub j a k i by jakiTok;
+  sub j e l o by jeloTok;
+  sub k a l a by kalaTok;
+  sub k a m a by kamaTok;
+  sub k a s i by kasiTok;
+  sub k i l i by kiliTok;
+  sub k u l e by kuleTok;
+  sub k u t e by kuteTok;
+  sub l a p e by lapeTok;
+  sub l a s o by lasoTok;
+  sub l a w a by lawaTok;
+  sub l e t e by leteTok;
+  sub l i l i by liliTok;
+  sub l i p u by lipuTok;
+  sub l o j e by lojeTok;
+  sub l u k a by lukaTok;
+  sub l u p a by lupaTok;
+  sub m a m a by mamaTok;
+  sub m a n i by maniTok;
+  sub m e l i by meliTok;
+  sub m i j e by mijeTok;
+  sub m o k u by mokuTok;
+  sub m o l i by moliTok;
+  sub m u s i by musiTok;
+  sub m u t e by muteTok;
+  sub n a s a by nasaTok;
+  sub n e n a by nenaTok;
+  sub n i m i by nimiTok;
+  sub n o k a by nokaTok;
+  sub o l i n by olinTok;
+  sub o p e n by openTok;
+  sub p a l i by paliTok;
+  sub p a n a by panaTok;
+  sub p i n i by piniTok;
+  sub p i p i by pipiTok;
+  sub p o k a by pokaTok;
+  sub p o k i by pokiTok;
+  sub p o n a by ponaTok;
+  sub s a m a by samaTok;
+  sub s e l i by seliTok;
+  sub s e l o by seloTok;
+  sub s e m e by semeTok;
+  sub s e w i by sewiTok;
+  sub s i k e by sikeTok;
+  sub s i n a by sinaTok;
+  sub s o n a by sonaTok;
+  sub s u l i by suliTok;
+  sub s u n o by sunoTok;
+  sub s u p a by supaTok;
+  sub s u w i by suwiTok;
+  sub t a s o by tasoTok;
+  sub t a w a by tawaTok;
+  sub t e l o by teloTok;
+  sub t o k i by tokiTok;
+  sub t o m o by tomoTok;
+  sub u n p a by unpaTok;
+  sub w a l o by waloTok;
+  sub w a s o by wasoTok;
+  sub w a w a by wawaTok;
+  sub w e k a by wekaTok;
+  sub w i l e by wileTok;
+  sub l e k o by lekoTok;
+  sub s o k o by sokoTok;
+  sub m e s o by mesoTok;
+  sub a l a by alaTok;
+  sub a l e by aleTok;
+  sub a n u by anuTok;
+  sub i j o by ijoTok;
+  sub i k e by ikeTok;
+  sub i l o by iloTok;
+  sub j a n by janTok;
+  sub k e n by kenTok;
+  sub k o n by konTok;
+  sub l e n by lenTok;
+  sub l o n by lonTok;
+  sub m u n by munTok;
+  sub o n a by onaTok;
+  sub p a n by panTok;
+  sub s i n by sinTok;
+  sub t a n by tanTok;
+  sub u t a by utaTok;
+  sub w a n by wanTok;
+  sub k i n by kinTok;
+  sub o k o by okoTok;
+  sub e n by enTok;
+  sub j o by joTok;
+  sub k o by koTok;
+  sub l a by laTok;
+  sub l i by liTok;
+  sub m a by maTok;
+  sub m i by miTok;
+  sub m u by muTok;
+  sub n i by niTok;
+  sub p i by piTok;
+  sub p u by puTok;
+  sub t u by tuTok;
+  sub t e by teTok;
+  sub t o by toTok;
+  sub k u by kuTok;
+  sub s u by suTok;
+  sub comma space by zerowidth;
+  sub a by aTok;
+  sub e by eTok;
+  sub o by oTok;
+  sub bracketleft by cartoucheStartTok;
+  sub bracketright by cartoucheEndTok;
+  sub period by middotTok;
+  sub colon by colonTok;
+  sub n by nTok;
+} liga;
+
+@cartoucheableGlyph = [
+  a e i j k l m n o p s t u w
+  middotTok colonTok
+  period colon space exclamation question underscore
+  aTok
+  akesiTok
+  alaTok
+  alasaTok
+  aleTok
+  anpaTok
+  anteTok
+  anuTok
+  awenTok
+  eTok
+  enTok
+  esunTok
+  ijoTok
+  ikeTok
+  iloTok
+  insaTok
+  jakiTok
+  janTok
+  jeloTok
+  joTok
+  kalaTok
+  kalamaTok
+  kamaTok
+  kasiTok
+  kenTok
+  kepekenTok
+  kiliTok
+  kiwenTok
+  koTok
+  konTok
+  kuleTok
+  kulupuTok
+  kuteTok
+  laTok
+  lapeTok
+  lasoTok
+  lawaTok
+  lenTok
+  leteTok
+  liTok
+  liliTok
+  linjaTok
+  lipuTok
+  lojeTok
+  lonTok
+  lukaTok
+  lukinTok
+  lupaTok
+  maTok
+  mamaTok
+  maniTok
+  meliTok
+  miTok
+  mijeTok
+  mokuTok
+  moliTok
+  monsiTok
+  muTok
+  munTok
+  musiTok
+  muteTok
+  nanpaTok
+  nasaTok
+  nasinTok
+  nenaTok
+  niTok
+  nimiTok
+  nokaTok
+  oTok
+  olinTok
+  onaTok
+  openTok
+  pakalaTok
+  paliTok
+  palisaTok
+  panTok
+  panaTok
+  piTok
+  pilinTok
+  pimejaTok
+  piniTok
+  pipiTok
+  pokaTok
+  pokiTok
+  ponaTok
+  puTok
+  samaTok
+  seliTok
+  seloTok
+  semeTok
+  sewiTok
+  sijeloTok
+  sikeTok
+  sinTok
+  sinaTok
+  sinpinTok
+  sitelenTok
+  sonaTok
+  soweliTok
+  suliTok
+  sunoTok
+  supaTok
+  suwiTok
+  tanTok
+  tasoTok
+  tawaTok
+  teloTok
+  tenpoTok
+  tokiTok
+  tomoTok
+  tuTok
+  unpaTok
+  utaTok
+  utalaTok
+  waloTok
+  wanTok
+  wasoTok
+  wawaTok
+  wekaTok
+  wileTok
+  middotTok
+  colonTok
+  teTok
+  toTok
+  kijetesantakaluTok
+  kinTok
+  kipisiTok
+  kuTok
+  lanpanTok
+  lekoTok
+  misikekeTok
+  monsutaTok
+  nTok
+  namakoTok
+  sokoTok
+  tonsiTok
+  epikuTok
+  jasimaTok
+  linluwiTok
+  majunaTok
+  mesoTok
+  okoTok
+  suTok
+];
+
+lookup add_cartouche_middle {
+  sub   @cartoucheableGlyph   by   @cartoucheableGlyph cartoucheMiddleTok;
+} add_cartouche_middle;
+
+feature ccmp {
+  sub   cartoucheStartTok  [@cartoucheableGlyph]'   lookup add_cartouche_middle;
+  sub   cartoucheMiddleTok [@cartoucheableGlyph]'   lookup add_cartouche_middle;
+} ccmp;
