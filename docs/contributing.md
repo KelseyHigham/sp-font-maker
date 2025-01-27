@@ -37,17 +37,9 @@
     pip install -e .[dev]
     ```
 
-6. Make sure the tests run:
-
-    ```console
-    python setup.py test
-    ```
-
-7. Install pre-commit hooks before contributing:
-
-    ```console
-    pre-commit install
-    ```
+6. Use `handwrite -h` to see instructions on using the command-line tool.
+   - Put the font name in `--filename`, and the author in `--designer`.
+   - A friendly license like OFL or CC0 is necessary for putting your font on ilo Linku.
 
 You are ready to go!
 
@@ -55,7 +47,11 @@ You are ready to go!
 
 1. Install [Potrace](http://potrace.sourceforge.net/#downloading) and make sure it's in your PATH.
 
-2. Install [fontforge](https://fontforge.org/en-US/downloads/) and make sure scripting is enabled.
+2. Install [fontforge](https://fontforge.org/en-US/downloads/) and make sure scripting is enabled. Add it to your PATH:
+   - press Start
+   - type "env"
+   - click "Edit the system environment variables"
+   - add `C:\Program Files (x86)\FontForgeBuilds\bin` to your PATH
 
 3. Clone the repository or your fork
 
@@ -76,41 +72,10 @@ You are ready to go!
     pip install -e .[dev]
     ```
 
-6. Make sure the tests run:
+    If you don't have `pip` installed, install [Python](https://www.python.org/downloads/) from the website, or type `python` to install Python and PIP from the Microsoft Store.
 
-    ```console
-    python setup.py test
-    ```
-
-7. Install pre-commit hooks before contributing:
-
-    ```console
-    pre-commit install
-    ```
+6. Use `handwrite -h` to see instructions on using the command-line tool.
+   - Put the font name in `--filename`, and the author in `--designer`.
+   - A friendly license like OFL or CC0 is necessary for putting your font on ilo Linku.
 
 You are ready to go!
-
-
-
-## Setting Up Docs
-
-1. If you haven't done a developer install of handwrite, you will need to install mkdocs and its requirements: 
-```bash
-pip install mkdocs pymdown-extensions mkdocs-material mkdocs-git-revision-date-localized-plugin
-```
-
-2. Check the installations by executing this command:
-```bash
-mkdocs --version
-```
-
-    !!! warning ""
-        If this doesn't work, try restarting the terminal
-
-3. Use the below command to host the documentation on local server
-```bash
-mkdocs serve --dev-addr 127.0.0.1:8000
-```
-{== MkDocs supports live reload so you don't have to run the server again and again. Just save the changes in the docs and you'll see the change immediately. ==}
-
-4. All the documentation is present in the `docs` directory.
