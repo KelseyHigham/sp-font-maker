@@ -307,6 +307,8 @@ lookup add_cartouche_middle {
   sub   @cartoucheableGlyph   by   @cartoucheableGlyph cartoucheMiddleTok;
 } add_cartouche_middle;
 
+# idk if ccmp is the appropriate feature type.
+# this might affect whether the font works by default in text editors like LibreOffice and Word...?
 feature ccmp {
   sub   cartoucheStartTok  [@cartoucheableGlyph]'   lookup add_cartouche_middle;
   sub   cartoucheMiddleTok [@cartoucheableGlyph]'   lookup add_cartouche_middle;
