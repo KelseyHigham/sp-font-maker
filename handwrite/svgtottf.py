@@ -380,7 +380,7 @@ lili linja lipu loje lon luka lukin lupa ma mama mani meli mi mije moku moli mon
 mute nanpa nasa nasin nena ni nimi noka o olin ona open pakala pali palisa pan pana pi pilin pimeja<br>
 pini pipi poka poki pona pu sama seli selo seme sewi sijelo sike sin sina sinpin sitelen sona soweli suli<br>
 suno supa suwi tan taso tawa telo tenpo toki tomo tu unpa uta utala walo wan waso wawa weka wile<br>
-[].:ijklmpst,uw,te to""" + " ".join(other_words[0:4]) + """<br>
+[] . : i j k l m p s t u w te to """ + " ".join(other_words[0:4]) + """<br>
 kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi""" + " ".join(other_words[4:12]) + """<br>
 epiku jasima linluwi majuna meso oko su""" + " ".join(other_words[12:25]) + """<br><br>
 </span>
