@@ -456,13 +456,13 @@ class SHEETtoPNG:
 
         # add every other Latin letter, for Pingo and name glyphs
 
-        sorted_characters.append(sorted_characters[0])   # A
-        sorted_characters.append(sorted_characters[9])   # E
-        sorted_characters.append(sorted_characters[148]) # N
-        sorted_characters.append(sorted_characters[68])  # O
+        sorted_characters.append(sorted_characters[0])   # A, shown as a
+        sorted_characters.append(sorted_characters[9])   # E, shown as e
+        sorted_characters.append(sorted_characters[148]) # N, shown as n
+        sorted_characters.append(sorted_characters[68])  # O, shown as o
 
         for i,c in enumerate("ijklmpstuw"):
-            sorted_characters.append(sorted_characters[124+i]) # uppercase IJKLMPSTUW
+            sorted_characters.append(sorted_characters[124+i]) # uppercase IJKLMPSTUW, shown as lowercase
 
         sorted_characters.append(sorted_characters[129]) # b, shown as p
         sorted_characters.append(sorted_characters[129]) # B, shown as p
