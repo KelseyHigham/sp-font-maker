@@ -616,8 +616,26 @@ class SHEETtoPNG:
         char_img = Image.open(characters_dir + "/" + char_name + "/" + char_name + ".png")
         if flip:
             char_img = char_img.transpose(method=Image.Transpose.FLIP_LEFT_RIGHT)
-        # bilinear might not be the strat; test with different fonts
-        char_img = char_img.rotate(angle=degrees_ccw, fillcolor=(0xF0, 0xF0, 0xF0, 0xFF), resample=Image.Resampling.BILINEAR)
+
+        if char_img.size[0] % 2 == 0: # if width is even
+            # For pixel fonts, rotate around the assumed center pixel,
+            # with assumed 1px space between glyphs.
+            center_x = (char_img.size[0]-1)/2
+        else:
+            # If the width is odd, then we've arbitrarily chosen to put the
+            # extra 1px padding on the left, balancing the glyph in the center
+            # of the scan area.
+            center_x = char_img.size[0]/2
+
+        # I don't have a test case for odd height, so this assumes an even height.
+        center_y = (char_img.size[1]-1)/2
+
+        char_img = char_img.rotate(
+            angle     = degrees_ccw, 
+            fillcolor = (0xF0, 0xF0, 0xF0, 0xFF), 
+            resample  = Image.Resampling.BILINEAR, # bilinear might not be the strat; test with different fonts
+            center    = (center_x, center_y)
+        )
         char_img.save(characters_dir + "/" + char_name + "/" + char_name + ".png")
 
 
