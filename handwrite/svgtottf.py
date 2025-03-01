@@ -330,17 +330,24 @@ style = "handwritten"
     }
     body {
         background-color: #334;
-    }
-    * {
         font-size: 48px;
+        /*font-size: 32px;*/ /* for slideshow */
+        max-width: 960px;    /* 48 x 20 */
+        margin: auto;
         /*line-height: 1.5em;*/
+        color: white;
+        font-family: "Chalkboard SE", "Comic Sans MS", sans-serif;
+    }
+    h1 {
+        font-size: 1em;
+        /*margin-bottom: 0;*/ /* for slideshow */
+    }
+    a {
         color: white;
     }
     .tp {
         font-family: '""" + family + """', 'Chalkboard SE', 'Comic Sans MS', sans-serif;
-    }
-    h1, p {
-        font-family: "Chalkboard SE", "Comic Sans MS", sans-serif;
+        font-size: 48px;
     }
     textarea {
         font-size: 1em; 
