@@ -256,13 +256,16 @@ features = [
   "ASCII transcription and codepoints",
   "UCSUR-compliant",
   "cartouches",
+  "SP Font Maker words v2.2",        # unless they didn't fill out all the words
 
   # "incomplete",
   # "variable weight",
   # "name glyphs",
   # "character variants",
+  # "Linku common & uncommon 2024"   # nimisin
   # "all ku suli",                   # kokosila
   # "all ku suli and UCSUR words",   # apeja, pake, powe
+  # "SP Font Maker words v1",        # if missing te/to
   # "community requested nimisin",
 
   # Not implemented in SP Font Maker:
