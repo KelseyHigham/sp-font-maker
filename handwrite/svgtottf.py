@@ -650,10 +650,8 @@ function redrawTextarea(e) {
                     v = tuple(v)
                 setattr(self.font, k, v)
 
-        # idk where the list of string IDs is actually documented
-        # if i can't find a string ID, i can use a numeric ID instead:
-        # https://learn.microsoft.com/en-us/typography/opentype/otspec140/name#name-ids
         if self.config.get("sfnt_names", None):
+            # String fields built-in to the ffpython API: ['Copyright', 'Family', 'UniqueID', 'Fullname', 'Version', 'PostScriptName', 'License', 'License URL']
             self.config["sfnt_names"]["Family"] = family
             self.config["sfnt_names"]["Fullname"] = family + " " + style
             self.config["sfnt_names"]["PostScriptName"] = family.replace(" ", "-") + "-" + style
@@ -668,6 +666,13 @@ function redrawTextarea(e) {
             if license == "cc0":
                 self.config["sfnt_names"]["License"] = "CC0 1.0 Universal"
                 self.config["sfnt_names"]["License URL"] = "https://creativecommons.org/publicdomain/zero/1.0/"
+
+            # Numbered fields - https://learn.microsoft.com/en-us/typography/opentype/spec/name
+            # 8: Manufacturer
+            self.config["sfnt_names"][8] = "SP Font Maker - https://wasokeli.github.io/sp-font-maker"
+
+            # OS/2 fields - https://learn.microsoft.com/en-us/typography/opentype/spec/os2
+            # (none yet)
 
         self.config["sfnt_names"]["UniqueID"] = family + " " + str(uuid.uuid4())
 
