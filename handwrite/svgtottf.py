@@ -265,7 +265,6 @@ features = [
   # "Linku common & uncommon 2024"   # nimisin
   # "all ku suli",                   # kokosila
   # "all ku suli and UCSUR words",   # apeja, pake, powe
-  # "SP Font Maker words v1",        # if missing te/to
   # "community requested nimisin",
 
   # Not implemented in SP Font Maker:
