@@ -429,8 +429,8 @@ epiku jasima linluwi majuna meso oko su""" + " ".join(other_words[12:25]) + """<
 󱤣󱤦󱥁󱤧󱤨󱤉󱥗󱤏
 　　　󱤧󱤢󱤉󱤍󱥬
 　　　󱤧󱥇󱤉󱤆
-　　　󱤧󱤋󱤉󱤜󱤐　　　　　「　󱤀
-　　　　　󱤉󱤹󱥇　　　　　　　󱤀󱦗　　　　　　󱦘　」
+　　　󱤧󱤋󱤉󱤜󱤐　　　　　「󱤀
+　　　　　󱤉󱤹󱥇　　　　　　󱤍󱤀」
 
 󱤝󱥍󱦗󱤞󱤂󱦘󱤧󱥧󱥰
 　　　　󱤧󱤕󱥱󱤬󱥪
