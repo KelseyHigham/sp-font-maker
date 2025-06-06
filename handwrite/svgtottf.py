@@ -144,41 +144,41 @@ feature liga {
         list_of_ligs.append(("  sub n i east v      by niTok.SE;", 4))
         list_of_ligs.append(("  sub n i v by niTok;", 3))
         # directional akesi: extra ligatures to cover both ^> and >^, and akesi^
-        list_of_ligs.append(("  sub a k e s i west v      by akesiTok.SW;", 4))
-        list_of_ligs.append(("  sub a k e s i west north  by akesiTok.NW;", 4))
-        list_of_ligs.append(("  sub a k e s i east north  by akesiTok.NE;", 4))
-        list_of_ligs.append(("  sub a k e s i east v      by akesiTok.SE;", 4))
-        list_of_ligs.append(("  sub a k e s i north by akesiTok;", 3))
+        list_of_ligs.append(("  sub a k e s i west v      by akesiTok.SW;", 7))
+        list_of_ligs.append(("  sub a k e s i west north  by akesiTok.NW;", 7))
+        list_of_ligs.append(("  sub a k e s i east north  by akesiTok.NE;", 7))
+        list_of_ligs.append(("  sub a k e s i east v      by akesiTok.SE;", 7))
+        list_of_ligs.append(("  sub a k e s i north by akesiTok;", 6))
         # directional pipi: extra ligatures to cover both ^> and >^, and pipi^
-        list_of_ligs.append(("  sub p i p i west v      by pipiTok.SW;", 4))
-        list_of_ligs.append(("  sub p i p i west north  by pipiTok.NW;", 4))
-        list_of_ligs.append(("  sub p i p i east north  by pipiTok.NE;", 4))
-        list_of_ligs.append(("  sub p i p i east v      by pipiTok.SE;", 4))
-        list_of_ligs.append(("  sub p i p i north by pipiTok;", 3))
+        list_of_ligs.append(("  sub p i p i west v      by pipiTok.SW;", 6))
+        list_of_ligs.append(("  sub p i p i west north  by pipiTok.NW;", 6))
+        list_of_ligs.append(("  sub p i p i east north  by pipiTok.NE;", 6))
+        list_of_ligs.append(("  sub p i p i east v      by pipiTok.SE;", 6))
+        list_of_ligs.append(("  sub p i p i north by pipiTok;", 5))
         # directional kala: extra ligatures to cover both ^> and >^, and kala>
-        list_of_ligs.append(("  sub k a l a west v      by kalaTok.SW;", 4))
-        list_of_ligs.append(("  sub k a l a west north  by kalaTok.NW;", 4))
-        list_of_ligs.append(("  sub k a l a east north  by kalaTok.NE;", 4))
-        list_of_ligs.append(("  sub k a l a east v      by kalaTok.SE;", 4))
-        list_of_ligs.append(("  sub k a l a east by kalaTok;", 3))
+        list_of_ligs.append(("  sub k a l a west v      by kalaTok.SW;", 6))
+        list_of_ligs.append(("  sub k a l a west north  by kalaTok.NW;", 6))
+        list_of_ligs.append(("  sub k a l a east north  by kalaTok.NE;", 6))
+        list_of_ligs.append(("  sub k a l a east v      by kalaTok.SE;", 6))
+        list_of_ligs.append(("  sub k a l a east by kalaTok;", 5))
         # directional kijetesantakalu: extra ligatures to cover both ^> and >^, and kijetesantakalu>
-        list_of_ligs.append(("  sub k i j e t e s a n t a k a l u west v      by kijetesantakaluTok.SW;", 4))
-        list_of_ligs.append(("  sub k i j e t e s a n t a k a l u west north  by kijetesantakaluTok.NW;", 4))
-        list_of_ligs.append(("  sub k i j e t e s a n t a k a l u east north  by kijetesantakaluTok.NE;", 4))
-        list_of_ligs.append(("  sub k i j e t e s a n t a k a l u east v      by kijetesantakaluTok.SE;", 4))
-        list_of_ligs.append(("  sub k i j e t e s a n t a k a l u east by kijetesantakaluTok;", 3))
+        list_of_ligs.append(("  sub k i j e t e s a n t a k a l u west v      by kijetesantakaluTok.SW;", 17))
+        list_of_ligs.append(("  sub k i j e t e s a n t a k a l u west north  by kijetesantakaluTok.NW;", 17))
+        list_of_ligs.append(("  sub k i j e t e s a n t a k a l u east north  by kijetesantakaluTok.NE;", 17))
+        list_of_ligs.append(("  sub k i j e t e s a n t a k a l u east v      by kijetesantakaluTok.SE;", 17))
+        list_of_ligs.append(("  sub k i j e t e s a n t a k a l u east by kijetesantakaluTok;", 16))
         # directional soweli: extra ligatures to cover both ^> and >^, and soweli>
-        list_of_ligs.append(("  sub s o w e l i west v      by soweliTok.SW;", 4))
-        list_of_ligs.append(("  sub s o w e l i west north  by soweliTok.NW;", 4))
-        list_of_ligs.append(("  sub s o w e l i east north  by soweliTok.NE;", 4))
-        list_of_ligs.append(("  sub s o w e l i east v      by soweliTok.SE;", 4))
-        list_of_ligs.append(("  sub s o w e l i east by soweliTok;", 3))
+        list_of_ligs.append(("  sub s o w e l i west v      by soweliTok.SW;", 8))
+        list_of_ligs.append(("  sub s o w e l i west north  by soweliTok.NW;", 8))
+        list_of_ligs.append(("  sub s o w e l i east north  by soweliTok.NE;", 8))
+        list_of_ligs.append(("  sub s o w e l i east v      by soweliTok.SE;", 8))
+        list_of_ligs.append(("  sub s o w e l i east by soweliTok;", 7))
         # directional waso: extra ligatures to cover both ^> and >^, and waso>
-        list_of_ligs.append(("  sub w a s o west v      by wasoTok.SW;", 4))
-        list_of_ligs.append(("  sub w a s o west north  by wasoTok.NW;", 4))
-        list_of_ligs.append(("  sub w a s o east north  by wasoTok.NE;", 4))
-        list_of_ligs.append(("  sub w a s o east v      by wasoTok.SE;", 4))
-        list_of_ligs.append(("  sub w a s o east by wasoTok;", 3))
+        list_of_ligs.append(("  sub w a s o west v      by wasoTok.SW;", 6))
+        list_of_ligs.append(("  sub w a s o west north  by wasoTok.NW;", 6))
+        list_of_ligs.append(("  sub w a s o east north  by wasoTok.NE;", 6))
+        list_of_ligs.append(("  sub w a s o east v      by wasoTok.SE;", 6))
+        list_of_ligs.append(("  sub w a s o east by wasoTok;", 5))
 
         # sort them by number of tokens
         list_of_ligs.sort(reverse=True, key=lambda x: x[1])
@@ -430,7 +430,7 @@ epiku jasima linluwi majuna meso oko su""" + " ".join(other_words[12:25]) + """<
 　　　󱤧󱤢󱤉󱤍󱥬
 　　　󱤧󱥇󱤉󱤆
 　　　󱤧󱤋󱤉󱤜󱤐　　　　　「　󱤀
-　　　　　󱤉󱤹󱥇　　　　　　󱤀󱦗　　　　　　󱦘　」
+　　　　　󱤉󱤹󱥇　　　　　　　󱤀󱦗　　　　　　󱦘　」
 
 󱤝󱥍󱦗󱤞󱤂󱦘󱤧󱥧󱥰
 　　　　󱤧󱤕󱥱󱤬󱥪
@@ -447,7 +447,7 @@ epiku jasima linluwi majuna meso oko su""" + " ".join(other_words[12:25]) + """<
 「󱥞󱥷󱤂󱥁
 　󱥞󱥷󱤱󱤉󱤻
 　󱥞󱥷󱥅󱤉󱤳
-　　　　󱤉󱤵󱤉󱥾」　　　　󱥆󱤧󱤓󱤉󱤎󱥊
+　　　　󱤉󱤵󱤉󱥾」　　　　　󱥆󱤧󱤓󱤉󱤎󱥊
 　　　　　　　　　　　　　　　　　󱤉󱥟󱥭
 　　　　　　　　　　　　　　　󱤧󱥉󱤉󱤯
 　　　　　　　　　　　　　　󱥪󱤧󱤖󱥶
@@ -455,8 +455,8 @@ epiku jasima linluwi majuna meso oko su""" + " ".join(other_words[12:25]) + """<
 　　　　　　　　　　　　　　󱤑󱤧󱥩󱤯
 　　　　　　　　　　　　　　　󱤧󱥩󱤿󱥇
 　　　　　　　　　　　　　　　󱤧󱥩󱤟
-　　　　　　　　　　　　　　󱥔󱤖󱤧󱥷󱤉󱥵
-　　　　　　　　　　　　　󱥨󱤣󱥶󱤧󱤖󱤘󱤉󱥁
+　　　　　　　　　　　　　󱥔󱤖󱤧󱥷󱤉󱥵
+　　　　　　　　　　　　󱥨󱤣󱥶󱤧󱤖󱤘󱤉󱥁
 
 
 <textarea class="tp">sina ken sitelen wile lon ni
@@ -887,12 +887,6 @@ function redrawTextarea(e) {
         hyphen.width = 0
         plus = self.font.createChar(ord("+"), "plus")
         plus.width = 0
-        caret = self.font.createChar(ord("^"), "north")
-        caret.width = 1000
-        caret = self.font.createChar(ord("<"), "west")
-        caret.width = 1000
-        caret = self.font.createChar(ord(">"), "east")
-        caret.width = 1000
         ampersand = self.font.createChar(ord("&"), "ampersand")
         ampersand.width = 0
         opencurly = self.font.createChar(ord("{"), "opencurly")
@@ -906,6 +900,15 @@ function redrawTextarea(e) {
         for number, name in enumerate(["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]):
             digit = self.font.createChar(ord(str(number)), name)
             digit.width = 0
+
+        # not zero-width
+        # todo: replace these with rotated lili. it would be cute i think
+        north = self.font.createChar(ord("^"), "north")
+        north.width = 1000
+        west = self.font.createChar(ord("<"), "west")
+        west.width = 1000
+        east = self.font.createChar(ord(">"), "east")
+        east.width = 1000
 
         # todo: add "start of long pi" as an additional codepoint for the "pi" glyph
         # todo: then add "end of long pi" here
