@@ -871,6 +871,12 @@ function redrawTextarea(e) {
         # spaces
         ideographic_space = self.font.createChar(ord("　"), "ideographicspace")
         ideographic_space.width = 1000
+        # semicolon = self.font.createChar(ord(";"), "semicolon")
+        # semicolon.width = 1000
+        # slash = self.font.createChar(ord("/"), "slash")
+        # slash.width = 1000
+        # pipe = self.font.createChar(ord("|"), "pipe")
+        # pipe.width = 1000
         space = self.font.createChar(ord(" "), "space")
         space.width = 0
         zero_width = self.font.createChar(0x200b, "zerowidth")

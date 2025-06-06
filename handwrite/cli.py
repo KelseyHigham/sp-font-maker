@@ -77,6 +77,9 @@ def converters(sheet, output_directory, directory=None, config=None, metadata=No
                     if letter == ")": letters[letter_index] = "closeparen"
                     if letter == "[": letters[letter_index] = "bracketleft"
                     if letter == "]": letters[letter_index] = "bracketright"
+                    if letter == ";": letters[letter_index] = "semicolon"
+                    if letter == "/": letters[letter_index] = "slash"
+                    if letter == "|": letters[letter_index] = "pipe"
 
                 # todo, fix bug: if i DON'T run this line of code, then we can end up with -+^&,!? in filenames.
                 # but since i run it, we end up with glyph names like "tokihyphenponaTok", which is weird.
