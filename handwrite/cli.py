@@ -84,6 +84,9 @@ def converters(sheet, output_directory, directory=None, config=None, metadata=No
                 # todo, fix bug: if i DON'T run this line of code, then we can end up with -+^&,!? in filenames.
                 # but since i run it, we end up with glyph names like "tokihyphenponaTok", which is weird.
                 # also "one" and "nine" are valid toki pona, and may rarely cause name collisions.
+                # ideal would be "tokiTok_hyphen_ponaTok", because the convention is like "f_f_i.liga"
+                # next best thing would be "toki_hyphen_ponaTok"
+                # or "tokiHYPHENponaTok", which requires allcapsing HYPHEN, PLUS, and AMPERSAND in a few places in the code
                 word = "".join(letters)
 
                 glyph_json = font_data['glyphs-fancy']
