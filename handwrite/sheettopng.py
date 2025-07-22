@@ -368,7 +368,7 @@ class SHEETtoPNG:
         open_cartouche  = sorted_characters[120]
         close_cartouche = sorted_characters[121]
         glyph_left, glyph_top, glyph_w, glyph_h = open_cartouche[1], open_cartouche[2], open_cartouche[3], open_cartouche[4]
-        cartouche_middle_glyph_left = glyph_left + glyph_w - 1
+        cartouche_middle_glyph_left = glyph_left + glyph_w
 
         # shift the open and close cartouche scan area inward, to match how the gray boxes are shifted
         # glyph_left = open_cartouche[1] + glyph_w/16
