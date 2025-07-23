@@ -670,6 +670,8 @@ function redrawTextarea(e) {
             if license == "cc0":
                 self.config["sfnt_names"]["License"] = "CC0 1.0 Universal"
                 self.config["sfnt_names"]["License URL"] = "https://creativecommons.org/publicdomain/zero/1.0/"
+            if license == "arr":
+                self.config["sfnt_names"]["License"] = "All rights reserved"
 
             # Numbered fields - https://learn.microsoft.com/en-us/typography/opentype/spec/name
             # 8: Manufacturer
