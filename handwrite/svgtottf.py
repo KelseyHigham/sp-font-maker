@@ -632,6 +632,10 @@ function redrawTextarea(e) {
         self.font.fullname = fontname + " " + style
         self.font.encoding = props.get("encoding", "UnicodeFull")
 
+        # OS/2 fields - https://learn.microsoft.com/en-us/typography/opentype/spec/os2
+        #             - https://fontforge.org/docs/scripting/python/fontforge.html#fontforge.font.os2_codepages
+        self.font.os2_vendor = "SPFM"
+
         self.font.os2_typoascent_add  = 0  
         self.font.os2_typodescent_add = 0 
         self.font.os2_typoascent      = 1200
@@ -670,9 +674,8 @@ function redrawTextarea(e) {
             # Numbered fields - https://learn.microsoft.com/en-us/typography/opentype/spec/name
             # 8: Manufacturer
             self.config["sfnt_names"][8] = "SP Font Maker - https://wasokeli.github.io/sp-font-maker"
-
-            # OS/2 fields - https://learn.microsoft.com/en-us/typography/opentype/spec/os2
-            # (none yet)
+            # 11: Vendor URL
+            self.config["sfnt_names"][11] = "https://wasokeli.github.io/sp-font-maker"
 
         self.config["sfnt_names"]["UniqueID"] = family + " " + str(uuid.uuid4())
 
