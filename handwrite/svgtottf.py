@@ -896,12 +896,8 @@ function redrawTextarea(e) {
         # spaces
         ideographic_space = self.font.createChar(ord("　"), "ideographicspace")
         ideographic_space.width = 1000
-        # semicolon = self.font.createChar(ord(";"), "semicolon")
-        # semicolon.width = 1000
-        # slash = self.font.createChar(ord("/"), "slash")
-        # slash.width = 1000
-        # pipe = self.font.createChar(ord("|"), "pipe")
-        # pipe.width = 1000
+        pipe = self.font.createChar(ord("|"), "pipe")
+        pipe.width = 1000
         space = self.font.createChar(ord(" "), "space")
         space.width = 0
         zero_width = self.font.createChar(0x200b, "zerowidth")
@@ -914,6 +910,8 @@ function redrawTextarea(e) {
         comma.width = 1000
         question = self.font.createChar(ord("?"), "question")
         question.width = 1000
+        semicolon = self.font.createChar(ord(";"), "semicolon")
+        semicolon.width = 1000
         hyphen = self.font.createChar(ord("-"), "hyphen")
         hyphen.width = 0
         plus = self.font.createChar(ord("+"), "plus")
@@ -933,6 +931,12 @@ function redrawTextarea(e) {
             digit.width = 0
 
         # not zero-width
+        slash = self.font.createChar(ord("*"), "asterisk")
+        slash.width = 1000
+        slash = self.font.createChar(ord('"'), 'doublequote')
+        slash.width = 1000
+        slash = self.font.createChar(ord("'"), "singlequote")
+        slash.width = 1000
         # todo: replace these with rotated lili. it would be cute i think
         north = self.font.createChar(ord("^"), "north")
         north.width = 1000
