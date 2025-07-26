@@ -132,6 +132,26 @@ feature liga {
                     # ))
                     list_of_cartoucheable_glyphs.append(k['name'])
 
+        # candidate for removal later, because 
+            # it doesn't play well with HTML
+            # it interferes with an alignment style that's easy to read and works across platforms:
+                # soweli li wile moku
+                # |      li lukin e sewi
+                # |      |  |     e ma
+                # |      |  |     e poka
+                # |      li kama lukin e kili
+                # |      |  |    |     | |    lon kasi
+                # |      li moku e kili
+            # here's that style with the interference:
+                # soweli li wile moku
+                # | li lukin e sewi
+                # | | | e ma
+                # | | | e poka
+                # | li kama lukin e kili
+                # | | | | | | lon kasi
+                # | li moku e kili
+        # in the future, full-width spaces can be inserted with `|`.
+        # this removal may be disruptive, though, and should only be performed with community consensus. 
         list_of_ligs.append(("  sub space space by ideographicspace;", 2))
 
         list_of_ligs.append(("  sub l i n u w i by linluwiTok;", 6))
@@ -872,6 +892,7 @@ function redrawTextarea(e) {
         self.font[0x5f].transform(psMat.translate(-1000, 0))
 
         # later i should move these into default.json
+        #   - this would facilitate the overriding that's happening in cli.py#L104-L119
         # spaces
         ideographic_space = self.font.createChar(ord("　"), "ideographicspace")
         ideographic_space.width = 1000

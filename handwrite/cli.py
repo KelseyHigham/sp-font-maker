@@ -52,6 +52,7 @@ def converters(sheet, output_directory, directory=None, config=None, metadata=No
             if word != "_":
                 letters = list(word)
                 for letter_index, letter in enumerate(letters):
+                    # todo: find the official Adobe names for these special characters
                     if letter == "-": letters[letter_index] = "hyphen"
                     if letter == "+": letters[letter_index] = "plus"
                     if letter == "^": letters[letter_index] = "north"
@@ -83,7 +84,7 @@ def converters(sheet, output_directory, directory=None, config=None, metadata=No
 
                 # todo, fix bug: if i DON'T run this line of code, then we can end up with -+^&,!? in filenames.
                 # but since i run it, we end up with glyph names like "tokihyphenponaTok", which is weird.
-                # also "one" and "nine" are valid toki pona, and may rarely cause name collisions.
+                # also "one" and "nine" are valid toki pona, and may rarely cause name collisions, e.g. "an1" -> "anone"
                 # ideal would be "tokiTok_hyphen_ponaTok", because the convention is like "f_f_i.liga"
                 # next best thing would be "toki_hyphen_ponaTok"
                 # or "tokiHYPHENponaTok", which requires allcapsing HYPHEN, PLUS, and AMPERSAND in a few places in the code
@@ -112,9 +113,14 @@ def converters(sheet, output_directory, directory=None, config=None, metadata=No
                                 if 'ligature' in default_glyph:
                                     del default_glyph['ligature']
                                 # todo: replace ASCII A E N O, too
-                                    # lowercase seems to work already
+                                    # lowercase seems to work already, at least in some text rendering contexts,
+                                    # because `aTok eTok nTok oTok` override `a e n o`
                                 # todo: remove redundant glyphs from the preview web page
                                 # probably never: allow replacing anything from row[6]
+                                # todo: allow replacing ASCII special characters
+                                    # these are currently overridden in svgtottf.py#L876-L942
+                                    # these do seem to replace correctly, at least if ligatures are enabled
+                                    # i'm not sure why this works already??
 
                     glyph_json[blank_cells[position]]['name'] = word + "Tok"
                     glyph_json[blank_cells[position]]['ligature'] = " ".join(letters)
