@@ -132,10 +132,8 @@ feature liga {
                     # ))
                     list_of_cartoucheable_glyphs.append(k['name'])
 
-        list_of_ligs.append(("  sub comma space by zerowidth;", 2))
         list_of_ligs.append(("  sub space space by ideographicspace;", 2))
-        list_of_ligs.append(("  sub exclamation space by ideographicspace;", 2))
-        list_of_ligs.append(("  sub question space by ideographicspace;", 2))
+
         list_of_ligs.append(("  sub l i n u w i by linluwiTok;", 6))
         # directional ni: extra ligatures to cover both v> and >v, and niv
         list_of_ligs.append(("  sub n i west v      by niTok.SW;", 4))
@@ -890,11 +888,11 @@ function redrawTextarea(e) {
 
         # other zero-width
         bang = self.font.createChar(ord("!"), "exclamation")
-        bang.width = 0
+        bang.width = 1000
         comma = self.font.createChar(ord(","), "comma")
-        comma.width = 0
+        comma.width = 1000
         question = self.font.createChar(ord("?"), "question")
-        question.width = 0
+        question.width = 1000
         hyphen = self.font.createChar(ord("-"), "hyphen")
         hyphen.width = 0
         plus = self.font.createChar(ord("+"), "plus")
