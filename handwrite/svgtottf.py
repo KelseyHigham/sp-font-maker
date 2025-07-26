@@ -266,9 +266,8 @@ creator   = ["''' + designer + '''"]
 license   = "''' + license + '''"
 ligatures = true
 ucsur     = true
-writing_system = "sitelen pona" # must be one of the following: 
-                                # "sitelen pona","sitelen sitelen","alphabet","syllabary","logography",
-                                # "tokiponido alphabet","tokiponido syllabary","tokiponido logography"
+writing_system = "sitelen pona" # pick one: sitelen pona, sitelen sitelen, alphabet, syllabary, logography,
+                                # tokiponido alphabet, tokiponido syllabary, tokiponido logography
 
 last_updated = "''' + datetime.now().strftime("%Y-%m") + '''"
 version      = "1"
