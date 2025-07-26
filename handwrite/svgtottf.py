@@ -257,7 +257,7 @@ feature calt {
         # generate .toml file
 
         from datetime import datetime
-        ilo_linku_toml_file = open(directory + os.sep + family + ".toml", "w", encoding="utf-8")
+        ilo_linku_toml_file = open(outdir + os.sep + family + ".toml", "w", encoding="utf-8")
         ilo_linku_toml_file.write('''#:schema ../../api/generated/font.json
 id        = "''' + family + '''"
 name      = "''' + family + '''"
