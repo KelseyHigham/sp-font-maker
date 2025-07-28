@@ -23,9 +23,9 @@ Currently, the architecture looks like this:
   - most default glyphs
 - cli.py
   - support for special characters in ligatures
-  - non-default UCSUR codepoints
+  - codepoints for UCSUR words not included on the template
 - sheettopng.py
-  - omit certain glyphs (cartouche, te/to, pixel fonts) from being centered
+  - omit certain glyphs (cartouche, ijklmpstuw vertically, te/to, pixel fonts) from being centered
   - shift cartouche scan area
   - generate the inner part of the cartouche
   - generate rotated ni, and rotated critters
