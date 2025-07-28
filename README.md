@@ -31,10 +31,11 @@ Currently, the architecture looks like this:
   - generate rotated ni, and rotated critters
   - copy existing glyphs to create ASCII codepoints
 - svgtottf.py
-  - add some ligatures for spaces
+  - add ligature for `space space`
   - add redundant ligatures for diagonal ni and critters (like `ni>v` and `niv>`)
   - print default glyphs on preview webpage
-  - add characters for zero-width space, ideographic space
+  - add characters for zero-width space and ideographic space
+  - add blank full- and zero-width glyphs for special characters
 
 I think a better architecture would look like this:
 
