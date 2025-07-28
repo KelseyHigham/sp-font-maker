@@ -368,7 +368,7 @@ class SHEETtoPNG:
         open_cartouche  = sorted_characters[120]
         close_cartouche = sorted_characters[121]
         glyph_left, glyph_top, glyph_w, glyph_h = open_cartouche[1], open_cartouche[2], open_cartouche[3], open_cartouche[4]
-        cartouche_middle_glyph_left = glyph_left + glyph_w
+        cartouche_middle_glyph_left = glyph_left + glyph_w - 1
 
         # shift the open and close cartouche scan area inward, to match how the gray boxes are shifted
         # glyph_left = open_cartouche[1] + glyph_w/16
@@ -408,8 +408,8 @@ class SHEETtoPNG:
         
 
 
-        # for the middle portion of the cartouche, grab the leftmost 1px column
-        # of the right cartouche. it'll be automatically stretched to the width
+        # for the middle portion of the cartouche, grab the rightmost 1px column
+        # of the open cartouche. it'll be automatically stretched to the width
         # of a glyph when it's converted to BMP, then SVG.
         roi = image[int(glyph_top                  ) : int(glyph_top                   + glyph_h),
                     int(cartouche_middle_glyph_left) : int(cartouche_middle_glyph_left + 1)]
@@ -667,39 +667,36 @@ class SHEETtoPNG:
             char_img = char_img.resize((int(char_img.height * grid_scan_w/grid_scan_h), char_img.height))
 
         draw = ImageDraw.Draw(char_img)
-        left, top, right, bottom = 0, 0, char_img.width, char_img.height
+        left, top, right, bottom = 0, 0, char_img.width-1, char_img.height-1
         in_pixels = char_img.width/grid_scan_w
 
         pixel = metadata.get("pixel") or False
         import math
 
-        # for pixel fonts, we need to still draw padding.
-        # but for font sizes that aren't divisible by 4, like 6px and 10px,
-        # we'll have uneven padding on the left and right.
-        # (because the left padding is 1.5 for 6px, and 2.5 for 10px.)
-        # so we need to calculate it in a way that's consistent with the padding on each scanned glyph.
-
-        # this accidentally works perfectly.
-        # but if i revise the code to make more sense,
-        # it'll break, and require more complication to return to the desired behavior.
+        # the middle of the cartouche is made from the rightmost 1px column of the open cartouche.
+        # in pixel fonts, we include that 1px column in the close cartouche.
         if pixel:
-            left_scan_padding  = math.floor( grid_scan_hor_padding*in_pixels)
-            right_scan_padding = math.ceil(grid_scan_hor_padding*in_pixels)
-            cartouche_overlap  = 1
+            #                              `ceil` and `floor` are for 6px and 10px fonts,
+            #                              which have 1px more padding on the left side
+            left_scan_padding       = math.ceil (grid_scan_hor_padding*in_pixels)
+            right_scan_padding      = math.floor(grid_scan_hor_padding*in_pixels)
+            cartouche_overlap_pixel = 1
+            cartouche_overlap  = 0
         else:
             left_scan_padding  = grid_scan_hor_padding*in_pixels
             right_scan_padding = grid_scan_hor_padding*in_pixels
             cartouche_overlap  = grid_glyph_w*in_pixels/42
+            cartouche_overlap_pixel = 0
         if side == "left":
             draw.rectangle(
-                ((left,                                         top   ), 
-                 (left + left_scan_padding - cartouche_overlap, bottom)),
+                ((left,                                                                       top   ),     
+                 (left + left_scan_padding - cartouche_overlap - cartouche_overlap_pixel - 1, bottom)),
                 fill="white"
             )
         if side == "right":
             draw.rectangle(
-                ((right - right_scan_padding + cartouche_overlap, top   ), 
-                 (right,                                          bottom)),
+                ((right - right_scan_padding + cartouche_overlap + 1, top   ), 
+                 (right,                                              bottom)),
                 fill="white"
             )
         char_img.save(characters_dir + "/" + char_name + "/" + char_name + ".png")
