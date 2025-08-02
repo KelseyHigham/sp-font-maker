@@ -655,18 +655,28 @@ function redrawTextarea(e) {
         #             - https://fontforge.org/docs/scripting/python/fontforge.html#fontforge.font.os2_codepages
         self.font.os2_vendor = "SPFM"
 
-        self.font.os2_typoascent      = 1050
-        self.font.os2_typodescent     = -450
         self.font.os2_typoascent_add  = False # "Is Offset" checkbox in FontForge
         self.font.os2_typodescent_add = False
         self.font.os2_typolinegap     = 0
-
-        self.font.hhea_ascent      = 1050
-        self.font.hhea_descent     = -450
-
         self.font.hhea_ascent_add     = False
         self.font.hhea_descent_add    = False
         self.font.hhea_linegap        = 0
+
+        pixel = self.metadata.get("pixel") or False
+        if version_major < 4 and not pixel: # apply the new metrics to pixel fonts retroactively, to combat blurring
+            self.font.ascent  = 800
+            self.font.descent = 200
+            self.font.os2_typoascent  = 1050
+            self.font.os2_typodescent = -450
+            self.font.hhea_ascent     = 1050
+            self.font.hhea_descent    = -450
+        else:
+            self.font.ascent  = 875
+            self.font.descent = 125
+            self.font.os2_typoascent  = 1125 
+            self.font.os2_typodescent = -375
+            self.font.hhea_ascent     = 1125
+            self.font.hhea_descent    = -375
         for k, v in props.items():
             if hasattr(self.font, k):
                 if isinstance(v, list):
@@ -841,19 +851,29 @@ function redrawTextarea(e) {
 
                 # move glyphs to where rescaling happens:
                 # the left side of the glyph, at the height of the baseline
-                g.transform(psMat.translate(
-                    -bs_glyph_wh / 2,
-                    # -375 # i'm not totally sure why this magic number works tbh
-                    #      # it no longer seems to work?? weird
-                    200-500 # works for sheet v2
-                ))
+                if version_major < 4 and not pixel:
+                    g.transform(psMat.translate(
+                        -bs_glyph_wh / 2,
+                        200-500 # 200 is the descent. 500 is half the glyph's height.
+                    ))
+                else:
+                    g.transform(psMat.translate(
+                        -bs_glyph_wh / 2,
+                        125-500 # 125 is the descent. 500 is half the glyph's height.
+                    ))
 
                 g.transform(psMat.scale(1 / bs_glyph_wh * 1000)) # divide by the SAFE area height; multiply by the SCAN area height
-
-                g.transform(psMat.translate(
-                    500, 
-                    500-200
-                ))
+                
+                if version_major < 4 and not pixel:
+                    g.transform(psMat.translate(
+                        500, 
+                        500-200
+                    ))
+                else:
+                    g.transform(psMat.translate(
+                        500, 
+                        500-125
+                    ))
 
                 g.width = 1000
                 g.vwidth = 1000

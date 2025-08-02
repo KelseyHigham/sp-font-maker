@@ -1,9 +1,6 @@
 {
   "threshold_value": 200,
   "props": {
-    "ascent": 800,
-    "descent": 200,
-    "em": 1000,
     "encoding": "UnicodeFull",
     "lang": "English (US)",
     "filename": "MyFont",
