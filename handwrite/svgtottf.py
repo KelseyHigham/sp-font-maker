@@ -657,14 +657,14 @@ function redrawTextarea(e) {
 
         self.font.os2_typoascent_add  = 0  
         self.font.os2_typodescent_add = 0 
-        self.font.os2_typoascent      = 1200
-        self.font.os2_typodescent     = -300
+        self.font.os2_typoascent      = 1050
+        self.font.os2_typodescent     = -450
         self.font.os2_typolinegap     = 0
 
         self.font.hhea_ascent_add  = 0
         self.font.hhea_descent_add = 0
-        self.font.hhea_ascent      = 1200
-        self.font.hhea_descent     = -300
+        self.font.hhea_ascent      = 1050
+        self.font.hhea_descent     = -450
         self.font.hhea_linegap     = 0
 
         for k, v in props.items():
@@ -754,10 +754,12 @@ function redrawTextarea(e) {
 
                 if version_major <3:
                     # SHEET VERSION 2 metrics, before scaling (BS) up so that the glyph is the full em height
+                    # the 8x10gu SVG is scaled to .8x1em, spanning -200 to 800 vertically.
                     bs_scan_hor_padding = 50
                     bs_glyph_wh = 700
                 else:
                     # SHEET VERSION 3 metrics, before scaling (BS) up so that the glyph is the full em height
+                    # the 6x8gu SVG is scaled to .75x1em, spanning -200 to 800 vertically.
                     bs_scan_hor_padding = 125
                     bs_glyph_wh = 500
 
@@ -797,7 +799,7 @@ function redrawTextarea(e) {
                             0, 
                             self.font.ascent - top - ((self.font.ascent + self.font.descent) - (top - bottom)) / 2
                         ))
-                        x = 1
+                        pass
 
                 # Horizontally center sitelen pona, middot, colon, letters
                 # Do NOT center cartouches, long pi, te/to, (period?)
@@ -818,7 +820,7 @@ function redrawTextarea(e) {
                             bs_glyph_wh - right - (bs_glyph_wh - width) / 2, 
                             0
                         ))
-                        x = 1
+                        pass
 
                 # Scale everything up so that the glyphs are 1em tall, instead of the cartouches
                 # The scaling center is the baseline, far left
@@ -870,7 +872,7 @@ function redrawTextarea(e) {
             # self.font[glyph].vwidth = 900  # used in vertical writing. might need to revise
             # self.font[glyph].width = 1000
             # self.font[glyph].vwidth = 1000  # used in vertical writing. might need to revise
-            x = 1
+            pass
 
             # # Test centering
             # g = self.font[glyph]
