@@ -5,7 +5,7 @@ SP Font Maker, based on the English-language [Handwrite](https://github.com/buil
 # Usage instructions
 
 Fill out this image, and send it to someone who's managed to install the script. They'll give you your font file:
-![template with an empty box for all the sitelen pona](https://github.com/KelseyHigham/handwrite/blob/dev/template.png?raw=true)
+![template with an empty box for all the sitelen pona](https://wasokeli.github.io/sp-font-maker/template.png)
 
 # Installation instructions
 
