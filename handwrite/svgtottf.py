@@ -632,7 +632,7 @@ function redrawTextarea(e) {
      # ▀▄▄▀  ▀▄▄    ▀▄       █▄▄▀  █    ▀▄▄▀  █▄▄▀  ▀▄▄   █     ▀▄   █  ▀▄▄   ▀▄▄▀
      #                       █                █
 
-    def set_properties(self):
+    def set_properties(self, version_major, version_minor, version_patch):
         """Set metadata of the font from config."""
         props = self.config["props"]
         sfnt_names = self.config["sfnt_names"]
@@ -655,18 +655,18 @@ function redrawTextarea(e) {
         #             - https://fontforge.org/docs/scripting/python/fontforge.html#fontforge.font.os2_codepages
         self.font.os2_vendor = "SPFM"
 
-        self.font.os2_typoascent_add  = 0  
-        self.font.os2_typodescent_add = 0 
         self.font.os2_typoascent      = 1050
         self.font.os2_typodescent     = -450
+        self.font.os2_typoascent_add  = False # "Is Offset" checkbox in FontForge
+        self.font.os2_typodescent_add = False
         self.font.os2_typolinegap     = 0
 
-        self.font.hhea_ascent_add  = 0
-        self.font.hhea_descent_add = 0
         self.font.hhea_ascent      = 1050
         self.font.hhea_descent     = -450
-        self.font.hhea_linegap     = 0
 
+        self.font.hhea_ascent_add     = False
+        self.font.hhea_descent_add    = False
+        self.font.hhea_linegap        = 0
         for k, v in props.items():
             if hasattr(self.font, k):
                 if isinstance(v, list):
@@ -770,8 +770,22 @@ function redrawTextarea(e) {
                     0
                 ))
 
+                def debug_metrics(word_to_debug, note=""):
+                    if name == word_to_debug:
+                        print("\n", g.width, g.vwidth)
+                        bottom = g.boundingBox()[1] # these numbers talk about the glyph that's actually drawn
+                        top    = g.boundingBox()[3] # so i can manipulate them with drawing
+                        print(
+                            note,
+                            "top", int(top),
+                            "bottom", int(bottom),
+                            "sum", int(top-bottom)
+                        )
+
+                # debug_metrics("aTok", "before scaling")
+
                 pixel = self.metadata.get("pixel") or False
-                
+
                 # Vertically center sitelen pona, middot, colon
                 # Do NOT center a-z, cartouches, long pi, te/to, (period?)
                 if not (
@@ -825,20 +839,6 @@ function redrawTextarea(e) {
                 # Scale everything up so that the glyphs are 1em tall, instead of the cartouches
                 # The scaling center is the baseline, far left
 
-                def debug_metrics(word_to_debug):
-                    if name == word_to_debug:
-                        print("\n", g.width, g.vwidth)
-                        bottom = g.boundingBox()[1]
-                        top    = g.boundingBox()[3]
-                        print(
-                            "top", int(top),
-                            "bottom", int(bottom),
-                            "sum", int(top-bottom),
-                            "ratio", -top/bottom
-                        )
-
-                # debug_metrics("lupaTok")
-
                 # move glyphs to where rescaling happens:
                 # the left side of the glyph, at the height of the baseline
                 g.transform(psMat.translate(
@@ -847,20 +847,16 @@ function redrawTextarea(e) {
                     #      # it no longer seems to work?? weird
                     200-500 # works for sheet v2
                 ))
-                # debug_metrics("lupaTok")
 
                 g.transform(psMat.scale(1 / bs_glyph_wh * 1000)) # divide by the SAFE area height; multiply by the SCAN area height
-                # debug_metrics("lupaTok")
 
                 g.transform(psMat.translate(
                     500, 
                     500-200
                 ))
-                # debug_metrics("lupaTok")
 
                 g.width = 1000
                 g.vwidth = 1000
-                # debug_metrics("lupaTok")
 
         # get rid of stray metrics
         print("\r                                                ")
@@ -1026,7 +1022,7 @@ function redrawTextarea(e) {
         self.metadata = json.loads(metadata) or {}
 
         self.font = fontforge.font()
-        self.set_properties()
+        self.set_properties(int(v_major), int(v_minor), int(v_patch))
         self.add_glyphs(directory, int(v_major), int(v_minor), int(v_patch))
 
         # Generate font and save as a .ttf file
