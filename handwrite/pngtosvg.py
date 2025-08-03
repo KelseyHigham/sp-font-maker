@@ -73,6 +73,8 @@ class PNGtoSVG:
             Raised if potrace not found in path by shutil.which()
         """
 
+        pixel = metadata.get("pixel") or False
+
         from packaging.version import Version
         sheet_version = metadata.get("sheetversion") or "99999999.999999.999999"
         if Version(sheet_version) < Version("2.1"):
@@ -101,7 +103,7 @@ class PNGtoSVG:
             # glyph_width  = 400 # no visible improvement
             # glyph_height = 500
 
-        else:
+        elif Version(sheet_version) < Version("4"):
             # SHEET VERSION 3
 
             # if os.path.basename(path) == "a.png":
@@ -127,8 +129,36 @@ class PNGtoSVG:
             # glyph_width  = 576 # no visible improvement and really huge, probably?
             # glyph_height = 768
 
+        else:
+            # SHEET VERSION 4
 
-        pixel = metadata.get("pixel") or False
+            # if os.path.basename(path) == "a.png":
+            #     print("⚠️ scanning at low quality")
+            # glyph_width  = 27
+            # glyph_height = 36
+
+            # if os.path.basename(path) == "a.png":
+            #     print("⚠️ scanning at low quality")
+            # glyph_width  = 54
+            # glyph_height = 72
+
+            # if os.path.basename(path) == "a.png":
+            #     print("⚠️ scanning at low quality")
+            # glyph_width  = 108
+            # glyph_height = 144
+
+            # if os.path.basename(path) == "a.png" and not pixel:
+            #     print("v4 font! scanning at good(?) quality. if it looks blobby/blurry, try raising the quality in pngtosvg.py")
+            #     # (if it's a pixel font that looks blurry, then don't change the quality, just add `--pixel`)
+            glyph_width  = 216 # new default for v4?
+            glyph_height = 288
+
+            # if os.path.basename(path) == "a.png" and not pixel:
+            #     print("⚠️ scanning at extra high quality, which takes longer. try lowering the quality in pngtosvg.py")
+            # glyph_width  = 288 # good balance for v3, might be fine for v4
+            # glyph_height = 384
+
+
         if pixel:
             resample = Image.Resampling.NEAREST
         else:
