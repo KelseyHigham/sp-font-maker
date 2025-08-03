@@ -103,8 +103,8 @@ class SVGtoTTF:
         #     filename = os.path.splitext(filename)[0] + " (1).ttf"
         #     outfile = outdir + os.sep + filename
 
-        ligatures_string = """languagesystem DFLT dflt; # this part is apparently necessary so that people can edit the font in fontforge after??
-languagesystem latn dflt;
+        ligatures_string = """languagesystem DFLT dflt; # this part is apparently necessary so that
+languagesystem latn dflt; # people can edit the font in fontforge after??
 
 feature liga {
 """
@@ -118,7 +118,7 @@ feature liga {
                 if 'ligature' in k:
                     # create tuples of ligature text, followed by ligature length by tokens
                     list_of_ligs.append((
-                        "  sub " + k['ligature'] + " by " + k['name'] + ";", 
+                        "  sub   " + k['ligature'].rjust(22) + "   by   " + k['name'].rjust(13) + ";", 
                         len(k['ligature'].split(' '))
                     ))
                     # # If you make ligatures of the format `p o n a space`, 
@@ -152,51 +152,51 @@ feature liga {
                 # | li moku e kili
         # in the future, full-width spaces can be inserted with `|`.
         # this removal may be disruptive, though, and should only be performed with community consensus. 
-        list_of_ligs.append(("  sub space space by ideographicspace;", 2))
+        list_of_ligs.append(("  sub              space space   by   ideographicspace;", 2))
 
-        list_of_ligs.append(("  sub l i n u w i by linluwiTok;", 6))
+        list_of_ligs.append(("  sub              l i n u w i   by      linluwiTok;", 6))
         # directional ni: extra ligatures to cover both v> and >v, and niv
-        list_of_ligs.append(("  sub n i west v      by niTok.SW;", 4))
-        list_of_ligs.append(("  sub n i west north  by niTok.NW;", 4))
-        list_of_ligs.append(("  sub n i east north  by niTok.NE;", 4))
-        list_of_ligs.append(("  sub n i east v      by niTok.SE;", 4))
-        list_of_ligs.append(("  sub n i v by niTok;", 3))
+        list_of_ligs.append(("  sub               n i west v   by        niTok.SW;", 4))
+        list_of_ligs.append(("  sub           n i west north   by        niTok.NW;", 4))
+        list_of_ligs.append(("  sub           n i east north   by        niTok.NE;", 4))
+        list_of_ligs.append(("  sub               n i east v   by        niTok.SE;", 4))
+        list_of_ligs.append(("  sub                    n i v   by           niTok;", 3))
         # directional akesi: extra ligatures to cover both ^> and >^, and akesi^
-        list_of_ligs.append(("  sub a k e s i west v      by akesiTok.SW;", 7))
-        list_of_ligs.append(("  sub a k e s i west north  by akesiTok.NW;", 7))
-        list_of_ligs.append(("  sub a k e s i east north  by akesiTok.NE;", 7))
-        list_of_ligs.append(("  sub a k e s i east v      by akesiTok.SE;", 7))
-        list_of_ligs.append(("  sub a k e s i north by akesiTok;", 6))
+        list_of_ligs.append(("  sub         a k e s i west v   by     akesiTok.SW;", 7))
+        list_of_ligs.append(("  sub     a k e s i west north   by     akesiTok.NW;", 7))
+        list_of_ligs.append(("  sub     a k e s i east north   by     akesiTok.NE;", 7))
+        list_of_ligs.append(("  sub         a k e s i east v   by     akesiTok.SE;", 7))
+        list_of_ligs.append(("  sub          a k e s i north   by        akesiTok;", 6))
         # directional pipi: extra ligatures to cover both ^> and >^, and pipi^
-        list_of_ligs.append(("  sub p i p i west v      by pipiTok.SW;", 6))
-        list_of_ligs.append(("  sub p i p i west north  by pipiTok.NW;", 6))
-        list_of_ligs.append(("  sub p i p i east north  by pipiTok.NE;", 6))
-        list_of_ligs.append(("  sub p i p i east v      by pipiTok.SE;", 6))
-        list_of_ligs.append(("  sub p i p i north by pipiTok;", 5))
+        list_of_ligs.append(("  sub           p i p i west v   by      pipiTok.SW;", 6))
+        list_of_ligs.append(("  sub       p i p i west north   by      pipiTok.NW;", 6))
+        list_of_ligs.append(("  sub       p i p i east north   by      pipiTok.NE;", 6))
+        list_of_ligs.append(("  sub           p i p i east v   by      pipiTok.SE;", 6))
+        list_of_ligs.append(("  sub            p i p i north   by         pipiTok;", 5))
         # directional kala: extra ligatures to cover both ^> and >^, and kala>
-        list_of_ligs.append(("  sub k a l a west v      by kalaTok.SW;", 6))
-        list_of_ligs.append(("  sub k a l a west north  by kalaTok.NW;", 6))
-        list_of_ligs.append(("  sub k a l a east north  by kalaTok.NE;", 6))
-        list_of_ligs.append(("  sub k a l a east v      by kalaTok.SE;", 6))
-        list_of_ligs.append(("  sub k a l a east by kalaTok;", 5))
+        list_of_ligs.append(("  sub           k a l a west v   by      kalaTok.SW;", 6))
+        list_of_ligs.append(("  sub       k a l a west north   by      kalaTok.NW;", 6))
+        list_of_ligs.append(("  sub       k a l a east north   by      kalaTok.NE;", 6))
+        list_of_ligs.append(("  sub           k a l a east v   by      kalaTok.SE;", 6))
+        list_of_ligs.append(("  sub             k a l a east   by         kalaTok;", 5))
         # directional kijetesantakalu: extra ligatures to cover both ^> and >^, and kijetesantakalu>
-        list_of_ligs.append(("  sub k i j e t e s a n t a k a l u west v      by kijetesantakaluTok.SW;", 17))
-        list_of_ligs.append(("  sub k i j e t e s a n t a k a l u west north  by kijetesantakaluTok.NW;", 17))
-        list_of_ligs.append(("  sub k i j e t e s a n t a k a l u east north  by kijetesantakaluTok.NE;", 17))
-        list_of_ligs.append(("  sub k i j e t e s a n t a k a l u east v      by kijetesantakaluTok.SE;", 17))
-        list_of_ligs.append(("  sub k i j e t e s a n t a k a l u east by kijetesantakaluTok;", 16))
+        list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u west v   by   kijetesantakaluTok.SW;", 17))
+        list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u west north   by   kijetesantakaluTok.NW;", 17))
+        list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u east north   by   kijetesantakaluTok.NE;", 17))
+        list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u east v   by   kijetesantakaluTok.SE;", 17))
+        list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u east   by   kijetesantakaluTok;", 16))
         # directional soweli: extra ligatures to cover both ^> and >^, and soweli>
-        list_of_ligs.append(("  sub s o w e l i west v      by soweliTok.SW;", 8))
-        list_of_ligs.append(("  sub s o w e l i west north  by soweliTok.NW;", 8))
-        list_of_ligs.append(("  sub s o w e l i east north  by soweliTok.NE;", 8))
-        list_of_ligs.append(("  sub s o w e l i east v      by soweliTok.SE;", 8))
-        list_of_ligs.append(("  sub s o w e l i east by soweliTok;", 7))
+        list_of_ligs.append(("  sub   s o     w e l i west v   by    soweliTok.SW;", 8))
+        list_of_ligs.append(("  sub   s o w e l i west north   by    soweliTok.NW;", 8))
+        list_of_ligs.append(("  sub   s o w e l i east north   by    soweliTok.NE;", 8))
+        list_of_ligs.append(("  sub   s o     w e l i east v   by    soweliTok.SE;", 8))
+        list_of_ligs.append(("  sub   s o       w e l i east   by       soweliTok;", 7))
         # directional waso: extra ligatures to cover both ^> and >^, and waso>
-        list_of_ligs.append(("  sub w a s o west v      by wasoTok.SW;", 6))
-        list_of_ligs.append(("  sub w a s o west north  by wasoTok.NW;", 6))
-        list_of_ligs.append(("  sub w a s o east north  by wasoTok.NE;", 6))
-        list_of_ligs.append(("  sub w a s o east v      by wasoTok.SE;", 6))
-        list_of_ligs.append(("  sub w a s o east by wasoTok;", 5))
+        list_of_ligs.append(("  sub           w a s o west v   by      wasoTok.SW;", 6))
+        list_of_ligs.append(("  sub       w a s o west north   by      wasoTok.NW;", 6))
+        list_of_ligs.append(("  sub       w a s o east north   by      wasoTok.NE;", 6))
+        list_of_ligs.append(("  sub           w a s o east v   by      wasoTok.SE;", 6))
+        list_of_ligs.append(("  sub             w a s o east   by         wasoTok;", 5))
 
         # sort them by number of tokens
         list_of_ligs.sort(reverse=True, key=lambda x: x[1])
@@ -209,14 +209,16 @@ feature liga {
         ligatures_string += """
 
 @cartoucheableGlyph = [
-  a e i j k l m n o p s t u w
-  period colon space exclamation question underscore
 """
+        for glyph in ["a", "e", "i", "j", "k", "l", "m", "n", "o", "p", "s", "t", "u", "w", 
+                     "period", "colon", "space", "exclamation", "question", "underscore"]:
+            list_of_cartoucheable_glyphs.append(glyph)
+
         for word in list_of_cartoucheable_glyphs:
             if (word != "cartoucheStartTok" and
                 word != "cartoucheEndTok"
             ):
-                ligatures_string += "  " + word + "\n"
+                ligatures_string += "  " + word.rjust(12) + "\n"
 
         ligatures_string += """];
 
@@ -224,10 +226,17 @@ lookup add_cartouche_middle {
   # Add a cartouche middle after the glyph.
   # (The cartouche middle is zero-width and extends to the left,
   #  surrounding the glyph.)
-  sub   @cartoucheableGlyph   by   @cartoucheableGlyph cartoucheMiddleTok;
-} add_cartouche_middle;
+"""
+        for word in list_of_cartoucheable_glyphs:
+            if (word != "cartoucheStartTok" and
+                word != "cartoucheEndTok"
+            ):
+                ligatures_string += "  sub " + word.rjust(12) + "   by " + word.rjust(12) + " cartoucheMiddleTok;" + "\n"
+
+        ligatures_string += """} add_cartouche_middle;
 
 # idk what keyword to use here. liga, calt, ccmp, something else?
+# this might affect whether the font works by default in text editors like LibreOffice and Word...?
 feature calt {
   # If a glyph follows a cartouche start, add a cartouche middle after the glyph.
   sub   cartoucheStartTok  [@cartoucheableGlyph]'   lookup add_cartouche_middle;
