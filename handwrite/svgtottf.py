@@ -186,11 +186,11 @@ feature liga {
         list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u east v   by   kijetesantakaluTok.SE;", 17))
         list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u east   by   kijetesantakaluTok;", 16))
         # directional soweli: extra ligatures to cover both ^> and >^, and soweli>
-        list_of_ligs.append(("  sub   s o     w e l i west v   by    soweliTok.SW;", 8))
+        list_of_ligs.append(("  sub       s o w e l i west v   by    soweliTok.SW;", 8))
         list_of_ligs.append(("  sub   s o w e l i west north   by    soweliTok.NW;", 8))
         list_of_ligs.append(("  sub   s o w e l i east north   by    soweliTok.NE;", 8))
-        list_of_ligs.append(("  sub   s o     w e l i east v   by    soweliTok.SE;", 8))
-        list_of_ligs.append(("  sub   s o       w e l i east   by       soweliTok;", 7))
+        list_of_ligs.append(("  sub       s o w e l i east v   by    soweliTok.SE;", 8))
+        list_of_ligs.append(("  sub         s o w e l i east   by       soweliTok;", 7))
         # directional waso: extra ligatures to cover both ^> and >^, and waso>
         list_of_ligs.append(("  sub           w a s o west v   by      wasoTok.SW;", 6))
         list_of_ligs.append(("  sub       w a s o west north   by      wasoTok.NW;", 6))

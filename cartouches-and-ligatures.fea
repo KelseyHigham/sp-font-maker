@@ -24,10 +24,10 @@ feature liga {
   sub   s o w e l i north west   by    soweliTok.NW;
   sub       s o w e l i v west   by    soweliTok.SW;
   sub       s o w e l i v east   by    soweliTok.SE;
-  sub   s o     w e l i west v   by    soweliTok.SW;
+  sub       s o w e l i west v   by    soweliTok.SW;
   sub   s o w e l i west north   by    soweliTok.NW;
   sub   s o w e l i east north   by    soweliTok.NE;
-  sub   s o     w e l i east v   by    soweliTok.SE;
+  sub       s o w e l i east v   by    soweliTok.SE;
   sub            k e p e k e n   by      kepekenTok;
   sub            s i t e l e n   by      sitelenTok;
   sub            m o n s u t a   by      monsutaTok;
@@ -43,7 +43,7 @@ feature liga {
   sub     a k e s i west north   by     akesiTok.NW;
   sub     a k e s i east north   by     akesiTok.NE;
   sub         a k e s i east v   by     akesiTok.SE;
-  sub   s o       w e l i east   by       soweliTok;
+  sub         s o w e l i east   by       soweliTok;
   sub              k a l a m a   by       kalamaTok;
   sub              k u l u p u   by       kulupuTok;
   sub              p a k a l a   by       pakalaTok;
