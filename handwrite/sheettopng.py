@@ -170,10 +170,12 @@ class SHEETtoPNG:
 
         # output the biggest 9 rows as images, for debug purposes
         row_images = []
+        row_areas = []
         for row in range(rows):
             # print(row)
             left, top, width, height = cv2.boundingRect(contours[row])
             # left_s, top_s, width_s, height_s = small_rect(contours[row])
+            row_areas.append(width*height)
 
             roi = image[
                 top : top  + height,
@@ -192,6 +194,18 @@ class SHEETtoPNG:
             # debug_draw.rectangle([left_s, top_s, left_s+width_s, top_s+height_s], outline="blue")
             # debug_image.save(os.path.join(characters_dir, "analysis PREVIEW" + ".png"))
 
+        average_row_area = 0
+        for row in range(rows): average_row_area += row_areas[row]
+        average_row_area /= rows
+
+        too_small_row = average_row_area * 0.75
+        too_big_row   = average_row_area * 1.125
+        for row in range(rows):
+            if not (too_small_row < row_areas[row] < too_big_row):
+                print(f"⚠️ Row[{row}] is {row_areas[row]/average_row_area:.2g}x the average row area! "
+                    + "Check the analysis PNGs.")
+
+        # sort top to bottom
         row_images.sort(key=lambda x: x[2])
 
         # row_dir = os.path.join(characters_dir, "9 rows")
