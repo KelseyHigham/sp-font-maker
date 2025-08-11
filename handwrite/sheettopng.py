@@ -203,7 +203,7 @@ class SHEETtoPNG:
         for row in range(rows):
             if not (too_small_row < row_areas[row] < too_big_row):
                 print(f"⚠️ Row[{row}] is {row_areas[row]/average_row_area:.2g}x the average row area! "
-                    + "Check the analysis PNGs.")
+                    + "Check the analysis PNGs.\n" + "   This usually happens if someone's custom nimi label gets too close to a big black rectangle, preventing it from being recognized as a rectangle.")
 
         # sort top to bottom
         row_images.sort(key=lambda x: x[2])
