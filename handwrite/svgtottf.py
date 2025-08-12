@@ -320,10 +320,11 @@ style = "handwritten"
 # repo     = "https://github.com/wasokeli/wasokeli.github.io/tree/main/sp-font-maker"
 # webpage  = "https://wasokeli.github.io/sp-font-maker/''' + family.replace(" ", "-") + '''.html"
 ''')
-        print("Generating " + directory + os.sep + family + ".toml for ilo Linku...")
+        # print("Generating " + outdir + os.sep + family + ".toml for ilo Linku...")
         ilo_linku_toml_file.close()
 
-        print("If you're Kelly, give this to " + designer + ": https://wasokeli.github.io/sp-font-maker/" + family.replace(" ", "-") + "\n")
+        print("🌐 If hosting, give this to " + designer + ": https://wasokeli.github.io/sp-font-maker/" + family.replace(" ", "-"))
+        print("🏠 Preview in browser: file://" + os.path.abspath(outdir + os.sep + family.replace(" ", "-") + ".html").replace("\\", "/") + "\n")
 
         self.generate_web_page(outdir, filename, family, designer, license, licenseurl, other_words_string)
 
