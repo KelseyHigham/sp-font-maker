@@ -155,6 +155,7 @@ feature liga {
         list_of_ligs.append(("  sub              space space   by   ideographicspace;", 2))
 
         list_of_ligs.append(("  sub              l i n u w i   by      linluwiTok;", 6))
+        list_of_ligs.append(("  sub                k e p e n   by      kepekenTok;", 5))
         # directional ni: extra ligatures to cover both v> and >v, and niv
         list_of_ligs.append(("  sub               n i west v   by        niTok.SW;", 4))
         list_of_ligs.append(("  sub           n i west north   by        niTok.NW;", 4))
