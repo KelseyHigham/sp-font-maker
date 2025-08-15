@@ -147,9 +147,10 @@ class PNGtoSVG:
             # glyph_width  = 108
             # glyph_height = 144
 
-            # if os.path.basename(path) == "a.png" and not pixel:
-            #     print("v4 font! scanning at good(?) quality. if it looks blobby/blurry, try raising the quality in pngtosvg.py")
-            #     # (if it's a pixel font that looks blurry, then don't change the quality, just add `--pixel`)
+            if os.path.basename(path) == "a.png" and not pixel:
+                print("v4 font! scanning at good(?) quality. if it looks blobby/blurry, try raising the quality in pngtosvg.py, line 153")
+                # let Kelly know what values worked for you!
+                # (if it's a pixel font that looks blurry, then don't change the quality, just add `--pixel`.)
             glyph_width  = 216 # new default for v4?
             glyph_height = 288
 
