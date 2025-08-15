@@ -537,7 +537,7 @@ class SHEETtoPNG:
             with open(config) as f:
                 glyphList = json.load(f).get("glyphs-fancy", {})
                 curMetadatum = glyphList[cellNum]
-                if len(glyphList) > cellNum:
+                if len(glyphList) > cellNum: # should this be `>=`?
                     if 'name' in curMetadatum:
                         character = os.path.join(characters_dir, curMetadatum['name'])
                         if not os.path.exists(character):

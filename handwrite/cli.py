@@ -52,15 +52,17 @@ def converters(sheet, output_directory, directory=None, config=None, metadata=No
             if word != "_":
                 letters = list(word)
                 for letter_index, letter in enumerate(letters):
-                    # todo: find the official Adobe names for these special characters
+                    # consider switching to the official Adobe names for these special characters
+                    # https://github.com/adobe-type-tools/agl-aglfn/
+                    # https://en.wikipedia.org/wiki/Adobe_Glyph_List
                     if letter == "-": letters[letter_index] = "hyphen"
                     if letter == "+": letters[letter_index] = "plus"
-                    if letter == "^": letters[letter_index] = "north"
-                    if letter == "<": letters[letter_index] = "west"
-                    if letter == ">": letters[letter_index] = "east"
+                    if letter == "^": letters[letter_index] = "north"       # asciicircum
+                    if letter == "<": letters[letter_index] = "west"        # less
+                    if letter == ">": letters[letter_index] = "east"        # greater
                     if letter == "&": letters[letter_index] = "ampersand"
                     if letter == ",": letters[letter_index] = "comma"
-                    if letter == "!": letters[letter_index] = "exclamation"
+                    if letter == "!": letters[letter_index] = "exclamation" # exclam
                     if letter == "?": letters[letter_index] = "question"
                     if letter == "0": letters[letter_index] = "zero"
                     if letter == "1": letters[letter_index] = "one"
@@ -72,20 +74,22 @@ def converters(sheet, output_directory, directory=None, config=None, metadata=No
                     if letter == "7": letters[letter_index] = "seven"
                     if letter == "8": letters[letter_index] = "eight"
                     if letter == "9": letters[letter_index] = "nine"
-                    if letter == "{": letters[letter_index] = "opencurly"
-                    if letter == "}": letters[letter_index] = "closecurly"
-                    if letter == "(": letters[letter_index] = "openparen"
-                    if letter == ")": letters[letter_index] = "closeparen"
+                    if letter == "{": letters[letter_index] = "opencurly"   # braceleft
+                    if letter == "}": letters[letter_index] = "closecurly"  # braceright
+                    if letter == "(": letters[letter_index] = "openparen"   # parenleft
+                    if letter == ")": letters[letter_index] = "closeparen"  # parenright
                     if letter == "[": letters[letter_index] = "bracketleft"
                     if letter == "]": letters[letter_index] = "bracketright"
                     if letter == ";": letters[letter_index] = "semicolon"
-                    if letter == "|": letters[letter_index] = "pipe"
+                    if letter == "|": letters[letter_index] = "pipe"        # bar
                     if letter == "*": letters[letter_index] = "asterisk"
-                    if letter == '"': letters[letter_index] = 'doublequote' # note the single quotes
-                    if letter == "'": letters[letter_index] = "singlequote"
+                    if letter == '"': letters[letter_index] = 'doublequote' # quotedbl
+                    if letter == "'": letters[letter_index] = "singlequote" # quotesingle
 
                 # todo, fix bug: if i DON'T run this line of code, then we can end up with -+^&,!? in filenames.
-                # but since i run it, we end up with glyph names like "tokihyphenponaTok", which is weird.
+                # but since i run it, we end up with glyph names like "tokihyphenponaTok", which is nonstandard and hard to read.
+                    # standard is to use _ for concatenating characters, and . for variants
+                    # https://github.com/adobe-type-tools/agl-specification?tab=readme-ov-file#3-examples
                 # also "one" and "nine" are valid toki pona, and may rarely cause name collisions, e.g. "an1" -> "anone"
                 # ideal would be "tokiTok_hyphen_ponaTok", because the convention is like "f_f_i.liga"
                 # next best thing would be "toki_hyphen_ponaTok"
@@ -124,6 +128,7 @@ def converters(sheet, output_directory, directory=None, config=None, metadata=No
                                     # these do seem to replace correctly, at least if ligatures are enabled
                                     # i'm not sure why this works already??
 
+                    # finally, the common case of a custom word
                     glyph_json[blank_cells[position]]['name'] = word + "Tok"
                     glyph_json[blank_cells[position]]['ligature'] = " ".join(letters)
 

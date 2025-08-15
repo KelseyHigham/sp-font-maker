@@ -19,26 +19,33 @@ I don't really know how Python works. Someone please help me to make the [instal
 
 Currently, the architecture looks like this:
 
-- default.json (file inherited from Handwrite)
+- `default.json` (file inherited from Handwrite)
   - most default glyphs
-- cli.py
-  - support for special characters in ligatures
+  - `cli.py` writes custom words to specific indices in `glyphs-fancy`, in a font-specific copy of `default.json`
+  - `sheettopng` uses the grid cell number as an index into `default.json`'s `glyphs-fancy`, to assign each grid cell a name, before saving each PNG
+  - `svgtottf:add_ligatures` goes through `glyphs-fancy`, and creates a ligature for each entry with a `ligature` field
+  - `svgtottf:add_glyphs` goes through `glyphs-fancy`, and adds each character to the font file, using the `codepoint` field if present
+- `cli.py`
+  - custom words
   - codepoints for UCSUR words not included on the template
-- sheettopng.py
+  - mapping of ASCII special characters used in custom ligatures, to legal glyph names for those characters
+  - open question: how should i associate the custom words string with the default page? is it just a first-page-only feature?
+- `sheettopng.py`
   - omit certain glyphs (cartouche, ijklmpstuw vertically, te/to, pixel fonts) from being centered
   - shift cartouche scan area
   - generate the inner part of the cartouche
   - generate rotated ni, and rotated critters
   - copy existing glyphs to create ASCII codepoints
-- svgtottf.py
+- `svgtottf.py`
   - add ligature for `space space`
   - add redundant ligatures for diagonal ni and critters (like `ni>v` and `niv>`)
   - print default glyphs on preview webpage
+  - print custom glyphs on preview webpage, passed in directly from `cli.py`
   - add characters for zero-width space and ideographic space
   - add blank full- and zero-width glyphs for special characters
 
 I think a better architecture would look like this:
 
-- default-font-settings.toml (.json is workable, but it would be nice if it supported comments, and shared .toml with Linku)
-- default-first-sheet.toml
-- optional further sheet .toml files, specified on the command line alongside extra sheet images!
+- default-font-settings.yaml (.json is workable, but it would be nice if it supported comments)
+- default-sheet.yaml
+- optional further sheet .yaml files, specified on the command line alongside extra sheet images!
