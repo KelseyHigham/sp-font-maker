@@ -1,0 +1,86 @@
+# yaml draft
+
+sheets:
+- 
+  - glyphs:
+    # row 0
+    - {codepoint: 0xf1900, name: aTok,      ligature: a          }
+      # assume that every left- or right-facing glyph is mirrored
+    - {codepoint: 0xf1901, name: akesiTok,  ligature: a k e s i  , rotate: true, direction: up}
+    - {codepoint: 0xf1902, name: alaTok,    ligature: a l a      }
+
+    # row 6
+    - {codepoint: 0xf1990, name: cartoucheStartTok, ligature: bracketleft,  shift: right}
+    - {codepoint: 0xf1991, name: cartoucheEndTok,   ligature: bracketright, shift: left}
+    - {codepoint: 0xf199c, name: middotTok,         ligature: period}
+    - {codepoint: 0xf199d, name: colonTok,          ligature: colon}
+    - {codepoint: 0x69, name: i}
+
+  - synonyms:
+    # these ones aren't necessary for v1 either, nobody is using them
+    - {ligature: a l i,       target-name: aleTok    }
+    - {ligature: l i n u w i, target-name: linluwiTok}
+    - {ligature: k e p e n,   target-name: kepekenTok}
+
+    # the following are only included because they're prerequisites for custom ligatures.
+    # they don't need to be included in the default sheet for v1! the codepoints can just show spaces, and we can reintroduce the graphics with ligatures later.
+    - {codepoint: 0x61, name: a, target-name: aTok}
+    - {codepoint: 0x65, name: e, target-name: eTok}
+    - {codepoint: 0x6e, name: n, target-name: nTok}
+    - {codepoint: 0x6f, name: o, target-name: oTok}
+    
+    - {codepoint: 0x41, name: A, target-name: aTok}
+    - {codepoint: 0x45, name: E, target-name: eTok}
+    - {codepoint: 0x4e, name: N, target-name: nTok}
+    - {codepoint: 0x4f, name: O, target-name: oTok}
+
+    - {codepoint: 0x49, name: I, target-name: i}
+    - {codepoint: 0x4a, name: J, target-name: j}
+    - {codepoint: 0x4b, name: K, target-name: k}
+    - {codepoint: 0x4c, name: L, target-name: l}
+    - {codepoint: 0x4d, name: M, target-name: m}
+    - {codepoint: 0x50, name: P, target-name: p}
+    - {codepoint: 0x53, name: S, target-name: s}
+    - {codepoint: 0x54, name: T, target-name: t}
+    - {codepoint: 0x55, name: U, target-name: u}
+    - {codepoint: 0x57, name: W, target-name: w}
+
+    - {codepoint: 0x62, name: b, target-name: p}
+    - {codepoint: 0x42, name: B, target-name: p}
+    - {codepoint: 0x63, name: c, target-name: s}
+    - {codepoint: 0x43, name: C, target-name: s}
+    - {codepoint: 0x64, name: d, target-name: t}
+    - {codepoint: 0x44, name: D, target-name: t}
+    - {codepoint: 0x66, name: f, target-name: p}
+    - {codepoint: 0x46, name: F, target-name: p}
+    - {codepoint: 0x67, name: g, target-name: k}
+    - {codepoint: 0x47, name: G, target-name: k}
+    - {codepoint: 0x68, name: h, target-name: k}
+    - {codepoint: 0x48, name: H, target-name: k}
+    - {codepoint: 0x71, name: q, target-name: k}
+    - {codepoint: 0x51, name: Q, target-name: k}
+    - {codepoint: 0x72, name: r, target-name: w}
+    - {codepoint: 0x52, name: R, target-name: w}
+    - {codepoint: 0x76, name: v, target-name: w}
+    - {codepoint: 0x56, name: V, target-name: w}
+    - {codepoint: 0x78, name: x, target-name: s}
+    - {codepoint: 0x58, name: X, target-name: s}
+    - {codepoint: 0x79, name: y, target-name: j}
+    - {codepoint: 0x59, name: Y, target-name: j}
+    - {codepoint: 0x7a, name: z, target-name: s}
+    - {codepoint: 0x5a, name: Z, target-name: s}
+
+- codepoints:
+
+---
+
+# benefits:
+  # comments!!!
+  # hex codepoints can be raw, not in quotes
+  # key names can be raw, not in quotes
+  # don't have to match curly braces
+  # trailing commas are allowed
+
+# drawbacks:
+  # significant whitespace may be error-prone
+  # in 2009, yaml interpreted a single "n" or "y" as a boolean, lmao
