@@ -6,7 +6,7 @@ import datetime
 
 
 class SVGtoTTF:
-    def convert(self, directory, outdir, config, metadata=None, other_words_string=None):
+    def convert(self, directory, outdir, config, cli_args=None, other_words_string=None):
         print("SVGtoTTF")
         """Convert a directory with SVG images to TrueType Font.
 
@@ -25,13 +25,13 @@ class SVGtoTTF:
             Path to output directory.
         config : str
             Path to config file.
-        metadata : dict
+        cli_args : dict
             Dictionary containing the metadata (filename, family or style)
         """
         import subprocess
         import platform
         from packaging.version import Version
-        sheet_version = metadata.get("sheetversion") or "99999999.999999.999999"
+        sheet_version = cli_args.get("sheetversion") or "99999999.999999.999999"
 
         subprocess.run(
             (
@@ -44,14 +44,14 @@ class SVGtoTTF:
                 config,
                 directory,
                 outdir,
-                json.dumps(metadata),
+                json.dumps(cli_args),
                 str(Version(sheet_version).major),
                 str(Version(sheet_version).minor),
                 str(Version(sheet_version).micro)
             ]
         )
 
-        self.add_ligatures(directory, outdir, config, metadata, other_words_string)
+        self.add_ligatures(directory, outdir, config, cli_args, other_words_string)
 
 
 
@@ -61,30 +61,30 @@ class SVGtoTTF:
     # █   █  ▀▄▄█  ▀▄▄█   ▀▄  ▀▄▄█  █    ▀▄▄   ▀▄▄▀
     #         ▄▄▀
 
-    def add_ligatures(self, directory, outdir, config, metadata=None, other_words_string=None):
+    def add_ligatures(self, directory, outdir, config, cli_args=None, other_words_string=None):
         # Now the font has exported, presumably. 
         # We're back to the `python` environment, not the `ffpython` one, so we can use libraries like fontTools, camelCase.
         import fontTools  # camelCase!
 
         # `directory` is the temp directory
 
-        self.metadata = json.loads(json.dumps(metadata)) or {}
+        self.cli_args = json.loads(json.dumps(cli_args)) or {}
 
         with open(config) as f:
             self.config = json.load(f)
 
-        filename = (self.metadata.get("filename", None) or self.config["props"].get("filename", None))
+        filename = (self.cli_args.get("filename", None) or self.config["props"].get("filename", None))
         if filename is None:
             raise NameError("filename not found in config file.")
 
-        family = (self.metadata.get("family", None) or filename)
+        family = (self.cli_args.get("family", None) or filename)
 
-        designer = self.metadata.get("designer", None) or self.config["props"].get("designer", "jan pi toki pona")
+        designer = self.cli_args.get("designer", None) or self.config["props"].get("designer", "jan pi toki pona")
 
         # for generating the ilo Linku TOML files for each font,
         # we use short license codes from the SPDX License List: https://spdx.org/licenses/
-        license = self.metadata.get("license", None) or self.config["sfnt_names"].get("License", "All rights reserved")
-        licenseurl = self.metadata.get("licenseurl", None) or self.config["sfnt_names"].get("License URL", "")
+        license = self.cli_args.get("license", None) or self.config["sfnt_names"].get("License", "All rights reserved")
+        licenseurl = self.cli_args.get("licenseurl", None) or self.config["sfnt_names"].get("License URL", "")
         if license == "ofl":
             license = "OFL-1.1"
             licenseurl = "https://openfontlicense.org"
@@ -648,14 +648,14 @@ function redrawTextarea(e) {
         props = self.config["props"]
         sfnt_names = self.config["sfnt_names"]
         lang = props.get("lang", "English (US)")
-        fontname = self.metadata.get("filename", None) or props.get(
+        fontname = self.cli_args.get("filename", None) or props.get(
             "filename", "Example"
         )
-        family = self.metadata.get("family", None) or fontname
+        family = self.cli_args.get("family", None) or fontname
         style = props.get("style", "Regular")
-        designer = self.metadata.get("designer", None) or props.get("designer", "jan pi toki pona")
-        license = self.metadata.get("license", None) or sfnt_names.get("License", "All rights reserved")
-        licenseurl = self.metadata.get("licenseurl", None) or sfnt_names.get("License URL", "")
+        designer = self.cli_args.get("designer", None) or props.get("designer", "jan pi toki pona")
+        license = self.cli_args.get("license", None) or sfnt_names.get("License", "All rights reserved")
+        licenseurl = self.cli_args.get("licenseurl", None) or sfnt_names.get("License URL", "")
 
         self.font.familyname = fontname
         self.font.fontname = fontname + "-" + style
@@ -673,7 +673,7 @@ function redrawTextarea(e) {
         self.font.hhea_descent_add    = False
         self.font.hhea_linegap        = 0
 
-        pixel = self.metadata.get("pixel") or False
+        pixel = self.cli_args.get("pixel") or False
         if version_major < 4 and not pixel: # apply the new metrics to pixel fonts retroactively, to combat blurring
             self.font.ascent  = 800
             self.font.descent = 200
@@ -805,7 +805,7 @@ function redrawTextarea(e) {
 
                 # debug_metrics("aTok", "before scaling")
 
-                pixel = self.metadata.get("pixel") or False
+                pixel = self.cli_args.get("pixel") or False
 
                 # Vertically center sitelen pona, middot, colon
                 # Do NOT center a-z, cartouches, long pi, te/to, (period?)
@@ -1041,7 +1041,7 @@ function redrawTextarea(e) {
     # █     █  █  █  █   █ █   █▄▄█  █     █          █ █ █  ▄▀▀█   █  █  █
     # ▀▄▄▀  ▀▄▄▀  █  █    █    ▀▄▄   █     ▀▄         █ █ █  ▀▄▄█   █  █  █
     #                                         ▄▄▄▄▄▄▄
-    def convert_main(self, config_file, directory, outdir, metadata, v_major, v_minor, v_patch):
+    def convert_main(self, config_file, directory, outdir, cli_args, v_major, v_minor, v_patch):
         try:
             self.font = fontforge.font()
         except:
@@ -1050,14 +1050,14 @@ function redrawTextarea(e) {
 
         with open(config_file) as f:
             self.config = json.load(f)
-        self.metadata = json.loads(metadata) or {}
+        self.cli_args = json.loads(cli_args) or {}
 
         self.font = fontforge.font()
         self.set_properties(int(v_major), int(v_minor), int(v_patch))
         self.add_glyphs(directory, int(v_major), int(v_minor), int(v_patch))
 
         # Generate font and save as a .ttf file
-        filename = self.metadata.get("filename", None) or self.config["props"].get(
+        filename = self.cli_args.get("filename", None) or self.config["props"].get(
             "filename", None
         )
         self.generate_font_file(str(filename), outdir, config_file, directory)

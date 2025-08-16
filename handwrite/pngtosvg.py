@@ -13,7 +13,7 @@ class PotraceNotFound(Exception):
 class PNGtoSVG:
     """Converter class to convert character PNGs to BMPs and SVGs."""
 
-    def convert(self, metadata, directory):
+    def convert(self, cli_args, directory):
         print("PNGtoSVG", end="\r")
         """Call converters on each .png in the provider directory.
 
@@ -27,7 +27,7 @@ class PNGtoSVG:
                 if f.endswith(".png"):
                     num_characters += 1
                     print("PNGtoSVG", str(f[0:-4]).ljust(14, " ")[:14], "".join("." for i in range(num_characters//8)), end="\r")
-                    self.pngToBmp(root + "/" + f, metadata)
+                    self.pngToBmp(root + "/" + f, cli_args)
                     # self.trim(root + "/" + f[0:-4] + ".bmp")
                     self.bmpToSvg(root + "/" + f[0:-4] + ".bmp")
         print("PNGtoSVG                                                                      ")
@@ -55,7 +55,7 @@ class PNGtoSVG:
             subprocess.run(["potrace", path, "--backend", "svg", "--output", path[0:-4] + ".svg",])
             # note: the --margin parameter doesn't help me here
 
-    def pngToBmp(self, path, metadata):
+    def pngToBmp(self, path, cli_args):
         """Convert .bmp image to .svg using potrace.
 
         Converts the passed .bmp file to .svg using the potrace
@@ -73,10 +73,10 @@ class PNGtoSVG:
             Raised if potrace not found in path by shutil.which()
         """
 
-        pixel = metadata.get("pixel") or False
+        pixel = cli_args.get("pixel") or False
 
         from packaging.version import Version
-        sheet_version = metadata.get("sheetversion") or "99999999.999999.999999"
+        sheet_version = cli_args.get("sheetversion") or "99999999.999999.999999"
         if Version(sheet_version) < Version("2.1"):
             # SHEET VERSION 2.0
             # scan 2.0.x sheets with lower quality, to avoid picking up corner pixels from the gray boxes

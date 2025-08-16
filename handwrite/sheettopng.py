@@ -7,7 +7,7 @@ from packaging.version import Version
 class SHEETtoPNG:
     """Converter class to convert input sample sheet to character PNGs."""
 
-    def convert(self, sheet, characters_dir, config, metadata, cols=20, rows=9):
+    def convert(self, sheet, characters_dir, config, cli_args, cols=20, rows=9):
         print("SHEETtoPNG")
         """Convert a sheet of sample writing input to a custom directory structure of PNGs.
 
@@ -32,16 +32,16 @@ class SHEETtoPNG:
         if os.path.isdir(sheet):
             raise IsADirectoryError("Sheet parameter should not be a directory.")
         characters = self.detect_characters(
-            characters_dir, sheet, threshold_value, metadata, cols=cols, rows=rows
+            characters_dir, sheet, threshold_value, cli_args, cols=cols, rows=rows
         )
         self.save_images(
             characters, # more like cells
             characters_dir,
             config,
-            metadata
+            cli_args
         )
 
-    def detect_characters(self, characters_dir, sheet_image, threshold_value, metadata, cols=20, rows=9):
+    def detect_characters(self, characters_dir, sheet_image, threshold_value, cli_args, cols=20, rows=9):
         """Detect contours on the input image and filter them to get only characters.
 
         Uses opencv to threshold the image for better contour detection. After finding all
@@ -79,7 +79,7 @@ class SHEETtoPNG:
         cv2.imwrite(os.path.join(characters_dir, "analysis step 3 - threshold" + ".png"), thresh)
         close_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
 
-        pixel = metadata.get("pixel") or False
+        pixel = cli_args.get("pixel") or False
         if pixel:
             iterations = 0
         else:
@@ -229,7 +229,7 @@ class SHEETtoPNG:
             # print(row_x, row_y, row_w, row_h)
             # row_x, row_y, row_w, row_h = small_rect(contours[row]) # doesn't help
 
-            sheet_version = metadata.get("sheetversion") or "99999999.999999.999999"
+            sheet_version = cli_args.get("sheetversion") or "99999999.999999.999999"
             if Version(sheet_version) < Version("3"):
                 # SHEET VERSION 2:
                 # The grid unit here is roughly 0.125cm on the printed page, or 0.25cm in the original huge file.
@@ -509,7 +509,7 @@ class SHEETtoPNG:
 
         return sorted_characters
 
-    def save_images(self, characters, characters_dir, config, metadata):
+    def save_images(self, characters, characters_dir, config, cli_args):
         """Create directory for each character and save as PNG.
 
         Creates directory and PNG file for each image as following:
@@ -551,72 +551,72 @@ class SHEETtoPNG:
         # Trim cartouche characters
             # We'll have to do the same thing for long pi
             # and any other character that spans two cells
-        self.pad("right", characters_dir, metadata, "cartoucheStartTok")
-        self.pad("right", characters_dir, metadata, "bracketleft")
+        self.pad("right", characters_dir, cli_args, "cartoucheStartTok")
+        self.pad("right", characters_dir, cli_args, "bracketleft")
         
-        self.pad("left",  characters_dir, metadata, "cartoucheEndTok")
-        self.pad("left",  characters_dir, metadata, "bracketright")
+        self.pad("left",  characters_dir, cli_args, "cartoucheEndTok")
+        self.pad("left",  characters_dir, cli_args, "bracketright")
 
-        self.pad("right", characters_dir, metadata, "cartoucheMiddleTok", True)
-        self.pad("left",  characters_dir, metadata, "cartoucheMiddleTok", True)
-        self.pad("right", characters_dir, metadata, "underscore", True)
-        self.pad("left",  characters_dir, metadata, "underscore", True)
+        self.pad("right", characters_dir, cli_args, "cartoucheMiddleTok", True)
+        self.pad("left",  characters_dir, cli_args, "cartoucheMiddleTok", True)
+        self.pad("right", characters_dir, cli_args, "underscore", True)
+        self.pad("left",  characters_dir, cli_args, "underscore", True)
 
-        self.rotate(characters_dir, metadata, False,  45, "niTok.SE")
-        self.rotate(characters_dir, metadata, False,  90, "niTok.E")
-        self.rotate(characters_dir, metadata, False, 135, "niTok.NE")
-        self.rotate(characters_dir, metadata, False, 180, "niTok.N")
-        self.rotate(characters_dir, metadata, False, 225, "niTok.NW")
-        self.rotate(characters_dir, metadata, False, 270, "niTok.W")
-        self.rotate(characters_dir, metadata, False, 315, "niTok.SW")
+        self.rotate(characters_dir, cli_args, False,  45, "niTok.SE")
+        self.rotate(characters_dir, cli_args, False,  90, "niTok.E")
+        self.rotate(characters_dir, cli_args, False, 135, "niTok.NE")
+        self.rotate(characters_dir, cli_args, False, 180, "niTok.N")
+        self.rotate(characters_dir, cli_args, False, 225, "niTok.NW")
+        self.rotate(characters_dir, cli_args, False, 270, "niTok.W")
+        self.rotate(characters_dir, cli_args, False, 315, "niTok.SW")
 
-        self.rotate(characters_dir, metadata, False,  45, "akesiTok.NW")
-        self.rotate(characters_dir, metadata, False,  90, "akesiTok.W")
-        self.rotate(characters_dir, metadata, False, 135, "akesiTok.SW")
-        self.rotate(characters_dir, metadata, False, 180, "akesiTok.S")
-        self.rotate(characters_dir, metadata, False, 225, "akesiTok.SE")
-        self.rotate(characters_dir, metadata, False, 270, "akesiTok.E")
-        self.rotate(characters_dir, metadata, False, 315, "akesiTok.NE")
+        self.rotate(characters_dir, cli_args, False,  45, "akesiTok.NW")
+        self.rotate(characters_dir, cli_args, False,  90, "akesiTok.W")
+        self.rotate(characters_dir, cli_args, False, 135, "akesiTok.SW")
+        self.rotate(characters_dir, cli_args, False, 180, "akesiTok.S")
+        self.rotate(characters_dir, cli_args, False, 225, "akesiTok.SE")
+        self.rotate(characters_dir, cli_args, False, 270, "akesiTok.E")
+        self.rotate(characters_dir, cli_args, False, 315, "akesiTok.NE")
 
-        self.rotate(characters_dir, metadata, False,  45, "pipiTok.NW")
-        self.rotate(characters_dir, metadata, False,  90, "pipiTok.W")
-        self.rotate(characters_dir, metadata, False, 135, "pipiTok.SW")
-        self.rotate(characters_dir, metadata, False, 180, "pipiTok.S")
-        self.rotate(characters_dir, metadata, False, 225, "pipiTok.SE")
-        self.rotate(characters_dir, metadata, False, 270, "pipiTok.E")
-        self.rotate(characters_dir, metadata, False, 315, "pipiTok.NE")
+        self.rotate(characters_dir, cli_args, False,  45, "pipiTok.NW")
+        self.rotate(characters_dir, cli_args, False,  90, "pipiTok.W")
+        self.rotate(characters_dir, cli_args, False, 135, "pipiTok.SW")
+        self.rotate(characters_dir, cli_args, False, 180, "pipiTok.S")
+        self.rotate(characters_dir, cli_args, False, 225, "pipiTok.SE")
+        self.rotate(characters_dir, cli_args, False, 270, "pipiTok.E")
+        self.rotate(characters_dir, cli_args, False, 315, "pipiTok.NE")
 
-        self.rotate(characters_dir, metadata, False,  45, "kalaTok.NE")
-        self.rotate(characters_dir, metadata, False,  90, "kalaTok.N")
-        self.rotate(characters_dir, metadata, True,  315, "kalaTok.NW")
-        self.rotate(characters_dir, metadata, True,    0, "kalaTok.W")
-        self.rotate(characters_dir, metadata, True,   45, "kalaTok.SW")
-        self.rotate(characters_dir, metadata, False, 270, "kalaTok.S")
-        self.rotate(characters_dir, metadata, False, 315, "kalaTok.SE")
+        self.rotate(characters_dir, cli_args, False,  45, "kalaTok.NE")
+        self.rotate(characters_dir, cli_args, False,  90, "kalaTok.N")
+        self.rotate(characters_dir, cli_args, True,  315, "kalaTok.NW")
+        self.rotate(characters_dir, cli_args, True,    0, "kalaTok.W")
+        self.rotate(characters_dir, cli_args, True,   45, "kalaTok.SW")
+        self.rotate(characters_dir, cli_args, False, 270, "kalaTok.S")
+        self.rotate(characters_dir, cli_args, False, 315, "kalaTok.SE")
 
-        self.rotate(characters_dir, metadata, False,  45, "kijetesantakaluTok.NE")
-        self.rotate(characters_dir, metadata, False,  90, "kijetesantakaluTok.N")
-        self.rotate(characters_dir, metadata, True,  315, "kijetesantakaluTok.NW")
-        self.rotate(characters_dir, metadata, True,    0, "kijetesantakaluTok.W")
-        self.rotate(characters_dir, metadata, True,   45, "kijetesantakaluTok.SW")
-        self.rotate(characters_dir, metadata, False, 270, "kijetesantakaluTok.S")
-        self.rotate(characters_dir, metadata, False, 315, "kijetesantakaluTok.SE")
+        self.rotate(characters_dir, cli_args, False,  45, "kijetesantakaluTok.NE")
+        self.rotate(characters_dir, cli_args, False,  90, "kijetesantakaluTok.N")
+        self.rotate(characters_dir, cli_args, True,  315, "kijetesantakaluTok.NW")
+        self.rotate(characters_dir, cli_args, True,    0, "kijetesantakaluTok.W")
+        self.rotate(characters_dir, cli_args, True,   45, "kijetesantakaluTok.SW")
+        self.rotate(characters_dir, cli_args, False, 270, "kijetesantakaluTok.S")
+        self.rotate(characters_dir, cli_args, False, 315, "kijetesantakaluTok.SE")
 
-        self.rotate(characters_dir, metadata, False,  45, "soweliTok.NE")
-        self.rotate(characters_dir, metadata, False,  90, "soweliTok.N")
-        self.rotate(characters_dir, metadata, True,  315, "soweliTok.NW")
-        self.rotate(characters_dir, metadata, True,    0, "soweliTok.W")
-        self.rotate(characters_dir, metadata, True,   45, "soweliTok.SW")
-        self.rotate(characters_dir, metadata, False, 270, "soweliTok.S")
-        self.rotate(characters_dir, metadata, False, 315, "soweliTok.SE")
+        self.rotate(characters_dir, cli_args, False,  45, "soweliTok.NE")
+        self.rotate(characters_dir, cli_args, False,  90, "soweliTok.N")
+        self.rotate(characters_dir, cli_args, True,  315, "soweliTok.NW")
+        self.rotate(characters_dir, cli_args, True,    0, "soweliTok.W")
+        self.rotate(characters_dir, cli_args, True,   45, "soweliTok.SW")
+        self.rotate(characters_dir, cli_args, False, 270, "soweliTok.S")
+        self.rotate(characters_dir, cli_args, False, 315, "soweliTok.SE")
 
-        self.rotate(characters_dir, metadata, False,  45, "wasoTok.NE")
-        self.rotate(characters_dir, metadata, False,  90, "wasoTok.N")
-        self.rotate(characters_dir, metadata, True,  315, "wasoTok.NW")
-        self.rotate(characters_dir, metadata, True,    0, "wasoTok.W")
-        self.rotate(characters_dir, metadata, True,   45, "wasoTok.SW")
-        self.rotate(characters_dir, metadata, False, 270, "wasoTok.S")
-        self.rotate(characters_dir, metadata, False, 315, "wasoTok.SE")
+        self.rotate(characters_dir, cli_args, False,  45, "wasoTok.NE")
+        self.rotate(characters_dir, cli_args, False,  90, "wasoTok.N")
+        self.rotate(characters_dir, cli_args, True,  315, "wasoTok.NW")
+        self.rotate(characters_dir, cli_args, True,    0, "wasoTok.W")
+        self.rotate(characters_dir, cli_args, True,   45, "wasoTok.SW")
+        self.rotate(characters_dir, cli_args, False, 270, "wasoTok.S")
+        self.rotate(characters_dir, cli_args, False, 315, "wasoTok.SE")
 
 
 
@@ -625,7 +625,7 @@ class SHEETtoPNG:
     # █    █  █   █   ▄▀▀█   █   █▄▄█
     # █    ▀▄▄▀   ▀▄  ▀▄▄█   ▀▄  ▀▄▄
     
-    def rotate(self, characters_dir, metadata, flip, degrees_ccw, char_name):
+    def rotate(self, characters_dir, cli_args, flip, degrees_ccw, char_name):
         from PIL import Image, ImageDraw
         char_img = Image.open(characters_dir + "/" + char_name + "/" + char_name + ".png")
         if flip:
@@ -654,12 +654,12 @@ class SHEETtoPNG:
 
 
 
-    def pad(self, side, characters_dir, metadata, char_name, resize=False):
+    def pad(self, side, characters_dir, cli_args, char_name, resize=False):
         from PIL import Image, ImageDraw
         char_img = Image.open(characters_dir + "/" + char_name + "/" + char_name + ".png")
 
         # resize the cartouche middle from 1px wide to the standard width (for a given sheet version)
-        sheet_version = metadata.get("sheetversion") or "99999999.999999.999999"
+        sheet_version = cli_args.get("sheetversion") or "99999999.999999.999999"
         if Version(sheet_version) < Version("3"):
             # SHEET VERSION 2: Each glyph scan area is 8x10.
             grid_scan_w = 8
@@ -684,7 +684,7 @@ class SHEETtoPNG:
         left, top, right, bottom = 0, 0, char_img.width-1, char_img.height-1
         in_pixels = char_img.width/grid_scan_w
 
-        pixel = metadata.get("pixel") or False
+        pixel = cli_args.get("pixel") or False
         import math
 
         # the middle of the cartouche is made from the rightmost 1px column of the open cartouche.

@@ -9,13 +9,13 @@ from handwrite import PNGtoSVG
 from handwrite import SVGtoTTF
 
 
-def run(sheet, output_directory, characters_dir, config, metadata, other_words_string):
-    SHEETtoPNG().convert(sheet, characters_dir, config, metadata)
-    PNGtoSVG().convert(metadata, directory=characters_dir)
-    SVGtoTTF().convert(characters_dir, output_directory, config, metadata, other_words_string)
+def run(sheet, output_directory, characters_dir, config, cli_args, other_words_string):
+    SHEETtoPNG().convert(sheet, characters_dir, config, cli_args)
+    PNGtoSVG().convert(cli_args, directory=characters_dir)
+    SVGtoTTF().convert(characters_dir, output_directory, config, cli_args, other_words_string)
 
 
-def converters(sheet, output_directory, directory=None, config=None, metadata=None, other_words_string=None):
+def converters(sheet, output_directory, directory=None, config=None, cli_args=None, other_words_string=None):
     # debug/temp directory
     if not directory:
         directory = tempfile.mkdtemp()
@@ -141,7 +141,7 @@ def converters(sheet, output_directory, directory=None, config=None, metadata=No
     if os.path.isdir(sheet):
         raise IsADirectoryError("Sheet parameter should not be a directory.")
     else:
-        run(sheet, output_directory, directory, config, metadata, other_words_string)
+        run(sheet, output_directory, directory, config, cli_args, other_words_string)
 
     if isTempdir:
         shutil.rmtree(directory)
@@ -173,7 +173,7 @@ def main():
     parser.add_argument("--pixel", action='store_true', help="Pixel font (experimental, false by default)", default=False)
 
     args = parser.parse_args()
-    metadata = {
+    cli_args = {
         "filename": args.filename, 
         "family": args.family, 
         "designer": args.designer, 
@@ -183,5 +183,5 @@ def main():
         "pixel": args.pixel
     }
     converters(
-        args.input_path, args.output_directory, args.debug_directory, None, metadata, args.other_words
+        args.input_path, args.output_directory, args.debug_directory, None, cli_args, args.other_words
     ) 
