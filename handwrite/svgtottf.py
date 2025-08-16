@@ -66,6 +66,12 @@ class SVGtoTTF:
 
 
 
+
+
+
+
+
+
     # █   ▀               ▄
     # █  ▀█  ▄▀▀█   ▀▀▄  ▀█▀  █  █  █▄▀  ▄▀▀▄  ▄▀▀▄
     # █   █  █  █  ▄▀▀█   █   █  █  █    █▄▄█   ▀▄
@@ -271,6 +277,12 @@ feature calt {
 
 
 
+
+
+
+
+
+
         #    ▄                █
         #   ▀█▀  ▄▀▀▄  █▀▄▀▄  █
         #    █   █  █  █ █ █  █
@@ -339,6 +351,12 @@ style = "handwritten"
         print("🏠 Preview in browser: file://" + os.path.abspath(outdir + os.sep + family.replace(" ", "-") + ".html").replace("\\", "/") + "\n")
 
         self.generate_web_page(outdir, filename, family, designer, license, licenseurl, other_words_string)
+
+
+
+
+
+
 
 
 
@@ -532,6 +550,12 @@ function redrawTextarea(e) {
 """
         )
         example_web_page.close()
+
+
+
+
+
+
 
 
 

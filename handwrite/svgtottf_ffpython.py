@@ -105,6 +105,12 @@ class SVGtoTTF:
 
 
 
+
+
+
+
+
+
     #          █     █             █              █
     #  ▀▀▄  ▄▀▀█  ▄▀▀█       ▄▀▀█  █  █  █  █▀▀▄  █▀▀▄  ▄▀▀▄
     # ▄▀▀█  █  █  █  █       █  █  █  █  █  █  █  █  █   ▀▄
@@ -375,6 +381,12 @@ class SVGtoTTF:
 
 
 
+
+
+
+
+
+
     #                                    ▄               ▄▀▀              ▄         ▄▀▀  ▀  █
     # ▄▀▀█  ▄▀▀▄  █▀▀▄  ▄▀▀▄  █▄▀  ▀▀▄  ▀█▀  ▄▀▀▄       ▀█▀  ▄▀▀▄  █▀▀▄  ▀█▀       ▀█▀  ▀█  █  ▄▀▀▄
     # █  █  █▄▄█  █  █  █▄▄█  █   ▄▀▀█   █   █▄▄█        █   █  █  █  █   █         █    █  █  █▄▄█
@@ -412,6 +424,12 @@ class SVGtoTTF:
         # sys.stderr.write("\nCreating %s\n" % outfile)
         self.font.generate(outfile)
         self.font.save(outfile[0:-4] + ".sfd")
+
+
+
+
+
+
 
 
 

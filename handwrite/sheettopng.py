@@ -41,6 +41,14 @@ class SHEETtoPNG:
             cli_args
         )
 
+
+
+
+
+
+
+
+
     def detect_characters(self, characters_dir, sheet_image, threshold_value, cli_args, cols=20, rows=9):
         """Detect contours on the input image and filter them to get only characters.
 
@@ -509,6 +517,14 @@ class SHEETtoPNG:
 
         return sorted_characters
 
+
+
+
+
+
+
+
+
     def save_images(self, characters, characters_dir, config, cli_args):
         """Create directory for each character and save as PNG.
 
@@ -617,6 +633,12 @@ class SHEETtoPNG:
         self.rotate(characters_dir, cli_args, True,   45, "wasoTok.SW")
         self.rotate(characters_dir, cli_args, False, 270, "wasoTok.S")
         self.rotate(characters_dir, cli_args, False, 315, "wasoTok.SE")
+
+
+
+
+
+
 
 
 
