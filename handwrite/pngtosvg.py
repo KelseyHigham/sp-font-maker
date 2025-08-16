@@ -147,23 +147,27 @@ class PNGtoSVG:
             # glyph_width  = 108
             # glyph_height = 144
 
-            if os.path.basename(path) == "a.png" and not pixel:
-                print("v4 font! scanning at good(?) quality. if it looks blobby/blurry, try raising the quality in pngtosvg.py, line 153")
-                # let Kelly know what values worked for you!
-                # (if it's a pixel font that looks blurry, then don't change the quality, just add `--pixel`.)
-            glyph_width  = 216 # new default for v4?
+            # if os.path.basename(path) == "a.png":
+            #     print("scanning at good quality")
+            glyph_width  = 216
             glyph_height = 288
 
-            # if os.path.basename(path) == "a.png" and not pixel:
-            #     print("⚠️ scanning at extra high quality, which takes longer. try lowering the quality in pngtosvg.py")
-            # glyph_width  = 288 # good balance for v3, might be fine for v4
+            # # if os.path.basename(path) == "a.png":
+            # #     print("⚠️ scanning at slightly higher quality, at non-integer scale. this might alleviate some aliasing artifacts")
+            # glyph_width  = 288
             # glyph_height = 384
+
+            # if os.path.basename(path) == "a.png":
+            #     print("⚠️ scanning at very high quality. this takes longer, and may introduce aliasing artifacts")
+            # glyph_width  = 324
+            # glyph_height = 432
+
 
 
         if pixel:
             resample = Image.Resampling.NEAREST
         else:
-            resample = Image.Resampling.BICUBIC
+            resample = Image.Resampling.BILINEAR
         img = Image.open(path).convert("RGBA").resize((glyph_width, glyph_height), resample=resample)
 
         # Threshold image to convert each pixel to either black or white.
