@@ -12,7 +12,7 @@ import datetime
 
 
 class SVGtoTTF:
-    def convert(self, directory, outdir, config, cli_args=None, other_words_string=None):
+    def convert(self, directory, outdir, default_json, cli_args=None, other_words_string=None):
         print("SVGtoTTF")
         """Convert a directory with SVG images to TrueType Font.
 
@@ -29,7 +29,7 @@ class SVGtoTTF:
             Path to directory with SVGs to be converted.
         outdir : str
             Path to output directory.
-        config : str
+        default_json : str
             Path to config file.
         cli_args : dict
             Dictionary containing the metadata (filename, family or style)
@@ -52,7 +52,7 @@ class SVGtoTTF:
             )
             + [
                 svgtottf_ffpython_path,
-                config,
+                default_json,
                 directory,
                 outdir,
                 json.dumps(cli_args),
@@ -62,7 +62,7 @@ class SVGtoTTF:
             ]
         )
 
-        self.add_ligatures(directory, outdir, config, cli_args, other_words_string)
+        self.add_ligatures(directory, outdir, default_json, cli_args, other_words_string)
 
 
 
@@ -78,7 +78,7 @@ class SVGtoTTF:
     # █   █  ▀▄▄█  ▀▄▄█   ▀▄  ▀▄▄█  █    ▀▄▄   ▀▄▄▀
     #         ▄▄▀
 
-    def add_ligatures(self, directory, outdir, config, cli_args=None, other_words_string=None):
+    def add_ligatures(self, directory, outdir, default_json, cli_args=None, other_words_string=None):
         # Now the font has exported, presumably. 
         # We're back to the `python` environment, not the `ffpython` one, so we can use libraries like fontTools, camelCase.
         import fontTools  # camelCase!
@@ -87,21 +87,21 @@ class SVGtoTTF:
 
         self.cli_args = json.loads(json.dumps(cli_args)) or {}
 
-        with open(config) as f:
-            self.config = json.load(f)
+        with open(default_json) as f:
+            self.default_json = json.load(f)
 
-        filename = (self.cli_args.get("filename", None) or self.config["props"].get("filename", None))
+        filename = (self.cli_args.get("filename", None) or self.default_json["props"].get("filename", None))
         if filename is None:
             raise NameError("filename not found in config file.")
 
         family = (self.cli_args.get("family", None) or filename)
 
-        designer = self.cli_args.get("designer", None) or self.config["props"].get("designer", "jan pi toki pona")
+        designer = self.cli_args.get("designer", None) or self.default_json["props"].get("designer", "jan pi toki pona")
 
         # for generating the ilo Linku TOML files for each font,
         # we use short license codes from the SPDX License List: https://spdx.org/licenses/
-        license = self.cli_args.get("license", None) or self.config["sfnt_names"].get("License", "All rights reserved")
-        licenseurl = self.cli_args.get("licenseurl", None) or self.config["sfnt_names"].get("License URL", "")
+        license = self.cli_args.get("license", None) or self.default_json["sfnt_names"].get("License", "All rights reserved")
+        licenseurl = self.cli_args.get("licenseurl", None) or self.default_json["sfnt_names"].get("License URL", "")
         if license == "ofl":
             license = "OFL-1.1"
             licenseurl = "https://openfontlicense.org"
@@ -129,7 +129,7 @@ feature liga {
         list_of_cartoucheable_glyphs = []
 
         # create ligature lines
-        with open(config) as f:
+        with open(default_json) as f:
             glyphs = json.load(f).get("glyphs-fancy", {})
             for k in glyphs:
                 if 'ligature' in k:

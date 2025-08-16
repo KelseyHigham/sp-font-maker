@@ -7,7 +7,7 @@ from packaging.version import Version
 class SHEETtoPNG:
     """Converter class to convert input sample sheet to character PNGs."""
 
-    def convert(self, sheet, characters_dir, config, cli_args, cols=20, rows=9):
+    def convert(self, sheet, characters_dir, default_json, cli_args, cols=20, rows=9):
         print("SHEETtoPNG")
         """Convert a sheet of sample writing input to a custom directory structure of PNGs.
 
@@ -20,14 +20,14 @@ class SHEETtoPNG:
             Path to the sheet file to be converted.
         characters_dir : str
             Path to directory to save characters in.
-        config: str
+        default_json: str
             Path to config file.
         cols : int, default=8
             Number of columns of expected contours. Defaults to 8 based on the default sample.
         rows : int, default=10
             Number of rows of expected contours. Defaults to 10 based on the default sample.
         """
-        with open(config) as f:
+        with open(default_json) as f:
             threshold_value = json.load(f).get("threshold_value", 200)
         if os.path.isdir(sheet):
             raise IsADirectoryError("Sheet parameter should not be a directory.")
@@ -37,7 +37,7 @@ class SHEETtoPNG:
         self.save_images(
             characters, # more like cells
             characters_dir,
-            config,
+            default_json,
             cli_args
         )
 
@@ -525,7 +525,7 @@ class SHEETtoPNG:
 
 
 
-    def save_images(self, characters, characters_dir, config, cli_args):
+    def save_images(self, characters, characters_dir, default_json, cli_args):
         """Create directory for each character and save as PNG.
 
         Creates directory and PNG file for each image as following:
@@ -550,7 +550,7 @@ class SHEETtoPNG:
         # Kelly note: `characters` is more like `cells`, since not every cell contains a glyph
         for cellNum, images in enumerate(characters):
 
-            with open(config) as f:
+            with open(default_json) as f:
                 glyphList = json.load(f).get("glyphs-fancy", {})
                 curMetadatum = glyphList[cellNum]
                 if len(glyphList) > cellNum: # should this be `>=`?

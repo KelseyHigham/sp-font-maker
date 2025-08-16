@@ -393,7 +393,7 @@ class SVGtoTTF:
     # ▀▄▄█  ▀▄▄   █  █  ▀▄▄   █   ▀▄▄█   ▀▄  ▀▄▄         █   ▀▄▄▀  █  █   ▀▄        █    █  █  ▀▄▄
     #  ▄▄▀
 
-    def generate_font_file(self, filename, outdir, config_file, directory):
+    def generate_font_file(self, filename, outdir, default_json, directory):
         """Output TTF file.
 
         Additionally checks for multiple outputs and duplicates.
@@ -404,7 +404,7 @@ class SVGtoTTF:
             Output filename.
         outdir : str
             Path to output directory.
-        config_file : str
+        default_json : str
             Path to config file.
         """
         if filename is None:
@@ -438,14 +438,14 @@ class SVGtoTTF:
     # █     █  █  █  █   █ █   █▄▄█  █     █          █ █ █  ▄▀▀█   █  █  █
     # ▀▄▄▀  ▀▄▄▀  █  █    █    ▀▄▄   █     ▀▄         █ █ █  ▀▄▄█   █  █  █
     #                                         ▄▄▄▄▄▄▄
-    def convert_main(self, config_file, directory, outdir, cli_args, v_major, v_minor, v_patch):
+    def convert_main(self, default_json, directory, outdir, cli_args, v_major, v_minor, v_patch):
         try:
             self.font = fontforge.font()
         except:
             import fontforge
             import psMat
 
-        with open(config_file) as f:
+        with open(default_json) as f:
             self.config = json.load(f)
         self.cli_args = json.loads(cli_args) or {}
 
@@ -457,7 +457,7 @@ class SVGtoTTF:
         filename = self.cli_args.get("filename", None) or self.config["props"].get(
             "filename", None
         )
-        self.generate_font_file(str(filename), outdir, config_file, directory)
+        self.generate_font_file(str(filename), outdir, default_json, directory)
 
 
 if __name__ == "__main__":

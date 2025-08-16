@@ -9,13 +9,13 @@ from handwrite import PNGtoSVG
 from handwrite import SVGtoTTF
 
 
-def run(sheet, output_directory, characters_dir, config, cli_args, other_words_string):
-    SHEETtoPNG().convert(sheet, characters_dir, config, cli_args)
+def run(sheet, output_directory, characters_dir, default_json, cli_args, other_words_string):
+    SHEETtoPNG().convert(sheet, characters_dir, default_json, cli_args)
     PNGtoSVG().convert(cli_args, directory=characters_dir)
-    SVGtoTTF().convert(characters_dir, output_directory, config, cli_args, other_words_string)
+    SVGtoTTF().convert(characters_dir, output_directory, default_json, cli_args, other_words_string)
 
 
-def converters(sheet, output_directory, directory=None, config=None, cli_args=None, other_words_string=None):
+def converters(sheet, output_directory, directory=None, default_json=None, cli_args=None, other_words_string=None):
     # debug/temp directory
     if not directory:
         directory = tempfile.mkdtemp()
@@ -26,15 +26,15 @@ def converters(sheet, output_directory, directory=None, config=None, cli_args=No
         print("Debug directory does not exist. Creating it at", directory)
         os.makedirs(directory, exist_ok=True)
 
-    if config is None:
+    if default_json is None:
         default_config = os.path.join(
             os.path.dirname(os.path.realpath(__file__)), "default.json"
         )
-        config = default_config
-    shutil.copy(config, directory)
-    config = os.path.join(directory, os.path.basename(config))
+        default_json = default_config
+    shutil.copy(default_json, directory)
+    default_json = os.path.join(directory, os.path.basename(default_json))
 
-    with open(config, "r") as file:
+    with open(default_json, "r") as file:
         font_data = json.load(file)
 
     if other_words_string:
@@ -132,16 +132,16 @@ def converters(sheet, output_directory, directory=None, config=None, cli_args=No
                     glyph_json[blank_cells[position]]['name'] = word + "Tok"
                     glyph_json[blank_cells[position]]['ligature'] = " ".join(letters)
 
-    with open(config, "w") as file:
+    with open(default_json, "w") as file:
         json.dump(font_data, file, indent=4)
 
-    if os.path.isdir(config):
+    if os.path.isdir(default_json):
         raise IsADirectoryError("Config parameter should not be a directory.")
 
     if os.path.isdir(sheet):
         raise IsADirectoryError("Sheet parameter should not be a directory.")
     else:
-        run(sheet, output_directory, directory, config, cli_args, other_words_string)
+        run(sheet, output_directory, directory, default_json, cli_args, other_words_string)
 
     if isTempdir:
         shutil.rmtree(directory)
