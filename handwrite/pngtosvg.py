@@ -13,7 +13,7 @@ class PotraceNotFound(Exception):
 class PNGtoSVG:
     """Converter class to convert character PNGs to BMPs and SVGs."""
 
-    def convert(self, cli_args, directory):
+    def convert(self, cli_args, debug_dir):
         print("PNGtoSVG", end="\r")
         """Call converters on each .png in the provider directory.
 
@@ -21,7 +21,7 @@ class PNGtoSVG:
         from sheettopng and convert them to png -> bmp -> svg.
         """
         num_characters = 0
-        path = os.walk(directory)
+        path = os.walk(debug_dir)
         for root, dirs, files in path:
             for f in files:
                 if f.endswith(".png"):

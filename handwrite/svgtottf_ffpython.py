@@ -117,7 +117,7 @@ class SVGtoTTF:
     # ▀▄▄█  ▀▄▄█  ▀▄▄█       ▀▄▄█  █  ▀▄▄█  █▄▄▀  █  █  ▀▄▄▀
     #                         ▄▄▀      ▄▄▀  █
 
-    def add_glyphs(self, directory, version_major, version_minor, version_patch):
+    def add_glyphs(self, debug_dir, version_major, version_minor, version_patch):
         """Read and add SVG images as glyphs to the font.
 
         Walks through the provided directory and uses each ord(character).svg file
@@ -126,7 +126,7 @@ class SVGtoTTF:
 
         Parameters
         ----------
-        directory : str
+        debug_dir : str
             Path to directory with SVGs to be converted.
         """
 
@@ -150,7 +150,7 @@ class SVGtoTTF:
                     g = self.font.createChar(cp, name)
                 # Get outlines
                 src = "{}/{}.svg".format(name, name)
-                src = directory + os.sep + src
+                src = debug_dir + os.sep + src
 
                 # importOutlines() will print FontForge errors for blank glyphs.
                 # Prepend what glyph they refer to.
@@ -393,7 +393,7 @@ class SVGtoTTF:
     # ▀▄▄█  ▀▄▄   █  █  ▀▄▄   █   ▀▄▄█   ▀▄  ▀▄▄         █   ▀▄▄▀  █  █   ▀▄        █    █  █  ▀▄▄
     #  ▄▄▀
 
-    def generate_font_file(self, filename, outdir, default_json, directory):
+    def generate_font_file(self, filename, outdir, default_json, debug_dir):
         """Output TTF file.
 
         Additionally checks for multiple outputs and duplicates.
@@ -411,7 +411,7 @@ class SVGtoTTF:
             raise NameError("filename not found in config file.")
 
         outfile = str(
-            directory
+            debug_dir
             + os.sep
             # + (filename + ".ttf" if not filename.endswith(".ttf") else filename)
             + (filename + " without ligatures.ttf")
@@ -438,7 +438,7 @@ class SVGtoTTF:
     # █     █  █  █  █   █ █   █▄▄█  █     █          █ █ █  ▄▀▀█   █  █  █
     # ▀▄▄▀  ▀▄▄▀  █  █    █    ▀▄▄   █     ▀▄         █ █ █  ▀▄▄█   █  █  █
     #                                         ▄▄▄▄▄▄▄
-    def convert_main(self, default_json, directory, outdir, cli_args, v_major, v_minor, v_patch):
+    def convert_main(self, default_json, debug_dir, outdir, cli_args, v_major, v_minor, v_patch):
         try:
             self.font = fontforge.font()
         except:
@@ -451,13 +451,13 @@ class SVGtoTTF:
 
         self.font = fontforge.font()
         self.set_properties(int(v_major), int(v_minor), int(v_patch))
-        self.add_glyphs(directory, int(v_major), int(v_minor), int(v_patch))
+        self.add_glyphs(debug_dir, int(v_major), int(v_minor), int(v_patch))
 
         # Generate font and save as a .ttf file
         filename = self.cli_args.get("filename", None) or self.config["props"].get(
             "filename", None
         )
-        self.generate_font_file(str(filename), outdir, default_json, directory)
+        self.generate_font_file(str(filename), outdir, default_json, debug_dir)
 
 
 if __name__ == "__main__":

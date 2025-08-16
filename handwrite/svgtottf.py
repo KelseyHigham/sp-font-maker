@@ -12,7 +12,7 @@ import datetime
 
 
 class SVGtoTTF:
-    def convert(self, directory, outdir, default_json, cli_args=None, other_words_string=None):
+    def convert(self, debug_dir, outdir, default_json, cli_args=None, other_words_string=None):
         print("SVGtoTTF")
         """Convert a directory with SVG images to TrueType Font.
 
@@ -25,7 +25,7 @@ class SVGtoTTF:
 
         Parameters
         ----------
-        directory : str
+        debug_dir : str
             Path to directory with SVGs to be converted.
         outdir : str
             Path to output directory.
@@ -53,7 +53,7 @@ class SVGtoTTF:
             + [
                 svgtottf_ffpython_path,
                 default_json,
-                directory,
+                debug_dir,
                 outdir,
                 json.dumps(cli_args),
                 str(Version(sheet_version).major),
@@ -62,7 +62,7 @@ class SVGtoTTF:
             ]
         )
 
-        self.add_ligatures(directory, outdir, default_json, cli_args, other_words_string)
+        self.add_ligatures(debug_dir, outdir, default_json, cli_args, other_words_string)
 
 
 
@@ -78,12 +78,12 @@ class SVGtoTTF:
     # █   █  ▀▄▄█  ▀▄▄█   ▀▄  ▀▄▄█  █    ▀▄▄   ▀▄▄▀
     #         ▄▄▀
 
-    def add_ligatures(self, directory, outdir, default_json, cli_args=None, other_words_string=None):
+    def add_ligatures(self, debug_dir, outdir, default_json, cli_args=None, other_words_string=None):
         # Now the font has exported, presumably. 
         # We're back to the `python` environment, not the `ffpython` one, so we can use libraries like fontTools, camelCase.
         import fontTools  # camelCase!
 
-        # `directory` is the temp directory
+        # `debug_dir` is the temp directory
 
         self.cli_args = json.loads(json.dumps(cli_args)) or {}
 
@@ -110,7 +110,7 @@ class SVGtoTTF:
             licenseurl = "https://creativecommons.org/publicdomain/zero/1.0/"
 
         # fontTools: input font file
-        infile = str(directory + os.sep + (filename + " without ligatures.ttf"))
+        infile = str(debug_dir + os.sep + (filename + " without ligatures.ttf"))
         # sys.stderr.write("\nAdding ligatures to %s\n" % infile)
 
         # fontTools: output font file
@@ -264,7 +264,7 @@ feature calt {
 } calt;
 """
         # print(ligatures_string)
-        feature_file = open(directory + os.sep + family + ".fea", "w", encoding="utf-8")
+        feature_file = open(debug_dir + os.sep + family + ".fea", "w", encoding="utf-8")
         feature_file.write(ligatures_string)
         feature_file.close()
 

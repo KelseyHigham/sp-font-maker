@@ -9,30 +9,30 @@ from handwrite import PNGtoSVG
 from handwrite import SVGtoTTF
 
 
-def run(sheet, output_directory, characters_dir, default_json, cli_args, other_words_string):
-    SHEETtoPNG().convert(sheet, characters_dir, default_json, cli_args)
-    PNGtoSVG().convert(cli_args, directory=characters_dir)
-    SVGtoTTF().convert(characters_dir, output_directory, default_json, cli_args, other_words_string)
+def run(sheet, output_directory, debug_dir, default_json, cli_args, other_words_string):
+    SHEETtoPNG().convert(sheet, debug_dir, default_json, cli_args)
+    PNGtoSVG().convert(cli_args, debug_dir=debug_dir)
+    SVGtoTTF().convert(debug_dir, output_directory, default_json, cli_args, other_words_string)
 
 
-def converters(sheet, output_directory, directory=None, default_json=None, cli_args=None, other_words_string=None):
+def converters(sheet, output_directory, debug_dir=None, default_json=None, cli_args=None, other_words_string=None):
     # debug/temp directory
-    if not directory:
-        directory = tempfile.mkdtemp()
+    if not debug_dir:
+        debug_dir = tempfile.mkdtemp()
         isTempdir = True
     else:
         isTempdir = False
-    if not os.path.isdir(directory):
-        print("Debug directory does not exist. Creating it at", directory)
-        os.makedirs(directory, exist_ok=True)
+    if not os.path.isdir(debug_dir):
+        print("Debug directory does not exist. Creating it at", debug_dir)
+        os.makedirs(debug_dir, exist_ok=True)
 
     if default_json is None:
         default_config = os.path.join(
             os.path.dirname(os.path.realpath(__file__)), "default.json"
         )
         default_json = default_config
-    shutil.copy(default_json, directory)
-    default_json = os.path.join(directory, os.path.basename(default_json))
+    shutil.copy(default_json, debug_dir)
+    default_json = os.path.join(debug_dir, os.path.basename(default_json))
 
     with open(default_json, "r") as file:
         font_data = json.load(file)
@@ -141,10 +141,10 @@ def converters(sheet, output_directory, directory=None, default_json=None, cli_a
     if os.path.isdir(sheet):
         raise IsADirectoryError("Sheet parameter should not be a directory.")
     else:
-        run(sheet, output_directory, directory, default_json, cli_args, other_words_string)
+        run(sheet, output_directory, debug_dir, default_json, cli_args, other_words_string)
 
     if isTempdir:
-        shutil.rmtree(directory)
+        shutil.rmtree(debug_dir)
 
 
 def main():

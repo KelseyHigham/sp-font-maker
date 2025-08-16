@@ -7,7 +7,7 @@ from packaging.version import Version
 class SHEETtoPNG:
     """Converter class to convert input sample sheet to character PNGs."""
 
-    def convert(self, sheet, characters_dir, default_json, cli_args, cols=20, rows=9):
+    def convert(self, sheet, debug_dir, default_json, cli_args, cols=20, rows=9):
         print("SHEETtoPNG")
         """Convert a sheet of sample writing input to a custom directory structure of PNGs.
 
@@ -18,7 +18,7 @@ class SHEETtoPNG:
         ----------
         sheet : str
             Path to the sheet file to be converted.
-        characters_dir : str
+        debug_dir : str
             Path to directory to save characters in.
         default_json: str
             Path to config file.
@@ -32,11 +32,11 @@ class SHEETtoPNG:
         if os.path.isdir(sheet):
             raise IsADirectoryError("Sheet parameter should not be a directory.")
         characters = self.detect_characters(
-            characters_dir, sheet, threshold_value, cli_args, cols=cols, rows=rows
+            debug_dir, sheet, threshold_value, cli_args, cols=cols, rows=rows
         )
         self.save_images(
             characters, # more like cells
-            characters_dir,
+            debug_dir,
             default_json,
             cli_args
         )
@@ -49,7 +49,7 @@ class SHEETtoPNG:
 
 
 
-    def detect_characters(self, characters_dir, sheet_image, threshold_value, cli_args, cols=20, rows=9):
+    def detect_characters(self, debug_dir, sheet_image, threshold_value, cli_args, cols=20, rows=9):
         """Detect contours on the input image and filter them to get only characters.
 
         Uses opencv to threshold the image for better contour detection. After finding all
@@ -78,13 +78,13 @@ class SHEETtoPNG:
 
         # Read the image and convert to grayscale
         image = cv2.imread(sheet_image)
-        cv2.imwrite(os.path.join(characters_dir, "analysis step 1 - image" + ".png"), image)
+        cv2.imwrite(os.path.join(debug_dir, "analysis step 1 - image" + ".png"), image)
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        cv2.imwrite(os.path.join(characters_dir, "analysis step 2 - grayscale" + ".png"), gray)
+        cv2.imwrite(os.path.join(debug_dir, "analysis step 2 - grayscale" + ".png"), gray)
 
         # Threshold and filter the image for better contour detection
         _, thresh = cv2.threshold(gray, threshold_value, 255, 1)
-        cv2.imwrite(os.path.join(characters_dir, "analysis step 3 - threshold" + ".png"), thresh)
+        cv2.imwrite(os.path.join(debug_dir, "analysis step 3 - threshold" + ".png"), thresh)
         close_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
 
         pixel = cli_args.get("pixel") or False
@@ -94,7 +94,7 @@ class SHEETtoPNG:
             iterations = 2
         close = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, close_kernel, iterations=iterations)
 
-        cv2.imwrite(os.path.join(characters_dir, "analysis step 4 - close" + ".png"), close)
+        cv2.imwrite(os.path.join(debug_dir, "analysis step 4 - close" + ".png"), close)
 
         # Search for contours.
         contours, h = cv2.findContours(
@@ -118,7 +118,7 @@ class SHEETtoPNG:
         #     if len(contour_pil) > 1:
         #         # print(i)
         #         debug_draw.polygon(contour_pil, outline="blue", width=debug_width) # slow
-        #         # debug_image.save(os.path.join(characters_dir, "analysis PREVIEW" + ".png")) # slower
+        #         # debug_image.save(os.path.join(debug_dir, "analysis PREVIEW" + ".png")) # slower
         #         x = 1
 
         # Just reverse sort by area, for debug drawing.
@@ -130,7 +130,7 @@ class SHEETtoPNG:
                     # print(maybe_row)
                     debug_draw.polygon(contour_pil, outline="blue", width=debug_width)
                     x = 1
-        # debug_image.save(os.path.join(characters_dir, "analysis PREVIEW" + ".png"))
+        # debug_image.save(os.path.join(debug_dir, "analysis PREVIEW" + ".png"))
 
         # Filter contours based on number of sides and then reverse sort by area.
         contours = sorted(
@@ -174,7 +174,7 @@ class SHEETtoPNG:
             # print(contour) # this is fine. actually it looks wrong but the resulting bbox is right
             # Draw the contour
             debug_draw.polygon(contour_pil, outline="red", width=debug_width)
-        # debug_image.save(os.path.join(characters_dir, "analysis PREVIEW" + ".png"))
+        # debug_image.save(os.path.join(debug_dir, "analysis PREVIEW" + ".png"))
 
         # output the biggest 9 rows as images, for debug purposes
         row_images = []
@@ -200,7 +200,7 @@ class SHEETtoPNG:
 
             debug_draw.rectangle([left, top, left+width, top+height], outline="lime")
             # debug_draw.rectangle([left_s, top_s, left_s+width_s, top_s+height_s], outline="blue")
-            # debug_image.save(os.path.join(characters_dir, "analysis PREVIEW" + ".png"))
+            # debug_image.save(os.path.join(debug_dir, "analysis PREVIEW" + ".png"))
 
         average_row_area = 0
         for row in range(rows): average_row_area += row_areas[row]
@@ -216,8 +216,8 @@ class SHEETtoPNG:
         # sort top to bottom
         row_images.sort(key=lambda x: x[2])
 
-        # row_dir = os.path.join(characters_dir, "9 rows")
-        row_dir = os.path.join(characters_dir)
+        # row_dir = os.path.join(debug_dir, "9 rows")
+        row_dir = os.path.join(debug_dir)
         if not os.path.exists(row_dir):
             os.mkdir(row_dir)
         for row in range(rows):
@@ -366,10 +366,10 @@ class SHEETtoPNG:
                 # if centered: 
                 #     debug_draw.rectangle([glyph_left, new_glyph_top, glyph_left+glyph_w, new_glyph_top+glyph_h], 
                 #         outline="red", fill="red", width=debug_width)
-                # debug_image.save(os.path.join(characters_dir, "analysis PREVIEW" + ".png")) # every glyph
-            # debug_image.save(os.path.join(characters_dir, "analysis PREVIEW" + ".png")) # every row
+                # debug_image.save(os.path.join(debug_dir, "analysis PREVIEW" + ".png")) # every glyph
+            # debug_image.save(os.path.join(debug_dir, "analysis PREVIEW" + ".png")) # every row
 
-        debug_image.save(os.path.join(characters_dir, "analysis PREVIEW" + ".png")) # after processing
+        debug_image.save(os.path.join(debug_dir, "analysis PREVIEW" + ".png")) # after processing
 
         # Now we have the characters but since they are all mixed up we need to position them.
         # Sort characters based on 'y' coordinate and group them by number of rows at a time. Then
@@ -525,22 +525,22 @@ class SHEETtoPNG:
 
 
 
-    def save_images(self, characters, characters_dir, default_json, cli_args):
+    def save_images(self, characters, debug_dir, default_json, cli_args):
         """Create directory for each character and save as PNG.
 
         Creates directory and PNG file for each image as following:
 
-            characters_dir/ord(character)/ord(character).png  (SINGLE SHEET INPUT)
-            characters_dir/sheet_filename/ord(character)/ord(character).png  (MULTIPLE SHEETS INPUT)
+            debug_dir/ord(character)/ord(character).png  (SINGLE SHEET INPUT)
+            debug_dir/sheet_filename/ord(character)/ord(character).png  (MULTIPLE SHEETS INPUT)
 
         Parameters
         ----------
         characters : list of list
             Sorted list of character images each inner list representing a row of images.
-        characters_dir : str
+        debug_dir : str
             Path to directory to save characters in.
         """
-        os.makedirs(characters_dir, exist_ok=True)
+        os.makedirs(debug_dir, exist_ok=True)
 
         # Create directory for each character and save the png for the characters
         # Structure (single sheet): UserProvidedDir/ord(character)/ord(character).png
@@ -555,7 +555,7 @@ class SHEETtoPNG:
                 curMetadatum = glyphList[cellNum]
                 if len(glyphList) > cellNum: # should this be `>=`?
                     if 'name' in curMetadatum:
-                        character = os.path.join(characters_dir, curMetadatum['name'])
+                        character = os.path.join(debug_dir, curMetadatum['name'])
                         if not os.path.exists(character):
                             os.mkdir(character)
                         # print(character, curMetadatum['name'] + ".png")
@@ -567,72 +567,72 @@ class SHEETtoPNG:
         # Trim cartouche characters
             # We'll have to do the same thing for long pi
             # and any other character that spans two cells
-        self.pad("right", characters_dir, cli_args, "cartoucheStartTok")
-        self.pad("right", characters_dir, cli_args, "bracketleft")
+        self.pad("right", debug_dir, cli_args, "cartoucheStartTok")
+        self.pad("right", debug_dir, cli_args, "bracketleft")
         
-        self.pad("left",  characters_dir, cli_args, "cartoucheEndTok")
-        self.pad("left",  characters_dir, cli_args, "bracketright")
+        self.pad("left",  debug_dir, cli_args, "cartoucheEndTok")
+        self.pad("left",  debug_dir, cli_args, "bracketright")
 
-        self.pad("right", characters_dir, cli_args, "cartoucheMiddleTok", True)
-        self.pad("left",  characters_dir, cli_args, "cartoucheMiddleTok", True)
-        self.pad("right", characters_dir, cli_args, "underscore", True)
-        self.pad("left",  characters_dir, cli_args, "underscore", True)
+        self.pad("right", debug_dir, cli_args, "cartoucheMiddleTok", True)
+        self.pad("left",  debug_dir, cli_args, "cartoucheMiddleTok", True)
+        self.pad("right", debug_dir, cli_args, "underscore", True)
+        self.pad("left",  debug_dir, cli_args, "underscore", True)
 
-        self.rotate(characters_dir, cli_args, False,  45, "niTok.SE")
-        self.rotate(characters_dir, cli_args, False,  90, "niTok.E")
-        self.rotate(characters_dir, cli_args, False, 135, "niTok.NE")
-        self.rotate(characters_dir, cli_args, False, 180, "niTok.N")
-        self.rotate(characters_dir, cli_args, False, 225, "niTok.NW")
-        self.rotate(characters_dir, cli_args, False, 270, "niTok.W")
-        self.rotate(characters_dir, cli_args, False, 315, "niTok.SW")
+        self.rotate(debug_dir, cli_args, False,  45, "niTok.SE")
+        self.rotate(debug_dir, cli_args, False,  90, "niTok.E")
+        self.rotate(debug_dir, cli_args, False, 135, "niTok.NE")
+        self.rotate(debug_dir, cli_args, False, 180, "niTok.N")
+        self.rotate(debug_dir, cli_args, False, 225, "niTok.NW")
+        self.rotate(debug_dir, cli_args, False, 270, "niTok.W")
+        self.rotate(debug_dir, cli_args, False, 315, "niTok.SW")
 
-        self.rotate(characters_dir, cli_args, False,  45, "akesiTok.NW")
-        self.rotate(characters_dir, cli_args, False,  90, "akesiTok.W")
-        self.rotate(characters_dir, cli_args, False, 135, "akesiTok.SW")
-        self.rotate(characters_dir, cli_args, False, 180, "akesiTok.S")
-        self.rotate(characters_dir, cli_args, False, 225, "akesiTok.SE")
-        self.rotate(characters_dir, cli_args, False, 270, "akesiTok.E")
-        self.rotate(characters_dir, cli_args, False, 315, "akesiTok.NE")
+        self.rotate(debug_dir, cli_args, False,  45, "akesiTok.NW")
+        self.rotate(debug_dir, cli_args, False,  90, "akesiTok.W")
+        self.rotate(debug_dir, cli_args, False, 135, "akesiTok.SW")
+        self.rotate(debug_dir, cli_args, False, 180, "akesiTok.S")
+        self.rotate(debug_dir, cli_args, False, 225, "akesiTok.SE")
+        self.rotate(debug_dir, cli_args, False, 270, "akesiTok.E")
+        self.rotate(debug_dir, cli_args, False, 315, "akesiTok.NE")
 
-        self.rotate(characters_dir, cli_args, False,  45, "pipiTok.NW")
-        self.rotate(characters_dir, cli_args, False,  90, "pipiTok.W")
-        self.rotate(characters_dir, cli_args, False, 135, "pipiTok.SW")
-        self.rotate(characters_dir, cli_args, False, 180, "pipiTok.S")
-        self.rotate(characters_dir, cli_args, False, 225, "pipiTok.SE")
-        self.rotate(characters_dir, cli_args, False, 270, "pipiTok.E")
-        self.rotate(characters_dir, cli_args, False, 315, "pipiTok.NE")
+        self.rotate(debug_dir, cli_args, False,  45, "pipiTok.NW")
+        self.rotate(debug_dir, cli_args, False,  90, "pipiTok.W")
+        self.rotate(debug_dir, cli_args, False, 135, "pipiTok.SW")
+        self.rotate(debug_dir, cli_args, False, 180, "pipiTok.S")
+        self.rotate(debug_dir, cli_args, False, 225, "pipiTok.SE")
+        self.rotate(debug_dir, cli_args, False, 270, "pipiTok.E")
+        self.rotate(debug_dir, cli_args, False, 315, "pipiTok.NE")
 
-        self.rotate(characters_dir, cli_args, False,  45, "kalaTok.NE")
-        self.rotate(characters_dir, cli_args, False,  90, "kalaTok.N")
-        self.rotate(characters_dir, cli_args, True,  315, "kalaTok.NW")
-        self.rotate(characters_dir, cli_args, True,    0, "kalaTok.W")
-        self.rotate(characters_dir, cli_args, True,   45, "kalaTok.SW")
-        self.rotate(characters_dir, cli_args, False, 270, "kalaTok.S")
-        self.rotate(characters_dir, cli_args, False, 315, "kalaTok.SE")
+        self.rotate(debug_dir, cli_args, False,  45, "kalaTok.NE")
+        self.rotate(debug_dir, cli_args, False,  90, "kalaTok.N")
+        self.rotate(debug_dir, cli_args, True,  315, "kalaTok.NW")
+        self.rotate(debug_dir, cli_args, True,    0, "kalaTok.W")
+        self.rotate(debug_dir, cli_args, True,   45, "kalaTok.SW")
+        self.rotate(debug_dir, cli_args, False, 270, "kalaTok.S")
+        self.rotate(debug_dir, cli_args, False, 315, "kalaTok.SE")
 
-        self.rotate(characters_dir, cli_args, False,  45, "kijetesantakaluTok.NE")
-        self.rotate(characters_dir, cli_args, False,  90, "kijetesantakaluTok.N")
-        self.rotate(characters_dir, cli_args, True,  315, "kijetesantakaluTok.NW")
-        self.rotate(characters_dir, cli_args, True,    0, "kijetesantakaluTok.W")
-        self.rotate(characters_dir, cli_args, True,   45, "kijetesantakaluTok.SW")
-        self.rotate(characters_dir, cli_args, False, 270, "kijetesantakaluTok.S")
-        self.rotate(characters_dir, cli_args, False, 315, "kijetesantakaluTok.SE")
+        self.rotate(debug_dir, cli_args, False,  45, "kijetesantakaluTok.NE")
+        self.rotate(debug_dir, cli_args, False,  90, "kijetesantakaluTok.N")
+        self.rotate(debug_dir, cli_args, True,  315, "kijetesantakaluTok.NW")
+        self.rotate(debug_dir, cli_args, True,    0, "kijetesantakaluTok.W")
+        self.rotate(debug_dir, cli_args, True,   45, "kijetesantakaluTok.SW")
+        self.rotate(debug_dir, cli_args, False, 270, "kijetesantakaluTok.S")
+        self.rotate(debug_dir, cli_args, False, 315, "kijetesantakaluTok.SE")
 
-        self.rotate(characters_dir, cli_args, False,  45, "soweliTok.NE")
-        self.rotate(characters_dir, cli_args, False,  90, "soweliTok.N")
-        self.rotate(characters_dir, cli_args, True,  315, "soweliTok.NW")
-        self.rotate(characters_dir, cli_args, True,    0, "soweliTok.W")
-        self.rotate(characters_dir, cli_args, True,   45, "soweliTok.SW")
-        self.rotate(characters_dir, cli_args, False, 270, "soweliTok.S")
-        self.rotate(characters_dir, cli_args, False, 315, "soweliTok.SE")
+        self.rotate(debug_dir, cli_args, False,  45, "soweliTok.NE")
+        self.rotate(debug_dir, cli_args, False,  90, "soweliTok.N")
+        self.rotate(debug_dir, cli_args, True,  315, "soweliTok.NW")
+        self.rotate(debug_dir, cli_args, True,    0, "soweliTok.W")
+        self.rotate(debug_dir, cli_args, True,   45, "soweliTok.SW")
+        self.rotate(debug_dir, cli_args, False, 270, "soweliTok.S")
+        self.rotate(debug_dir, cli_args, False, 315, "soweliTok.SE")
 
-        self.rotate(characters_dir, cli_args, False,  45, "wasoTok.NE")
-        self.rotate(characters_dir, cli_args, False,  90, "wasoTok.N")
-        self.rotate(characters_dir, cli_args, True,  315, "wasoTok.NW")
-        self.rotate(characters_dir, cli_args, True,    0, "wasoTok.W")
-        self.rotate(characters_dir, cli_args, True,   45, "wasoTok.SW")
-        self.rotate(characters_dir, cli_args, False, 270, "wasoTok.S")
-        self.rotate(characters_dir, cli_args, False, 315, "wasoTok.SE")
+        self.rotate(debug_dir, cli_args, False,  45, "wasoTok.NE")
+        self.rotate(debug_dir, cli_args, False,  90, "wasoTok.N")
+        self.rotate(debug_dir, cli_args, True,  315, "wasoTok.NW")
+        self.rotate(debug_dir, cli_args, True,    0, "wasoTok.W")
+        self.rotate(debug_dir, cli_args, True,   45, "wasoTok.SW")
+        self.rotate(debug_dir, cli_args, False, 270, "wasoTok.S")
+        self.rotate(debug_dir, cli_args, False, 315, "wasoTok.SE")
 
 
 
@@ -647,9 +647,9 @@ class SHEETtoPNG:
     # █    █  █   █   ▄▀▀█   █   █▄▄█
     # █    ▀▄▄▀   ▀▄  ▀▄▄█   ▀▄  ▀▄▄
     
-    def rotate(self, characters_dir, cli_args, flip, degrees_ccw, char_name):
+    def rotate(self, debug_dir, cli_args, flip, degrees_ccw, char_name):
         from PIL import Image, ImageDraw
-        char_img = Image.open(characters_dir + "/" + char_name + "/" + char_name + ".png")
+        char_img = Image.open(debug_dir + "/" + char_name + "/" + char_name + ".png")
         if flip:
             char_img = char_img.transpose(method=Image.Transpose.FLIP_LEFT_RIGHT)
 
@@ -672,13 +672,13 @@ class SHEETtoPNG:
             resample  = Image.Resampling.BILINEAR, # bilinear might not be the strat; test with different fonts
             center    = (center_x, center_y)
         )
-        char_img.save(characters_dir + "/" + char_name + "/" + char_name + ".png")
+        char_img.save(debug_dir + "/" + char_name + "/" + char_name + ".png")
 
 
 
-    def pad(self, side, characters_dir, cli_args, char_name, resize=False):
+    def pad(self, side, debug_dir, cli_args, char_name, resize=False):
         from PIL import Image, ImageDraw
-        char_img = Image.open(characters_dir + "/" + char_name + "/" + char_name + ".png")
+        char_img = Image.open(debug_dir + "/" + char_name + "/" + char_name + ".png")
 
         # resize the cartouche middle from 1px wide to the standard width (for a given sheet version)
         sheet_version = cli_args.get("sheetversion") or "99999999.999999.999999"
@@ -735,4 +735,4 @@ class SHEETtoPNG:
                  (right,                                              bottom)),
                 fill="white"
             )
-        char_img.save(characters_dir + "/" + char_name + "/" + char_name + ".png")
+        char_img.save(debug_dir + "/" + char_name + "/" + char_name + ".png")
