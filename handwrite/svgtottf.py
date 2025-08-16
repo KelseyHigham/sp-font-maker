@@ -12,7 +12,7 @@ import datetime
 
 
 class SVGtoTTF:
-    def convert(self, debug_dir, outdir, default_json, cli_args=None, other_words_string=None):
+    def convert(self, debug_dir, out_dir, default_json, cli_args=None, other_words_string=None):
         print("SVGtoTTF")
         """Convert a directory with SVG images to TrueType Font.
 
@@ -27,7 +27,7 @@ class SVGtoTTF:
         ----------
         debug_dir : str
             Path to directory with SVGs to be converted.
-        outdir : str
+        out_dir : str
             Path to output directory.
         default_json : str
             Path to config file.
@@ -54,7 +54,7 @@ class SVGtoTTF:
                 svgtottf_ffpython_path,
                 default_json,
                 debug_dir,
-                outdir,
+                out_dir,
                 json.dumps(cli_args),
                 str(Version(sheet_version).major),
                 str(Version(sheet_version).minor),
@@ -62,7 +62,7 @@ class SVGtoTTF:
             ]
         )
 
-        self.add_ligatures(debug_dir, outdir, default_json, cli_args, other_words_string)
+        self.add_ligatures(debug_dir, out_dir, default_json, cli_args, other_words_string)
 
 
 
@@ -78,7 +78,7 @@ class SVGtoTTF:
     # █   █  ▀▄▄█  ▀▄▄█   ▀▄  ▀▄▄█  █    ▀▄▄   ▀▄▄▀
     #         ▄▄▀
 
-    def add_ligatures(self, debug_dir, outdir, default_json, cli_args=None, other_words_string=None):
+    def add_ligatures(self, debug_dir, out_dir, default_json, cli_args=None, other_words_string=None):
         # Now the font has exported, presumably. 
         # We're back to the `python` environment, not the `ffpython` one, so we can use libraries like fontTools, camelCase.
         import fontTools  # camelCase!
@@ -115,10 +115,10 @@ class SVGtoTTF:
 
         # fontTools: output font file
         filename = filename + ".ttf" if not filename.endswith(".ttf") else filename
-        outfile = str(outdir + os.sep + filename)
+        outfile = str(out_dir + os.sep + filename)
         # while os.path.exists(outfile):
         #     filename = os.path.splitext(filename)[0] + " (1).ttf"
-        #     outfile = outdir + os.sep + filename
+        #     outfile = out_dir + os.sep + filename
 
         ligatures_string = """languagesystem DFLT dflt; # this part is apparently necessary so that
 languagesystem latn dflt; # people can edit the font in fontforge after??
@@ -290,7 +290,7 @@ feature calt {
         # generate .toml file
 
         from datetime import datetime
-        ilo_linku_toml_file = open(outdir + os.sep + family + ".toml", "w", encoding="utf-8")
+        ilo_linku_toml_file = open(out_dir + os.sep + family + ".toml", "w", encoding="utf-8")
         ilo_linku_toml_file.write('''#:schema ../../api/generated/font.json
 id        = "''' + family + '''"
 name      = "''' + family + '''"
@@ -344,13 +344,13 @@ style = "handwritten"
 # repo     = "https://github.com/wasokeli/wasokeli.github.io/tree/main/sp-font-maker"
 # webpage  = "https://wasokeli.github.io/sp-font-maker/''' + family.replace(" ", "-") + '''.html"
 ''')
-        # print("Generating " + outdir + os.sep + family + ".toml for ilo Linku...")
+        # print("Generating " + out_dir + os.sep + family + ".toml for ilo Linku...")
         ilo_linku_toml_file.close()
 
         print("🌐 If hosting, give this to " + designer + ": https://wasokeli.github.io/sp-font-maker/" + family.replace(" ", "-"))
-        print("🏠 Preview in browser: file://" + os.path.abspath(outdir + os.sep + family.replace(" ", "-") + ".html").replace("\\", "/") + "\n")
+        print("🏠 Preview in browser: file://" + os.path.abspath(out_dir + os.sep + family.replace(" ", "-") + ".html").replace("\\", "/") + "\n")
 
-        self.generate_web_page(outdir, filename, family, designer, license, licenseurl, other_words_string)
+        self.generate_web_page(out_dir, filename, family, designer, license, licenseurl, other_words_string)
 
 
 
@@ -366,7 +366,7 @@ style = "handwritten"
     #  █ █   ▀▄▄   █▄▄▀       █▄▄▀  ▀▄▄█  ▀▄▄█  ▀▄▄
     #                         █            ▄▄▀
 
-    def generate_web_page(self, outdir, filename, family, designer, license, licenseurl, other_words_string=None):
+    def generate_web_page(self, out_dir, filename, family, designer, license, licenseurl, other_words_string=None):
         other_words = []
         if other_words_string:
             other_words = other_words_string.split()
@@ -374,13 +374,13 @@ style = "handwritten"
                 if word == "_":
                     other_words[word_index] = "　"
 
-        example_web_page = open(outdir + os.sep + family.replace(" ", "-") + ".html", "w", encoding="utf-8")
+        example_web_page = open(out_dir + os.sep + family.replace(" ", "-") + ".html", "w", encoding="utf-8")
 
         # # this fails because i'm feeding it a relative path on the command line... hmm...
         # # and now it fails because the "C:" part doesn't get underlined on the C
         # # also it needs to have forward slashes
         # # uuuggghhhh
-        # print("Local web page: file:///" + os.path.abspath(outdir + os.sep + family.replace(" ", "-") + ".html"))
+        # print("Local web page: file:///" + os.path.abspath(out_dir + os.sep + family.replace(" ", "-") + ".html"))
 
         example_web_page.write(
 """
@@ -624,11 +624,11 @@ function redrawTextarea(e) {
         #         stroke_width=STROKE_WIDTH,
         #         stroke_fill=stroke_color,
         #     )
-        #     image.save(outdir + os.sep + "LINKU TEST - " + family + ".png")
+        #     image.save(out_dir + os.sep + "LINKU TEST - " + family + ".png")
 
         # display(
         #     "󱤴󱥴󱦐󱤗󱤋󱤦󱤎󱦑󱤀", 
-        #     outdir + os.sep + family + ".ttf",
+        #     out_dir + os.sep + family + ".ttf",
         #     72,
         #     (0x0C, 0xAF, 0xF5),
         #     "outline"
