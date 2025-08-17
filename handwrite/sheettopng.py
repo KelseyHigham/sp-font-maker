@@ -274,7 +274,7 @@ class SHEETtoPNG:
             import math
             glyph_w      =            grid_scan_w      * row_w/grid_row_w
             glyph_h      =            grid_scan_h      * row_h/grid_row_h
-            # math.floor ensures that a left-aligned pixel font glyph is
+            # math.floor ensures that for odd scan widths, a left-aligned pixel font glyph is
             # horizontally centered on the scan area, which is cute
             left_padding = math.floor(grid_hor_padding * row_w/grid_row_w)
             top_padding  =            grid_ver_padding * row_h/grid_row_h

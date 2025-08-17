@@ -31,12 +31,13 @@ Currently, the architecture looks like this:
   - mapping of ASCII special characters used in custom ligatures, to legal glyph names for those characters
   - open question: how should i associate the custom words string with the default page? is it just a first-page-only feature?
 - `sheettopng.py`
-  - omit certain glyphs (cartouche, ijklmpstuw vertically, te/to, pixel fonts) from being centered
+  - omit certain glyphs (cartouche, ijklmpstuw vertically, te/to, pixel fonts) from having their scan areas centered
+    - note that the glyphs are actually centered later
   - shift cartouche scan area
-  - generate the inner part of the cartouche
-  - generate rotated ni, and rotated critters
+  - generate PNG for the inner part of the cartouche
+  - generate PNG for rotated ni, and rotated critters
   - copy existing glyphs to create ASCII codepoints
-- `svgtottf.py`
+- `svgtottf.py` (including `_ffpython`)
   - add ligature for `space space`
   - add redundant ligatures for diagonal ni and critters (like `ni>v` and `niv>`)
   - print default glyphs on preview webpage
