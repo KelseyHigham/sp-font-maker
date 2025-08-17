@@ -24,7 +24,7 @@ class PNGtoSVG:
         path = os.walk(debug_dir)
         for root, dirs, files in path:
             for f in files:
-                if f.endswith(".png"):
+                if f.endswith(".png") and not f.startswith("analysis"):
                     num_characters += 1
                     print("PNGtoSVG", str(f[0:-4]).ljust(14, " ")[:14], "".join("." for i in range(num_characters//8)), end="\r")
                     self.pngToBmp(root + "/" + f, cli_args)
@@ -165,9 +165,19 @@ class PNGtoSVG:
 
 
         if pixel:
+            scale = 8 # 8 for pixel fonts, lower if you wanna make it blobby
             resample = Image.Resampling.NEAREST
+            scan_area  = Image.open(path).size
+            glyph_width  = scan_area[0] * scale
+            glyph_height = scan_area[1] * scale
+            if glyph_height > 500 and os.path.basename(path) == "a.png": # triggers for 32px fonts and bigger
+                print(f"Glyph size: ({scan_area[1]//2}, {scan_area[1]//2})")
+                print(f"Total scan area: {scan_area}")
+                print(f"Upscaling to this for potrace: ({glyph_width}, {glyph_height})")
+                print("High-res pixel font, this will take a while, be patient!")
         else:
             resample = Image.Resampling.BILINEAR
+
         img = Image.open(path).convert("RGBA").resize((glyph_width, glyph_height), resample=resample)
 
         # Threshold image to convert each pixel to either black or white.
@@ -177,6 +187,7 @@ class PNGtoSVG:
         else:
             threshold = 200
 
+        # a pixel becomes black if any color channel is less than 127. so... making the image monochrome before scanning doesn't actually do anything
         data = []
         for pix in list(img.getdata()):
             if pix[0] >= threshold and pix[1] >= threshold and pix[3] >= threshold:
