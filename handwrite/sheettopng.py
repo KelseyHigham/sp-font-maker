@@ -317,12 +317,6 @@ class SHEETtoPNG:
                         # avoid large deviations glyph-to-glyph, 
                         # by nudging halfway towards the previous glyph's shift
                         x_shift = (x_shift + prev_x_shift)/2
-                        # TODO: am i actually *resetting* x_shift for new rows??
-                        #       if not, extreme x_shift on the right side could affect glyphs on the left side
-                    prev_x_shift = x_shift
-                    # print("shift:", int(centroid_x - glyph_w/2), int(centroid_y - glyph_h/2))
-                    new_glyph_left = glyph_left + x_shift
-                    new_glyph_top  = glyph_top  + y_shift
 
                     # don't apply this algorithm to the cartouche and te/to, which it breaks
                     # don't apply this algorithm to ijklmpstuw, where it's mostly useless
@@ -335,10 +329,14 @@ class SHEETtoPNG:
                             col == 15):  # to
                             centered = False
                             # print("not centered:", row, col)
-                            # TODO: reset x_shift after cartouches and te/to
-                            #       so that it doesn't affect the letters and custom nimi
-                            # ALTERNATELY, keep it in place, to help with paper scanned sheets...?
-                            # maybe just... don't *affect* x_shift during cartouches and te/to...
+                            # don't affect x_shift during cartouches and te/to, because they're likely to be off to the side
+                            x_shift = prev_x_shift
+
+                    prev_x_shift = x_shift
+                    # print("shift:", int(centroid_x - glyph_w/2), int(centroid_y - glyph_h/2))
+                    new_glyph_left = glyph_left + x_shift
+                    new_glyph_top  = glyph_top  + y_shift
+
                     if centered and not pixel:
                         # toggle this line to toggle the algorithm, 
                         # while still previewing the algorithm on "analysis PREVIEW.png".
