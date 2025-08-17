@@ -40,9 +40,7 @@ class SVGtoTTF:
         sheet_version = cli_args.get("sheetversion") or "99999999.999999.999999"
 
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        print(current_dir)
         svgtottf_ffpython_path = os.path.join(current_dir, 'svgtottf_ffpython.py')
-        print(svgtottf_ffpython_path)
 
         subprocess.run(
             (
@@ -451,72 +449,68 @@ pini pipi poka poki pona pu sama seli selo seme sewi sijelo sike sin sina sinpin
 suno supa suwi tan taso tawa telo tenpo toki tomo tu unpa uta utala walo wan waso wawa weka wile<br>
 [] . : i j k l m p s t u w te to """ + " ".join(other_words[0:4]) + """<br>
 kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi""" + " ".join(other_words[4:12]) + """<br>
-epiku jasima linluwi majuna meso oko su""" + " ".join(other_words[12:25]) + """<br><br>
+epiku jasima linluwi majuna meso oko su""" + " ".join(other_words[12:25]) + """<br>
 </span>
-<p class="tp">
-<!-- jan [sama olin namako jaki ala] li sitelen e pu kepeken wawa mute. -->
-󱤑󱦐󱥖󱥅󱥸󱤐󱤂󱦑󱤧󱥠󱤉󱥕󱤙󱥵󱤼󱦜
-</p>
 <p>License: <a href='""" + licenseurl + """'>""" + license + """</a></p>
 <span class="tp">
 <span style="white-space: break-spaces">
 <!-- telo oko li ken ante e pilin, by jan Ke Tami -->
-󱥬󱥁󱤧󱤙󱥂󱥕󱤄
+toki ni li kepeken nimi pu ale
 
-󱥪󱥺󱤧󱤘󱤆󱤉󱥎
-󱥧󱤑󱦐󱤛󱤊󱦑󱦐󱥭󱤇󱤴󱤏󱦑󱦝
+telo oko li ken ante e pilin
+tan jan [kiwen en] [tomo anu mi insa]:
 
-　󱥪󱤧󱤖
-　　　󱥧󱥺󱤫󱥮󱥍󱦗󱤑󱥳󱦘
-　　󱤧󱥠󱥜󱥦
-　　　󱤬󱤅󱥟
-　󱥆󱤧󱥷󱥩󱤰
-󱥨󱥆󱤧󱤈󱤬󱥛
-　　󱤧󱥐
-　　　󱤬󱤥
-　　󱤧󱥶
-󱥡󱤡
-　󱥴󱤊󱤔󱤊󱥑
-　󱤊󱤁󱤊󱥢󱤄󱤧󱤘󱥌󱥖
-󱥨󱥎󱥍󱦗󱤑󱥁󱦘󱤧󱥣󱤡
-　　　　　　　󱥪󱤮󱤧󱥝
-　　　　　　　　　󱤧󱥵
-　　　　　　　　　󱤧󱥘󱤉󱤌󱥒
-　　　　　　　　　　　󱤉󱥭󱤉󱥃󱤉󱥥󱤶
-　　　　　　　　　　　󱤉󱥋󱤉󱥓󱤛󱤉󱤸
-　　　　　　　　　　　󱤉󱤭󱤉󱤤󱤉󱥀
-　　　　　　　　　　　󱤉󱤠󱤉󱤩󱥚󱥹
-󱤣󱤦󱥁󱤧󱤨󱤉󱥗󱤏
-　　　󱤧󱤢󱤉󱤍󱥬
-　　　󱤧󱥇󱤉󱤆
-　　　󱤧󱤋󱤉󱤜󱤐　　　　　「󱤀
-　　　　　󱤉󱤹󱥇　　　　　　󱤍󱤀」
+| telo li kama 
+| | | tan oko loje tu pi(jan wan)
+| | li sitelen sike suwi 
+| | | lon anpa sinpin 
+| ona li wile tawa ma
+taso ona li awen lon sijelo
+| | li pini 
+| | | lon len 
+| | li weka
+sona la
+| waso en kala en pipi 
+| en akesi en soweli ale li ken pana sama
+taso pilin pi(jan ni) li suli la 
+| | | | | | | telo lukin li sin
+| | | | | | | | | li wawa
+| | | | | | | | | li selo e ijo poka 
+| | | | | | | | | | | e tomo e noka e supa moku 
+| | | | | | | | | | | e pan e poki kiwen e monsi 
+| | | | | | | | | | | e luka e lawa e nena 
+| | | | | | | | | | | e kute e linja sewi kin
+laso lete ni li lili e seli insa
+| | | li lape e ike toki
+| | | li open e ante
+| | | li esun e ko jaki| | | | | te a
+| | | | | e mu open| | | | | | ike a to
 
-󱤝󱥍󱦗󱤞󱤂󱦘󱤧󱥧󱥰
-　　　　󱤧󱤕󱥱󱤬󱥪
-　　　　󱤧󱤽󱤼
-　　　　󱤧󱥩󱤺
-　　　　󱤧󱥈󱤾󱤉󱥤󱥚
-󱥏󱤷󱤧󱤖󱥸󱤉󱤿󱥫　　　　　「󱤴󱥈」
+kon pi(kule ala) li tan uta 
+| | | | li kalama utala lon telo 
+| | | | li nanpa mute 
+| | | | li tawa mun 
+| | | | li pakala nasa e suno sewi
+pimeja moli li kama namako e nasin tenpo| | | | | te mi pakala to
 
 
-󱥔󱥄󱤙󱤃󱥙
-　󱤲󱤇󱥯
-󱤇󱥕󱤇󱥂󱤆󱤧󱥖󱤚
-　　　　　　󱥧󱤗󱥍󱦗󱤪󱤒󱤷󱦘
-「󱥞󱥷󱤂󱥁
-　󱥞󱥷󱤱󱤉󱤻
-　󱥞󱥷󱥅󱤉󱤳
-　　　　󱤉󱤵󱤉󱥾」　　　　　󱥆󱤧󱤓󱤉󱤎󱥊
-　　　　　　　　　　　　　　　　　󱤉󱥟󱥭
-　　　　　　　　　　　　　　　󱤧󱥉󱤉󱤯
-　　　　　　　　　　　　　　󱥪󱤧󱤖󱥶
-　　　　　　　　　　　　　　󱤣󱤧󱤖󱥲
-　　　　　　　　　　　　　　󱤑󱤧󱥩󱤯
-　　　　　　　　　　　　　　　󱤧󱥩󱤿󱥇
-　　　　　　　　　　　　　　　󱤧󱥩󱤟
-　　　　　　　　　　　　　󱥔󱤖󱤧󱥷󱤉󱥵
-　　　　　　　　　　　　󱥨󱤣󱥶󱤧󱤖󱤘󱤉󱥁
+pona o kepeken alasa seme
+| mani anu unpa 
+anu pu anu nimi ante li sama kili 
+| | | | | | tan kasi pi(lipu jelo moli)
+te sina wile ala ni
+| sina wile mama e musi
+| sina wile olin e meli 
+| | | | e mije e tonsi to| | | | | ona li jo e ilo palisa 
+| | | | | | | | | | | | | | | | | e sinpin tomo 
+| | | | | | | | | | | | | | | li pali e lupa
+| | | | | | | | | | | | | | telo li kama weka
+| | | | | | | | | | | | | | laso li kama walo
+| | | | | | | | | | | | | | jan li tawa lupa 
+| | | | | | | | | | | | | | | li tawa nasin open 
+| | | | | | | | | | | | | | | li tawa kulupu
+| | | | | | | | | | | | | pona kama li wile e wawa
+| | | | | | | | | | | | taso laso weka li kama ken e ni
 
 
 <textarea class="tp">sina ken sitelen wile lon ni
