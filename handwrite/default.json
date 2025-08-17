@@ -17,7 +17,12 @@
     "License": "All rights reserved",
     "License URL": ""
   },
+
   "note": "i'm going to move some data from the code into this file, but i haven't actually implemented these changes yet. so these fields are unused: rotate, direction, shift, type, source-glyph-number.",
+
+  "note": "codepoint and ligature are both optional, but you need one of them if you want to be able to type your glyph.",
+  "note": "",
+
   "glyphs-fancy": [
     {"codepoint": "0xf1900", "name": "aTok",       "ligature": "a"}, 
     {"codepoint": "0xf1901", "name": "akesiTok",   "ligature": "a k e s i", "rotate": true, "direction": "up"}, 
@@ -210,7 +215,15 @@
 
 
 
-    {"codepoint": "0xf1992", "name": "cartoucheMiddleTok", "type": "middle", "source-glyph-number": 121},
+
+
+
+
+
+
+
+
+    {"codepoint": "0xf1992", "name": "cartoucheMiddleTok", "type": "middle", "source-glyph-index": 121},
 
     {"name": "aliTok", "ligature": "a l i"},
 
