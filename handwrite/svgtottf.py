@@ -124,7 +124,7 @@ languagesystem latn dflt; # people can edit the font in fontforge after??
 feature liga {
 """
         list_of_ligs = []
-        list_of_cartoucheable_glyphs = []
+        glyphs_with_ligatures = []
 
         # create ligature lines
         with open(default_json) as f:
@@ -145,7 +145,7 @@ feature liga {
                     #     "  sub " + k['ligature'] + " space by " + k['name'] + ";", 
                     #     len(k['ligature'].split(' ')) + 1
                     # ))
-                    list_of_cartoucheable_glyphs.append(k['name'])
+                    glyphs_with_ligatures.append(k['name'])
 
         # candidate for removal later, because 
             # it doesn't play well with HTML
@@ -226,15 +226,19 @@ feature liga {
 
 @cartoucheableGlyph = [
 """
-        for glyph in ["a", "e", "i", "j", "k", "l", "m", "n", "o", "p", "s", "t", "u", "w", 
-                     "period", "colon", "space", "exclamation", "question", "underscore"]:
-            list_of_cartoucheable_glyphs.append(glyph)
-
-        for word in list_of_cartoucheable_glyphs:
+        for word in glyphs_with_ligatures:
             if (word != "cartoucheStartTok" and
                 word != "cartoucheEndTok"
             ):
                 ligatures_string += "  " + word.rjust(12) + "\n"
+
+        cartoucheable_non_words = ["a","e","n","o", "A","E","N","O", 
+            "b","B","c","C","d","D","f","F","g","G","h","H",
+            "q","Q","r","R","v","V","x","X","y","Y","z","Z",
+            "period", "colon", "space", "exclamation",
+            "question", "underscore", "ideographicspace", "pipe"]
+        for non_word in cartoucheable_non_words:
+            ligatures_string += "  " + non_word.rjust(12) + "\n"
 
         ligatures_string += """];
 
@@ -243,11 +247,13 @@ lookup add_cartouche_middle {
   # (The cartouche middle is zero-width and extends to the left,
   #  surrounding the glyph.)
 """
-        for word in list_of_cartoucheable_glyphs:
+        for word in glyphs_with_ligatures:
             if (word != "cartoucheStartTok" and
                 word != "cartoucheEndTok"
             ):
                 ligatures_string += "  sub " + word.rjust(12) + "   by " + word.rjust(12) + " cartoucheMiddleTok;" + "\n"
+        for non_word in cartoucheable_non_words:
+            ligatures_string += "  sub " + non_word.rjust(12) + "   by " + non_word.rjust(12) + " cartoucheMiddleTok;" + "\n"
 
         ligatures_string += """} add_cartouche_middle;
 
