@@ -368,7 +368,7 @@ class SVGtoTTF:
         # todo: then add "end of long pi" here
         sp_stacking_joiner = self.font.createChar(0xf1995, "stackJoinTok")
         sp_stacking_joiner.width = 0
-        sp_scaling_joiner = self.font.createChar(0xf1996, "scaleJoinTok")
+        sp_scaling_joiner = self.font.createChar(0xf1996, "nestJoinTok")
         sp_scaling_joiner.width = 0
         zerowidthjoiner = self.font.createChar(0x200d, "zerowidthjoiner")
         zerowidthjoiner.width = 0
