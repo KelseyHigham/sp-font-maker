@@ -272,6 +272,7 @@ feature calt {
         builder.addOpenTypeFeaturesFromString(tt, ligatures_string)
         sys.stderr.write("Generating %s...\n" % outfile)
         tt.save(outfile)
+        print("\a")
 
 
 
