@@ -121,10 +121,21 @@ class SVGtoTTF:
         ligatures_string = """languagesystem DFLT dflt; # this part is apparently necessary so that
 languagesystem latn dflt; # people can edit the font in fontforge after??
 
+
+
+
+
+
+
+
+
+# LIGATURES
+
 feature liga {
 """
         list_of_ligs = []
-        glyphs_with_ligatures = []
+        # cartouchable and stackable glyphs with ligatures
+        cartoucheable_and_stackable = []
 
         # create ligature lines
         with open(default_json) as f:
@@ -145,7 +156,15 @@ feature liga {
                     #     "  sub " + k['ligature'] + " space by " + k['name'] + ";", 
                     #     len(k['ligature'].split(' ')) + 1
                     # ))
-                    glyphs_with_ligatures.append(k['name'])
+
+                    if (k['name'] != "cartoucheStartTok" and
+                        k['name'] != "cartoucheEndTok" and
+                        k['name'] != "middotTok" and
+                        k['name'] != "colonTok" and
+                        k['name'] != "teTok" and
+                        k['name'] != "toTok"
+                    ):
+                        cartoucheable_and_stackable.append(k['name']) 
 
         # candidate for removal later, because 
             # it doesn't play well with HTML
@@ -224,38 +243,47 @@ feature liga {
         ligatures_string += "} liga;"
         ligatures_string += """
 
+
+
+
+
+
+
+
+
+# CARTOUCHES
+
 @cartoucheableGlyph = [
 """
-        for word in glyphs_with_ligatures:
-            if (word != "cartoucheStartTok" and
-                word != "cartoucheEndTok"
-            ):
-                ligatures_string += "  " + word.rjust(12) + "\n"
+        for word in cartoucheable_and_stackable:
+            ligatures_string += "  " +     word.rjust(12) + "\n"
 
         cartoucheable_non_words = ["a","e","n","o", "A","E","N","O", 
             "b","B","c","C","d","D","f","F","g","G","h","H",
             "q","Q","r","R","v","V","x","X","y","Y","z","Z",
             "period", "colon", "space", "exclamation",
-            "question", "underscore", "ideographicspace", "pipe"]
+            "question", "underscore", "ideographicspace", "pipe",
+            "middotTok", "colonTok", "teTok", "toTok"]
         for non_word in cartoucheable_non_words:
             ligatures_string += "  " + non_word.rjust(12) + "\n"
 
         ligatures_string += """];
+
+
 
 lookup add_cartouche_middle {
   # Add a cartouche middle after the glyph.
   # (The cartouche middle is zero-width and extends to the left,
   #  surrounding the glyph.)
 """
-        for word in glyphs_with_ligatures:
-            if (word != "cartoucheStartTok" and
-                word != "cartoucheEndTok"
-            ):
-                ligatures_string += "  sub " + word.rjust(12) + "   by " + word.rjust(12) + " cartoucheMiddleTok;" + "\n"
+        for word in cartoucheable_and_stackable:
+            ligatures_string += "  sub " +     word.rjust(12) + "   by " +     word.rjust(12) + " cartoucheMiddleTok;" + "\n"
         for non_word in cartoucheable_non_words:
             ligatures_string += "  sub " + non_word.rjust(12) + "   by " + non_word.rjust(12) + " cartoucheMiddleTok;" + "\n"
 
         ligatures_string += """} add_cartouche_middle;
+
+
 
 # idk what keyword to use here. liga, calt, ccmp, something else?
 # this might affect whether the font works by default in text editors like LibreOffice and Word...?
@@ -266,11 +294,82 @@ feature calt {
   # If a glyph follows a cartouche middle, add a cartouche middle after the glyph.
   sub   cartoucheMiddleTok [@cartoucheableGlyph]'   lookup add_cartouche_middle;
 } calt;
+
+
+
+
+
+
+
+
+
+"""
+
+        stacking_string = """# STACKING
+
+# let's say we have the input string `kala stackJoin lili`, and we want to turn it into `kala.bottom lili.top`
+
+# 0. start:                            kala stackJoin    lili
+# 1. we join the bottom:        kala.bottom              lili
+# 2. we duplicate the joiner:   kala.bottom    stackJoin lili
+# 3. we join the top:           kala.bottom              lili.top
+
+
+
+lookup step1_joinBottom {"""
+# sub kalaTok stackJoinTok by kalaTok.bottom;
+        stackable_non_words = ["a","e","n","o", "A","E","N","O", 
+            "b","B","c","C","d","D","f","F","g","G","h","H",
+            "q","Q","r","R","v","V","x","X","y","Y","z","Z",
+            "teTok", "toTok"]
+        for word in cartoucheable_and_stackable:
+            stacking_string += "\n" + "  sub " +     word.rjust(12) + " stackJoinTok   by " +     word.rjust(12) + ".bottom;"
+        for non_word in stackable_non_words:
+            stacking_string += "\n" + "  sub " + non_word.rjust(12) + " stackJoinTok   by " + non_word.rjust(12) + ".bottom;"
+# sub wasoTok stackJoinTok by wasoTok.bottom;
+        stacking_string += """
+} step1_joinBottom;
+
+
+
+lookup step2_duplicateJoiner {"""
+# sub kalaTok.bottom by kalaTok.bottom stackJoinTok;
+        for word in cartoucheable_and_stackable:
+            stacking_string += "\n" + "  sub " +     word.rjust(12) + ".bottom   by " +     word.rjust(12) + ".bottom stackJoinTok;"
+        for non_word in stackable_non_words:
+            stacking_string += "\n" + "  sub " + non_word.rjust(12) + ".bottom   by " + non_word.rjust(12) + ".bottom stackJoinTok;"
+# sub wasoTok.bottom by wasoTok.bottom stackJoinTok;
+        stacking_string += """
+} step2_duplicateJoiner;
+
+
+
+lookup step3_joinTop {"""
+# sub stackJoinTok kalaTok by kalaTok.top;
+        for word in cartoucheable_and_stackable:
+            stacking_string += "\n" + "  sub   stackJoinTok " +     word.rjust(12) + "   by " +     word.rjust(12) + ".top;"
+        for non_word in stackable_non_words:
+            stacking_string += "\n" + "  sub   stackJoinTok " + non_word.rjust(12) + "   by " + non_word.rjust(12) + ".top;"
+# sub stackJoinTok wasoTok by wasoTok.top;
+        stacking_string += """
+} step3_joinTop ;
+
+
+
+feature liga {                    #          kala stackJoin    lili
+  lookup step1_joinBottom;        #   kala.bottom              lili
+  lookup step2_duplicateJoiner;   #   kala.bottom    stackJoin lili
+  lookup step3_joinTop;           #   kala.bottom              lili.top
+} liga;
 """
         # print(ligatures_string)
         feature_file = open(debug_dir + os.sep + family + ".fea", "w", encoding="utf-8")
         feature_file.write(ligatures_string)
         feature_file.close()
+
+        draft_feature_file = open(debug_dir + os.sep + family + "_draft.fea", "w", encoding="utf-8")
+        draft_feature_file.write(stacking_string)
+        draft_feature_file.close()
 
         from fontTools import ttLib  # camelCase!
         tt = ttLib.TTFont(infile)
