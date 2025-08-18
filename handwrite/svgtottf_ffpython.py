@@ -59,6 +59,8 @@ class SVGtoTTF:
             self.font.os2_typodescent = -450
             self.font.hhea_ascent     = 1050
             self.font.hhea_descent    = -450
+            self.font.uwidth = 62.5          # underline thickness is 1/16em
+            self.font.upos   = -200 - 62.5/2 # positioned outside of, and touching, the em square
         else:
             self.font.ascent  = 875
             self.font.descent = 125
@@ -66,6 +68,8 @@ class SVGtoTTF:
             self.font.os2_typodescent = -375
             self.font.hhea_ascent     = 1125
             self.font.hhea_descent    = -375
+            self.font.uwidth = 62.5
+            self.font.upos   = -125 - 62.5/2
         for k, v in props.items():
             if hasattr(self.font, k):
                 if isinstance(v, list):
