@@ -676,6 +676,7 @@ lookup add_cartouche_middle {
 
 # idk what keyword to use here. liga, calt, ccmp, something else?
 # this might affect whether the font works by default in text editors like LibreOffice and Word...?
+# "rlig" might be required ligature?
 feature calt {
   # If a glyph follows a cartouche start, add a cartouche middle after the glyph.
   sub   cartoucheStartTok  [@cartoucheableGlyph]'   lookup add_cartouche_middle;

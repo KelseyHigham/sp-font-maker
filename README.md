@@ -24,6 +24,8 @@ Currently, the architecture looks like this:
   - `cli.py` writes custom words to specific indices in `glyphs-fancy`, in a font-specific copy of `default.json`
   - `sheettopng` uses the grid cell number as an index into `default.json`'s `glyphs-fancy`, to assign each grid cell a name, before saving each PNG
   - `svgtottf:add_ligatures` goes through `glyphs-fancy`, and creates a ligature for each entry with a `ligature` field
+    - also adds them to `glyphs_with_ligatures`, for cartouching
+    - also hard-codes the list `cartoucheable_non_words`
   - `svgtottf:add_glyphs` goes through `glyphs-fancy`, and adds each character to the font file, using the `codepoint` field if present
 - `cli.py`
   - custom words
