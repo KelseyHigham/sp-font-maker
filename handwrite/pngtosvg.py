@@ -24,7 +24,7 @@ class PNGtoSVG:
         path = os.walk(debug_dir)
         for root, dirs, files in path:
             for f in files:
-                if f.endswith(".png") and not f.startswith("analysis"):
+                if f.endswith(".png") and not f.startswith("analysis"): # for a speedup when processing pixel fonts, require the glyph to be named in the JSON
                     num_characters += 1
                     print("PNGtoSVG", str(f[0:-4]).ljust(14, " ")[:14], "".join("." for i in range(num_characters//8)), end="\r")
                     self.pngToBmp(root + "/" + f, cli_args)

@@ -187,6 +187,7 @@ feature liga {
         # in the future, full-width spaces can be inserted with `|`.
         # this removal may be disruptive, though, and should only be performed with community consensus. 
         list_of_ligs.append(("  sub              space space   by   ideographicspace;", 2))
+        list_of_ligs.append(("  sub                   hyphen   by    stackJoinTok;", 1))
 
         list_of_ligs.append(("  sub              l i n u w i   by      linluwiTok;", 6))
         list_of_ligs.append(("  sub                k e p e n   by      kepekenTok;", 5))
@@ -317,40 +318,27 @@ feature calt {
 
 
 lookup step1_joinBottom {"""
-# sub kalaTok stackJoinTok by kalaTok.bottom;
-        stackable_non_words = ["a","e","n","o", "A","E","N","O", 
-            "b","B","c","C","d","D","f","F","g","G","h","H",
-            "q","Q","r","R","v","V","x","X","y","Y","z","Z",
-            "teTok", "toTok"]
+        # sub   kalaTok stackJoinTok   by   kalaTok.bottom;
         for word in cartoucheable_and_stackable:
             stacking_string += "\n" + "  sub " +     word.rjust(12) + " stackJoinTok   by " +     word.rjust(12) + ".bottom;"
-        for non_word in stackable_non_words:
-            stacking_string += "\n" + "  sub " + non_word.rjust(12) + " stackJoinTok   by " + non_word.rjust(12) + ".bottom;"
-# sub wasoTok stackJoinTok by wasoTok.bottom;
         stacking_string += """
 } step1_joinBottom;
 
 
 
 lookup step2_duplicateJoiner {"""
-# sub kalaTok.bottom by kalaTok.bottom stackJoinTok;
+        # sub   kalaTok.bottom   by   kalaTok.bottom stackJoinTok;
         for word in cartoucheable_and_stackable:
             stacking_string += "\n" + "  sub " +     word.rjust(12) + ".bottom   by " +     word.rjust(12) + ".bottom stackJoinTok;"
-        for non_word in stackable_non_words:
-            stacking_string += "\n" + "  sub " + non_word.rjust(12) + ".bottom   by " + non_word.rjust(12) + ".bottom stackJoinTok;"
-# sub wasoTok.bottom by wasoTok.bottom stackJoinTok;
         stacking_string += """
 } step2_duplicateJoiner;
 
 
 
 lookup step3_joinTop {"""
-# sub stackJoinTok kalaTok by kalaTok.top;
+        # sub   stackJoinTok liliTok   by   liliTok.top;
         for word in cartoucheable_and_stackable:
             stacking_string += "\n" + "  sub   stackJoinTok " +     word.rjust(12) + "   by " +     word.rjust(12) + ".top;"
-        for non_word in stackable_non_words:
-            stacking_string += "\n" + "  sub   stackJoinTok " + non_word.rjust(12) + "   by " + non_word.rjust(12) + ".top;"
-# sub stackJoinTok wasoTok by wasoTok.top;
         stacking_string += """
 } step3_joinTop ;
 
@@ -364,17 +352,13 @@ feature liga {                    #          kala stackJoin    lili
 """
         # print(ligatures_string)
         feature_file = open(debug_dir + os.sep + family + ".fea", "w", encoding="utf-8")
-        feature_file.write(ligatures_string)
+        feature_file.write(ligatures_string + stacking_string)
         feature_file.close()
-
-        draft_feature_file = open(debug_dir + os.sep + family + "_draft.fea", "w", encoding="utf-8")
-        draft_feature_file.write(stacking_string)
-        draft_feature_file.close()
 
         from fontTools import ttLib  # camelCase!
         tt = ttLib.TTFont(infile)
         from fontTools.feaLib import builder  # camelCase!
-        builder.addOpenTypeFeaturesFromString(tt, ligatures_string)
+        builder.addOpenTypeFeaturesFromString(tt, ligatures_string + stacking_string)
         sys.stderr.write("Generating %s...\n" % outfile)
         tt.save(outfile)
         print("\a")

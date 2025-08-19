@@ -152,33 +152,57 @@ class SVGtoTTF:
                     g = self.font.createChar(-1, name)
                 else:
                     g = self.font.createChar(cp, name)
+
+                # Create stacking glyphs
+                stacking = False
+                if 'ligature' in glyph_object:
+                    if (name != "cartoucheStartTok" and
+                        name != "cartoucheEndTok" and
+                        name != "middotTok" and
+                        name != "colonTok" and
+                        name != "teTok" and
+                        name != "toTok"
+                    ):
+                        stacking = True
+                        g_bottom = self.font.createChar(-1, name + ".bottom")
+                        g_top    = self.font.createChar(-1, name + ".top")
+
                 # Get outlines
                 src = "{}/{}.svg".format(name, name)
                 src = debug_dir + os.sep + src
 
                 # importOutlines() will print FontForge errors for blank glyphs.
                 # Prepend what glyph they refer to.
-                print("", end=("\r" + name.ljust(9, " ") + " - "))
+                print("", end=("\r" + (" " + name + " ").ljust(11, " ") + " - "))
                 g.importOutlines(src, ("removeoverlap", "correctdir"))
                 g.removeOverlap()
+                if stacking:
+                    print("", end=("\r" + (" " + name + "-").ljust(11, " ") + " - "))
+                    g_bottom.importOutlines(src, ("removeoverlap", "correctdir"))
+                    g_bottom.removeOverlap()
+                    print("", end=("\r" + ("-" + name + " ").ljust(11, " ") + " - "))
+                    g_top   .importOutlines(src, ("removeoverlap", "correctdir"))
+                    g_top   .removeOverlap()
 
                 if version_major <3:
                     # SHEET VERSION 2 metrics, before scaling (BS) up so that the glyph is the full em height
-                    # the 8x10gu SVG is scaled to .8x1em, spanning -200 to 800 vertically.
+                    # the 8x10gu SVG is scaled to .8x1em, with padding on the sides to make it 1x1em square.
+                    # in sv2, the imported SVG spans -200 to 800 vertically.
                     bs_scan_hor_padding = 50
                     bs_glyph_wh = 700
                 else:
                     # SHEET VERSION 3 metrics, before scaling (BS) up so that the glyph is the full em height
-                    # the 6x8gu SVG is scaled to .75x1em, spanning -200 to 800 vertically.
+                    # the 6x8gu SVG is scaled to .75x1em, with padding on the sides to make it 1x1em square.
+                    # in sv3, the imported SVG spans -200 to 800 vertically.
+                    # in sv4, the imported SVG spans -125 to 875 vertically.
                     bs_scan_hor_padding = 125
                     bs_glyph_wh = 500
 
-                # shift by the left margin. (i'm not actually sure why this is necessary, but it looks wrong without it)
-                # (like, why don't i have to shift it vertically??)
-                g.transform(psMat.translate(
-                    -bs_scan_hor_padding, 
-                    0
-                ))
+                # shift by the left margin, to remove the squaring padding.
+                g.transform(psMat.translate(-bs_scan_hor_padding, 0))
+                if stacking:
+                    g_bottom.transform(psMat.translate(-bs_scan_hor_padding, 0))
+                    g_top   .transform(psMat.translate(-bs_scan_hor_padding, 0))
 
                 def debug_metrics(word_to_debug, note=""):
                     if name == word_to_debug:
@@ -223,6 +247,13 @@ class SVGtoTTF:
                             0, 
                             self.font.ascent - top - ((self.font.ascent + self.font.descent) - (top - bottom)) / 2
                         ))
+                        if stacking:
+                            bottom = g_bottom.boundingBox()[1]
+                            top    = g_bottom.boundingBox()[3]
+                            g_bottom.transform(psMat.translate(0, self.font.ascent - top - ((self.font.ascent + self.font.descent) - (top - bottom)) / 2))
+                            bottom = g_top   .boundingBox()[1]
+                            top    = g_top   .boundingBox()[3]
+                            g_top   .transform(psMat.translate(0, self.font.ascent - top - ((self.font.ascent + self.font.descent) - (top - bottom)) / 2))
                         pass
 
                 # Horizontally center sitelen pona, middot, colon, letters
@@ -244,6 +275,15 @@ class SVGtoTTF:
                             bs_glyph_wh - right - (bs_glyph_wh - width) / 2, 
                             0
                         ))
+                        if stacking:
+                            left  = g_bottom.boundingBox()[0]
+                            right = g_bottom.boundingBox()[2]
+                            width = right - left
+                            g_bottom.transform(psMat.translate(bs_glyph_wh - right - (bs_glyph_wh - width) / 2, 0))
+                            left  = g_top   .boundingBox()[0]
+                            right = g_top   .boundingBox()[2]
+                            width = right - left
+                            g_top   .transform(psMat.translate(bs_glyph_wh - right - (bs_glyph_wh - width) / 2, 0))
                         pass
 
                 # Scale everything up so that the glyphs are 1em tall, instead of the cartouches
@@ -256,27 +296,71 @@ class SVGtoTTF:
                         -bs_glyph_wh / 2,
                         200-500 # 200 is the descent. 500 is half the glyph's height.
                     ))
+                    if stacking:
+                        g_bottom.transform(psMat.translate(-bs_glyph_wh / 2, 200-500))
+                        g_top   .transform(psMat.translate(-bs_glyph_wh / 2, 200-500))
                 else:
                     g.transform(psMat.translate(
                         -bs_glyph_wh / 2,
                         125-500 # 125 is the descent. 500 is half the glyph's height.
                     ))
+                    if stacking:
+                        g_bottom.transform(psMat.translate(-bs_glyph_wh / 2, 125-500))
+                        g_top   .transform(psMat.translate(-bs_glyph_wh / 2, 125-500))
+
 
                 g.transform(psMat.scale(1 / bs_glyph_wh * 1000)) # divide by the SAFE area height; multiply by the SCAN area height
+                if stacking:
+                    g_bottom.transform(psMat.scale(1 / bs_glyph_wh * 1000))
+                    g_top   .transform(psMat.scale(1 / bs_glyph_wh * 1000))
                 
                 if version_major < 4 and not pixel:
                     g.transform(psMat.translate(
                         500, 
                         500-200
                     ))
+                    if stacking:
+                        g_bottom.transform(psMat.translate(500, 500-200))
+                        g_top   .transform(psMat.translate(500, 500-200))
                 else:
                     g.transform(psMat.translate(
                         500, 
                         500-125
                     ))
+                    if stacking:
+                        g_bottom.transform(psMat.translate(500, 500-125))
+                        g_top   .transform(psMat.translate(500, 500-125))
 
                 g.width = 1000
                 g.vwidth = 1000
+                if stacking:
+                    # everything above is to keep g, g_bottom, and g_top in sync.
+                        # we may be able to clean up the code by just duplicating g at the end.
+                    # now, we finally move g_bottom and g_top into place.
+                    g_bottom.width = 1000
+                    g_bottom.vwidth = 1000
+                    g_top   .width = 0
+                    g_top   .vwidth = 1000
+                    if version_major < 4 and not pixel:
+                        # move up, so that the origin is in the bottom left
+                        g_bottom.transform(psMat.translate(0, 200))
+                        g_top   .transform(psMat.translate(0, 200))
+                        # scale down to 4:3
+                        g_bottom.transform(psMat.scale(1, 0.75))
+                        g_top   .transform(psMat.scale(1, 0.75))
+                        # reposition
+                        g_bottom.transform(psMat.translate(0,    -250 - 200))
+                        g_top   .transform(psMat.translate(-1000, 500 - 200))
+                    else:
+                        # move up, so that the origin is in the bottom left
+                        g_bottom.transform(psMat.translate(0, 125))
+                        g_top   .transform(psMat.translate(0, 125))
+                        # scale down to 4:3
+                        g_bottom.transform(psMat.scale(1, 0.75))
+                        g_top   .transform(psMat.scale(1, 0.75))
+                        # reposition
+                        g_bottom.transform(psMat.translate(0,    -250 - 125))
+                        g_top   .transform(psMat.translate(-1000, 500 - 125))
 
         # get rid of stray metrics
         print("\r                                                ")
