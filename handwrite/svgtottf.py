@@ -534,26 +534,7 @@ style = "handwritten"
 </style>
 <h1>""" + "<a href='" + filename + "'>" + family + "</a>, tan " + designer + """</h1>
 
-<!-- Latin test -->
-<!-- <h1>Latin test: jelo <span class="tp">ijklmpstuw awen e lipu</span></h1> -->
-
 <span class="tp">
-<!-- spacing test -->
-<!--a　　akesi　　ala　　alasa　　ale　　anpa　　ante　　anu　　awen　　e　　en　　esun　　ijo　　ike　　ilo　　insa　　jaki　　jan　　jelo　　jo<br>
-kala　　kalama　　kama　　kasi　　ken　　kepeken　　kili　　kiwen　　ko　　kon　　kule　　kulupu　　kute　　la　　lape　　laso　　lawa　　len　　lete　　li<br>
-lili　　linja　　lipu　　loje　　lon　　luka　　lukin　　lupa　　ma　　mama　　mani　　meli　　mi　　mije　　moku　　moli　　monsi　　mu　　mun　　musi<br>
-mute　　nanpa　　nasa　　nasin　　nena　　ni　　nimi　　noka　　o　　olin　　ona　　open　　pakala　　pali　　palisa　　pan　　pana　　pi　　pilin　　pimeja<br>
-pini　　pipi　　poka　　poki　　pona　　pu　　sama　　seli　　selo　　seme　　sewi　　sijelo　　sike　　sin　　sina　　sinpin　　sitelen　　sona　　soweli　　suli<br>
-suno　　supa　　suwi　　tan　　taso　　tawa　　telo　　tenpo　　toki　　tomo　　tu　　unpa　　uta　　utala　　walo　　wan　　waso　　wawa　　weka　　wile<br>
-[　　]　　.　　:　　i　　j　　k　　l　　m　　p　　s　　t　　u　　w　　te　　to<br>
-kijetesantakalu　　kin　　kipisi　　ku　　lanpan　　leko　　misikeke　　monsuta　　n　　namako　　soko　　tonsi<br>
-epiku　　jasima　　linluwi　　majuna　　meso　　oko　　su<br><br>-->
-
-<!-- cartouche test -->
-<!--[<span style="color: red; opacity: .5;">]</span>[.]<br>
-[<span style="color: red; opacity: .5;">._</span>][.._.]<br>
-[<span style="color: red; opacity: .5;">._</span><span style="color: yellow; opacity: .5;">._</span><span style="color: blue; opacity: .5;">._</span>]<br><br>-->
-
 <!-- word list -->
 a akesi ala alasa ale anpa ante anu awen e en esun ijo ike ilo insa jaki jan jelo jo<br>
 kala kalama kama kasi ken kepeken kili kiwen ko kon kule kulupu kute la lape laso lawa len lete li<br>
@@ -565,7 +546,9 @@ suno supa suwi tan taso tawa telo tenpo toki tomo tu unpa uta utala walo wan was
 kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi""" + " ".join(other_words[4:12]) + """<br>
 epiku jasima linluwi majuna meso oko su""" + " ".join(other_words[12:25]) + """<br>
 </span>
+
 <p>License: <a href='""" + licenseurl + """'>""" + license + """</a></p>
+
 <span class="tp">
 <span style="white-space: break-spaces">
 <!-- telo oko li ken ante e pilin, by jan Ke Tami -->
@@ -627,7 +610,8 @@ te sina wile ala ni
 | | | | | | | | | | | | taso laso weka li kama ken e ni
 
 
-<textarea class="tp">sina ken sitelen wile lon ni
+<textarea class="tp">sina ken sitelen-wile lon ni<v
+
 </textarea>
 </span></span>
 

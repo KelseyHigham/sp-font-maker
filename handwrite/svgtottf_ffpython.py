@@ -336,6 +336,7 @@ class SVGtoTTF:
                 if stacking:
                     # everything above is to keep g, g_bottom, and g_top in sync.
                         # we may be able to clean up the code by just duplicating g at the end.
+                        # that would also speed up font generation. a lot of pngtosvg and svgtottf time is in rotating critters.
                     # now, we finally move g_bottom and g_top into place.
                     g_bottom.width = 1000
                     g_bottom.vwidth = 1000
