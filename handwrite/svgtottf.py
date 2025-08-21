@@ -241,8 +241,62 @@ feature liga {
         for line in list_of_ligs:
             ligatures_string += line[0] + "\n"
 
-        ligatures_string += "} liga;"
+        ligatures_string += """} liga;
+
+
+
+
+
+
+
+
+
+"""
+
+
+        ligatures_string += """# STACKING
+
+# let's say we have the input string `kala stackJoin lili`, and we want to turn it into `kala.bottom lili.top`
+
+# 0. start:                            kala stackJoin    lili
+# 1. we join the bottom:        kala.bottom              lili
+# 2. we duplicate the joiner:   kala.bottom    stackJoin lili
+# 3. we join the top:           kala.bottom              lili.top
+
+
+
+lookup step1_joinBottom {"""
+        # sub   kalaTok stackJoinTok   by   kalaTok.bottom;
+        for word in cartoucheable_and_stackable:
+            ligatures_string += "\n" + "  sub " +     word.rjust(12) + " stackJoinTok   by " +     word.rjust(12) + ".bottom;"
         ligatures_string += """
+} step1_joinBottom;
+
+
+
+lookup step2_duplicateJoiner {"""
+        # sub   kalaTok.bottom   by   kalaTok.bottom stackJoinTok;
+        for word in cartoucheable_and_stackable:
+            ligatures_string += "\n" + "  sub " +     word.rjust(12) + ".bottom   by " +     word.rjust(12) + ".bottom stackJoinTok;"
+        ligatures_string += """
+} step2_duplicateJoiner;
+
+
+
+lookup step3_joinTop {"""
+        # sub   stackJoinTok liliTok   by   liliTok.top;
+        for word in cartoucheable_and_stackable:
+            ligatures_string += "\n" + "  sub   stackJoinTok " +     word.rjust(12) + "   by " +     word.rjust(12) + ".top;"
+        ligatures_string += """
+} step3_joinTop ;
+
+
+
+feature liga {                    #          kala stackJoin    lili
+  lookup step1_joinBottom;        #   kala.bottom              lili
+  lookup step2_duplicateJoiner;   #   kala.bottom    stackJoin lili
+  lookup step3_joinTop;           #   kala.bottom              lili.top
+} liga;
 
 
 
@@ -252,7 +306,9 @@ feature liga {
 
 
 
-# CARTOUCHES
+"""
+
+        ligatures_string += """# CARTOUCHES
 
 @cartoucheableGlyph = [
 """
@@ -270,9 +326,21 @@ feature liga {
 
         ligatures_string += """];
 
+"""
+
+        # ligatures_string += """@stackableBottom = [\n"""
+        # for word in cartoucheable_and_stackable:
+        #     ligatures_string += "  " + word.rjust(12) + ".bottom\n"
+        # ligatures_string += """];\n\n"""
+
+        # ligatures_string += """@stackableTop = [\n"""
+        # for word in cartoucheable_and_stackable:
+        #     ligatures_string += "  " + word.rjust(12) + ".top\n"
+        # ligatures_string += """];\n\n\n\n"""
 
 
-lookup add_cartouche_middle {
+
+        ligatures_string += """lookup add_cartouche_middle {
   # Add a cartouche middle after the glyph.
   # (The cartouche middle is zero-width and extends to the left,
   #  surrounding the glyph.)
@@ -306,59 +374,15 @@ feature calt {
 
 """
 
-        stacking_string = """# STACKING
-
-# let's say we have the input string `kala stackJoin lili`, and we want to turn it into `kala.bottom lili.top`
-
-# 0. start:                            kala stackJoin    lili
-# 1. we join the bottom:        kala.bottom              lili
-# 2. we duplicate the joiner:   kala.bottom    stackJoin lili
-# 3. we join the top:           kala.bottom              lili.top
-
-
-
-lookup step1_joinBottom {"""
-        # sub   kalaTok stackJoinTok   by   kalaTok.bottom;
-        for word in cartoucheable_and_stackable:
-            stacking_string += "\n" + "  sub " +     word.rjust(12) + " stackJoinTok   by " +     word.rjust(12) + ".bottom;"
-        stacking_string += """
-} step1_joinBottom;
-
-
-
-lookup step2_duplicateJoiner {"""
-        # sub   kalaTok.bottom   by   kalaTok.bottom stackJoinTok;
-        for word in cartoucheable_and_stackable:
-            stacking_string += "\n" + "  sub " +     word.rjust(12) + ".bottom   by " +     word.rjust(12) + ".bottom stackJoinTok;"
-        stacking_string += """
-} step2_duplicateJoiner;
-
-
-
-lookup step3_joinTop {"""
-        # sub   stackJoinTok liliTok   by   liliTok.top;
-        for word in cartoucheable_and_stackable:
-            stacking_string += "\n" + "  sub   stackJoinTok " +     word.rjust(12) + "   by " +     word.rjust(12) + ".top;"
-        stacking_string += """
-} step3_joinTop ;
-
-
-
-feature liga {                    #          kala stackJoin    lili
-  lookup step1_joinBottom;        #   kala.bottom              lili
-  lookup step2_duplicateJoiner;   #   kala.bottom    stackJoin lili
-  lookup step3_joinTop;           #   kala.bottom              lili.top
-} liga;
-"""
         # print(ligatures_string)
         feature_file = open(debug_dir + os.sep + family + ".fea", "w", encoding="utf-8")
-        feature_file.write(ligatures_string + stacking_string)
+        feature_file.write(ligatures_string)
         feature_file.close()
 
         from fontTools import ttLib  # camelCase!
         tt = ttLib.TTFont(infile)
         from fontTools.feaLib import builder  # camelCase!
-        builder.addOpenTypeFeaturesFromString(tt, ligatures_string + stacking_string)
+        builder.addOpenTypeFeaturesFromString(tt, ligatures_string)
         sys.stderr.write("Generating %s...\n" % outfile)
         tt.save(outfile)
         print("\a")
