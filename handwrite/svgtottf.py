@@ -314,6 +314,10 @@ feature liga {                    #          kala stackJoin    lili
 """
         for word in cartoucheable_and_stackable:
             ligatures_string += "  " +     word.rjust(12) + "\n"
+        for word in cartoucheable_and_stackable:
+            ligatures_string += "  " +     word.rjust(12) + ".bottom\n"
+        for word in cartoucheable_and_stackable:
+            ligatures_string += "  " +     word.rjust(12) + ".top\n"
 
         cartoucheable_non_words = ["a","e","n","o", "A","E","N","O", 
             "b","B","c","C","d","D","f","F","g","G","h","H",
@@ -347,6 +351,10 @@ feature liga {                    #          kala stackJoin    lili
 """
         for word in cartoucheable_and_stackable:
             ligatures_string += "  sub " +     word.rjust(12) + "   by " +     word.rjust(12) + " cartoucheMiddleTok;" + "\n"
+        for word in cartoucheable_and_stackable:
+            ligatures_string += "  sub " +     word.rjust(12) + ".bottom   by " +     word.rjust(12) + ".bottom cartoucheMiddleTok;" + "\n"
+        for word in cartoucheable_and_stackable:
+            ligatures_string += "  sub " +     word.rjust(12) + ".top   by " +     word.rjust(12) + ".top cartoucheMiddleTok;" + "\n"
         for non_word in cartoucheable_non_words:
             ligatures_string += "  sub " + non_word.rjust(12) + "   by " + non_word.rjust(12) + " cartoucheMiddleTok;" + "\n"
 
@@ -362,6 +370,12 @@ feature calt {
 
   # If a glyph follows a cartouche middle, add a cartouche middle after the glyph.
   sub   cartoucheMiddleTok [@cartoucheableGlyph]'   lookup add_cartouche_middle;
+  # # (Bug: The following line doesn't do anything? So instead, we draw the cartouche middle twice, making cartouche middles too thick.)
+  # sub   cartoucheMiddleTok space [@cartoucheableGlyph]'   lookup add_cartouche_middle;
+
+  # # Stacked glyphs
+  # # (Bug: The following line doesn't do anything? So instead, we draw the cartouche middle twice, making cartouche middles too thick.)
+  # sub   cartoucheMiddleTok [@stackableBottom] [@stackableTop]'   lookup add_cartouche_middle;
 } calt;
 
 
@@ -382,7 +396,9 @@ feature calt {
         from fontTools import ttLib  # camelCase!
         tt = ttLib.TTFont(infile)
         from fontTools.feaLib import builder  # camelCase!
-        builder.addOpenTypeFeaturesFromString(tt, ligatures_string)
+        # with `addOpenTypeFeatures          (tt, file,   debug=True)`, the debug info includes the .fea filename.
+        # with `addOpenTypeFeaturesFromString(tt, string, debug=True)`, the filename is only reported as `<feature>`.
+        builder.addOpenTypeFeaturesFromString(tt, ligatures_string, debug=True)
         sys.stderr.write("Generating %s...\n" % outfile)
         tt.save(outfile)
         print("\a")
