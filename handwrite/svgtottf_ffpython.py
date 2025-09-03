@@ -395,29 +395,29 @@ class SVGtoTTF:
         self.font[0x5f].width = 0
         self.font[0x5f].transform(psMat.translate(-1000, 0))
 
+
+
         # later i should move these into default.json
         #   - this would facilitate the overriding that's happening in cli.py#L104-L119
-        # spaces
-        ideographic_space = self.font.createChar(ord("　"), "ideographicspace")
-        ideographic_space.width = 1000
+
+        # support default ASCII ligatures
         pipe = self.font.createChar(ord("|"), "pipe")
         pipe.width = 1000
         space = self.font.createChar(ord(" "), "space")
         space.width = 0
-        zero_width = self.font.createChar(0x200b, "zerowidth")
-        zero_width.width = 0
-
-        # other zero-width
-        bang = self.font.createChar(ord("!"), "exclamation")
-        bang.width = 1000
-        comma = self.font.createChar(ord(","), "comma")
-        comma.width = 1000
-        question = self.font.createChar(ord("?"), "question")
-        question.width = 1000
-        semicolon = self.font.createChar(ord(";"), "semicolon")
-        semicolon.width = 1000
         hyphen = self.font.createChar(ord("-"), "hyphen")
         hyphen.width = 0
+        for number, name in enumerate(["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]):
+            digit = self.font.createChar(ord(str(number)), name)
+            digit.width = 0
+        north = self.font.createChar(ord("^"), "north") # todo: replace these three, and `v`, with rotated lili. it would be cute i think
+        north.width = 1000
+        west = self.font.createChar(ord("<"), "west")
+        west.width = 1000
+        east = self.font.createChar(ord(">"), "east")
+        east.width = 1000
+
+        # fallback for unsupported SP features
         plus = self.font.createChar(ord("+"), "plus")
         plus.width = 0
         ampersand = self.font.createChar(ord("&"), "ampersand")
@@ -430,29 +430,32 @@ class SVGtoTTF:
         openparen.width = 0
         closeparen = self.font.createChar(ord(")"), "closeparen")
         closeparen.width = 0
-        for number, name in enumerate(["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]):
-            digit = self.font.createChar(ord(str(number)), name)
-            digit.width = 0
-
-        # not zero-width
         slash = self.font.createChar(ord("*"), "asterisk")
         slash.width = 1000
         slash = self.font.createChar(ord('"'), 'doublequote')
         slash.width = 1000
+        comma = self.font.createChar(ord(","), "comma")
+        comma.width = 1000
         slash = self.font.createChar(ord("'"), "singlequote")
         slash.width = 1000
-        # todo: replace these with rotated lili. it would be cute i think
-        north = self.font.createChar(ord("^"), "north")
-        north.width = 1000
-        west = self.font.createChar(ord("<"), "west")
-        west.width = 1000
-        east = self.font.createChar(ord(">"), "east")
-        east.width = 1000
 
-        # todo: add "start of long pi" as an additional codepoint for the "pi" glyph
-        # todo: then add "end of long pi" here
+        # fallback for text intended as sitelen Lasina
+        bang = self.font.createChar(ord("!"), "exclamation")
+        bang.width = 1000
+        question = self.font.createChar(ord("?"), "question")
+        question.width = 1000
+        semicolon = self.font.createChar(ord(";"), "semicolon")
+        semicolon.width = 1000
+
+        # UCSUR features
+        ideographic_space = self.font.createChar(ord("　"), "ideographicspace")
+        ideographic_space.width = 1000
+        zero_width = self.font.createChar(0x200b, "zerowidth")
+        zero_width.width = 0
         sp_stacking_joiner = self.font.createChar(0xf1995, "stackJoinTok")
         sp_stacking_joiner.width = 0
+
+        # fallback for unsupported UCSUR features
         sp_scaling_joiner = self.font.createChar(0xf1996, "nestJoinTok")
         sp_scaling_joiner.width = 0
         zerowidthjoiner = self.font.createChar(0x200d, "zerowidthjoiner")
@@ -467,6 +470,8 @@ class SVGtoTTF:
         sp_start_of_reverse_long_glyph.width = 0
         sp_end_of_reverse_long_glyph = self.font.createChar(0xf199b)
         sp_end_of_reverse_long_glyph.width = 0
+        # todo: add "start of long pi" as an additional codepoint for the "pi" glyph
+        # todo: then add "end of long pi" here
 
 
 
