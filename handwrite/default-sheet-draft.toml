@@ -1,8 +1,5 @@
 # toml draft
 
-[settings]
-# none currently. synonyms may go here?
-
 [glyphs]
 
 # any glyphs on the physical sheet. maximum of one name per glyph. multiple ligatures are maybe fine?
@@ -21,16 +18,29 @@ sheet = [
   {codepoint = 0x69,    stackable = false, name = "i"},
 ]
 
-# any glyphs 
+generated = [
+  {codepoint = 0, name = "cartoucheMiddleTok", ligature = "equals", type = "middle", source-glyph-index = 121 }
+]
+
+[settings]
+
+# UCSUR codepoints for words not included in the default sheet, since people may write them in
+unused_ucsur_words = [
+  {codepoint = 0, name = "apejaTok", ligature = "a p e j a"},
+  {codepoint = 0, name = "pakeTok",  ligature = "p a k e"},
+  {codepoint = 0, name = "poweTok",  ligature = "p o w e"},
+]
+
 synonyms = [
-  # these ones aren't necessary for v1 either, nobody is using them
   {ligature = "a l i",       target-name = "aleTok"    },
   {ligature = "l i n u w i", target-name = "linluwiTok"},
   {ligature = "k e p e n",   target-name = "kepekenTok"},
+]
 
-  # the following glyph names are only included because they're prerequisites for custom ligatures.
-  # they don't need to be included in the default sheet for v1! the codepoints can just show spaces, and we can reintroduce the graphics with ligatures later.
-  # we can also just assume that everyone uses the default sheet, for now. tuki tiki fonts can start with a bunch of weird blank glyphs, it's fine.
+# the following glyph names are prerequisites for custom ligatures. for example, the ligature "a l e" has "a", "l", "e" as prerequisites.
+# it would be cool if they appear correctly, but if an architecture change requires it, it's fine if they appear as blank spaces.
+prerequisite_glyphs = [
+  # letters
   {codepoint = 0x61, name = "a", target-name = "aTok"},
   {codepoint = 0x65, name = "e", target-name = "eTok"},
   {codepoint = 0x6e, name = "n", target-name = "nTok"},
@@ -76,4 +86,10 @@ synonyms = [
   {codepoint = 0x59, name = "Y", target-name = "j"},
   {codepoint = 0x7a, name = "z", target-name = "s"},
   {codepoint = 0x5a, name = "Z", target-name = "s"},
+
+  # numbers (svgtottf_ffpython.py#L422-L424)
+
+  # glyphs for punctuation used in sitelen Lasina prose, such as `,;!?` (svgtottf_ffpython.py#L440-L448)
+
+  # glyphs for ligatures used in unsupported SP features, such as `(){}*",+&` (svgtottf_ffpython.py#L432-438)
 ]

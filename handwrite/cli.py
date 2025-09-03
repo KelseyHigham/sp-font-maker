@@ -173,6 +173,7 @@ def main():
     parser.add_argument("--pixel", action='store_true', help="Pixel font (experimental, false by default)", default=False)
 
     args = parser.parse_args()
+    # todo: skip recreating the dictionary and just do cli_args = parser.parse_args()
     cli_args = {
         "filename": args.filename, 
         "family": args.family, 

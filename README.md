@@ -55,7 +55,7 @@ I think a better architecture would look like this, with the current `default.js
   - the physical position and behaviors of the 180 glyphs on the 1st sheet
   - the generated cartouche middle
 - `default-font-settings.toml`:
+  - glyph names necessary for custom ligatures (letters and numbers)
   - fallback glyphs for punctuation used in sitelen Lasina prose, such as `,;!?`
   - fallback glyphs for ligatures used in unsupported SP features, such as `(){}*",+&`
-  - glyph names necessary for custom ligatures (letters and numbers)
 - optional further sheet .toml files, specified on the command line alongside extra sheet images!

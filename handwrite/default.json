@@ -2,7 +2,7 @@
   "threshold_value": 200,
   "props": {
     "encoding": "UnicodeFull",
-    "lang": "English (US)",
+    "lang": "English (US)", "note": "`sfnt_names` are stored under the language",
     "filename": "MyFont",
     "style": "Regular",
     "designer": "The Person Who Made This Font"
