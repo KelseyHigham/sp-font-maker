@@ -374,7 +374,8 @@ feature calt {
   # sub   cartoucheMiddleTok space [@cartoucheableGlyph]'   lookup add_cartouche_middle;
 
   # # Stacked glyphs
-  # # (Bug: The following line doesn't do anything? So instead, we draw the cartouche middle twice, making cartouche middles too thick.)
+  # # (Bug: The following lines don't do anything? So instead, we draw the cartouche middle twice, making cartouche middles too thick.)
+  # sub   cartoucheStartTok [@stackableBottom] [@stackableTop]'   lookup add_cartouche_middle;
   # sub   cartoucheMiddleTok [@stackableBottom] [@stackableTop]'   lookup add_cartouche_middle;
 } calt;
 

@@ -86,6 +86,7 @@ synonyms:
 # drawbacks:
   # significant whitespace may be error-prone
   # in 2009, yaml interpreted a single "n" or "y" as a boolean, lmao
+  # some people claim that many yaml distributions haven't been updated since then
 
 ---
 

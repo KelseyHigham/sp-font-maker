@@ -33,8 +33,8 @@ Currently, the architecture looks like this:
   - mapping of ASCII special characters used in custom ligatures, to legal glyph names for those characters
   - open question: how should i associate the custom words string with the default page? is it just a first-page-only feature?
 - `sheettopng.py`
-  - omit certain glyphs (cartouche, ijklmpstuw vertically, te/to, pixel fonts) from having their scan areas centered
-    - note that the glyphs are actually centered later
+  - omit certain glyphs (cartouche, ijklmpstuw vertically, te/to, pixel fonts) from having their *scan areas* centered
+    - note that the *vector glyphs themselves* are actually centered later
   - shift cartouche scan area
   - generate PNG for the inner part of the cartouche
   - generate PNG for rotated ni, and rotated critters
@@ -47,8 +47,15 @@ Currently, the architecture looks like this:
   - add characters for zero-width space and ideographic space
   - add blank full- and zero-width glyphs for special characters
 
-I think a better architecture would look like this:
+This complexity prevents us from adding [these features](https://github.com/KelseyHigham/sp-font-maker/issues/1).
 
-- default-font-settings.yaml (.json is workable, but it would be nice if it supported comments)
-- default-sheet.yaml
-- optional further sheet .yaml files, specified on the command line alongside extra sheet images!
+I think a better architecture would look like this, with the current `default.json` replaced with TOML for readability and comments:
+
+- `default-sheet.toml`:
+  - the physical position and behaviors of the 180 glyphs on the 1st sheet
+  - the generated cartouche middle
+- `default-font-settings.toml`:
+  - fallback glyphs for punctuation used in sitelen Lasina prose, such as `,;!?`
+  - fallback glyphs for ligatures used in unsupported SP features, such as `(){}*",+&`
+  - glyph names necessary for custom ligatures (letters and numbers)
+- optional further sheet .toml files, specified on the command line alongside extra sheet images!

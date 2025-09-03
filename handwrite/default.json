@@ -17,6 +17,7 @@
     "License": "All rights reserved",
     "License URL": ""
   },
+  "note": "most or all of the above is unused, and i'd like to remove it.",
 
   "note": "i'm going to move some data from the code into this file, but i haven't actually implemented these changes yet. so these fields are unused: rotate, direction, shift, type, source-glyph-number.",
 
