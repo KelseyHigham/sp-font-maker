@@ -1,11 +1,29 @@
 # default.toml, straight conversion from JSON. config values are at the bottom, due to a TOML limitation.
 
-# i'm going to move some data from the code into this file, but i haven't actually implemented these changes yet. so these fields are unused: rotate, direction, shift, type, source-glyph-number.
+
+
+# i'm going to move some data from the code into this file, but i haven't actually implemented these changes yet. 
+# so these fields are unused:
+  # rotate
+  # direction
+  # scan-shift
+
+  # type
+  # source-glyph-number
+
+  # stackable
+  # cartoucheable
+
+  # target-name
+
+
 
 # codepoint and ligature are both optional, but you need one of them if you want to be able to type your glyph.
+# name is mandatory, i think?
 
 
 glyphs-fancy = [
+  # row 0
   {codepoint = 0xf1900, name = "aTok",       ligature = "a"}, 
   {codepoint = 0xf1901, name = "akesiTok",   ligature = "a k e s i", rotate = true, direction = "up"}, 
   {codepoint = 0xf1902, name = "alaTok",     ligature = "a l a"}, 
@@ -27,6 +45,7 @@ glyphs-fancy = [
   {codepoint = 0xf1912, name = "jeloTok",    ligature = "j e l o"}, 
   {codepoint = 0xf1913, name = "joTok",      ligature = "j o"}, 
 
+  # row 1
   {codepoint = 0xf1914, name = "kalaTok",    ligature = "k a l a", rotate = true}, 
   {codepoint = 0xf1915, name = "kalamaTok",  ligature = "k a l a m a"}, 
   {codepoint = 0xf1916, name = "kamaTok",    ligature = "k a m a"}, 
@@ -48,6 +67,7 @@ glyphs-fancy = [
   {codepoint = 0xf1926, name = "leteTok",    ligature = "l e t e"}, 
   {codepoint = 0xf1927, name = "liTok",      ligature = "l i"}, 
 
+  # row 2
   {codepoint = 0xf1928, name = "liliTok",    ligature = "l i l i"}, 
   {codepoint = 0xf1929, name = "linjaTok",   ligature = "l i n j a"}, 
   {codepoint = 0xf192a, name = "lipuTok",    ligature = "l i p u"}, 
@@ -69,6 +89,7 @@ glyphs-fancy = [
   {codepoint = 0xf193a, name = "munTok",     ligature = "m u n"}, 
   {codepoint = 0xf193b, name = "musiTok",    ligature = "m u s i"}, 
 
+  # row 3
   {codepoint = 0xf193c, name = "muteTok",    ligature = "m u t e"}, 
   {codepoint = 0xf193d, name = "nanpaTok",   ligature = "n a n p a"}, 
   {codepoint = 0xf193e, name = "nasaTok",    ligature = "n a s a"}, 
@@ -90,6 +111,7 @@ glyphs-fancy = [
   {codepoint = 0xf194e, name = "pilinTok",   ligature = "p i l i n"}, 
   {codepoint = 0xf194f, name = "pimejaTok",  ligature = "p i m e j a"}, 
 
+  # row 4
   {codepoint = 0xf1950, name = "piniTok",    ligature = "p i n i"}, 
   {codepoint = 0xf1951, name = "pipiTok",    ligature = "p i p i", rotate = true, direction = "up"}, 
   {codepoint = 0xf1952, name = "pokaTok",    ligature = "p o k a"}, 
@@ -111,6 +133,7 @@ glyphs-fancy = [
   {codepoint = 0xf1962, name = "soweliTok",  ligature = "s o w e l i", rotate = true}, 
   {codepoint = 0xf1963, name = "suliTok",    ligature = "s u l i"}, 
 
+  # row 5
   {codepoint = 0xf1964, name = "sunoTok",    ligature = "s u n o"}, 
   {codepoint = 0xf1965, name = "supaTok",    ligature = "s u p a"}, 
   {codepoint = 0xf1966, name = "suwiTok",    ligature = "s u w i"}, 
@@ -132,27 +155,29 @@ glyphs-fancy = [
   {codepoint = 0xf1976, name = "wekaTok",    ligature = "w e k a"}, 
   {codepoint = 0xf1977, name = "wileTok",    ligature = "w i l e"},
 
-  {codepoint = 0xf1990, name = "cartoucheStartTok", ligature = "bracketleft",  shift = "right"},
-  {codepoint = 0xf1991, name = "cartoucheEndTok",   ligature = "bracketright", shift = "left"},
-  {codepoint = 0xf199c, name = "middotTok",         ligature = "period"},
-  {codepoint = 0xf199d, name = "colonTok",          ligature = "colon"},
-  {codepoint = 0x69, name = "i"},
-  {codepoint = 0x6a, name = "j"},
-  {codepoint = 0x6b, name = "k"},
-  {codepoint = 0x6c, name = "l"},
-  {codepoint = 0x6d, name = "m"},
-  {codepoint = 0x70, name = "p"},
-  {codepoint = 0x73, name = "s"},
-  {codepoint = 0x74, name = "t"},
-  {codepoint = 0x75, name = "u"},
-  {codepoint = 0x77, name = "w"},
-  {codepoint = 0x300c,  name = "teTok",             ligature = "t e"},
-  {codepoint = 0x300d,  name = "toTok",             ligature = "t o"},
-  {},
+  # row 6!!!
+  {codepoint = 0xf1990, stackable = false, name = "cartoucheStartTok", ligature = "bracketleft",  cartoucheable = false, scan-shift = "right"},
+  {codepoint = 0xf1991, stackable = false, name = "cartoucheEndTok",   ligature = "bracketright", cartoucheable = false, scan-shift = "left"},
+  {codepoint = 0xf199c, stackable = false, name = "middotTok",         ligature = "period"},
+  {codepoint = 0xf199d, stackable = false, name = "colonTok",          ligature = "colon"},
+  {codepoint = 0x69,    stackable = false, name = "i"},
+  {codepoint = 0x6a,    stackable = false, name = "j"},
+  {codepoint = 0x6b,    stackable = false, name = "k"},
+  {codepoint = 0x6c,    stackable = false, name = "l"},
+  {codepoint = 0x6d,    stackable = false, name = "m"},
+  {codepoint = 0x70,    stackable = false, name = "p"},
+  {codepoint = 0x73,    stackable = false, name = "s"},
+  {codepoint = 0x74,    stackable = false, name = "t"},
+  {codepoint = 0x75,    stackable = false, name = "u"},
+  {codepoint = 0x77,    stackable = false, name = "w"},
+  {codepoint = 0x300c,                     name = "teTok",             ligature = "t e"},
+  {codepoint = 0x300d,                     name = "toTok",             ligature = "t o"},
+  {}, # these blank rows get populated from `other_words_string` in `cli.py`
   {},
   {},
   {},
 
+  # row 7
   {codepoint = 0xf1980, name = "kijetesantakaluTok", ligature = "k i j e t e s a n t a k a l u", rotate = true},
   {codepoint = 0xf1979, name = "kinTok",      ligature = "k i n"},
   {codepoint = 0xf197b, name = "kipisiTok",   ligature = "k i p i s i"},
@@ -174,13 +199,14 @@ glyphs-fancy = [
   {},
   {},
 
+  # row 8
   {codepoint = 0xf1983, name = "epikuTok",   ligature = "e p i k u"},
   {codepoint = 0xf197f, name = "jasimaTok",  ligature = "j a s i m a"},
-  {                        name = "linluwiTok", ligature = "l i n l u w i"},
+  {                     name = "linluwiTok", ligature = "l i n l u w i"},
   {codepoint = 0xf19a2, name = "majunaTok",  ligature = "m a j u n a"},
   {codepoint = 0xf1982, name = "mesoTok",    ligature = "m e s o"},
   {codepoint = 0xf197a, name = "okoTok",     ligature = "o k o"},
-  {                        name = "suTok",      ligature = "s u"},
+  {                     name = "suTok",      ligature = "s u"},
   {},
   {},
   {},
@@ -204,11 +230,17 @@ glyphs-fancy = [
 
 
 
-
+  # generated from row 6, cartoucheEndTok
   {codepoint = 0xf1992, name = "cartoucheMiddleTok", type = "middle", source-glyph-index = 121},
 
-  {name = "aliTok", ligature = "a l i"},
 
+  # synonyms
+  {name = "aliTok", ligature = "a l i"},             # defined in sheettopng.py, line 440
+  # {name = "linluwiTok", ligature = "l i n u w i"}, # defined in svgtottf.py, line 192
+  # {name = "kepekenTok", ligature = "k e p e n"},   # defined in svgtottf.py, line 193
+
+
+  # rotated critters. these will be redundant later!
   {name = "niTok.SW", ligature = "n i v west"},
   {name = "niTok.W",  ligature = "n i west"},
   {name = "niTok.NW", ligature = "n i north west"},
@@ -265,6 +297,8 @@ glyphs-fancy = [
   {name = "wasoTok.S",  ligature = "w a s o v"},
   {name = "wasoTok.SE", ligature = "w a s o v east"},
 
+
+  # define ASCII names, so that they can be referenced in ligatures
   {codepoint = 0x5b, name = "bracketleft"},
   {codepoint = 0x5f, name = "underscore"},
   {codepoint = 0x5d, name = "bracketright"},
@@ -317,12 +351,27 @@ glyphs-fancy = [
   {codepoint = 0x7a, name = "z"},
   {codepoint = 0x5a, name = "Z"}
 ]
+
+
+
+
 
 glyphs-not-sheet = [ # redundant with the above, after index 180
+
+  # generated from row 6, cartoucheEndTok
   {codepoint = 0xf1992, name = "cartoucheMiddleTok", type = "middle", source-glyph-index = 121},
 
-  {name = "aliTok", ligature = "a l i"},
+  # synonyms
+    {ligature = "a l i",              name = "aliTok"},     # defined in sheettopng.py, line 440
+  # {ligature = "l i n u w i", target-name = "linluwiTok"}, # defined in svgtottf.py, line 192
+  # {ligature = "k e p e n",   target-name = "kepekenTok"}, # defined in svgtottf.py, line 193
 
+
+
+  # rotated critters. these will be redundant later!
+  # glyphs copied from their originals in sheettopng.py, lines 450-464
+  #                       then rotated in sheettopng.py, lines 587-641
+  # the goal is to generate them in svgtottf_ffpython.py
   {name = "niTok.SW", ligature = "n i v west"},
   {name = "niTok.W",  ligature = "n i west"},
   {name = "niTok.NW", ligature = "n i north west"},
@@ -379,6 +428,9 @@ glyphs-not-sheet = [ # redundant with the above, after index 180
   {name = "wasoTok.S",  ligature = "w a s o v"},
   {name = "wasoTok.SE", ligature = "w a s o v east"},
 
+
+
+  # define ASCII glyph names, so that they can be referenced in ligatures
   {codepoint = 0x5b, name = "bracketleft"},
   {codepoint = 0x5f, name = "underscore"},
   {codepoint = 0x5d, name = "bracketright"},
@@ -432,11 +484,28 @@ glyphs-not-sheet = [ # redundant with the above, after index 180
   {codepoint = 0x5a, name = "Z"}
 ]
 
+# UCSUR codepoints for words not included in the default sheet, since people may write them in.
+# Currently defined in cli.py, lines 114-121.
+unused_ucsur_words = [
+  {codepoint = 0, name = "apejaTok", ligature = "a p e j a"},
+  {codepoint = 0, name = "pakeTok",  ligature = "p a k e"},
+  {codepoint = 0, name = "poweTok",  ligature = "p o w e"},
+]
+
+
+
+
+
+
+
+
 # most or all of the below is unused, and i'd like to remove it.
+# it mostly comes from this 11-year-old, 3-projects-removed code! 
+# https://github.com/pteromys/svgs2ttf/blob/master/examples/example.json
 
 threshold_value = 200
 
-[props]
+[props] # from https://github.com/pteromys/svgs2ttf/blob/master/examples/example.json
   encoding = "UnicodeFull"
   lang = "English (US)" # `sfnt_names` are stored under the language
   filename = "MyFont"

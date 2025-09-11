@@ -30,7 +30,8 @@ synonyms = [
 
 [settings]
 
-# UCSUR codepoints for words not included in the default sheet, since people may write them in
+# UCSUR codepoints for words not included in the default sheet, since people may write them in.
+# Currently defined in cli.py, lines 114-121.
 unused_ucsur_words = [
   {codepoint = 0, name = "apejaTok", ligature = "a p e j a"},
   {codepoint = 0, name = "pakeTok",  ligature = "p a k e"},

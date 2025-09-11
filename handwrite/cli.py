@@ -105,6 +105,12 @@ def converters(sheet, output_directory, debug_dir=None, default_json=None, cli_a
 
                 glyph_json = font_data['glyphs-fancy']
 
+                # TODO:
+                # here we start adding data based on hardcoded UCSUR data.
+                # this logic should be reworked to read from default_json instead.
+                # for unused_ucsur_word in default_json:
+                    # if glyph["name"] == unused_ucsur_word:
+                        # do the things
                 if   word == "apeja":
                     glyph_json[blank_cells[position]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": "0xf19a1"}
                 elif word == "kokosila":

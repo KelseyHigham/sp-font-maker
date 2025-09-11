@@ -384,6 +384,14 @@ class SHEETtoPNG:
 
 
 
+
+        # here we start messing with glyphs based on their hardcoded indices.
+        # this logic should be reworked to read from default_json instead.
+        # for glyph in default_json:
+            # if glyph["scan-shift"]:
+                # do the things
+
+
         # cartouches
         open_cartouche  = sorted_characters[120]
         close_cartouche = sorted_characters[121]
@@ -440,6 +448,7 @@ class SHEETtoPNG:
         sorted_characters.append(sorted_characters[4]) # ali
 
         # directional glyphs
+        # this code should ultimately be moved to svgtottf_ffpython!
         for i in range(7): # 8 directions; diagonal alts are in svgtottf.py
             sorted_characters.append(sorted_characters[65])  # ni
         for i in range(7):
