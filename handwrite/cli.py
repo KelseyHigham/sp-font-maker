@@ -112,13 +112,13 @@ def converters(sheet, output_directory, debug_dir=None, default_json=None, cli_a
                     # if glyph["name"] == unused_ucsur_word:
                         # do the things
                 if   word == "apeja":
-                    glyph_json[blank_cells[position]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": "0xf19a1"}
+                    glyph_json[blank_cells[position]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": 0xf19a1}
                 elif word == "kokosila":
-                    glyph_json[blank_cells[position]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": "0xf1984"}
+                    glyph_json[blank_cells[position]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": 0xf1984}
                 elif word == "pake":
-                    glyph_json[blank_cells[position]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": "0xf19a0"}
+                    glyph_json[blank_cells[position]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": 0xf19a0}
                 elif word == "powe":
-                    glyph_json[blank_cells[position]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": "0xf19a3"}
+                    glyph_json[blank_cells[position]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": 0xf19a3}
                 else:
 
                     # check if it's a redraw of an existing sheet glyph
