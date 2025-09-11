@@ -143,7 +143,7 @@ class SVGtoTTF:
             if 'name' in glyph_object:
                 name = glyph_object['name']
                 if 'codepoint' in glyph_object:
-                    cp = int(glyph_object['codepoint'], 16)
+                    cp = glyph_object['codepoint']
                 else:
                     cp = 0
 

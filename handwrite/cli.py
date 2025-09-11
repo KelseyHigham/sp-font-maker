@@ -3,6 +3,7 @@ import shutil
 import argparse
 import tempfile
 import json
+import tomllib
 
 from handwrite import SHEETtoPNG
 from handwrite import PNGtoSVG
@@ -28,14 +29,20 @@ def converters(sheet, output_directory, debug_dir=None, default_json=None, cli_a
 
     if default_json is None:
         default_config = os.path.join(
-            os.path.dirname(os.path.realpath(__file__)), "default.json"
+            os.path.dirname(os.path.realpath(__file__)), "default.toml"
         )
         default_json = default_config
-    shutil.copy(default_json, debug_dir)
-    default_json = os.path.join(debug_dir, os.path.basename(default_json))
-
-    with open(default_json, "r") as file:
-        font_data = json.load(file)
+    
+    # read initial config data from TOML
+    with open(default_json, "rb") as file:
+        font_data = tomllib.load(file)
+    
+    # save as JSON in debug directory. we'll edit it to add custom words.
+    # extra config sheets should be merged into the same working JSON file
+    json_path = os.path.join(debug_dir, "default.json")
+    with open(json_path, "w") as file:
+        json.dump(font_data, file, indent=4)
+    default_json = json_path
 
     if other_words_string:
         other_words = other_words_string.split()
