@@ -176,13 +176,6 @@ class SVGtoTTF:
                 print("", end=("\r" + (" " + name + " ").ljust(11, " ") + " - "))
                 g.importOutlines(src, ("removeoverlap", "correctdir"))
                 g.removeOverlap()
-                if stacking:
-                    print("", end=("\r" + (" " + name + "-").ljust(11, " ") + " - "))
-                    g_bottom.importOutlines(src, ("removeoverlap", "correctdir"))
-                    g_bottom.removeOverlap()
-                    print("", end=("\r" + ("-" + name + " ").ljust(11, " ") + " - "))
-                    g_top   .importOutlines(src, ("removeoverlap", "correctdir"))
-                    g_top   .removeOverlap()
 
                 if version_major <3:
                     # SHEET VERSION 2 metrics, before scaling (BS) up so that the glyph is the full em height
@@ -200,9 +193,6 @@ class SVGtoTTF:
 
                 # shift by the left margin, to remove the squaring padding.
                 g.transform(psMat.translate(-bs_scan_hor_padding, 0))
-                if stacking:
-                    g_bottom.transform(psMat.translate(-bs_scan_hor_padding, 0))
-                    g_top   .transform(psMat.translate(-bs_scan_hor_padding, 0))
 
                 def debug_metrics(word_to_debug, note=""):
                     if name == word_to_debug:
@@ -247,14 +237,6 @@ class SVGtoTTF:
                             0, 
                             self.font.ascent - top - ((self.font.ascent + self.font.descent) - (top - bottom)) / 2
                         ))
-                        if stacking:
-                            bottom = g_bottom.boundingBox()[1]
-                            top    = g_bottom.boundingBox()[3]
-                            g_bottom.transform(psMat.translate(0, self.font.ascent - top - ((self.font.ascent + self.font.descent) - (top - bottom)) / 2))
-                            bottom = g_top   .boundingBox()[1]
-                            top    = g_top   .boundingBox()[3]
-                            g_top   .transform(psMat.translate(0, self.font.ascent - top - ((self.font.ascent + self.font.descent) - (top - bottom)) / 2))
-                        pass
 
                 # Horizontally center sitelen pona, middot, colon, letters
                 # Do NOT center cartouches, long pi, te/to, (period?)
@@ -275,16 +257,6 @@ class SVGtoTTF:
                             bs_glyph_wh - right - (bs_glyph_wh - width) / 2, 
                             0
                         ))
-                        if stacking:
-                            left  = g_bottom.boundingBox()[0]
-                            right = g_bottom.boundingBox()[2]
-                            width = right - left
-                            g_bottom.transform(psMat.translate(bs_glyph_wh - right - (bs_glyph_wh - width) / 2, 0))
-                            left  = g_top   .boundingBox()[0]
-                            right = g_top   .boundingBox()[2]
-                            width = right - left
-                            g_top   .transform(psMat.translate(bs_glyph_wh - right - (bs_glyph_wh - width) / 2, 0))
-                        pass
 
                 # Scale everything up so that the glyphs are 1em tall, instead of the cartouches
                 # The scaling center is the baseline, far left
@@ -296,44 +268,33 @@ class SVGtoTTF:
                         -bs_glyph_wh / 2,
                         200-500 # 200 is the descent. 500 is half the glyph's height.
                     ))
-                    if stacking:
-                        g_bottom.transform(psMat.translate(-bs_glyph_wh / 2, 200-500))
-                        g_top   .transform(psMat.translate(-bs_glyph_wh / 2, 200-500))
                 else:
                     g.transform(psMat.translate(
                         -bs_glyph_wh / 2,
                         125-500 # 125 is the descent. 500 is half the glyph's height.
                     ))
-                    if stacking:
-                        g_bottom.transform(psMat.translate(-bs_glyph_wh / 2, 125-500))
-                        g_top   .transform(psMat.translate(-bs_glyph_wh / 2, 125-500))
 
 
                 g.transform(psMat.scale(1 / bs_glyph_wh * 1000)) # divide by the SAFE area height; multiply by the SCAN area height
-                if stacking:
-                    g_bottom.transform(psMat.scale(1 / bs_glyph_wh * 1000))
-                    g_top   .transform(psMat.scale(1 / bs_glyph_wh * 1000))
                 
                 if version_major < 4 and not pixel:
                     g.transform(psMat.translate(
                         500, 
                         500-200
                     ))
-                    if stacking:
-                        g_bottom.transform(psMat.translate(500, 500-200))
-                        g_top   .transform(psMat.translate(500, 500-200))
                 else:
                     g.transform(psMat.translate(
                         500, 
                         500-125
                     ))
-                    if stacking:
-                        g_bottom.transform(psMat.translate(500, 500-125))
-                        g_top   .transform(psMat.translate(500, 500-125))
 
                 g.width = 1000
                 g.vwidth = 1000
                 if stacking:
+                    self.font.selection.select(g)
+                    self.font.copy()
+                    self.font.selection.select(g_bottom, g_top)
+                    self.font.paste()
                     # everything above is to keep g, g_bottom, and g_top in sync.
                         # we may be able to clean up the code by just duplicating g at the end.
                         # that would also speed up font generation. a lot of pngtosvg and svgtottf time is in rotating critters.
