@@ -102,7 +102,8 @@ class SVGtoTTF:
             # 11: Vendor URL
             self.config["sfnt_names"][11] = "https://wasokeli.github.io/sp-font-maker"
 
-        self.config["sfnt_names"]["UniqueID"] = family + " " + str(uuid.uuid4())
+        # # probably best to omit this, so that the generated binaries are actually comparable
+        # self.config["sfnt_names"]["UniqueID"] = family + " " + str(uuid.uuid4())
 
         for k, v in self.config.get("sfnt_names", {}).items():
             self.font.appendSFNTName(str(lang), k, v)
