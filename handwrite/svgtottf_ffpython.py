@@ -154,20 +154,6 @@ class SVGtoTTF:
                 else:
                     g = self.font.createChar(cp, name)
 
-                # Create stacking glyphs
-                stacking = False
-                if 'ligature' in glyph_object:
-                    if (name != "cartoucheStartTok" and
-                        name != "cartoucheEndTok" and
-                        name != "middotTok" and
-                        name != "colonTok" and
-                        name != "teTok" and
-                        name != "toTok"
-                    ):
-                        stacking = True
-                        g_bottom = self.font.createChar(-1, name + ".bottom")
-                        g_top    = self.font.createChar(-1, name + ".top")
-
                 # Get outlines
                 src = "{}/{}.svg".format(name, name)
                 src = debug_dir + os.sep + src
@@ -291,6 +277,23 @@ class SVGtoTTF:
 
                 g.width = 1000
                 g.vwidth = 1000
+
+
+
+                # Create stacking glyphs
+                stacking = False
+                if 'ligature' in glyph_object:
+                    if (name != "cartoucheStartTok" and
+                        name != "cartoucheEndTok" and
+                        name != "middotTok" and
+                        name != "colonTok" and
+                        name != "teTok" and
+                        name != "toTok"
+                    ):
+                        stacking = True
+                        g_bottom = self.font.createChar(-1, name + ".bottom")
+                        g_top    = self.font.createChar(-1, name + ".top")
+
                 if stacking:
                     self.font.selection.select(g)
                     self.font.copy()
