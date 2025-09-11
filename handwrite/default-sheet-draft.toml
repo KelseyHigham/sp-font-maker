@@ -22,6 +22,12 @@ generated = [
   {codepoint = 0, name = "cartoucheMiddleTok", ligature = "equals", type = "middle", source-glyph-index = 121 }
 ]
 
+synonyms = [
+  {ligature = "a l i",       target-name = "aleTok"    },
+  {ligature = "l i n u w i", target-name = "linluwiTok"},
+  {ligature = "k e p e n",   target-name = "kepekenTok"},
+]
+
 [settings]
 
 # UCSUR codepoints for words not included in the default sheet, since people may write them in
@@ -29,12 +35,6 @@ unused_ucsur_words = [
   {codepoint = 0, name = "apejaTok", ligature = "a p e j a"},
   {codepoint = 0, name = "pakeTok",  ligature = "p a k e"},
   {codepoint = 0, name = "poweTok",  ligature = "p o w e"},
-]
-
-synonyms = [
-  {ligature = "a l i",       target-name = "aleTok"    },
-  {ligature = "l i n u w i", target-name = "linluwiTok"},
-  {ligature = "k e p e n",   target-name = "kepekenTok"},
 ]
 
 # the following glyph names are prerequisites for custom ligatures. for example, the ligature "a l e" has "a", "l", "e" as prerequisites.
