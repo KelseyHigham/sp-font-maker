@@ -191,6 +191,10 @@ feature liga {
 
         list_of_ligs.append(("  sub              l i n u w i   by      linluwiTok;", 6))
         list_of_ligs.append(("  sub                k e p e n   by      kepekenTok;", 5))
+
+
+        # TODO: in the future, generate ALL directional ligatures here, not just the redundant diagonal ones.
+
         # directional ni: extra ligatures to cover both v> and >v, and niv
         list_of_ligs.append(("  sub               n i west v   by        niTok.SW;", 4))
         list_of_ligs.append(("  sub           n i west north   by        niTok.NW;", 4))

@@ -241,6 +241,9 @@ glyphs-fancy = [
 
 
   # rotated critters. these will be redundant later!
+  # having a ligature means that it'll be written to the .fea file in svgtottf.py, lines 132-149.
+  # having a name means its SVG will be read in svgtottf_ffpython.
+  # we want to define the ligature somewhere other than this default.toml, so that they don't collect SVGs.
   {name = "niTok.SW", ligature = "n i v west"},
   {name = "niTok.W",  ligature = "n i west"},
   {name = "niTok.NW", ligature = "n i north west"},

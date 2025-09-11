@@ -325,6 +325,36 @@ class SVGtoTTF:
                         g_bottom.transform(psMat.translate(0,    -250 - 125))
                         g_top   .transform(psMat.translate(-1000, 500 - 125))
 
+
+                # # create rotated glyphs
+
+                # glyphs = [g] # later we'll iterate through these to generate `.top` and `.bottom` versions
+                # if 'rotate' in glyph_object:
+                #     print("\n" + name + " rotating?")
+                #     def rotate(flip, degrees_ccw, suffix):
+                #         rotated_glyph = self.font.createChar(-1, name + suffix)
+                #         self.font.selection.select(g)
+                #         self.font.copy()
+                #         self.font.selection.select(rotated_glyph)
+                #         self.font.paste()
+                #         glyphs.append(rotated_glyph)
+                #         import math
+                #         rotated_glyph.transform(psMat.translate(-500, -375))
+                #         # the following math works for vector fonts, but pixel fonts aren't taking the assumed margin into account...
+                #         # fine for v1!
+                #         rotated_glyph.transform(psMat.rotate(degrees_ccw /360 *math.pi*2))
+                #         rotated_glyph.transform(psMat.translate(500, 375))
+                #     if 'direction' in glyph_object:
+                #         if glyph_object['direction'] == 'up':
+                #             rotate(False,  45, ".NW")
+                #             rotate(False,  90, ".W")
+                #             rotate(False, 135, ".SW")
+                #             rotate(False, 180, ".S")
+                #             rotate(False, 225, ".SE")
+                #             rotate(False, 270, ".E")
+                #             rotate(False, 315, ".NE")
+                        
+
         # get rid of stray metrics
         print("\r                                                ")
 
