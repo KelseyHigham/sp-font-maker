@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw
 class SHEETtoPNG:
     """Converter class to convert input sample sheet to character PNGs."""
 
-    def convert(self, sheet, debug_dir, default_json, cli_args, cols=20, rows=9):
+    def convert(self, sheet, debug_dir, default_json, cli_args, other_words_string, cols=20, rows=9):
         print("SHEETtoPNG")
         """Convert a sheet of sample writing input to a custom directory structure of PNGs.
 
@@ -33,7 +33,7 @@ class SHEETtoPNG:
         if os.path.isdir(sheet):
             raise IsADirectoryError("Sheet parameter should not be a directory.")
         characters = self.detect_characters(
-            debug_dir, sheet, threshold_value, cli_args, cols=cols, rows=rows
+            debug_dir, default_json, sheet, threshold_value, cli_args, other_words_string, cols=cols, rows=rows
         )
         self.save_images(
             characters, # more like cells
@@ -50,7 +50,7 @@ class SHEETtoPNG:
 
 
 
-    def detect_characters(self, debug_dir, sheet_image, threshold_value, cli_args, cols=20, rows=9):
+    def detect_characters(self, debug_dir, default_json, sheet_image, threshold_value, cli_args, other_words_string, cols=20, rows=9):
         """Detect contours on the input image and filter them to get only characters.
 
         Uses opencv to threshold the image for better contour detection. After finding all
@@ -381,6 +381,31 @@ class SHEETtoPNG:
                 # sort groups of 20 glyphs by x
                 sorted(characters[cols * row_id : cols * (row_id + 1)], key=lambda x: x[1])
             )
+
+
+
+
+
+        # redraws
+
+        if other_words_string:
+            other_words = other_words_string.split()
+            blank_cells = [ # default.toml indices of the blank cells on the page
+                                                             136, 137, 138, 139, # 4 cells
+                                         152, 153, 154, 155, 156, 157, 158, 159, # 8 cells
+                167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179  # 13 cells
+            ]
+
+            for position, word in enumerate(other_words):
+                with open(default_json) as f:
+                    glyph_json = json.load(f).get("glyphs-fancy", {})
+                for default_glyph_index, default_glyph in enumerate(glyph_json):
+                    if 'name' in default_glyph:
+                        if default_glyph['name'] == word + "Tok":
+                            sorted_characters[default_glyph_index] = sorted_characters[blank_cells[position]]
+                            # todo: remove redundant glyphs from the preview web page
+
+
 
 
 

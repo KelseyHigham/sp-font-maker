@@ -11,7 +11,7 @@ from handwrite import SVGtoTTF
 
 
 def run(sheet, output_directory, debug_dir, default_json, cli_args, other_words_string):
-    SHEETtoPNG().convert(sheet, debug_dir, default_json, cli_args)
+    SHEETtoPNG().convert(sheet, debug_dir, default_json, cli_args, other_words_string)
     PNGtoSVG().convert(cli_args, debug_dir=debug_dir)
     SVGtoTTF().convert(debug_dir, output_directory, default_json, cli_args, other_words_string)
 
@@ -123,29 +123,17 @@ def converters(sheet, output_directory, debug_dir=None, default_json=None, cli_a
                 else:
 
                     # check if it's a redraw of an existing sheet glyph
+                    redraw = False
                     for default_glyph in glyph_json:
                         if 'name' in default_glyph:
                             if default_glyph['name'] == word + "Tok":
-                                if 'codepoint' in default_glyph:
-                                    glyph_json[blank_cells[position]]['codepoint'] = default_glyph['codepoint']
-                                    del default_glyph['codepoint']
-                                del default_glyph['name']
-                                if 'ligature' in default_glyph:
-                                    del default_glyph['ligature']
-                                # todo: replace ASCII A E N O, too
-                                    # lowercase seems to work already, at least in some text rendering contexts,
-                                    # because `aTok eTok nTok oTok` override `a e n o`
+                                redraw = True
                                 # todo: remove redundant glyphs from the preview web page
-                                # probably never: allow replacing anything from row[6]
-                                # todo: allow replacing ASCII special characters
-                                    # these are currently overridden in svgtottf.py#L876-L942
-                                    # these do seem to replace correctly, at least if ligatures are enabled
-                                    # i'm not sure why this works already??
-                                # tbh the replacement needs to be implemented in `sheettopng.py`
 
-                    # finally, the common case of a custom word
-                    glyph_json[blank_cells[position]]['name'] = word + "Tok"
-                    glyph_json[blank_cells[position]]['ligature'] = " ".join(letters)
+                    if not redraw:
+                        # finally, the common case of a custom word
+                        glyph_json[blank_cells[position]]['name'] = word + "Tok"
+                        glyph_json[blank_cells[position]]['ligature'] = " ".join(letters)
 
     with open(default_json, "w") as file:
         json.dump(font_data, file, indent=4)
