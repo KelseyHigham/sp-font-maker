@@ -447,23 +447,6 @@ class SHEETtoPNG:
         # add ali
         sorted_characters.append(sorted_characters[4]) # ali
 
-        # directional glyphs
-        # this code should ultimately be moved to svgtottf_ffpython!
-        for i in range(7): # 8 directions; diagonal alts are in svgtottf.py
-            sorted_characters.append(sorted_characters[65])  # ni
-        for i in range(7):
-            sorted_characters.append(sorted_characters[1])   # akesi
-        for i in range(7):
-            sorted_characters.append(sorted_characters[81])  # pipi
-        for i in range(7):
-            sorted_characters.append(sorted_characters[20])  # kala
-        for i in range(7):
-            sorted_characters.append(sorted_characters[140]) # kijetesantakalu
-        for i in range(7):
-            sorted_characters.append(sorted_characters[98])  # soweli
-        for i in range(7):
-            sorted_characters.append(sorted_characters[116]) # waso
-
 
 
         # Latin characters
@@ -585,62 +568,6 @@ class SHEETtoPNG:
         self.pad("right", debug_dir, cli_args, "underscore", True)
         self.pad("left",  debug_dir, cli_args, "underscore", True)
 
-        self.rotate(debug_dir, cli_args, False,  45, "niTok.SE")
-        self.rotate(debug_dir, cli_args, False,  90, "niTok.E")
-        self.rotate(debug_dir, cli_args, False, 135, "niTok.NE")
-        self.rotate(debug_dir, cli_args, False, 180, "niTok.N")
-        self.rotate(debug_dir, cli_args, False, 225, "niTok.NW")
-        self.rotate(debug_dir, cli_args, False, 270, "niTok.W")
-        self.rotate(debug_dir, cli_args, False, 315, "niTok.SW")
-
-        self.rotate(debug_dir, cli_args, False,  45, "akesiTok.NW")
-        self.rotate(debug_dir, cli_args, False,  90, "akesiTok.W")
-        self.rotate(debug_dir, cli_args, False, 135, "akesiTok.SW")
-        self.rotate(debug_dir, cli_args, False, 180, "akesiTok.S")
-        self.rotate(debug_dir, cli_args, False, 225, "akesiTok.SE")
-        self.rotate(debug_dir, cli_args, False, 270, "akesiTok.E")
-        self.rotate(debug_dir, cli_args, False, 315, "akesiTok.NE")
-
-        self.rotate(debug_dir, cli_args, False,  45, "pipiTok.NW")
-        self.rotate(debug_dir, cli_args, False,  90, "pipiTok.W")
-        self.rotate(debug_dir, cli_args, False, 135, "pipiTok.SW")
-        self.rotate(debug_dir, cli_args, False, 180, "pipiTok.S")
-        self.rotate(debug_dir, cli_args, False, 225, "pipiTok.SE")
-        self.rotate(debug_dir, cli_args, False, 270, "pipiTok.E")
-        self.rotate(debug_dir, cli_args, False, 315, "pipiTok.NE")
-
-        self.rotate(debug_dir, cli_args, False,  45, "kalaTok.NE")
-        self.rotate(debug_dir, cli_args, False,  90, "kalaTok.N")
-        self.rotate(debug_dir, cli_args, True,  315, "kalaTok.NW")
-        self.rotate(debug_dir, cli_args, True,    0, "kalaTok.W")
-        self.rotate(debug_dir, cli_args, True,   45, "kalaTok.SW")
-        self.rotate(debug_dir, cli_args, False, 270, "kalaTok.S")
-        self.rotate(debug_dir, cli_args, False, 315, "kalaTok.SE")
-
-        self.rotate(debug_dir, cli_args, False,  45, "kijetesantakaluTok.NE")
-        self.rotate(debug_dir, cli_args, False,  90, "kijetesantakaluTok.N")
-        self.rotate(debug_dir, cli_args, True,  315, "kijetesantakaluTok.NW")
-        self.rotate(debug_dir, cli_args, True,    0, "kijetesantakaluTok.W")
-        self.rotate(debug_dir, cli_args, True,   45, "kijetesantakaluTok.SW")
-        self.rotate(debug_dir, cli_args, False, 270, "kijetesantakaluTok.S")
-        self.rotate(debug_dir, cli_args, False, 315, "kijetesantakaluTok.SE")
-
-        self.rotate(debug_dir, cli_args, False,  45, "soweliTok.NE")
-        self.rotate(debug_dir, cli_args, False,  90, "soweliTok.N")
-        self.rotate(debug_dir, cli_args, True,  315, "soweliTok.NW")
-        self.rotate(debug_dir, cli_args, True,    0, "soweliTok.W")
-        self.rotate(debug_dir, cli_args, True,   45, "soweliTok.SW")
-        self.rotate(debug_dir, cli_args, False, 270, "soweliTok.S")
-        self.rotate(debug_dir, cli_args, False, 315, "soweliTok.SE")
-
-        self.rotate(debug_dir, cli_args, False,  45, "wasoTok.NE")
-        self.rotate(debug_dir, cli_args, False,  90, "wasoTok.N")
-        self.rotate(debug_dir, cli_args, True,  315, "wasoTok.NW")
-        self.rotate(debug_dir, cli_args, True,    0, "wasoTok.W")
-        self.rotate(debug_dir, cli_args, True,   45, "wasoTok.SW")
-        self.rotate(debug_dir, cli_args, False, 270, "wasoTok.S")
-        self.rotate(debug_dir, cli_args, False, 315, "wasoTok.SE")
-
 
 
 
@@ -654,6 +581,7 @@ class SHEETtoPNG:
     # █    █  █   █   ▄▀▀█   █   █▄▄█
     # █    ▀▄▄▀   ▀▄  ▀▄▄█   ▀▄  ▀▄▄
     
+    # this function is unused now, but we'll move the pixel font logic to svgtottf_ffpython later.
     def rotate(self, debug_dir, cli_args, flip, degrees_ccw, char_name):
         from PIL import Image, ImageDraw
         char_img = Image.open(debug_dir + "/" + char_name + "/" + char_name + ".png")

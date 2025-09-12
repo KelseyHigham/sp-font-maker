@@ -280,82 +280,126 @@ class SVGtoTTF:
 
 
 
-                # Create stacking glyphs
-                stacking = False
-                if 'ligature' in glyph_object:
-                    if (name != "cartoucheStartTok" and
-                        name != "cartoucheEndTok" and
-                        name != "middotTok" and
-                        name != "colonTok" and
-                        name != "teTok" and
-                        name != "toTok"
-                    ):
-                        stacking = True
-                        g_bottom = self.font.createChar(-1, name + ".bottom")
-                        g_top    = self.font.createChar(-1, name + ".top")
-
-                if stacking:
-                    self.font.selection.select(g)
-                    self.font.copy()
-                    self.font.selection.select(g_bottom, g_top)
-                    self.font.paste()
-                    # everything above is to keep g, g_bottom, and g_top in sync.
-                        # we may be able to clean up the code by just duplicating g at the end.
-                        # that would also speed up font generation. a lot of pngtosvg and svgtottf time is in rotating critters.
-                    # now, we finally move g_bottom and g_top into place.
-                    g_bottom.width = 1000
-                    g_bottom.vwidth = 1000
-                    g_top   .width = 0
-                    g_top   .vwidth = 1000
-                    if version_major < 4 and not pixel:
-                        # move up, so that the origin is in the bottom left
-                        g_bottom.transform(psMat.translate(0, 200))
-                        g_top   .transform(psMat.translate(0, 200))
-                        # scale down to 4:3
-                        g_bottom.transform(psMat.scale(1, 0.75))
-                        g_top   .transform(psMat.scale(1, 0.75))
-                        # reposition
-                        g_bottom.transform(psMat.translate(0,    -250 - 200))
-                        g_top   .transform(psMat.translate(-1000, 500 - 200))
-                    else:
-                        # move up, so that the origin is in the bottom left
-                        g_bottom.transform(psMat.translate(0, 125))
-                        g_top   .transform(psMat.translate(0, 125))
-                        # scale down to 4:3
-                        g_bottom.transform(psMat.scale(1, 0.75))
-                        g_top   .transform(psMat.scale(1, 0.75))
-                        # reposition
-                        g_bottom.transform(psMat.translate(0,    -250 - 125))
-                        g_top   .transform(psMat.translate(-1000, 500 - 125))
 
 
-                # # create rotated glyphs
+                # create rotated glyphs
+                # todo: add the ligatures to svgtottf.py, lines 196-239
 
-                # glyphs = [g] # later we'll iterate through these to generate `.top` and `.bottom` versions
-                # if 'rotate' in glyph_object:
-                #     print("\n" + name + " rotating?")
-                #     def rotate(flip, degrees_ccw, suffix):
-                #         rotated_glyph = self.font.createChar(-1, name + suffix)
-                #         self.font.selection.select(g)
-                #         self.font.copy()
-                #         self.font.selection.select(rotated_glyph)
-                #         self.font.paste()
-                #         glyphs.append(rotated_glyph)
-                #         import math
-                #         rotated_glyph.transform(psMat.translate(-500, -375))
-                #         # the following math works for vector fonts, but pixel fonts aren't taking the assumed margin into account...
-                #         # fine for v1!
-                #         rotated_glyph.transform(psMat.rotate(degrees_ccw /360 *math.pi*2))
-                #         rotated_glyph.transform(psMat.translate(500, 375))
-                #     if 'direction' in glyph_object:
-                #         if glyph_object['direction'] == 'up':
-                #             rotate(False,  45, ".NW")
-                #             rotate(False,  90, ".W")
-                #             rotate(False, 135, ".SW")
-                #             rotate(False, 180, ".S")
-                #             rotate(False, 225, ".SE")
-                #             rotate(False, 270, ".E")
-                #             rotate(False, 315, ".NE")
+                rotated_glyph_set = [g] # later we'll iterate through these to generate `.top` and `.bottom` versions
+                if 'rotate' in glyph_object:
+                    def rotate(flip, degrees_ccw, suffix):
+                        rotated_glyph = self.font.createChar(-1, name + suffix)
+                        self.font.selection.select(g)
+                        self.font.copy()
+                        self.font.selection.select(rotated_glyph)
+                        self.font.paste()
+                        rotated_glyph_set.append(rotated_glyph)
+
+                        to_center_x = -500
+                        to_center_y = -375
+
+                        # the following math works for vector fonts, but pixel fonts aren't taking the assumed 1px margin into account...
+                        # fine for v1!
+                        rotated_glyph.transform(psMat.translate(to_center_x, to_center_y))
+                        if flip:
+                            rotated_glyph.transform(psMat.scale(-1, 1))
+                        import math
+                        rotated_glyph.transform(psMat.rotate(degrees_ccw /360 *math.pi*2))
+                        rotated_glyph.transform(psMat.translate(-to_center_x, -to_center_y))
+                    if 'direction' in glyph_object:
+                        if glyph_object['direction'] == 'up':     # akesi, pipi
+                            rotate(False,  45, ".NW")
+                            rotate(False,  90, ".W")
+                            rotate(False, 135, ".SW")
+                            rotate(False, 180, ".S")
+                            rotate(False, 225, ".SE")
+                            rotate(False, 270, ".E")
+                            rotate(False, 315, ".NE")
+                        elif glyph_object['direction'] == 'down': # ni
+                            rotate(False,  45, ".SE")
+                            rotate(False,  90, ".E")
+                            rotate(False, 135, ".NE")
+                            rotate(False, 180, ".N")
+                            rotate(False, 225, ".NW")
+                            rotate(False, 270, ".W")
+                            rotate(False, 315, ".SW")
+                        elif glyph_object['direction'] == 'left': # theoretically si
+                            rotate(False,  45, ".SW")             #                i
+                            rotate(False,  90, ".S")              #                ilapa, spoon moku, dab epiku
+                            rotate(True,  315, ".SE")
+                            rotate(True,    0, ".E")
+                            rotate(True,   45, ".NE")
+                            rotate(False, 270, ".N")
+                            rotate(False, 315, ".NW")
+                        # right. redundant with the below.
+                        else:                                     # kala, kijetesantakalu, soweli, waso
+                            rotate(False,  45, ".NE")
+                            rotate(False,  90, ".N")
+                            rotate(True,  315, ".NW")
+                            rotate(True,    0, ".W")
+                            rotate(True,   45, ".SW")
+                            rotate(False, 270, ".S")
+                            rotate(False, 315, ".SE")
+                    # if direction isn't specified, then assume 'right'
+                    else:                                         # kala, kijetesantakalu, soweli, waso
+                        rotate(False,  45, ".NE")
+                        rotate(False,  90, ".N")
+                        rotate(True,  315, ".NW")
+                        rotate(True,    0, ".W")
+                        rotate(True,   45, ".SW")
+                        rotate(False, 270, ".S")
+                        rotate(False, 315, ".SE")
+
+
+
+
+                for glyph in rotated_glyph_set:
+                    # Create stacking glyphs
+                    stacking = False
+                    if 'ligature' in glyph_object:
+                        if (name != "cartoucheStartTok" and
+                            name != "cartoucheEndTok" and
+                            name != "middotTok" and
+                            name != "colonTok" and
+                            name != "teTok" and
+                            name != "toTok"
+                        ):
+                            stacking = True
+                            g_bottom = self.font.createChar(-1, glyph.glyphname + ".bottom")
+                            g_top    = self.font.createChar(-1, glyph.glyphname + ".top")
+
+                    if stacking:
+                        self.font.selection.select(glyph)
+                        self.font.copy()
+                        self.font.selection.select(g_bottom, g_top)
+                        self.font.paste()
+                        g_bottom.width = 1000
+                        g_bottom.vwidth = 1000
+                        g_top   .width = 0
+                        g_top   .vwidth = 1000
+                        if version_major < 4 and not pixel:
+                            # move up, so that the origin is in the bottom left
+                            g_bottom.transform(psMat.translate(0, 200))
+                            g_top   .transform(psMat.translate(0, 200))
+                            # scale down to 4:3
+                            g_bottom.transform(psMat.scale(1, 0.75))
+                            g_top   .transform(psMat.scale(1, 0.75))
+                            # reposition
+                            g_bottom.transform(psMat.translate(0,    -250 - 200))
+                            g_top   .transform(psMat.translate(-1000, 500 - 200))
+                        else:
+                            # move up, so that the origin is in the bottom left
+                            g_bottom.transform(psMat.translate(0, 125))
+                            g_top   .transform(psMat.translate(0, 125))
+                            # scale down to 4:3
+                            g_bottom.transform(psMat.scale(1, 0.75))
+                            g_top   .transform(psMat.scale(1, 0.75))
+                            # reposition
+                            g_bottom.transform(psMat.translate(0,    -250 - 125))
+                            g_top   .transform(psMat.translate(-1000, 500 - 125))
+
+
+
                         
 
         # get rid of stray metrics

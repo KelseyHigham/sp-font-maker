@@ -165,6 +165,32 @@ feature liga {
                         k['name'] != "toTok"
                     ):
                         cartoucheable_and_stackable.append(k['name']) 
+                        if 'rotate' in k and k['rotate']:
+                            cartoucheable_and_stackable.append(k['name'] + ".SE")
+                            cartoucheable_and_stackable.append(k['name'] + ".NE")
+                            cartoucheable_and_stackable.append(k['name'] + ".NW")
+                            cartoucheable_and_stackable.append(k['name'] + ".SW")
+                            if 'direction' in k:
+                                if k['direction'] == 'up':
+                                    cartoucheable_and_stackable.append(k['name'] + ".S")
+                                    cartoucheable_and_stackable.append(k['name'] + ".E")
+                                    cartoucheable_and_stackable.append(k['name'] + ".W")
+                                elif k['direction'] == 'down':
+                                    cartoucheable_and_stackable.append(k['name'] + ".E")
+                                    cartoucheable_and_stackable.append(k['name'] + ".N")
+                                    cartoucheable_and_stackable.append(k['name'] + ".W")
+                                elif k['direction'] == 'left':
+                                    cartoucheable_and_stackable.append(k['name'] + ".S")
+                                    cartoucheable_and_stackable.append(k['name'] + ".E")
+                                    cartoucheable_and_stackable.append(k['name'] + ".N")
+                                else: # right
+                                    cartoucheable_and_stackable.append(k['name'] + ".S")
+                                    cartoucheable_and_stackable.append(k['name'] + ".N")
+                                    cartoucheable_and_stackable.append(k['name'] + ".W")
+                            else: # right again
+                                cartoucheable_and_stackable.append(k['name'] + ".S")
+                                cartoucheable_and_stackable.append(k['name'] + ".N")
+                                cartoucheable_and_stackable.append(k['name'] + ".W")
 
         # candidate for removal later, because 
             # it doesn't play well with HTML
@@ -193,7 +219,58 @@ feature liga {
         list_of_ligs.append(("  sub                k e p e n   by      kepekenTok;", 5))
 
 
-        # TODO: in the future, generate ALL directional ligatures here, not just the redundant diagonal ones.
+        # TODO: generate these based on default.toml. right now they're still hard-coded.
+        list_of_ligs.append(("  sub   n i v west               by niTok.SW       ; ", 4))
+        list_of_ligs.append(("  sub   n i west                 by niTok.W        ; ", 3))
+        list_of_ligs.append(("  sub   n i north west           by niTok.NW       ; ", 4))
+        list_of_ligs.append(("  sub   n i north                by niTok.N        ; ", 3))
+        list_of_ligs.append(("  sub   n i north east           by niTok.NE       ; ", 4))
+        list_of_ligs.append(("  sub   n i east                 by niTok.E        ; ", 3))
+        list_of_ligs.append(("  sub   n i v east               by niTok.SE       ; ", 4))
+        list_of_ligs.append(("  sub   a k e s i north west     by akesiTok.NW    ; ", 7))
+        list_of_ligs.append(("  sub   a k e s i west           by akesiTok.W     ; ", 6))
+        list_of_ligs.append(("  sub   a k e s i v west         by akesiTok.SW    ; ", 7))
+        list_of_ligs.append(("  sub   a k e s i v              by akesiTok.S     ; ", 6))
+        list_of_ligs.append(("  sub   a k e s i v east         by akesiTok.SE    ; ", 7))
+        list_of_ligs.append(("  sub   a k e s i east           by akesiTok.E     ; ", 6))
+        list_of_ligs.append(("  sub   a k e s i north east     by akesiTok.NE    ; ", 7))
+        list_of_ligs.append(("  sub   p i p i north west       by pipiTok.NW     ; ", 6))
+        list_of_ligs.append(("  sub   p i p i west             by pipiTok.W      ; ", 5))
+        list_of_ligs.append(("  sub   p i p i v west           by pipiTok.SW     ; ", 6))
+        list_of_ligs.append(("  sub   p i p i v                by pipiTok.S      ; ", 5))
+        list_of_ligs.append(("  sub   p i p i v east           by pipiTok.SE     ; ", 6))
+        list_of_ligs.append(("  sub   p i p i east             by pipiTok.E      ; ", 5))
+        list_of_ligs.append(("  sub   p i p i north east       by pipiTok.NE     ; ", 6))
+        list_of_ligs.append(("  sub   k a l a north east       by kalaTok.NE     ; ", 6))
+        list_of_ligs.append(("  sub   k a l a north            by kalaTok.N      ; ", 5))
+        list_of_ligs.append(("  sub   k a l a north west       by kalaTok.NW     ; ", 6))
+        list_of_ligs.append(("  sub   k a l a west             by kalaTok.W      ; ", 5))
+        list_of_ligs.append(("  sub   k a l a v west           by kalaTok.SW     ; ", 6))
+        list_of_ligs.append(("  sub   k a l a v                by kalaTok.S      ; ", 5))
+        list_of_ligs.append(("  sub   k a l a v east           by kalaTok.SE     ; ", 6))
+        list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u north east by kijetesantakaluTok.NE ; ", 17))
+        list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u north      by kijetesantakaluTok.N  ; ", 16))
+        list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u north west by kijetesantakaluTok.NW ; ", 17))
+        list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u west       by kijetesantakaluTok.W  ; ", 16))
+        list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u v west     by kijetesantakaluTok.SW ; ", 17))
+        list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u v          by kijetesantakaluTok.S  ; ", 16))
+        list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u v east     by kijetesantakaluTok.SE ; ", 17))
+        list_of_ligs.append(("  sub   s o w e l i north east   by soweliTok.NE   ; ", 8))
+        list_of_ligs.append(("  sub   s o w e l i north        by soweliTok.N    ; ", 7))
+        list_of_ligs.append(("  sub   s o w e l i north west   by soweliTok.NW   ; ", 8))
+        list_of_ligs.append(("  sub   s o w e l i west         by soweliTok.W    ; ", 7))
+        list_of_ligs.append(("  sub   s o w e l i v west       by soweliTok.SW   ; ", 8))
+        list_of_ligs.append(("  sub   s o w e l i v            by soweliTok.S    ; ", 7))
+        list_of_ligs.append(("  sub   s o w e l i v east       by soweliTok.SE   ; ", 8))
+        list_of_ligs.append(("  sub   w a s o north east       by wasoTok.NE     ; ", 6))
+        list_of_ligs.append(("  sub   w a s o north            by wasoTok.N      ; ", 5))
+        list_of_ligs.append(("  sub   w a s o north west       by wasoTok.NW     ; ", 6))
+        list_of_ligs.append(("  sub   w a s o west             by wasoTok.W      ; ", 5))
+        list_of_ligs.append(("  sub   w a s o v west           by wasoTok.SW     ; ", 6))
+        list_of_ligs.append(("  sub   w a s o v                by wasoTok.S      ; ", 5))
+        list_of_ligs.append(("  sub   w a s o v east           by wasoTok.SE     ; ", 6))
+
+
 
         # directional ni: extra ligatures to cover both v> and >v, and niv
         list_of_ligs.append(("  sub               n i west v   by        niTok.SW;", 4))
@@ -450,7 +527,7 @@ features = [
   # "character variants",
   # "Linku common & uncommon 2024"   # nimisin
   # "all ku suli",                   # kokosila
-  # "all ku suli and UCSUR words",   # apeja, pake, powe
+  # "all ku suli and UCSUR words",   # kokosila, apeja, pake, powe
   # "community requested nimisin",
 
   # Not implemented in SP Font Maker:
