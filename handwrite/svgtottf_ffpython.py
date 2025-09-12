@@ -301,7 +301,7 @@ class SVGtoTTF:
                         if pixel:
                             # For pixel fonts, rotate around the assumed center pixel,
                             # with assumed 1px space between glyphs.
-                            pixel_size = self.config["pixel-size"]
+                            pixel_size = self.config.get("pixel-size", 8)
                             if pixel_size % 4 == 0:
                                 # If the em size is a multiple of 4, then the total scan width is even. 
                                 # Normal case. Assume that there's 1px empty space on the right.

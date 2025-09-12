@@ -555,9 +555,10 @@ class SHEETtoPNG:
                         )
 
         # Read pixel size and write it to default.json, so svgtottf_ffpython can use it.
+        # If this brittle codeblock breaks, just comment it out, and svgtottf_ffpython will assume an 8px font.
         with open(default_json) as f:
             json_data = json.load(f)
-        first_char_name = json_data.get("glyphs-fancy", {})[0]['name']
+        first_char_name = json_data.get("glyphs-fancy", {})[0].get('name', 'aTok')
         first_char_img  = Image.open(debug_dir + "/" + first_char_name + "/" + first_char_name + ".png")
         json_data["pixel-size"] = first_char_img.size[0]*2/3
         with open(default_json, "w") as file:
