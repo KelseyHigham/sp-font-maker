@@ -296,7 +296,10 @@ class SVGtoTTF:
                         rotated_glyph_set.append(rotated_glyph)
 
                         to_center_x = -500
-                        to_center_y = -500 + 125
+                        if version_major < 4 and not pixel:
+                            to_center_y = -500 + 200
+                        else:
+                            to_center_y = -500 + 125
 
                         if pixel:
                             # For pixel fonts, rotate around the assumed center pixel,
