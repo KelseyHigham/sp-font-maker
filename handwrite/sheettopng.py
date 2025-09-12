@@ -3,6 +3,7 @@ import itertools
 import json
 import cv2
 from packaging.version import Version
+from PIL import Image, ImageDraw
 
 class SHEETtoPNG:
     """Converter class to convert input sample sheet to character PNGs."""
@@ -102,7 +103,6 @@ class SHEETtoPNG:
         )
 
         # for debug imaging
-        from PIL import Image, ImageDraw
         debug_image = Image.open(sheet_image).convert("RGB")
         debug_draw = ImageDraw.Draw(debug_image)
         if pixel:
@@ -554,6 +554,15 @@ class SHEETtoPNG:
                             images[0],
                         )
 
+        # Read pixel size and write it to default.json, so svgtottf_ffpython can use it.
+        with open(default_json) as f:
+            json_data = json.load(f)
+        first_char_name = json_data.get("glyphs-fancy", {})[0]['name']
+        first_char_img  = Image.open(debug_dir + "/" + first_char_name + "/" + first_char_name + ".png")
+        json_data["pixel-size"] = first_char_img.size[0]*2/3
+        with open(default_json, "w") as file:
+            json.dump(json_data, file, indent=4)
+
         # Trim cartouche characters
             # We'll have to do the same thing for long pi
             # and any other character that spans two cells
@@ -576,43 +585,8 @@ class SHEETtoPNG:
 
 
 
-    #             ▄          ▄
-    # █▄▀  ▄▀▀▄  ▀█▀   ▀▀▄  ▀█▀  ▄▀▀▄
-    # █    █  █   █   ▄▀▀█   █   █▄▄█
-    # █    ▀▄▄▀   ▀▄  ▀▄▄█   ▀▄  ▀▄▄
-    
-    # this function is unused now, but we'll move the pixel font logic to svgtottf_ffpython later.
-    def rotate(self, debug_dir, cli_args, flip, degrees_ccw, char_name):
-        from PIL import Image, ImageDraw
-        char_img = Image.open(debug_dir + "/" + char_name + "/" + char_name + ".png")
-        if flip:
-            char_img = char_img.transpose(method=Image.Transpose.FLIP_LEFT_RIGHT)
-
-        if char_img.size[0] % 2 == 0: # if width is even
-            # For pixel fonts, rotate around the assumed center pixel,
-            # with assumed 1px space between glyphs.
-            center_x = (char_img.size[0]-1)/2
-        else:
-            # If the width is odd, then we've arbitrarily chosen to put the
-            # extra 1px padding on the left, balancing the glyph in the center
-            # of the scan area.
-            center_x = char_img.size[0]/2
-
-        # I don't have a test case for odd height, so this assumes an even height.
-        center_y = (char_img.size[1]-1)/2
-
-        char_img = char_img.rotate(
-            angle     = degrees_ccw, 
-            fillcolor = (0xF0, 0xF0, 0xF0, 0xFF), 
-            resample  = Image.Resampling.BILINEAR, # bilinear might not be the strat; test with different fonts
-            center    = (center_x, center_y)
-        )
-        char_img.save(debug_dir + "/" + char_name + "/" + char_name + ".png")
-
-
 
     def pad(self, side, debug_dir, cli_args, char_name, resize=False):
-        from PIL import Image, ImageDraw
         char_img = Image.open(debug_dir + "/" + char_name + "/" + char_name + ".png")
 
         # resize the cartouche middle from 1px wide to the standard width (for a given sheet version)

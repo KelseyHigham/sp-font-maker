@@ -296,16 +296,33 @@ class SVGtoTTF:
                         rotated_glyph_set.append(rotated_glyph)
 
                         to_center_x = -500
-                        to_center_y = -375
+                        to_center_y = -500 + 125
 
-                        # the following math works for vector fonts, but pixel fonts aren't taking the assumed 1px margin into account...
-                        # fine for v1!
+                        if pixel:
+                            # For pixel fonts, rotate around the assumed center pixel,
+                            # with assumed 1px space between glyphs.
+                            pixel_size = self.config["pixel-size"]
+                            if pixel_size % 4 == 0:
+                                # If the em size is a multiple of 4, then the total scan width is even. 
+                                # Normal case. Assume that there's 1px empty space on the right.
+                                to_center_x = -1000/pixel_size * (pixel_size-1)/2
+                            else:
+                                # If the total scan width is *odd*, then we've arbitrarily chosen to put the
+                                # extra 1px padding on the left, balancing out the 1px empty space on the right.
+                                # Happens with 6px and 10px fonts. 
+                                # Weird case. Assume that the glyph is perfectly centered.
+                                to_center_x = -1000/pixel_size * pixel_size/2
+                            # Regardless, the vertical scan area is even, so we assume
+                            # there's 1px empty space on the bottom.
+                            to_center_y = -1000/pixel_size * (pixel_size+1)/2 + 125
+
                         rotated_glyph.transform(psMat.translate(to_center_x, to_center_y))
                         if flip:
                             rotated_glyph.transform(psMat.scale(-1, 1))
                         import math
                         rotated_glyph.transform(psMat.rotate(degrees_ccw /360 *math.pi*2))
                         rotated_glyph.transform(psMat.translate(-to_center_x, -to_center_y))
+
                     if 'direction' in glyph_object:
                         if glyph_object['direction'] == 'up':     # akesi, pipi
                             rotate(False,  45, ".NW")
