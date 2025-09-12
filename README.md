@@ -19,10 +19,10 @@ I don't really know how Python works. Someone please help me to make the [instal
 
 Currently, the architecture looks like this:
 
-- `default.json` (file inherited from Handwrite)
+- `default.toml` (file inherited from Handwrite)
   - most default glyphs
-  - `cli.py` writes custom words to specific indices in `glyphs-fancy`, in a font-specific copy of `default.json`
-  - `sheettopng` uses the grid cell number as an index into `default.json`'s `glyphs-fancy`, to assign each grid cell a name, before saving each PNG
+  - `cli.py` writes custom words to specific indices in `glyphs-fancy`, in a font-specific JSON copy of `default.toml`
+  - `sheettopng` uses the grid cell number as an index into `default.toml`'s `glyphs-fancy`, to assign each grid cell a name, before saving each PNG
   - `svgtottf:add_ligatures` goes through `glyphs-fancy`, and creates a ligature for each entry with a `ligature` field
     - also adds them to `glyphs_with_ligatures`, for cartouching
     - also hard-codes the list `cartoucheable_non_words`
@@ -37,11 +37,9 @@ Currently, the architecture looks like this:
     - note that the *vector glyphs themselves* are actually centered later
   - shift cartouche scan area
   - generate PNG for the inner part of the cartouche
-  - generate PNG for rotated ni, and rotated critters
   - copy existing glyphs to create ASCII codepoints
 - `svgtottf.py` (including `_ffpython`)
   - add ligature for `space space`
-  - add redundant ligatures for diagonal ni and critters (like `ni>v` and `niv>`)
   - print default glyphs on preview webpage
   - print custom glyphs on preview webpage, passed in directly from `cli.py`
   - add characters for zero-width space and ideographic space
@@ -49,7 +47,7 @@ Currently, the architecture looks like this:
 
 This complexity prevents us from adding [these features](https://github.com/KelseyHigham/sp-font-maker/issues/1).
 
-I think a better architecture would look like this, with the current `default.json` replaced with TOML for readability and comments:
+I think a better architecture would look like this:
 
 - `default-sheet.toml`:
   - the physical position and behaviors of the 180 glyphs on the 1st sheet

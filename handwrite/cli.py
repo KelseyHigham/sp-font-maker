@@ -94,8 +94,8 @@ def converters(sheet, output_directory, debug_dir=None, default_json=None, cli_a
                     if letter == '"': letters[letter_index] = 'doublequote' # quotedbl
                     if letter == "'": letters[letter_index] = "singlequote" # quotesingle
 
-                # todo, fix bug: if i DON'T run this line of code, then we can end up with -+^&,!? in filenames.
-                # but since i run it, we end up with glyph names like "tokihyphenponaTok", which is nonstandard and hard to read.
+                # todo: we don't differentiate letters from renamed special characters, we just concatenate them.
+                # so we end up with glyph names like "tokihyphenponaTok", which is nonstandard and hard to read.
                     # standard is to use _ for concatenating characters, and . for variants
                     # https://github.com/adobe-type-tools/agl-specification?tab=readme-ov-file#3-examples
                 # also "one" and "nine" are valid toki pona, and may rarely cause name collisions, e.g. "an1" -> "anone"
@@ -141,6 +141,7 @@ def converters(sheet, output_directory, debug_dir=None, default_json=None, cli_a
                                     # these are currently overridden in svgtottf.py#L876-L942
                                     # these do seem to replace correctly, at least if ligatures are enabled
                                     # i'm not sure why this works already??
+                                # tbh the replacement needs to be implemented in `sheettopng.py`
 
                     # finally, the common case of a custom word
                     glyph_json[blank_cells[position]]['name'] = word + "Tok"
