@@ -142,20 +142,56 @@ feature liga {
             glyphs = json.load(f).get("glyphs-fancy", {})
             for k in glyphs:
                 if 'ligature' in k:
+                    lig = k['ligature']
+                    name = k['name']
+
                     # create tuples of ligature text, followed by ligature length by tokens
                     list_of_ligs.append((
-                        "  sub   " + k['ligature'].rjust(22) + "   by   " + k['name'].rjust(13) + ";", 
-                        len(k['ligature'].split(' '))
+                        f"  sub   {lig.rjust(22)}   by   {name.rjust(13)};",
+                        len(lig.split(' '))
                     ))
-                    # # If you make ligatures of the format `p o n a space`, 
-                    # # the spacing is incorrect in every browser on iPhone and iPad, as well as Safari for macOS.
-                    # # (The browser correctly renders the ligature, but incorrectly renders an additional space.)
-                    # # So I just make the space character zero-width instead,
-                    # # which is redundant with `p o n a space` ligatures.
-                    # list_of_ligs.append((
-                    #     "  sub " + k['ligature'] + " space by " + k['name'] + ";", 
-                    #     len(k['ligature'].split(' ')) + 1
-                    # ))
+
+                    if 'rotate' in k and k['rotate']:
+                        def rotated_ligature(lig, lig_suffix, name, name_suffix, extra_length):
+                            list_of_ligs.append((
+                                f"  sub   {(lig+lig_suffix).rjust(22)}   by   {(name+name_suffix).rjust(13)};",
+                                len(lig.split(' ')) + extra_length
+                            ))
+                        rotated_ligature(lig, " v east",     name, ".SE", 2)
+                        rotated_ligature(lig, " east v",     name, ".SE", 2)
+                        rotated_ligature(lig, " north east", name, ".NE", 2)
+                        rotated_ligature(lig, " east north", name, ".NE", 2)
+                        rotated_ligature(lig, " north west", name, ".NW", 2)
+                        rotated_ligature(lig, " west north", name, ".NW", 2)
+                        rotated_ligature(lig, " v west",     name, ".SW", 2)
+                        rotated_ligature(lig, " west v",     name, ".SW", 2)
+                        if 'direction' in k:
+                            if k['direction'] == 'up':
+                                rotated_ligature(lig, " v",     name, ".S", 1)
+                                rotated_ligature(lig, " east",  name, ".E", 1)
+                                rotated_ligature(lig, " north", name, "",   1) # default dir
+                                rotated_ligature(lig, " west",  name, ".W", 1)
+                            elif k['direction'] == 'down':
+                                rotated_ligature(lig, " v",     name, "",   1) # default dir
+                                rotated_ligature(lig, " east",  name, ".E", 1)
+                                rotated_ligature(lig, " north", name, ".N", 1)
+                                rotated_ligature(lig, " west",  name, ".W", 1)
+                            elif k['direction'] == 'left':
+                                rotated_ligature(lig, " v",     name, ".S", 1)
+                                rotated_ligature(lig, " east",  name, ".E", 1)
+                                rotated_ligature(lig, " north", name, ".N", 1)
+                                rotated_ligature(lig, " west",  name, "",   1) # default dir
+                            else: #right
+                                rotated_ligature(lig, " v",     name, ".S", 1)
+                                rotated_ligature(lig, " east",  name, "",   1) # default dir
+                                rotated_ligature(lig, " north", name, ".N", 1)
+                                rotated_ligature(lig, " west",  name, ".W", 1)
+                        else: # right again
+                            rotated_ligature(lig, " v",     name, ".S", 1)
+                            rotated_ligature(lig, " east",  name, "",   1) # default dir
+                            rotated_ligature(lig, " north", name, ".N", 1)
+                            rotated_ligature(lig, " west",  name, ".W", 1)
+                        pass
 
                     if (k['name'] != "cartoucheStartTok" and
                         k['name'] != "cartoucheEndTok" and
@@ -165,32 +201,33 @@ feature liga {
                         k['name'] != "toTok"
                     ):
                         cartoucheable_and_stackable.append(k['name']) 
-                        if 'rotate' in k and k['rotate']:
-                            cartoucheable_and_stackable.append(k['name'] + ".SE")
-                            cartoucheable_and_stackable.append(k['name'] + ".NE")
-                            cartoucheable_and_stackable.append(k['name'] + ".NW")
-                            cartoucheable_and_stackable.append(k['name'] + ".SW")
-                            if 'direction' in k:
-                                if k['direction'] == 'up':
-                                    cartoucheable_and_stackable.append(k['name'] + ".S")
-                                    cartoucheable_and_stackable.append(k['name'] + ".E")
-                                    cartoucheable_and_stackable.append(k['name'] + ".W")
-                                elif k['direction'] == 'down':
-                                    cartoucheable_and_stackable.append(k['name'] + ".E")
-                                    cartoucheable_and_stackable.append(k['name'] + ".N")
-                                    cartoucheable_and_stackable.append(k['name'] + ".W")
-                                elif k['direction'] == 'left':
-                                    cartoucheable_and_stackable.append(k['name'] + ".S")
-                                    cartoucheable_and_stackable.append(k['name'] + ".E")
-                                    cartoucheable_and_stackable.append(k['name'] + ".N")
-                                else: # right
-                                    cartoucheable_and_stackable.append(k['name'] + ".S")
-                                    cartoucheable_and_stackable.append(k['name'] + ".N")
-                                    cartoucheable_and_stackable.append(k['name'] + ".W")
-                            else: # right again
+
+                    if 'rotate' in k and k['rotate']:
+                        cartoucheable_and_stackable.append(k['name'] + ".SE")
+                        cartoucheable_and_stackable.append(k['name'] + ".NE")
+                        cartoucheable_and_stackable.append(k['name'] + ".NW")
+                        cartoucheable_and_stackable.append(k['name'] + ".SW")
+                        if 'direction' in k:
+                            if k['direction'] == 'up':
+                                cartoucheable_and_stackable.append(k['name'] + ".S")
+                                cartoucheable_and_stackable.append(k['name'] + ".E")
+                                cartoucheable_and_stackable.append(k['name'] + ".W")
+                            elif k['direction'] == 'down':
+                                cartoucheable_and_stackable.append(k['name'] + ".E")
+                                cartoucheable_and_stackable.append(k['name'] + ".N")
+                                cartoucheable_and_stackable.append(k['name'] + ".W")
+                            elif k['direction'] == 'left':
+                                cartoucheable_and_stackable.append(k['name'] + ".S")
+                                cartoucheable_and_stackable.append(k['name'] + ".E")
+                                cartoucheable_and_stackable.append(k['name'] + ".N")
+                            else: # right
                                 cartoucheable_and_stackable.append(k['name'] + ".S")
                                 cartoucheable_and_stackable.append(k['name'] + ".N")
                                 cartoucheable_and_stackable.append(k['name'] + ".W")
+                        else: # right again
+                            cartoucheable_and_stackable.append(k['name'] + ".S")
+                            cartoucheable_and_stackable.append(k['name'] + ".N")
+                            cartoucheable_and_stackable.append(k['name'] + ".W")
 
         # candidate for removal later, because 
             # it doesn't play well with HTML
@@ -217,103 +254,6 @@ feature liga {
 
         list_of_ligs.append(("  sub              l i n u w i   by      linluwiTok;", 6))
         list_of_ligs.append(("  sub                k e p e n   by      kepekenTok;", 5))
-
-
-        # TODO: generate these based on default.toml. right now they're still hard-coded.
-        list_of_ligs.append(("  sub   n i v west               by niTok.SW       ; ", 4))
-        list_of_ligs.append(("  sub   n i west                 by niTok.W        ; ", 3))
-        list_of_ligs.append(("  sub   n i north west           by niTok.NW       ; ", 4))
-        list_of_ligs.append(("  sub   n i north                by niTok.N        ; ", 3))
-        list_of_ligs.append(("  sub   n i north east           by niTok.NE       ; ", 4))
-        list_of_ligs.append(("  sub   n i east                 by niTok.E        ; ", 3))
-        list_of_ligs.append(("  sub   n i v east               by niTok.SE       ; ", 4))
-        list_of_ligs.append(("  sub   a k e s i north west     by akesiTok.NW    ; ", 7))
-        list_of_ligs.append(("  sub   a k e s i west           by akesiTok.W     ; ", 6))
-        list_of_ligs.append(("  sub   a k e s i v west         by akesiTok.SW    ; ", 7))
-        list_of_ligs.append(("  sub   a k e s i v              by akesiTok.S     ; ", 6))
-        list_of_ligs.append(("  sub   a k e s i v east         by akesiTok.SE    ; ", 7))
-        list_of_ligs.append(("  sub   a k e s i east           by akesiTok.E     ; ", 6))
-        list_of_ligs.append(("  sub   a k e s i north east     by akesiTok.NE    ; ", 7))
-        list_of_ligs.append(("  sub   p i p i north west       by pipiTok.NW     ; ", 6))
-        list_of_ligs.append(("  sub   p i p i west             by pipiTok.W      ; ", 5))
-        list_of_ligs.append(("  sub   p i p i v west           by pipiTok.SW     ; ", 6))
-        list_of_ligs.append(("  sub   p i p i v                by pipiTok.S      ; ", 5))
-        list_of_ligs.append(("  sub   p i p i v east           by pipiTok.SE     ; ", 6))
-        list_of_ligs.append(("  sub   p i p i east             by pipiTok.E      ; ", 5))
-        list_of_ligs.append(("  sub   p i p i north east       by pipiTok.NE     ; ", 6))
-        list_of_ligs.append(("  sub   k a l a north east       by kalaTok.NE     ; ", 6))
-        list_of_ligs.append(("  sub   k a l a north            by kalaTok.N      ; ", 5))
-        list_of_ligs.append(("  sub   k a l a north west       by kalaTok.NW     ; ", 6))
-        list_of_ligs.append(("  sub   k a l a west             by kalaTok.W      ; ", 5))
-        list_of_ligs.append(("  sub   k a l a v west           by kalaTok.SW     ; ", 6))
-        list_of_ligs.append(("  sub   k a l a v                by kalaTok.S      ; ", 5))
-        list_of_ligs.append(("  sub   k a l a v east           by kalaTok.SE     ; ", 6))
-        list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u north east by kijetesantakaluTok.NE ; ", 17))
-        list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u north      by kijetesantakaluTok.N  ; ", 16))
-        list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u north west by kijetesantakaluTok.NW ; ", 17))
-        list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u west       by kijetesantakaluTok.W  ; ", 16))
-        list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u v west     by kijetesantakaluTok.SW ; ", 17))
-        list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u v          by kijetesantakaluTok.S  ; ", 16))
-        list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u v east     by kijetesantakaluTok.SE ; ", 17))
-        list_of_ligs.append(("  sub   s o w e l i north east   by soweliTok.NE   ; ", 8))
-        list_of_ligs.append(("  sub   s o w e l i north        by soweliTok.N    ; ", 7))
-        list_of_ligs.append(("  sub   s o w e l i north west   by soweliTok.NW   ; ", 8))
-        list_of_ligs.append(("  sub   s o w e l i west         by soweliTok.W    ; ", 7))
-        list_of_ligs.append(("  sub   s o w e l i v west       by soweliTok.SW   ; ", 8))
-        list_of_ligs.append(("  sub   s o w e l i v            by soweliTok.S    ; ", 7))
-        list_of_ligs.append(("  sub   s o w e l i v east       by soweliTok.SE   ; ", 8))
-        list_of_ligs.append(("  sub   w a s o north east       by wasoTok.NE     ; ", 6))
-        list_of_ligs.append(("  sub   w a s o north            by wasoTok.N      ; ", 5))
-        list_of_ligs.append(("  sub   w a s o north west       by wasoTok.NW     ; ", 6))
-        list_of_ligs.append(("  sub   w a s o west             by wasoTok.W      ; ", 5))
-        list_of_ligs.append(("  sub   w a s o v west           by wasoTok.SW     ; ", 6))
-        list_of_ligs.append(("  sub   w a s o v                by wasoTok.S      ; ", 5))
-        list_of_ligs.append(("  sub   w a s o v east           by wasoTok.SE     ; ", 6))
-
-
-
-        # directional ni: extra ligatures to cover both v> and >v, and niv
-        list_of_ligs.append(("  sub               n i west v   by        niTok.SW;", 4))
-        list_of_ligs.append(("  sub           n i west north   by        niTok.NW;", 4))
-        list_of_ligs.append(("  sub           n i east north   by        niTok.NE;", 4))
-        list_of_ligs.append(("  sub               n i east v   by        niTok.SE;", 4))
-        list_of_ligs.append(("  sub                    n i v   by           niTok;", 3))
-        # directional akesi: extra ligatures to cover both ^> and >^, and akesi^
-        list_of_ligs.append(("  sub         a k e s i west v   by     akesiTok.SW;", 7))
-        list_of_ligs.append(("  sub     a k e s i west north   by     akesiTok.NW;", 7))
-        list_of_ligs.append(("  sub     a k e s i east north   by     akesiTok.NE;", 7))
-        list_of_ligs.append(("  sub         a k e s i east v   by     akesiTok.SE;", 7))
-        list_of_ligs.append(("  sub          a k e s i north   by        akesiTok;", 6))
-        # directional pipi: extra ligatures to cover both ^> and >^, and pipi^
-        list_of_ligs.append(("  sub           p i p i west v   by      pipiTok.SW;", 6))
-        list_of_ligs.append(("  sub       p i p i west north   by      pipiTok.NW;", 6))
-        list_of_ligs.append(("  sub       p i p i east north   by      pipiTok.NE;", 6))
-        list_of_ligs.append(("  sub           p i p i east v   by      pipiTok.SE;", 6))
-        list_of_ligs.append(("  sub            p i p i north   by         pipiTok;", 5))
-        # directional kala: extra ligatures to cover both ^> and >^, and kala>
-        list_of_ligs.append(("  sub           k a l a west v   by      kalaTok.SW;", 6))
-        list_of_ligs.append(("  sub       k a l a west north   by      kalaTok.NW;", 6))
-        list_of_ligs.append(("  sub       k a l a east north   by      kalaTok.NE;", 6))
-        list_of_ligs.append(("  sub           k a l a east v   by      kalaTok.SE;", 6))
-        list_of_ligs.append(("  sub             k a l a east   by         kalaTok;", 5))
-        # directional kijetesantakalu: extra ligatures to cover both ^> and >^, and kijetesantakalu>
-        list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u west v   by   kijetesantakaluTok.SW;", 17))
-        list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u west north   by   kijetesantakaluTok.NW;", 17))
-        list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u east north   by   kijetesantakaluTok.NE;", 17))
-        list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u east v   by   kijetesantakaluTok.SE;", 17))
-        list_of_ligs.append(("  sub   k i j e t e s a n t a k a l u east   by   kijetesantakaluTok;", 16))
-        # directional soweli: extra ligatures to cover both ^> and >^, and soweli>
-        list_of_ligs.append(("  sub       s o w e l i west v   by    soweliTok.SW;", 8))
-        list_of_ligs.append(("  sub   s o w e l i west north   by    soweliTok.NW;", 8))
-        list_of_ligs.append(("  sub   s o w e l i east north   by    soweliTok.NE;", 8))
-        list_of_ligs.append(("  sub       s o w e l i east v   by    soweliTok.SE;", 8))
-        list_of_ligs.append(("  sub         s o w e l i east   by       soweliTok;", 7))
-        # directional waso: extra ligatures to cover both ^> and >^, and waso>
-        list_of_ligs.append(("  sub           w a s o west v   by      wasoTok.SW;", 6))
-        list_of_ligs.append(("  sub       w a s o west north   by      wasoTok.NW;", 6))
-        list_of_ligs.append(("  sub       w a s o east north   by      wasoTok.NE;", 6))
-        list_of_ligs.append(("  sub           w a s o east v   by      wasoTok.SE;", 6))
-        list_of_ligs.append(("  sub             w a s o east   by         wasoTok;", 5))
 
         # sort them by number of tokens
         list_of_ligs.sort(reverse=True, key=lambda x: x[1])
