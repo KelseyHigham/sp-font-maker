@@ -38,7 +38,8 @@ def converters(sheet, output_directory, debug_dir=None, default_json=None, cli_a
         font_data = tomllib.load(file)
     
     # save as JSON in debug directory. we'll edit it to add custom words.
-    # extra config sheets should be merged into the same working JSON file
+    # extra config sheets should be merged into the same working JSON file.
+    # ...we do this exact thing again after populating other_words... this is redundant.
     json_path = os.path.join(debug_dir, "default.json")
     with open(json_path, "w") as file:
         json.dump(font_data, file, indent=4)

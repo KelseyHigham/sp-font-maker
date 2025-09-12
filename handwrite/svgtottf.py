@@ -537,11 +537,21 @@ features = [
   # "tuki tiki",
 ]
 
-# Pick one style, or put multiple comma-separated styles in quotes.
+# Pick one style, or put multiple comma-separated styles in quotes.''')
+
+        pixel = self.cli_args.get("pixel") or False
+        if pixel:
+            ilo_linku_toml_file.write('''
+# style = "handwritten"
+style = "pixelated"''')
+        else:
+            ilo_linku_toml_file.write('''
 style = "handwritten"
+# style = "pixelated"''')
+
+        ilo_linku_toml_file.write('''
 # style = "alternate design"
 # style = "uniform line weight"
-# style = "pixelated"
 # style = "handdrawn"
 # style = "serif"
 # style = "sans-serif"
@@ -549,7 +559,7 @@ style = "handwritten"
 # style = "unspecified"
 
 [links]
-# Autofilled for Kelly. If you're not Kelly, these URLs are inaccurate; upload the font to a website like neocities.org or github.io
+# Autofilled for Kelly's site. If you're not uploading to Kelly's site, these URLs are inaccurate; upload the font to a website like neocities.org or github.io
 # fontfile = "https://github.com/wasokeli/wasokeli.github.io/raw/main/sp-font-maker/''' + filename.replace(" ", "%20") + '''"
 # repo     = "https://github.com/wasokeli/wasokeli.github.io/tree/main/sp-font-maker"
 # webpage  = "https://wasokeli.github.io/sp-font-maker/''' + family.replace(" ", "-") + '''.html"
