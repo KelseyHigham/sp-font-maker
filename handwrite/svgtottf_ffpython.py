@@ -283,7 +283,7 @@ class SVGtoTTF:
 
 
                 # create rotated glyphs
-                # todo: add the ligatures to svgtottf.py, lines 196-239
+                # todo: move this code up, so that diagonal glyphs, particularly kijetesantakalu, will be re-centered
 
                 rotated_glyph_set = [g] # later we'll iterate through these to generate `.top` and `.bottom` versions
                 if 'rotate' in glyph_object:

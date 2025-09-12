@@ -1,15 +1,14 @@
 # default.toml, straight conversion from JSON. config values are at the bottom, due to a TOML limitation.
+# this format is VERY subject to change! still in the design phase!
 
 
 
 # i'm going to move some data from the code into this file, but i haven't actually implemented these changes yet. 
 # so these fields are unused:
-  # rotate
-  # direction
   # scan-shift
 
   # type
-  # source-glyph-number
+  # source-glyph
 
   # stackable
   # cartoucheable
@@ -231,7 +230,7 @@ glyphs-fancy = [
 
 
   # generated from row 6, cartoucheEndTok
-  {codepoint = 0xf1992, name = "cartoucheMiddleTok", type = "middle", source-glyph-index = 121},
+  {codepoint = 0xf1992, name = "cartoucheMiddleTok", type = "middle", source-glyph = "cartoucheEndTok"},
 
 
   # synonyms
@@ -301,7 +300,7 @@ glyphs-fancy = [
 glyphs-not-sheet = [ # redundant with the above, after index 180
 
   # generated from row 6, cartoucheEndTok
-  {codepoint = 0xf1992, name = "cartoucheMiddleTok", type = "middle", source-glyph-index = 121},
+  {codepoint = 0xf1992, name = "cartoucheMiddleTok", type = "middle", source-glyph = "cartoucheEndTok"},
 
   # synonyms
     {ligature = "a l i",              name = "aliTok"},     # defined in sheettopng.py, line 440
