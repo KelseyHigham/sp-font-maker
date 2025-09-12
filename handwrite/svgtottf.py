@@ -203,10 +203,6 @@ feature liga {
                         cartoucheable_and_stackable.append(k['name']) 
 
                     if 'rotate' in k and k['rotate']:
-                        cartoucheable_and_stackable.append(k['name'] + ".SE")
-                        cartoucheable_and_stackable.append(k['name'] + ".NE")
-                        cartoucheable_and_stackable.append(k['name'] + ".NW")
-                        cartoucheable_and_stackable.append(k['name'] + ".SW")
                         if 'direction' in k:
                             if k['direction'] == 'up':
                                 cartoucheable_and_stackable.append(k['name'] + ".S")
@@ -228,6 +224,10 @@ feature liga {
                             cartoucheable_and_stackable.append(k['name'] + ".S")
                             cartoucheable_and_stackable.append(k['name'] + ".N")
                             cartoucheable_and_stackable.append(k['name'] + ".W")
+                        cartoucheable_and_stackable.append(k['name'] + ".SE")
+                        cartoucheable_and_stackable.append(k['name'] + ".NE")
+                        cartoucheable_and_stackable.append(k['name'] + ".NW")
+                        cartoucheable_and_stackable.append(k['name'] + ".SW")
 
         # candidate for removal later, because 
             # it doesn't play well with HTML
