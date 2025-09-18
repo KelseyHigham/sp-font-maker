@@ -532,7 +532,7 @@ style = "handwritten"
             other_words = other_words_string.split()
             for word_index, word in enumerate(other_words):
                 if word == "_":
-                    other_words[word_index] = "　"
+                    other_words[word_index] = "|"
 
         example_web_page = open(out_dir + os.sep + family.replace(" ", "-") + ".html", "w", encoding="utf-8")
 
@@ -591,8 +591,8 @@ mute nanpa nasa nasin nena ni nimi noka o olin ona open pakala pali palisa pan p
 pini pipi poka poki pona pu sama seli selo seme sewi sijelo sike sin sina sinpin sitelen sona soweli suli<br>
 suno supa suwi tan taso tawa telo tenpo toki tomo tu unpa uta utala walo wan waso wawa weka wile<br>
 [] . : i j k l m p s t u w te to """ + " ".join(other_words[0:4]) + """<br>
-kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi""" + " ".join(other_words[4:12]) + """<br>
-epiku jasima linluwi majuna meso oko su""" + " ".join(other_words[12:25]) + """<br>
+kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi """ + " ".join(other_words[4:12]) + """<br>
+epiku jasima linluwi majuna meso oko su """ + " ".join(other_words[12:25]) + """<br>
 </span>
 
 <p>License: <a href='""" + licenseurl + """'>""" + license + """</a></p>
