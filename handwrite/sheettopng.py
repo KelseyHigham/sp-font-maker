@@ -25,12 +25,10 @@ def sheet_to_png(sheet, debug_dir, default_json, cli_args, other_words_string, c
         Number of rows of expected contours. Defaults to 10 based on the default sample.
     """
     print("SHEETtoPNG")
-    with open(default_json) as f:
-        threshold_value = json.load(f).get("threshold_value", 200)
     if os.path.isdir(sheet):
         raise IsADirectoryError("Sheet parameter should not be a directory.")
     characters = detect_characters(
-        debug_dir, default_json, sheet, threshold_value, cli_args, other_words_string, cols=cols, rows=rows
+        debug_dir, default_json, sheet, cli_args, other_words_string, cols=cols, rows=rows
     )
     save_images(
         characters, # more like cells
@@ -47,7 +45,7 @@ def sheet_to_png(sheet, debug_dir, default_json, cli_args, other_words_string, c
 
 
 
-def detect_characters(debug_dir, default_json, sheet_image, threshold_value, cli_args, other_words_string, cols=20, rows=9):
+def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_words_string, cols=20, rows=9):
         """Detect contours on the input image and filter them to get only characters.
 
         Uses opencv to threshold the image for better contour detection. After finding all
@@ -59,8 +57,6 @@ def detect_characters(debug_dir, default_json, sheet_image, threshold_value, cli
         ----------
         sheet_image : str
             Path to the sheet file to be converted.
-        threshold_value : int
-            Value to adjust thresholding of the image for better contour detection.
         cols : int, default=8
             Number of columns of expected contours. Defaults to 8 based on the default sample.
         rows : int, default=10
@@ -81,6 +77,7 @@ def detect_characters(debug_dir, default_json, sheet_image, threshold_value, cli
         cv2.imwrite(os.path.join(debug_dir, "analysis step 2 - grayscale" + ".png"), gray)
 
         # Threshold and filter the image for better contour detection
+        threshold_value = 127 # formerly 200. change back if black rectangles aren't being detected as dark enough.
         _, thresh = cv2.threshold(gray, threshold_value, 255, 1)
         cv2.imwrite(os.path.join(debug_dir, "analysis step 3 - threshold" + ".png"), thresh)
         close_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
@@ -300,7 +297,7 @@ def detect_characters(debug_dir, default_json, sheet_image, threshold_value, cli
                 old_glyph_top = glyph_top
                 new_glyph_top = glyph_top
                 gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
-                _, thresh = cv2.threshold(gray, threshold_value, 255, 1)
+                _, thresh = cv2.threshold(gray, 127, 255, 1)
                 # this is where the magic happens
                 # i call it magic because i don't understand it
                 moments = cv2.moments(thresh)

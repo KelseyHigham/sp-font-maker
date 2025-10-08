@@ -1,8 +1,6 @@
 # default.toml, straight conversion from JSON. config values are at the bottom, due to a TOML limitation.
 # this format is VERY subject to change! still in the design phase!
 
-threshold_value = 200
-
 # i'm going to move some data from the code into this file, but i haven't actually implemented these changes yet. 
 # so these fields are unused:
   # scan-shift
