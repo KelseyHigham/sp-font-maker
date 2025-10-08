@@ -1,0 +1,375 @@
+import os
+import json
+from datetime import datetime
+
+
+
+
+
+
+        #    ▄                █
+        #   ▀█▀  ▄▀▀▄  █▀▄▀▄  █
+        #    █   █  █  █ █ █  █
+        # ▄  ▀▄  ▀▄▄▀  █ █ █  █
+        # generate .toml file
+
+def create_toml_html(debug_dir, out_dir, default_json, cli_args=None, other_words_string=None):
+
+        cli_args_dict = cli_args
+
+        with open(default_json) as f:
+            default_json_data = json.load(f)
+
+        filename = (cli_args_dict.get("filename", None) or default_json_data["props"].get("filename", None))
+        if filename is None:
+            raise NameError("filename not found in config file.")
+
+        family = (cli_args_dict.get("family", None) or filename)
+
+        filename = filename + ".ttf" if not filename.endswith(".ttf") else filename
+
+        designer = cli_args_dict.get("designer", None) or default_json_data["props"].get("designer", "jan pi toki pona")
+
+        # for generating the ilo Linku TOML files for each font,
+        # we use short license codes from the SPDX License List: https://spdx.org/licenses/
+        license = cli_args_dict.get("license", None) or default_json_data["sfnt_names"].get("License", "All rights reserved")
+        licenseurl = cli_args_dict.get("licenseurl", None) or default_json_data["sfnt_names"].get("License URL", "")
+        if license == "ofl":
+            license = "OFL-1.1"
+            licenseurl = "https://openfontlicense.org"
+        if license == "cc0":
+            license = "CC0-1.0"
+            licenseurl = "https://creativecommons.org/publicdomain/zero/1.0/"
+
+
+        ilo_linku_toml_file = open(out_dir + os.sep + family + ".toml", "w", encoding="utf-8")
+        ilo_linku_toml_file.write('''#:schema ../../api/generated/font.json
+id        = "''' + family + '''"
+name      = "''' + family + '''"
+filename  = "''' + filename + '''"
+creator   = ["''' + designer + '''"]
+license   = "''' + license + '''"
+ligatures = true
+ucsur     = true
+writing_system = "sitelen pona" # pick one: sitelen pona, sitelen sitelen, alphabet, syllabary, logography,
+                                # tokiponido alphabet, tokiponido syllabary, tokiponido logography
+
+last_updated = "''' + datetime.now().strftime("%Y-%m") + '''"
+version      = "1"
+
+features = [
+  "ASCII transcription and codepoints",
+  "UCSUR-compliant",
+  "cartouches",
+  "SP Font Maker words v2.2",        # unless they didn't fill out all the words
+
+  # "incomplete",
+  # "variable weight",
+  # "name glyphs",
+  # "character variants",
+  # "Linku common & uncommon 2024"   # nimisin
+  # "all ku suli",                   # kokosila
+  # "all ku suli and UCSUR words",   # kokosila, apeja, pake, powe
+  # "community requested nimisin",
+
+  # Not implemented in SP Font Maker:
+  # "long pi",
+  # "randomized jaki",
+  # "ZWJ sequences",
+  # "tuki tiki",
+]
+
+# Pick one style, or put multiple comma-separated styles in quotes.''')
+
+        pixel = cli_args_dict.get("pixel") or False
+        if pixel:
+            ilo_linku_toml_file.write('''
+# style = "handwritten"
+style = "pixelated"''')
+        else:
+            ilo_linku_toml_file.write('''
+style = "handwritten"
+# style = "pixelated"''')
+
+        ilo_linku_toml_file.write('''
+# style = "alternate design"
+# style = "uniform line weight"
+# style = "handdrawn"
+# style = "serif"
+# style = "sans-serif"
+# style = "faux 3d"
+# style = "unspecified"
+
+[links]
+# Autofilled for Kelly's site. If you're not uploading to Kelly's site, these URLs are inaccurate; upload the font to a website like neocities.org or github.io
+# fontfile = "https://github.com/wasokeli/wasokeli.github.io/raw/main/sp-font-maker/''' + filename.replace(" ", "%20") + '''"
+# repo     = "https://github.com/wasokeli/wasokeli.github.io/tree/main/sp-font-maker"
+# webpage  = "https://wasokeli.github.io/sp-font-maker/''' + family.replace(" ", "-") + '''.html"
+''')
+        # print("Generating " + out_dir + os.sep + family + ".toml for ilo Linku...")
+        ilo_linku_toml_file.close()
+
+        print("🌐 If hosting, give this to " + designer + ": https://wasokeli.github.io/sp-font-maker/" + family.replace(" ", "-"))
+        print("🏠 Preview in browser: file://" + os.path.abspath(out_dir + os.sep + family.replace(" ", "-") + ".html").replace("\\", "/") + "\n")
+
+
+
+
+
+
+
+
+
+
+    #              █
+    # █   █  ▄▀▀▄  █▀▀▄       █▀▀▄   ▀▀▄  ▄▀▀█  ▄▀▀▄
+    # █ █ █  █▄▄█  █  █       █  █  ▄▀▀█  █  █  █▄▄█
+    #  █ █   ▀▄▄   █▄▄▀       █▄▄▀  ▀▄▄█  ▀▄▄█  ▀▄▄
+    #                         █            ▄▄▀
+
+        other_words = []
+        if other_words_string:
+            other_words = other_words_string.split()
+            for word_index, word in enumerate(other_words):
+                if word == "_":
+                    other_words[word_index] = "|"
+
+        example_web_page = open(out_dir + os.sep + family.replace(" ", "-") + ".html", "w", encoding="utf-8")
+
+        # # this fails because i'm feeding it a relative path on the command line... hmm...
+        # # and now it fails because the "C:" part doesn't get underlined on the C
+        # # also it needs to have forward slashes
+        # # uuuggghhhh
+        # print("Local web page: file:///" + os.path.abspath(out_dir + os.sep + family.replace(" ", "-") + ".html"))
+
+        example_web_page.write(
+"""
+<meta charset="utf-8" />
+<style type=\"text/css\">
+    @font-face {
+        font-family: '""" + family + """';
+        src: url('""" + filename + """')
+    }
+    body {
+        background-color: #334;
+        font-size: 48px;
+        /*font-size: 32px;*/ /* for slideshow */
+        max-width: 960px;    /* 48 x 20 */
+        margin: auto;
+        /*line-height: 1.5em;*/
+        color: white;
+        font-family: "Chalkboard SE", "Comic Sans MS", sans-serif;
+    }
+    h1 {
+        font-size: 1em;
+        /*margin-bottom: 0;*/ /* for slideshow */
+    }
+    a {
+        color: white;
+    }
+    .tp {
+        font-family: '""" + family + """', 'Chalkboard SE', 'Comic Sans MS', sans-serif;
+        font-size: 48px;
+    }
+    textarea {
+        font-size: 1em; 
+        width: 20em; 
+        height: 100%; 
+        background-color: #223; 
+        color: white; 
+        padding: 1em;
+    }
+</style>
+<h1>""" + "<a href='" + filename + "'>" + family + "</a>, tan " + designer + """</h1>
+
+<span class="tp">
+<!-- word list -->
+a akesi ala alasa ale anpa ante anu awen e en esun ijo ike ilo insa jaki jan jelo jo<br>
+kala kalama kama kasi ken kepeken kili kiwen ko kon kule kulupu kute la lape laso lawa len lete li<br>
+lili linja lipu loje lon luka lukin lupa ma mama mani meli mi mije moku moli monsi mu mun musi<br>
+mute nanpa nasa nasin nena ni nimi noka o olin ona open pakala pali palisa pan pana pi pilin pimeja<br>
+pini pipi poka poki pona pu sama seli selo seme sewi sijelo sike sin sina sinpin sitelen sona soweli suli<br>
+suno supa suwi tan taso tawa telo tenpo toki tomo tu unpa uta utala walo wan waso wawa weka wile<br>
+[] . : i j k l m p s t u w te to """ + " ".join(other_words[0:4]) + """<br>
+kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi """ + " ".join(other_words[4:12]) + """<br>
+epiku jasima linluwi majuna meso oko su """ + " ".join(other_words[12:25]) + """<br>
+</span>
+
+<p>License: <a href='""" + licenseurl + """'>""" + license + """</a></p>
+
+<span class="tp">
+<span style="white-space: break-spaces">
+<!-- telo oko li ken ante e pilin, by jan Ke Tami -->
+toki ni li kepeken nimi pu ale
+
+telo oko li ken ante e pilin
+tan jan [kiwen en] [tomo anu mi insa]:
+
+| telo li kama 
+| | | tan oko loje tu pi(jan wan)
+| | li sitelen sike suwi 
+| | | lon anpa sinpin 
+| ona li wile tawa ma
+taso ona li awen lon sijelo
+| | li pini 
+| | | lon len 
+| | li weka
+sona la
+| waso en kala en pipi 
+| en akesi en soweli ale li ken pana sama
+taso pilin pi(jan ni) li suli la 
+| | | | | | | telo lukin li sin
+| | | | | | | | | li wawa
+| | | | | | | | | li selo e ijo poka 
+| | | | | | | | | | | e tomo e noka e supa moku 
+| | | | | | | | | | | e pan e poki kiwen e monsi 
+| | | | | | | | | | | e luka e lawa e nena 
+| | | | | | | | | | | e kute e linja sewi kin
+laso lete ni li lili e seli insa
+| | | li lape e ike toki
+| | | li open e ante
+| | | li esun e ko jaki| | | | | te a
+| | | | | e mu open| | | | | | ike a to
+
+kon pi(kule ala) li tan uta 
+| | | | li kalama utala lon telo 
+| | | | li nanpa mute 
+| | | | li tawa mun 
+| | | | li pakala nasa e suno sewi
+pimeja moli li kama namako e nasin tenpo| | | | | te mi pakala to
+
+
+pona o kepeken alasa seme
+| mani anu unpa 
+anu pu anu nimi ante li sama kili 
+| | | | | | tan kasi pi(lipu jelo moli)
+te sina wile ala ni
+| sina wile mama e musi
+| sina wile olin e meli 
+| | | | e mije e tonsi to| | | | | ona li jo e ilo palisa 
+| | | | | | | | | | | | | | | | | e sinpin tomo 
+| | | | | | | | | | | | | | | li pali e lupa
+| | | | | | | | | | | | | | telo li kama weka
+| | | | | | | | | | | | | | laso li kama walo
+| | | | | | | | | | | | | | jan li tawa lupa 
+| | | | | | | | | | | | | | | li tawa nasin open 
+| | | | | | | | | | | | | | | li tawa kulupu
+| | | | | | | | | | | | | pona kama li wile e wawa
+| | | | | | | | | | | | taso laso weka li kama ken e ni
+
+
+<textarea class="tp">sina ken sitelen-wile lon ni<v
+
+</textarea>
+</span></span>
+
+<script>
+/*  workaround for Chromium
+
+    Chrome has a bug where ligatures aren't properly applied at typing-time. 
+    for example, if you type "pona", it erroneously shows a p followed by a sideways 6, rather than one smile.
+    i work around this by refreshing the textarea after every keystroke.
+    i refresh the textarea by changing one property, back and forth between two values that will result in the same appearance on most modern devices.
+*/
+
+const textarea = document.querySelector('textarea');
+var cssToggle = false;
+
+textarea.addEventListener('input', redrawTextarea);
+
+function redrawTextarea(e) {
+  if (cssToggle) {
+    textarea.style.fontVariantLigatures = 'normal';
+    cssToggle = false;
+  } else {
+    textarea.style.fontVariantLigatures = 'common-ligatures';
+    cssToggle = true;
+  }
+}
+</script>
+"""
+        )
+        example_web_page.close()
+
+
+
+
+
+
+
+
+
+        #  ▀  █             █      ▀        █                                         ▀
+        # ▀█  █  ▄▀▀▄       █     ▀█  █▀▀▄  █ ▄▀  █  █       █▀▀▄  █▄▀  ▄▀▀▄  █   █  ▀█  ▄▀▀▄  █   █
+        #  █  █  █  █       █      █  █  █  █▀▄   █  █       █  █  █    █▄▄█   █ █    █  █▄▄█  █ █ █
+        #  █  █  ▀▄▄▀       █▄▄▄   █  █  █  █  █  ▀▄▄█       █▄▄▀  █    ▀▄▄     █     █  ▀▄▄    █ █
+        #                                                    █
+        # # test ilo Linku rendering
+        # # disabled because i don't have RAQM, so i can't test it
+        # # and it seems to be hard to install on Windows
+        # # and i don't want to bother with WSL
+        # # i probably should though...
+
+        # from PIL import Image, ImageDraw, ImageFont
+        # from PIL import features
+
+        # # Check if RAQM support is enabled in Pillow
+        # if features.check_feature('raqm'):
+        #     print("RAQM support is enabled in Pillow.")
+        # else:
+        #     print("RAQM support is NOT enabled in Pillow. Linku rendering is probably borked.")
+
+        # from typing import Any, Dict, List, Literal
+        # BgStyle = Literal["outline"] | Literal["background"]
+        # Color = tuple[int, int, int]
+        # ColorAlpha = tuple[int, int, int, int]
+
+        # def display(text: str, font_path: str, font_size: int, color: Color, bgstyle: BgStyle):
+        #     STROKE_WIDTH = round((font_size / 133) * 5)
+        #     LINE_SPACING = round((font_size / 2))
+
+        #     HPAD = round(font_size / 30)
+        #     # NOTE: the VPAD is high because keli's font tool produces fonts which cut off on the top otherwise
+        #     VPAD = round(font_size / 4) + 5
+
+        #     BLACK: ColorAlpha = (0x36, 0x39, 0x3F, 0xFF)
+        #     WHITE: ColorAlpha = (0xF0, 0xF0, 0xF0, 0xFF)
+        #     TRANSPARENT: ColorAlpha = (0, 0, 0, 0)
+
+        #     stroke_color = BLACK if True else WHITE
+        #     bg_color = stroke_color if bgstyle == "background" else TRANSPARENT
+
+        #     font = ImageFont.truetype(font_path, font_size)
+        #     d = ImageDraw.Draw(Image.new("RGBA", (0, 0), (0, 0, 0, 0)))
+        #     x, y, w, h = d.multiline_textbbox(
+        #         (0, 0),
+        #         text=text,
+        #         font=font,
+        #         spacing=LINE_SPACING,
+        #         stroke_width=STROKE_WIDTH,
+        #         font_size=font_size,
+        #     )
+        #     image = Image.new(
+        #         mode="RGBA",
+        #         size=(w + (HPAD * 2), h + (VPAD * 2)),
+        #         color=bg_color,
+        #     )
+        #     d = ImageDraw.Draw(image)
+        #     d.multiline_text(
+        #         (HPAD, VPAD),
+        #         text,
+        #         font=font,
+        #         fill=color,
+        #         spacing=LINE_SPACING,
+        #         stroke_width=STROKE_WIDTH,
+        #         stroke_fill=stroke_color,
+        #     )
+        #     image.save(out_dir + os.sep + "LINKU TEST - " + family + ".png")
+
+        # display(
+        #     "󱤴󱥴󱦐󱤗󱤋󱤦󱤎󱦑󱤀", 
+        #     out_dir + os.sep + family + ".ttf",
+        #     72,
+        #     (0x0C, 0xAF, 0xF5),
+        #     "outline"
+        # )

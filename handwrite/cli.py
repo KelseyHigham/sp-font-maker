@@ -7,7 +7,9 @@ import tomllib
 
 from handwrite.sheettopng import sheet_to_png
 from handwrite.pngtosvg import png_to_svg
-from handwrite.svgtottf import svg_to_ttf, add_ligatures, create_toml_html
+from handwrite.svgtottf import svg_to_ttf
+from handwrite.add_ligatures import add_ligatures
+from handwrite.create_toml_html import create_toml_html
 
 
 def run(sheet, output_directory, debug_dir, default_json, cli_args, other_words_string):
