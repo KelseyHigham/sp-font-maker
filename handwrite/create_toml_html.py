@@ -20,7 +20,7 @@ def create_toml_html(debug_dir, out_dir, default_json, cli_args=None, other_word
         with open(default_json) as f:
             default_json_data = json.load(f)
 
-        filename = (cli_args_dict.get("filename", None) or default_json_data["props"].get("filename", None))
+        filename = (cli_args_dict.get("filename", "Untitled"))
         if filename is None:
             raise NameError("filename not found in config file.")
 
@@ -28,7 +28,7 @@ def create_toml_html(debug_dir, out_dir, default_json, cli_args=None, other_word
 
         filename = filename + ".ttf" if not filename.endswith(".ttf") else filename
 
-        designer = cli_args_dict.get("designer", None) or default_json_data["props"].get("designer", "jan pi toki pona")
+        designer = cli_args_dict.get("designer", "jan pi toki pona")
 
         # for generating the ilo Linku TOML files for each font,
         # we use short license codes from the SPDX License List: https://spdx.org/licenses/

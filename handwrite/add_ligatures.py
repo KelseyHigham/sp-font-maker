@@ -25,7 +25,7 @@ def add_ligatures(debug_dir, out_dir, default_json, cli_args=None, other_words_s
         with open(default_json) as f:
             default_json_data = json.load(f)
 
-        filename = (cli_args_dict.get("filename", None) or default_json_data["props"].get("filename", None))
+        filename = (cli_args_dict.get("filename", "Untitled"))
         if filename is None:
             raise NameError("filename not found in config file.")
 

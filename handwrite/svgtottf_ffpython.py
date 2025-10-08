@@ -21,22 +21,19 @@ import datetime
 
 def set_properties(font, config, cli_args, version_major, version_minor, version_patch):
         """Set metadata of the font from config."""
-        props = config["props"]
         sfnt_names = config["sfnt_names"]
-        lang = props.get("lang", "English (US)")
-        fontname = cli_args.get("filename", None) or props.get(
-            "filename", "Example"
-        )
+        lang = "English (US)" # `sfnt_names` are stored under the language
+        fontname = cli_args.get("filename", "Untitled")
         family = cli_args.get("family", None) or fontname
-        style = props.get("style", "Regular")
-        designer = cli_args.get("designer", None) or props.get("designer", "jan pi toki pona")
-        license = cli_args.get("license", None) or sfnt_names.get("License", "All rights reserved")
-        licenseurl = cli_args.get("licenseurl", None) or sfnt_names.get("License URL", "")
+        style = "Regular"
+        designer = cli_args.get("designer", "jan pi toki pona")
+        license = cli_args.get("license", "All rights reserved")
+        licenseurl = cli_args.get("licenseurl", "")
 
         font.familyname = fontname
         font.fontname = fontname + "-" + style
         font.fullname = fontname + " " + style
-        font.encoding = props.get("encoding", "UnicodeFull")
+        font.encoding = "UnicodeFull"
 
         # OS/2 fields - https://learn.microsoft.com/en-us/typography/opentype/spec/os2
         #             - https://fontforge.org/docs/scripting/python/fontforge.html#fontforge.font.os2_codepages
@@ -68,11 +65,6 @@ def set_properties(font, config, cli_args, version_major, version_minor, version
             font.hhea_descent    = -375
             font.uwidth = 62.5
             font.upos   = -125 - 62.5/2
-        for k, v in props.items():
-            if hasattr(font, k):
-                if isinstance(v, list):
-                    v = tuple(v)
-                setattr(font, k, v)
 
         # replace default.json values with CLI-provided values
         if config.get("sfnt_names", None):
@@ -605,9 +597,7 @@ def convert_main(default_json, debug_dir, out_dir, cli_args, v_major, v_minor, v
         add_glyphs(font, config, cli_args_dict, debug_dir, int(v_major), int(v_minor), int(v_patch))
 
         # Generate font and save as a .ttf file
-        filename = cli_args_dict.get("filename", None) or config["props"].get(
-            "filename", None
-        )
+        filename = cli_args_dict.get("filename", "Untitled")
         generate_font_file(font, str(filename), out_dir, default_json, debug_dir)
 
 

@@ -583,14 +583,7 @@ other_ucsur_codepoints = [
 # it mostly comes from this 11-year-old, 3-projects-removed code! 
 # https://github.com/pteromys/svgs2ttf/blob/master/examples/example.json
 
-[props] # from https://github.com/pteromys/svgs2ttf/blob/master/examples/example.json
-  encoding = "UnicodeFull"
-  lang = "English (US)" # `sfnt_names` are stored under the language
-  filename = "MyFont"
-  style = "Regular"
-  designer = "The Person Who Made This Font"
-
-[sfnt_names]
+[sfnt_names] # from https://github.com/pteromys/svgs2ttf/blob/master/examples/example.json
   Copyright = "(C) Copyright me, this year"
   Family = "MyFont"
   UniqueID = "MyFont 2021-02-04"
