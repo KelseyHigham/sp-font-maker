@@ -48,6 +48,14 @@ def create_toml_html(debug_dir, out_dir, cli_args=None, other_words_string=None)
             ilo_linku_toml_file_path = out_dir + os.sep + family + ".toml"
             ilo_linku_toml_file = open(ilo_linku_toml_file_path, "w", encoding="utf-8")
             ilo_linku_toml_file.write('''#:schema ../../api/generated/font.json
+
+# To submit your font to ilo Linku, for use with the Discord `/sitelenpona` command:
+# 1. Upload your font to a website, like GitHub or Neocities
+# 2. Add the URL to your .TTF file at the bottom of this .TOML file
+# 3. Fill out the rest of this .TOML file. If you don't have a repo or a webpage, leave those blank
+# 4. Submit the .TOML to this page: https://github.com/lipu-linku/sona/tree/main/fonts/metadata
+# 5. Ask for help if you need it! Join the Linku Discord, or make a GitHub Issue.
+
 id        = "''' + family + '''"
 name      = "''' + family + '''"
 filename  = "''' + filename + '''"
@@ -154,12 +162,6 @@ style = "handwritten"
                     other_words[word_index] = "|"
 
         example_web_page = open(out_dir + os.sep + family.replace(" ", "-") + ".html", "w", encoding="utf-8")
-
-        # # this fails because i'm feeding it a relative path on the command line... hmm...
-        # # and now it fails because the "C:" part doesn't get underlined on the C
-        # # also it needs to have forward slashes
-        # # uuuggghhhh
-        # print("Local web page: file:///" + os.path.abspath(out_dir + os.sep + family.replace(" ", "-") + ".html"))
 
         example_web_page.write(
 """

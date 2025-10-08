@@ -500,7 +500,14 @@ synonyms = [ # implemented!!!
   {ligature = "k e p e n",   target-name = "kepekenTok"},
 ]
 
-ascii-dependencies = [ # not implemented yet
+# ascii-dependencies, ligature-prerequisites, ligature-dependencies, ligature-prerequisite-glyph-names
+# fontTools.feaLib.error.FeatureLibError: The following glyph names are referenced but are missing from the glyph set:
+  # n (first found at <features>:15:25)
+# ligs are made of glyphs, not codepoints.....
+# it's not about the ascii at all
+# ligaturable glyphs
+# ligature-base-glyphs
+ligature-base-glyphs = [ # not implemented yet
   # define ASCII glyph names, so that they can be referenced in ligatures
   {codepoint = 0x5b, name = "bracketleft"},
   {codepoint = 0x5f, name = "underscore"},
