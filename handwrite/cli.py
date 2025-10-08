@@ -178,7 +178,7 @@ def main():
         _ api Keli melome Pingo penpo poni snoweli \
         _ kan kulijo misa molusa oke pa panke polinpin tona wa wasoweli waken\"`)""", default=None)
     parser.add_argument("--pixel", action='store_true', help="Pixel font (experimental, false by default)", default=False)
-    parser.add_argument("--no-toml", action='store_true', help="Skip creating a .TOML file (false by default)", default=False)
+    parser.add_argument("--not-new", action='store_true', help="Skip creating a .TOML file (false by default)", default=False)
 
     args = parser.parse_args()
     # todo: skip recreating the dictionary and just do cli_args = parser.parse_args()
@@ -190,7 +190,7 @@ def main():
         "licenseurl": args.license_url, 
         "sheetversion": args.sheet_version,
         "pixel": args.pixel,
-        "notoml": args.no_toml
+        "notnew": args.not_new
     }
     converters(
         args.input_path, args.output_directory, args.debug_directory, None, cli_args, args.other_words

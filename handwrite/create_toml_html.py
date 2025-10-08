@@ -40,11 +40,11 @@ def create_toml_html(debug_dir, out_dir, cli_args=None, other_words_string=None)
 
 
 
-        no_toml = cli_args_dict.get("notoml", False)
-        if no_toml:
+        not_new = cli_args_dict.get("notnew", False)
+        if not_new:
             print("\nSkipping ilo Linku .TOML file.\n")
         else:
-            print("\nOpening .TOML for editing. To avoid, add `--no-toml`.\n")
+            print("\nOpening ilo Linku .TOML for editing. To avoid, add `--not-new`.\n")
             ilo_linku_toml_file_path = out_dir + os.sep + family + ".toml"
             ilo_linku_toml_file = open(ilo_linku_toml_file_path, "w", encoding="utf-8")
             ilo_linku_toml_file.write('''#:schema ../../api/generated/font.json
@@ -106,9 +106,9 @@ style = "handwritten"
 
 [links]
 # Autofilled for Kelly's site. If you're not uploading to Kelly's site, these URLs are inaccurate; upload the font to a website like neocities.org or github.io
-# fontfile = "https://github.com/wasokeli/wasokeli.github.io/raw/main/sp-font-maker/''' + filename.replace(" ", "%20") + '''"
-# repo     = "https://github.com/wasokeli/wasokeli.github.io/tree/main/sp-font-maker"
+# fontfile = "https://wasokeli.github.io/sp-font-maker/''' + filename.replace(" ", "%20") + '''"
 # webpage  = "https://wasokeli.github.io/sp-font-maker/''' + family.replace(" ", "-") + '''.html"
+# repo     = "https://github.com/wasokeli/wasokeli.github.io/tree/main/sp-font-maker"
 ''')
             # print("Generating " + out_dir + os.sep + family + ".toml for ilo Linku...")
             ilo_linku_toml_file.close()
