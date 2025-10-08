@@ -571,24 +571,3 @@ other_ucsur_codepoints = [
   {codepoint = 0xf19a0, name = "pakeTok",  ligature = "p a k e"},
   {codepoint = 0xf19a3, name = "poweTok",  ligature = "p o w e"},
 ]
-
-
-
-
-
-
-
-
-# most or all of the below is unused, and i'd like to remove it.
-# it mostly comes from this 11-year-old, 3-projects-removed code! 
-# https://github.com/pteromys/svgs2ttf/blob/master/examples/example.json
-
-[sfnt_names] # from https://github.com/pteromys/svgs2ttf/blob/master/examples/example.json
-  Copyright = "(C) Copyright me, this year"
-  Family = "MyFont"
-  UniqueID = "MyFont 2021-02-04"
-  Fullname = "MyFont Regular"
-  Version = "Version 1.0"
-  PostScriptName = "MyFont-Regular"
-  License = "All rights reserved"
-  "License URL" = ""

@@ -19,9 +19,9 @@ import datetime
 # ▀▄▄▀  ▀▄▄    ▀▄       █▄▄▀  █    ▀▄▄▀  █▄▄▀  ▀▄▄   █     ▀▄   █  ▀▄▄   ▀▄▄▀
 #                       █                █
 
-def set_properties(font, config, cli_args, version_major, version_minor, version_patch):
-        """Set metadata of the font from config."""
-        sfnt_names = config["sfnt_names"]
+def set_properties(font, cli_args, version_major, version_minor, version_patch):
+        """Set metadata of the font."""
+        sfnt_names = {}
         lang = "English (US)" # `sfnt_names` are stored under the language
         fontname = cli_args.get("filename", "Untitled")
         family = cli_args.get("family", None) or fontname
@@ -66,36 +66,35 @@ def set_properties(font, config, cli_args, version_major, version_minor, version
             font.uwidth = 62.5
             font.upos   = -125 - 62.5/2
 
-        # replace default.json values with CLI-provided values
-        if config.get("sfnt_names", None):
-            # String fields built-in to the ffpython API: ['Copyright', 'Family', 'UniqueID', 'Fullname', 'Version', 'PostScriptName', 'License', 'License URL']
-            config["sfnt_names"]["Family"] = family
-            config["sfnt_names"]["Fullname"] = family + " " + style
-            config["sfnt_names"]["PostScriptName"] = family.replace(" ", "-") + "-" + style
-            config["sfnt_names"]["SubFamily"] = style
-            config["sfnt_names"]["Designer"] = designer
-            config["sfnt_names"]["Copyright"] = "(C) Copyright " + designer + ", " + str(datetime.datetime.now().year)
-            config["sfnt_names"]["License"] = license
-            config["sfnt_names"]["License URL"] = licenseurl
-            if license == "ofl":
-                config["sfnt_names"]["License"] = "SIL Open Font License, Version 1.1"
-                config["sfnt_names"]["License URL"] = "https://openfontlicense.org"
-            if license == "cc0":
-                config["sfnt_names"]["License"] = "CC0 1.0 Universal"
-                config["sfnt_names"]["License URL"] = "https://creativecommons.org/publicdomain/zero/1.0/"
-            if license == "arr":
-                config["sfnt_names"]["License"] = "All rights reserved"
+        # String fields built-in to the ffpython API: ['Copyright', 'Family', 'UniqueID', 'Fullname', 'Version', 'PostScriptName', 'License', 'License URL']
+        sfnt_names["Family"] = family
+        sfnt_names["Fullname"] = family + " " + style
+        sfnt_names["PostScriptName"] = family.replace(" ", "-") + "-" + style
+        sfnt_names["SubFamily"] = style
+        sfnt_names["Designer"] = designer
+        sfnt_names["Copyright"] = "(C) Copyright " + designer + ", " + str(datetime.datetime.now().year)
+        sfnt_names["License"] = license
+        sfnt_names["License URL"] = licenseurl
+        if license == "ofl":
+            sfnt_names["License"] = "SIL Open Font License, Version 1.1"
+            sfnt_names["License URL"] = "https://openfontlicense.org"
+        if license == "cc0":
+            sfnt_names["License"] = "CC0 1.0 Universal"
+            sfnt_names["License URL"] = "https://creativecommons.org/publicdomain/zero/1.0/"
+        if license == "arr":
+            sfnt_names["License"] = "All rights reserved"
 
-            # Numbered fields - https://learn.microsoft.com/en-us/typography/opentype/spec/name
-            # 8: Manufacturer
-            config["sfnt_names"][8] = "SP Font Maker - https://wasokeli.github.io/sp-font-maker"
-            # 11: Vendor URL
-            config["sfnt_names"][11] = "https://wasokeli.github.io/sp-font-maker"
+        # Numbered fields - https://learn.microsoft.com/en-us/typography/opentype/spec/name
+        # 8: Manufacturer
+        sfnt_names[8] = "SP Font Maker - https://wasokeli.github.io/sp-font-maker"
+        # 11: Vendor URL
+        sfnt_names[11] = "https://wasokeli.github.io/sp-font-maker"
 
-        # # probably best to omit this, so that the generated binaries are actually comparable
-        # config["sfnt_names"]["UniqueID"] = family + " " + str(uuid.uuid4())
+        # probably best to omit this, so that the generated binaries are actually comparable
+        # ...actually fontforge stores a modification date in the `FFTM` and `head` tables, so i'd need to figure out how to get rid of those anyway
+        sfnt_names["UniqueID"] = family + " " + str(uuid.uuid4())
 
-        for k, v in config.get("sfnt_names", {}).items():
+        for k, v in sfnt_names.items():
             font.appendSFNTName(str(lang), k, v)
 
 
@@ -593,7 +592,7 @@ def convert_main(default_json, debug_dir, out_dir, cli_args, v_major, v_minor, v
         cli_args_dict = json.loads(cli_args) or {}
 
         font = fontforge.font()
-        set_properties(font, config, cli_args_dict, int(v_major), int(v_minor), int(v_patch))
+        set_properties(font, cli_args_dict, int(v_major), int(v_minor), int(v_patch))
         add_glyphs(font, config, cli_args_dict, debug_dir, int(v_major), int(v_minor), int(v_patch))
 
         # Generate font and save as a .ttf file

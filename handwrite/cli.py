@@ -17,7 +17,7 @@ def run(sheet, output_directory, debug_dir, default_json, cli_args, other_words_
     png_to_svg(cli_args, debug_dir=debug_dir)
     svg_to_ttf(debug_dir, output_directory, default_json, cli_args, other_words_string)
     add_ligatures(debug_dir, output_directory, default_json, cli_args, other_words_string)
-    create_toml_html(debug_dir, output_directory, default_json, cli_args, other_words_string)
+    create_toml_html(debug_dir, output_directory, cli_args, other_words_string)
 
 
 def converters(sheet, output_directory, debug_dir=None, default_json=None, cli_args=None, other_words_string=None):

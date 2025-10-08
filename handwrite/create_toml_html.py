@@ -13,12 +13,9 @@ from datetime import datetime
         # ▄  ▀▄  ▀▄▄▀  █ █ █  █
         # generate .toml file
 
-def create_toml_html(debug_dir, out_dir, default_json, cli_args=None, other_words_string=None):
+def create_toml_html(debug_dir, out_dir, cli_args=None, other_words_string=None):
 
         cli_args_dict = cli_args
-
-        with open(default_json) as f:
-            default_json_data = json.load(f)
 
         filename = (cli_args_dict.get("filename", "Untitled"))
         if filename is None:
@@ -32,8 +29,8 @@ def create_toml_html(debug_dir, out_dir, default_json, cli_args=None, other_word
 
         # for generating the ilo Linku TOML files for each font,
         # we use short license codes from the SPDX License List: https://spdx.org/licenses/
-        license = cli_args_dict.get("license", None) or default_json_data["sfnt_names"].get("License", "All rights reserved")
-        licenseurl = cli_args_dict.get("licenseurl", None) or default_json_data["sfnt_names"].get("License URL", "")
+        license = cli_args_dict.get("license", "All rights reserved")
+        licenseurl = cli_args_dict.get("licenseurl", "")
         if license == "ofl":
             license = "OFL-1.1"
             licenseurl = "https://openfontlicense.org"
