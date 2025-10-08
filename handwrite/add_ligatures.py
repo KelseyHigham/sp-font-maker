@@ -176,8 +176,13 @@ feature liga {
         list_of_ligs.append(("  sub              space space   by   ideographicspace;", 2))
         list_of_ligs.append(("  sub                   hyphen   by    stackJoinTok;", 1))
 
-        list_of_ligs.append(("  sub              l i n u w i   by      linluwiTok;", 6))
-        list_of_ligs.append(("  sub                k e p e n   by      kepekenTok;", 5))
+        # linuwi, kepen, ali
+        synonyms = default_json_data.get("glyphs", {}).get("synonyms")
+        for synonym in synonyms:
+            list_of_ligs.append((
+                f"  sub   {(synonym["ligature"]).rjust(22)}   by   {(synonym["target-name"]).rjust(13)};",
+                len(synonym["ligature"].split(' '))
+            ))
 
         # sort them by number of tokens
         list_of_ligs.sort(reverse=True, key=lambda x: x[1])

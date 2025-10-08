@@ -462,9 +462,6 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
         #                                                                    # bug? vv
         sorted_characters.append([roi, cartouche_middle_glyph_left, glyph_top, glyph_w, glyph_h])
 
-        # add ali
-        sorted_characters.append(sorted_characters[4]) # ali
-
 
 
         # Latin characters

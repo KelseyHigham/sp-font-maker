@@ -20,7 +20,7 @@
 
 
 # replace with the contents of [glyphs]
-glyphs-fancy = [
+glyphs-fancy = [ # currently implemented
   # row 0
   {codepoint = 0xf1900, name = "aTok",       ligature = "a"}, 
   {codepoint = 0xf1901, name = "akesiTok",   ligature = "a k e s i", rotate = true, direction = "up"}, 
@@ -231,11 +231,6 @@ glyphs-fancy = [
   # generated from row 6, cartoucheEndTok
   {codepoint = 0xf1992, name = "cartoucheMiddleTok", type = "middle", source-glyph = "cartoucheEndTok"},
 
-
-  # synonyms
-  {name = "aliTok", ligature = "a l i"},             # defined in sheettopng.py, line 440
-  # {name = "linluwiTok", ligature = "l i n u w i"}, # defined in svgtottf.py, line 192
-  # {name = "kepekenTok", ligature = "k e p e n"},   # defined in svgtottf.py, line 193
 
 
   # define ASCII names, so that they can be referenced in ligatures
@@ -294,7 +289,7 @@ glyphs-fancy = [
 
 [glyphs]
 
-sheet = [
+sheet = [ # not implemented yet
   # row 0
   {codepoint = 0xf1900, name = "aTok",       ligature = "a"}, 
   {codepoint = 0xf1901, name = "akesiTok",   ligature = "a k e s i", rotate = true, direction = "up"}, 
@@ -494,19 +489,18 @@ sheet = [
   {},
 ]
 
-generated = [
+generated = [ # not implemented yet
   # generated from row 6, cartoucheEndTok
   {codepoint = 0xf1992, name = "cartoucheMiddleTok", type = "middle", source-glyph = "cartoucheEndTok"},
 ]
 
-synonyms = [
-  # synonyms
-    {ligature = "a l i",              name = "aliTok"},     # defined in sheettopng.py, line 440
-  # {ligature = "l i n u w i", target-name = "linluwiTok"}, # defined in svgtottf.py, line 192
-  # {ligature = "k e p e n",   target-name = "kepekenTok"}, # defined in svgtottf.py, line 193
+synonyms = [ # implemented!!!
+  {ligature = "a l i",       target-name = "aleTok"},
+  {ligature = "l i n u w i", target-name = "linluwiTok"},
+  {ligature = "k e p e n",   target-name = "kepekenTok"},
 ]
 
-ascii-dependencies = [
+ascii-dependencies = [ # not implemented yet
   # define ASCII glyph names, so that they can be referenced in ligatures
   {codepoint = 0x5b, name = "bracketleft"},
   {codepoint = 0x5f, name = "underscore"},
@@ -563,7 +557,7 @@ ascii-dependencies = [
 
 # UCSUR codepoints for words not included in the default sheet, since people may write them in.
 # Currently defined in cli.py, lines 114-121.
-other_ucsur_codepoints = [
+other_ucsur_codepoints = [ # not implemented yet
   {codepoint = 0xf19a1, name = "apejaTok", ligature = "a p e j a"},
   {codepoint = 0xf1984, name = "kokosilaTok",  ligature = "k o k o s i l a"},
   {codepoint = 0xf19a0, name = "pakeTok",  ligature = "p a k e"},
