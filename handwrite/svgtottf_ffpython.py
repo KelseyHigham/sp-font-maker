@@ -13,100 +13,98 @@ import uuid
 import datetime
 
 
-class SVGtoTTF:
+#              ▄                                           ▄    ▀
+# ▄▀▀▄  ▄▀▀▄  ▀█▀       █▀▀▄  █▄▀  ▄▀▀▄  █▀▀▄  ▄▀▀▄  █▄▀  ▀█▀  ▀█  ▄▀▀▄  ▄▀▀▄
+#  ▀▄   █▄▄█   █        █  █  █    █  █  █  █  █▄▄█  █     █    █  █▄▄█   ▀▄
+# ▀▄▄▀  ▀▄▄    ▀▄       █▄▄▀  █    ▀▄▄▀  █▄▄▀  ▀▄▄   █     ▀▄   █  ▀▄▄   ▀▄▄▀
+#                       █                █
 
-     #              ▄                                           ▄    ▀
-     # ▄▀▀▄  ▄▀▀▄  ▀█▀       █▀▀▄  █▄▀  ▄▀▀▄  █▀▀▄  ▄▀▀▄  █▄▀  ▀█▀  ▀█  ▄▀▀▄  ▄▀▀▄
-     #  ▀▄   █▄▄█   █        █  █  █    █  █  █  █  █▄▄█  █     █    █  █▄▄█   ▀▄
-     # ▀▄▄▀  ▀▄▄    ▀▄       █▄▄▀  █    ▀▄▄▀  █▄▄▀  ▀▄▄   █     ▀▄   █  ▀▄▄   ▀▄▄▀
-     #                       █                █
-
-    def set_properties(self, version_major, version_minor, version_patch):
+def set_properties(font, config, cli_args, version_major, version_minor, version_patch):
         """Set metadata of the font from config."""
-        props = self.config["props"]
-        sfnt_names = self.config["sfnt_names"]
+        props = config["props"]
+        sfnt_names = config["sfnt_names"]
         lang = props.get("lang", "English (US)")
-        fontname = self.cli_args.get("filename", None) or props.get(
+        fontname = cli_args.get("filename", None) or props.get(
             "filename", "Example"
         )
-        family = self.cli_args.get("family", None) or fontname
+        family = cli_args.get("family", None) or fontname
         style = props.get("style", "Regular")
-        designer = self.cli_args.get("designer", None) or props.get("designer", "jan pi toki pona")
-        license = self.cli_args.get("license", None) or sfnt_names.get("License", "All rights reserved")
-        licenseurl = self.cli_args.get("licenseurl", None) or sfnt_names.get("License URL", "")
+        designer = cli_args.get("designer", None) or props.get("designer", "jan pi toki pona")
+        license = cli_args.get("license", None) or sfnt_names.get("License", "All rights reserved")
+        licenseurl = cli_args.get("licenseurl", None) or sfnt_names.get("License URL", "")
 
-        self.font.familyname = fontname
-        self.font.fontname = fontname + "-" + style
-        self.font.fullname = fontname + " " + style
-        self.font.encoding = props.get("encoding", "UnicodeFull")
+        font.familyname = fontname
+        font.fontname = fontname + "-" + style
+        font.fullname = fontname + " " + style
+        font.encoding = props.get("encoding", "UnicodeFull")
 
         # OS/2 fields - https://learn.microsoft.com/en-us/typography/opentype/spec/os2
         #             - https://fontforge.org/docs/scripting/python/fontforge.html#fontforge.font.os2_codepages
-        self.font.os2_vendor = "SPFM"
+        font.os2_vendor = "SPFM"
 
-        self.font.os2_typoascent_add  = False # "Is Offset" checkbox in FontForge
-        self.font.os2_typodescent_add = False
-        self.font.os2_typolinegap     = 0
-        self.font.hhea_ascent_add     = False
-        self.font.hhea_descent_add    = False
-        self.font.hhea_linegap        = 0
+        font.os2_typoascent_add  = False # "Is Offset" checkbox in FontForge
+        font.os2_typodescent_add = False
+        font.os2_typolinegap     = 0
+        font.hhea_ascent_add     = False
+        font.hhea_descent_add    = False
+        font.hhea_linegap        = 0
 
-        pixel = self.cli_args.get("pixel") or False
+        pixel = cli_args.get("pixel") or False
         if version_major < 4 and not pixel: # apply the new metrics to pixel fonts retroactively, to combat blurring
-            self.font.ascent  = 800
-            self.font.descent = 200
-            self.font.os2_typoascent  = 1050
-            self.font.os2_typodescent = -450
-            self.font.hhea_ascent     = 1050
-            self.font.hhea_descent    = -450
-            self.font.uwidth = 62.5          # underline thickness is 1/16em
-            self.font.upos   = -200 - 62.5/2 # positioned outside of, and touching, the em square
+            font.ascent  = 800
+            font.descent = 200
+            font.os2_typoascent  = 1050
+            font.os2_typodescent = -450
+            font.hhea_ascent     = 1050
+            font.hhea_descent    = -450
+            font.uwidth = 62.5          # underline thickness is 1/16em
+            font.upos   = -200 - 62.5/2 # positioned outside of, and touching, the em square
         else:
-            self.font.ascent  = 875
-            self.font.descent = 125
-            self.font.os2_typoascent  = 1125 
-            self.font.os2_typodescent = -375
-            self.font.hhea_ascent     = 1125
-            self.font.hhea_descent    = -375
-            self.font.uwidth = 62.5
-            self.font.upos   = -125 - 62.5/2
+            font.ascent  = 875
+            font.descent = 125
+            font.os2_typoascent  = 1125 
+            font.os2_typodescent = -375
+            font.hhea_ascent     = 1125
+            font.hhea_descent    = -375
+            font.uwidth = 62.5
+            font.upos   = -125 - 62.5/2
         for k, v in props.items():
-            if hasattr(self.font, k):
+            if hasattr(font, k):
                 if isinstance(v, list):
                     v = tuple(v)
-                setattr(self.font, k, v)
+                setattr(font, k, v)
 
         # replace default.json values with CLI-provided values
-        if self.config.get("sfnt_names", None):
+        if config.get("sfnt_names", None):
             # String fields built-in to the ffpython API: ['Copyright', 'Family', 'UniqueID', 'Fullname', 'Version', 'PostScriptName', 'License', 'License URL']
-            self.config["sfnt_names"]["Family"] = family
-            self.config["sfnt_names"]["Fullname"] = family + " " + style
-            self.config["sfnt_names"]["PostScriptName"] = family.replace(" ", "-") + "-" + style
-            self.config["sfnt_names"]["SubFamily"] = style
-            self.config["sfnt_names"]["Designer"] = designer
-            self.config["sfnt_names"]["Copyright"] = "(C) Copyright " + designer + ", " + str(datetime.datetime.now().year)
-            self.config["sfnt_names"]["License"] = license
-            self.config["sfnt_names"]["License URL"] = licenseurl
+            config["sfnt_names"]["Family"] = family
+            config["sfnt_names"]["Fullname"] = family + " " + style
+            config["sfnt_names"]["PostScriptName"] = family.replace(" ", "-") + "-" + style
+            config["sfnt_names"]["SubFamily"] = style
+            config["sfnt_names"]["Designer"] = designer
+            config["sfnt_names"]["Copyright"] = "(C) Copyright " + designer + ", " + str(datetime.datetime.now().year)
+            config["sfnt_names"]["License"] = license
+            config["sfnt_names"]["License URL"] = licenseurl
             if license == "ofl":
-                self.config["sfnt_names"]["License"] = "SIL Open Font License, Version 1.1"
-                self.config["sfnt_names"]["License URL"] = "https://openfontlicense.org"
+                config["sfnt_names"]["License"] = "SIL Open Font License, Version 1.1"
+                config["sfnt_names"]["License URL"] = "https://openfontlicense.org"
             if license == "cc0":
-                self.config["sfnt_names"]["License"] = "CC0 1.0 Universal"
-                self.config["sfnt_names"]["License URL"] = "https://creativecommons.org/publicdomain/zero/1.0/"
+                config["sfnt_names"]["License"] = "CC0 1.0 Universal"
+                config["sfnt_names"]["License URL"] = "https://creativecommons.org/publicdomain/zero/1.0/"
             if license == "arr":
-                self.config["sfnt_names"]["License"] = "All rights reserved"
+                config["sfnt_names"]["License"] = "All rights reserved"
 
             # Numbered fields - https://learn.microsoft.com/en-us/typography/opentype/spec/name
             # 8: Manufacturer
-            self.config["sfnt_names"][8] = "SP Font Maker - https://wasokeli.github.io/sp-font-maker"
+            config["sfnt_names"][8] = "SP Font Maker - https://wasokeli.github.io/sp-font-maker"
             # 11: Vendor URL
-            self.config["sfnt_names"][11] = "https://wasokeli.github.io/sp-font-maker"
+            config["sfnt_names"][11] = "https://wasokeli.github.io/sp-font-maker"
 
         # # probably best to omit this, so that the generated binaries are actually comparable
-        # self.config["sfnt_names"]["UniqueID"] = family + " " + str(uuid.uuid4())
+        # config["sfnt_names"]["UniqueID"] = family + " " + str(uuid.uuid4())
 
-        for k, v in self.config.get("sfnt_names", {}).items():
-            self.font.appendSFNTName(str(lang), k, v)
+        for k, v in config.get("sfnt_names", {}).items():
+            font.appendSFNTName(str(lang), k, v)
 
 
 
@@ -122,7 +120,7 @@ class SVGtoTTF:
     # ▀▄▄█  ▀▄▄█  ▀▄▄█       ▀▄▄█  █  ▀▄▄█  █▄▄▀  █  █  ▀▄▄▀
     #                         ▄▄▀      ▄▄▀  █
 
-    def add_glyphs(self, debug_dir, version_major, version_minor, version_patch):
+def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, version_patch):
         """Read and add SVG images as glyphs to the font.
 
         Walks through the provided directory and uses each ord(character).svg file
@@ -140,7 +138,7 @@ class SVGtoTTF:
         # print("      It's fine, the font still works!")
 
         import psMat
-        for glyph_object in self.config["glyphs-fancy"]:
+        for glyph_object in config["glyphs-fancy"]:
             if 'name' in glyph_object:
                 name = glyph_object['name']
                 if 'codepoint' in glyph_object:
@@ -150,9 +148,9 @@ class SVGtoTTF:
 
                 # Create character glyph
                 if cp == 0:
-                    g = self.font.createChar(-1, name)
+                    g = font.createChar(-1, name)
                 else:
-                    g = self.font.createChar(cp, name)
+                    g = font.createChar(cp, name)
 
                 # Get outlines
                 src = "{}/{}.svg".format(name, name)
@@ -195,7 +193,7 @@ class SVGtoTTF:
 
                 # debug_metrics("aTok", "before scaling")
 
-                pixel = self.cli_args.get("pixel") or False
+                pixel = cli_args.get("pixel") or False
 
                 # Vertically center sitelen pona, middot, colon
                 # Do NOT center a-z, cartouches, long pi, te/to, (period?)
@@ -222,7 +220,7 @@ class SVGtoTTF:
                         top    = g.boundingBox()[3]
                         g.transform(psMat.translate(
                             0, 
-                            self.font.ascent - top - ((self.font.ascent + self.font.descent) - (top - bottom)) / 2
+                            font.ascent - top - ((font.ascent + font.descent) - (top - bottom)) / 2
                         ))
 
                 # Horizontally center sitelen pona, middot, colon, letters
@@ -288,11 +286,11 @@ class SVGtoTTF:
                 rotated_glyph_set = [g] # later we'll iterate through these to generate `.top` and `.bottom` versions
                 if 'rotate' in glyph_object:
                     def rotate(flip, degrees_ccw, suffix):
-                        rotated_glyph = self.font.createChar(-1, name + suffix)
-                        self.font.selection.select(g)
-                        self.font.copy()
-                        self.font.selection.select(rotated_glyph)
-                        self.font.paste()
+                        rotated_glyph = font.createChar(-1, name + suffix)
+                        font.selection.select(g)
+                        font.copy()
+                        font.selection.select(rotated_glyph)
+                        font.paste()
                         rotated_glyph_set.append(rotated_glyph)
 
                         to_center_x = -500
@@ -304,7 +302,7 @@ class SVGtoTTF:
                         if pixel:
                             # For pixel fonts, rotate around the assumed center pixel,
                             # with assumed 1px space between glyphs.
-                            pixel_size = self.config.get("pixel-size", 8)
+                            pixel_size = config.get("pixel-size", 8)
                             if pixel_size % 4 == 0:
                                 # If the em size is a multiple of 4, then the total scan width is even. 
                                 # Normal case. Assume that there's 1px empty space on the right.
@@ -385,14 +383,14 @@ class SVGtoTTF:
                             name != "toTok"
                         ):
                             stacking = True
-                            g_bottom = self.font.createChar(-1, glyph.glyphname + ".bottom")
-                            g_top    = self.font.createChar(-1, glyph.glyphname + ".top")
+                            g_bottom = font.createChar(-1, glyph.glyphname + ".bottom")
+                            g_top    = font.createChar(-1, glyph.glyphname + ".top")
 
                     if stacking:
-                        self.font.selection.select(glyph)
-                        self.font.copy()
-                        self.font.selection.select(g_bottom, g_top)
-                        self.font.paste()
+                        font.selection.select(glyph)
+                        font.copy()
+                        font.selection.select(g_bottom, g_top)
+                        font.paste()
                         g_bottom.width = 1000
                         g_bottom.vwidth = 1000
                         g_top   .width = 0
@@ -427,7 +425,7 @@ class SVGtoTTF:
 
         # originally 800x1000, minus 50 margin on each side for scanning margin
         # ...though the vertical situation might be more complicated?
-        for glyph in self.font:
+        for glyph in font:
             # self.font[glyph].width = 700
             # self.font[glyph].vwidth = 900  # used in vertical writing. might need to revise
             # self.font[glyph].width = 1000
@@ -449,10 +447,10 @@ class SVGtoTTF:
             #       "bottom", int(g.boundingBox()[1]), "top",   int(g.boundingBox()[3]))
 
         # combining cartouche extension (the middle of the cartouche)
-        self.font[0xf1992].width = 0
-        self.font[0xf1992].transform(psMat.translate(-1000, 0))
-        self.font[0x5f].width = 0
-        self.font[0x5f].transform(psMat.translate(-1000, 0))
+        font[0xf1992].width = 0
+        font[0xf1992].transform(psMat.translate(-1000, 0))
+        font[0x5f].width = 0
+        font[0x5f].transform(psMat.translate(-1000, 0))
 
 
 
@@ -460,74 +458,74 @@ class SVGtoTTF:
         #   - this would facilitate the overriding that's happening in cli.py#L104-L119
 
         # support default ASCII ligatures
-        pipe = self.font.createChar(ord("|"), "pipe")
+        pipe = font.createChar(ord("|"), "pipe")
         pipe.width = 1000
-        space = self.font.createChar(ord(" "), "space")
+        space = font.createChar(ord(" "), "space")
         space.width = 0
-        hyphen = self.font.createChar(ord("-"), "hyphen")
+        hyphen = font.createChar(ord("-"), "hyphen")
         hyphen.width = 0
         for number, name in enumerate(["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]):
-            digit = self.font.createChar(ord(str(number)), name)
+            digit = font.createChar(ord(str(number)), name)
             digit.width = 0
-        north = self.font.createChar(ord("^"), "north") # todo: replace these three, and `v`, with rotated lili. it would be cute i think
+        north = font.createChar(ord("^"), "north") # todo: replace these three, and `v`, with rotated lili. it would be cute i think
         north.width = 1000
-        west = self.font.createChar(ord("<"), "west")
+        west = font.createChar(ord("<"), "west")
         west.width = 1000
-        east = self.font.createChar(ord(">"), "east")
+        east = font.createChar(ord(">"), "east")
         east.width = 1000
 
         # fallback for unsupported SP features
-        plus = self.font.createChar(ord("+"), "plus")
+        plus = font.createChar(ord("+"), "plus")
         plus.width = 0
-        ampersand = self.font.createChar(ord("&"), "ampersand")
+        ampersand = font.createChar(ord("&"), "ampersand")
         ampersand.width = 0
-        opencurly = self.font.createChar(ord("{"), "opencurly")
+        opencurly = font.createChar(ord("{"), "opencurly")
         opencurly.width = 0
-        closecurly = self.font.createChar(ord("}"), "closecurly")
+        closecurly = font.createChar(ord("}"), "closecurly")
         closecurly.width = 0
-        openparen = self.font.createChar(ord("("), "openparen")
+        openparen = font.createChar(ord("("), "openparen")
         openparen.width = 0
-        closeparen = self.font.createChar(ord(")"), "closeparen")
+        closeparen = font.createChar(ord(")"), "closeparen")
         closeparen.width = 0
-        slash = self.font.createChar(ord("*"), "asterisk")
+        slash = font.createChar(ord("*"), "asterisk")
         slash.width = 1000
-        slash = self.font.createChar(ord('"'), 'doublequote')
+        slash = font.createChar(ord('"'), 'doublequote')
         slash.width = 1000
-        comma = self.font.createChar(ord(","), "comma")
+        comma = font.createChar(ord(","), "comma")
         comma.width = 1000
-        slash = self.font.createChar(ord("'"), "singlequote")
+        slash = font.createChar(ord("'"), "singlequote")
         slash.width = 1000
 
         # fallback for text intended as sitelen Lasina
-        bang = self.font.createChar(ord("!"), "exclamation")
+        bang = font.createChar(ord("!"), "exclamation")
         bang.width = 1000
-        question = self.font.createChar(ord("?"), "question")
+        question = font.createChar(ord("?"), "question")
         question.width = 1000
-        semicolon = self.font.createChar(ord(";"), "semicolon")
+        semicolon = font.createChar(ord(";"), "semicolon")
         semicolon.width = 1000
 
         # UCSUR features
-        ideographic_space = self.font.createChar(ord("　"), "ideographicspace")
+        ideographic_space = font.createChar(ord("　"), "ideographicspace")
         ideographic_space.width = 1000
-        zero_width = self.font.createChar(0x200b, "zerowidth")
+        zero_width = font.createChar(0x200b, "zerowidth")
         zero_width.width = 0
-        sp_stacking_joiner = self.font.createChar(0xf1995, "stackJoinTok")
+        sp_stacking_joiner = font.createChar(0xf1995, "stackJoinTok")
         sp_stacking_joiner.width = 0
 
         # fallback for unsupported UCSUR features
-        sp_scaling_joiner = self.font.createChar(0xf1996, "nestJoinTok")
+        sp_scaling_joiner = font.createChar(0xf1996, "nestJoinTok")
         sp_scaling_joiner.width = 0
-        zerowidthjoiner = self.font.createChar(0x200d, "zerowidthjoiner")
+        zerowidthjoiner = font.createChar(0x200d, "zerowidthjoiner")
         zerowidthjoiner.width = 0
-        sp_start_of_long_glyph = self.font.createChar(0xf1997)
+        sp_start_of_long_glyph = font.createChar(0xf1997)
         sp_start_of_long_glyph.width = 0
-        sp_end_of_long_glyph = self.font.createChar(0xf1998)
+        sp_end_of_long_glyph = font.createChar(0xf1998)
         sp_end_of_long_glyph.width = 0
-        sp_combining_long_glyph_extension = self.font.createChar(0xf1999)
+        sp_combining_long_glyph_extension = font.createChar(0xf1999)
         sp_combining_long_glyph_extension.width = 0
-        sp_start_of_reverse_long_glyph = self.font.createChar(0xf199a)
+        sp_start_of_reverse_long_glyph = font.createChar(0xf199a)
         sp_start_of_reverse_long_glyph.width = 0
-        sp_end_of_reverse_long_glyph = self.font.createChar(0xf199b)
+        sp_end_of_reverse_long_glyph = font.createChar(0xf199b)
         sp_end_of_reverse_long_glyph.width = 0
         # todo: add "start of long pi" as an additional codepoint for the "pi" glyph
         # todo: then add "end of long pi" here
@@ -546,7 +544,7 @@ class SVGtoTTF:
     # ▀▄▄█  ▀▄▄   █  █  ▀▄▄   █   ▀▄▄█   ▀▄  ▀▄▄         █   ▀▄▄▀  █  █   ▀▄        █    █  █  ▀▄▄
     #  ▄▄▀
 
-    def generate_font_file(self, filename, out_dir, default_json, debug_dir):
+def generate_font_file(font, filename, out_dir, default_json, debug_dir):
         """Output TTF file.
 
         Additionally checks for multiple outputs and duplicates.
@@ -575,8 +573,8 @@ class SVGtoTTF:
 
         # Generate font, but without ligatures yet, to temporary directory
         # sys.stderr.write("\nCreating %s\n" % outfile)
-        self.font.generate(outfile)
-        self.font.save(outfile[0:-4] + ".sfd")
+        font.generate(outfile)
+        font.save(outfile[0:-4] + ".sfd")
 
 
 
@@ -591,29 +589,29 @@ class SVGtoTTF:
     # █     █  █  █  █   █ █   █▄▄█  █     █          █ █ █  ▄▀▀█   █  █  █
     # ▀▄▄▀  ▀▄▄▀  █  █    █    ▀▄▄   █     ▀▄         █ █ █  ▀▄▄█   █  █  █
     #                                         ▄▄▄▄▄▄▄
-    def convert_main(self, default_json, debug_dir, out_dir, cli_args, v_major, v_minor, v_patch):
+def convert_main(default_json, debug_dir, out_dir, cli_args, v_major, v_minor, v_patch):
         try:
-            self.font = fontforge.font()
+            font = fontforge.font()
         except:
             import fontforge
             import psMat
 
         with open(default_json) as f:
-            self.config = json.load(f)
-        self.cli_args = json.loads(cli_args) or {}
+            config = json.load(f)
+        cli_args_dict = json.loads(cli_args) or {}
 
-        self.font = fontforge.font()
-        self.set_properties(int(v_major), int(v_minor), int(v_patch))
-        self.add_glyphs(debug_dir, int(v_major), int(v_minor), int(v_patch))
+        font = fontforge.font()
+        set_properties(font, config, cli_args_dict, int(v_major), int(v_minor), int(v_patch))
+        add_glyphs(font, config, cli_args_dict, debug_dir, int(v_major), int(v_minor), int(v_patch))
 
         # Generate font and save as a .ttf file
-        filename = self.cli_args.get("filename", None) or self.config["props"].get(
+        filename = cli_args_dict.get("filename", None) or config["props"].get(
             "filename", None
         )
-        self.generate_font_file(str(filename), out_dir, default_json, debug_dir)
+        generate_font_file(font, str(filename), out_dir, default_json, debug_dir)
 
 
 if __name__ == "__main__":
     if len(sys.argv) != 8:
         raise ValueError("Incorrect call to SVGtoTTF")
-    SVGtoTTF().convert_main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7])
+    convert_main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7])
