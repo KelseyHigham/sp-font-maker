@@ -11,56 +11,55 @@ import json
 import datetime
 
 
-class SVGtoTTF:
-    def convert(self, debug_dir, out_dir, default_json, cli_args=None, other_words_string=None):
-        print("SVGtoTTF")
-        """Convert a directory with SVG images to TrueType Font.
+def convert_svg_to_ttf(debug_dir, out_dir, default_json, cli_args=None, other_words_string=None):
+    """Convert a directory with SVG images to TrueType Font.
 
-        Calls a subprocess to the run this script with Fontforge Python
-        environment, because the FontForge libraries don't work in regular Python.
+    Calls a subprocess to the run this script with Fontforge Python
+    environment, because the FontForge libraries don't work in regular Python.
 
-        Then uses regular Python, and fontTools, to apply ligatures.
+    Then uses regular Python, and fontTools, to apply ligatures.
 
-        Then outputs a web page with examples of the font.
+    Then outputs a web page with examples of the font.
 
-        Parameters
-        ----------
-        debug_dir : str
-            Path to directory with SVGs to be converted.
-        out_dir : str
-            Path to output directory.
-        default_json : str
-            Path to config file.
-        cli_args : dict
-            Dictionary containing the metadata (filename, family or style)
-        """
-        import subprocess
-        import platform
-        from packaging.version import Version
-        sheet_version = cli_args.get("sheetversion") or "99999999.999999.999999"
+    Parameters
+    ----------
+    debug_dir : str
+        Path to directory with SVGs to be converted.
+    out_dir : str
+        Path to output directory.
+    default_json : str
+        Path to config file.
+    cli_args : dict
+        Dictionary containing the metadata (filename, family or style)
+    """
+    print("SVGtoTTF")
+    import subprocess
+    import platform
+    from packaging.version import Version
+    sheet_version = cli_args.get("sheetversion") or "99999999.999999.999999"
 
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        svgtottf_ffpython_path = os.path.join(current_dir, 'svgtottf_ffpython.py')
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    svgtottf_ffpython_path = os.path.join(current_dir, 'svgtottf_ffpython.py')
 
-        subprocess.run(
-            (
-                ["ffpython"]
-                if platform.system() == "Windows"
-                else ["fontforge", "-script"]
-            )
-            + [
-                svgtottf_ffpython_path,
-                default_json,
-                debug_dir,
-                out_dir,
-                json.dumps(cli_args),
-                str(Version(sheet_version).major),
-                str(Version(sheet_version).minor),
-                str(Version(sheet_version).micro)
-            ]
+    subprocess.run(
+        (
+            ["ffpython"]
+            if platform.system() == "Windows"
+            else ["fontforge", "-script"]
         )
+        + [
+            svgtottf_ffpython_path,
+            default_json,
+            debug_dir,
+            out_dir,
+            json.dumps(cli_args),
+            str(Version(sheet_version).major),
+            str(Version(sheet_version).minor),
+            str(Version(sheet_version).micro)
+        ]
+    )
 
-        self.add_ligatures(debug_dir, out_dir, default_json, cli_args, other_words_string)
+    add_ligatures(debug_dir, out_dir, default_json, cli_args, other_words_string)
 
 
 
@@ -76,30 +75,30 @@ class SVGtoTTF:
     # █   █  ▀▄▄█  ▀▄▄█   ▀▄  ▀▄▄█  █    ▀▄▄   ▀▄▄▀
     #         ▄▄▀
 
-    def add_ligatures(self, debug_dir, out_dir, default_json, cli_args=None, other_words_string=None):
+def add_ligatures(debug_dir, out_dir, default_json, cli_args=None, other_words_string=None):
         # Now the font has exported, presumably. 
         # We're back to the `python` environment, not the `ffpython` one, so we can use libraries like fontTools, camelCase.
         import fontTools  # camelCase!
 
         # `debug_dir` is the temp directory
 
-        self.cli_args = json.loads(json.dumps(cli_args)) or {}
+        cli_args_dict = json.loads(json.dumps(cli_args)) or {}
 
         with open(default_json) as f:
-            self.default_json = json.load(f)
+            default_json_data = json.load(f)
 
-        filename = (self.cli_args.get("filename", None) or self.default_json["props"].get("filename", None))
+        filename = (cli_args_dict.get("filename", None) or default_json_data["props"].get("filename", None))
         if filename is None:
             raise NameError("filename not found in config file.")
 
-        family = (self.cli_args.get("family", None) or filename)
+        family = (cli_args_dict.get("family", None) or filename)
 
-        designer = self.cli_args.get("designer", None) or self.default_json["props"].get("designer", "jan pi toki pona")
+        designer = cli_args_dict.get("designer", None) or default_json_data["props"].get("designer", "jan pi toki pona")
 
         # for generating the ilo Linku TOML files for each font,
         # we use short license codes from the SPDX License List: https://spdx.org/licenses/
-        license = self.cli_args.get("license", None) or self.default_json["sfnt_names"].get("License", "All rights reserved")
-        licenseurl = self.cli_args.get("licenseurl", None) or self.default_json["sfnt_names"].get("License URL", "")
+        license = cli_args_dict.get("license", None) or default_json_data["sfnt_names"].get("License", "All rights reserved")
+        licenseurl = cli_args_dict.get("licenseurl", None) or default_json_data["sfnt_names"].get("License URL", "")
         if license == "ofl":
             license = "OFL-1.1"
             licenseurl = "https://openfontlicense.org"
@@ -479,7 +478,7 @@ features = [
 
 # Pick one style, or put multiple comma-separated styles in quotes.''')
 
-        pixel = self.cli_args.get("pixel") or False
+        pixel = cli_args_dict.get("pixel") or False
         if pixel:
             ilo_linku_toml_file.write('''
 # style = "handwritten"
@@ -510,7 +509,7 @@ style = "handwritten"
         print("🌐 If hosting, give this to " + designer + ": https://wasokeli.github.io/sp-font-maker/" + family.replace(" ", "-"))
         print("🏠 Preview in browser: file://" + os.path.abspath(out_dir + os.sep + family.replace(" ", "-") + ".html").replace("\\", "/") + "\n")
 
-        self.generate_web_page(out_dir, filename, family, designer, license, licenseurl, other_words_string)
+        generate_web_page(out_dir, filename, family, designer, license, licenseurl, other_words_string)
 
 
 
@@ -526,7 +525,7 @@ style = "handwritten"
     #  █ █   ▀▄▄   █▄▄▀       █▄▄▀  ▀▄▄█  ▀▄▄█  ▀▄▄
     #                         █            ▄▄▀
 
-    def generate_web_page(self, out_dir, filename, family, designer, license, licenseurl, other_words_string=None):
+def generate_web_page(out_dir, filename, family, designer, license, licenseurl, other_words_string=None):
         other_words = []
         if other_words_string:
             other_words = other_words_string.split()

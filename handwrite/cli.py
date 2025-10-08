@@ -5,15 +5,15 @@ import tempfile
 import json
 import tomllib
 
-from handwrite import SHEETtoPNG
-from handwrite import PNGtoSVG
-from handwrite import SVGtoTTF
+from handwrite.sheettopng import convert_sheet_to_png
+from handwrite.pngtosvg import convert_png_to_svg
+from handwrite.svgtottf import convert_svg_to_ttf
 
 
 def run(sheet, output_directory, debug_dir, default_json, cli_args, other_words_string):
-    SHEETtoPNG().convert(sheet, debug_dir, default_json, cli_args, other_words_string)
-    PNGtoSVG().convert(cli_args, debug_dir=debug_dir)
-    SVGtoTTF().convert(debug_dir, output_directory, default_json, cli_args, other_words_string)
+    convert_sheet_to_png(sheet, debug_dir, default_json, cli_args, other_words_string)
+    convert_png_to_svg(cli_args, debug_dir=debug_dir)
+    convert_svg_to_ttf(debug_dir, output_directory, default_json, cli_args, other_words_string)
 
 
 def converters(sheet, output_directory, debug_dir=None, default_json=None, cli_args=None, other_words_string=None):

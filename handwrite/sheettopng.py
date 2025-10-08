@@ -5,42 +5,39 @@ import cv2
 from packaging.version import Version
 from PIL import Image, ImageDraw
 
-class SHEETtoPNG:
-    """Converter class to convert input sample sheet to character PNGs."""
+def convert_sheet_to_png(sheet, debug_dir, default_json, cli_args, other_words_string, cols=20, rows=9):
+    """Convert a sheet of sample writing input to a custom directory structure of PNGs.
 
-    def convert(self, sheet, debug_dir, default_json, cli_args, other_words_string, cols=20, rows=9):
-        print("SHEETtoPNG")
-        """Convert a sheet of sample writing input to a custom directory structure of PNGs.
+    Detect all characters in the sheet as a separate contours and convert each to
+    a PNG image in a temp/user provided directory.
 
-        Detect all characters in the sheet as a separate contours and convert each to
-        a PNG image in a temp/user provided directory.
-
-        Parameters
-        ----------
-        sheet : str
-            Path to the sheet file to be converted.
-        debug_dir : str
-            Path to directory to save characters in.
-        default_json: str
-            Path to config file.
-        cols : int, default=8
-            Number of columns of expected contours. Defaults to 8 based on the default sample.
-        rows : int, default=10
-            Number of rows of expected contours. Defaults to 10 based on the default sample.
-        """
-        with open(default_json) as f:
-            threshold_value = json.load(f).get("threshold_value", 200)
-        if os.path.isdir(sheet):
-            raise IsADirectoryError("Sheet parameter should not be a directory.")
-        characters = self.detect_characters(
-            debug_dir, default_json, sheet, threshold_value, cli_args, other_words_string, cols=cols, rows=rows
-        )
-        self.save_images(
-            characters, # more like cells
-            debug_dir,
-            default_json,
-            cli_args
-        )
+    Parameters
+    ----------
+    sheet : str
+        Path to the sheet file to be converted.
+    debug_dir : str
+        Path to directory to save characters in.
+    default_json: str
+        Path to config file.
+    cols : int, default=8
+        Number of columns of expected contours. Defaults to 8 based on the default sample.
+    rows : int, default=10
+        Number of rows of expected contours. Defaults to 10 based on the default sample.
+    """
+    print("SHEETtoPNG")
+    with open(default_json) as f:
+        threshold_value = json.load(f).get("threshold_value", 200)
+    if os.path.isdir(sheet):
+        raise IsADirectoryError("Sheet parameter should not be a directory.")
+    characters = detect_characters(
+        debug_dir, default_json, sheet, threshold_value, cli_args, other_words_string, cols=cols, rows=rows
+    )
+    save_images(
+        characters, # more like cells
+        debug_dir,
+        default_json,
+        cli_args
+    )
 
 
 
@@ -50,7 +47,7 @@ class SHEETtoPNG:
 
 
 
-    def detect_characters(self, debug_dir, default_json, sheet_image, threshold_value, cli_args, other_words_string, cols=20, rows=9):
+def detect_characters(debug_dir, default_json, sheet_image, threshold_value, cli_args, other_words_string, cols=20, rows=9):
         """Detect contours on the input image and filter them to get only characters.
 
         Uses opencv to threshold the image for better contour detection. After finding all
@@ -540,7 +537,7 @@ class SHEETtoPNG:
 
 
 
-    def save_images(self, characters, debug_dir, default_json, cli_args):
+def save_images(characters, debug_dir, default_json, cli_args):
         """Create directory for each character and save as PNG.
 
         Creates directory and PNG file for each image as following:
@@ -592,18 +589,16 @@ class SHEETtoPNG:
         # Trim cartouche characters
             # We'll have to do the same thing for long pi
             # and any other character that spans two cells
-        self.pad("right", debug_dir, cli_args, "cartoucheStartTok")
-        self.pad("right", debug_dir, cli_args, "bracketleft")
+        pad("right", debug_dir, cli_args, "cartoucheStartTok")
+        pad("right", debug_dir, cli_args, "bracketleft")
         
-        self.pad("left",  debug_dir, cli_args, "cartoucheEndTok")
-        self.pad("left",  debug_dir, cli_args, "bracketright")
+        pad("left",  debug_dir, cli_args, "cartoucheEndTok")
+        pad("left",  debug_dir, cli_args, "bracketright")
 
-        self.pad("right", debug_dir, cli_args, "cartoucheMiddleTok", True)
-        self.pad("left",  debug_dir, cli_args, "cartoucheMiddleTok", True)
-        self.pad("right", debug_dir, cli_args, "underscore", True)
-        self.pad("left",  debug_dir, cli_args, "underscore", True)
-
-
+        pad("right", debug_dir, cli_args, "cartoucheMiddleTok", True)
+        pad("left",  debug_dir, cli_args, "cartoucheMiddleTok", True)
+        pad("right", debug_dir, cli_args, "underscore", True)
+        pad("left",  debug_dir, cli_args, "underscore", True)
 
 
 
@@ -612,7 +607,9 @@ class SHEETtoPNG:
 
 
 
-    def pad(self, side, debug_dir, cli_args, char_name, resize=False):
+
+
+def pad(side, debug_dir, cli_args, char_name, resize=False):
         char_img = Image.open(debug_dir + "/" + char_name + "/" + char_name + ".png")
 
         # resize the cartouche middle from 1px wide to the standard width (for a given sheet version)

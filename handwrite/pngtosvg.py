@@ -10,29 +10,26 @@ class PotraceNotFound(Exception):
     pass
 
 
-class PNGtoSVG:
-    """Converter class to convert character PNGs to BMPs and SVGs."""
+def convert_png_to_svg(cli_args, debug_dir):
+    """Call converters on each .png in the provider directory.
 
-    def convert(self, cli_args, debug_dir):
-        print("PNGtoSVG", end="\r")
-        """Call converters on each .png in the provider directory.
+    Walk through the custom directory containing all .png files
+    from sheettopng and convert them to png -> bmp -> svg.
+    """
+    print("PNGtoSVG", end="\r")
+    num_characters = 0
+    path = os.walk(debug_dir)
+    for root, dirs, files in path:
+        for f in files:
+            if f.endswith(".png") and not f.startswith("analysis"): # for a speedup when processing pixel fonts, require the glyph to be named in the JSON
+                num_characters += 1
+                print("PNGtoSVG", str(f[0:-4]).ljust(14, " ")[:14], "".join("." for i in range(num_characters//8)), end="\r")
+                png_to_bmp(root + "/" + f, cli_args)
+                # trim(root + "/" + f[0:-4] + ".bmp")
+                bmp_to_svg(root + "/" + f[0:-4] + ".bmp")
+    print("PNGtoSVG                                                                      ")
 
-        Walk through the custom directory containing all .png files
-        from sheettopng and convert them to png -> bmp -> svg.
-        """
-        num_characters = 0
-        path = os.walk(debug_dir)
-        for root, dirs, files in path:
-            for f in files:
-                if f.endswith(".png") and not f.startswith("analysis"): # for a speedup when processing pixel fonts, require the glyph to be named in the JSON
-                    num_characters += 1
-                    print("PNGtoSVG", str(f[0:-4]).ljust(14, " ")[:14], "".join("." for i in range(num_characters//8)), end="\r")
-                    self.pngToBmp(root + "/" + f, cli_args)
-                    # self.trim(root + "/" + f[0:-4] + ".bmp")
-                    self.bmpToSvg(root + "/" + f[0:-4] + ".bmp")
-        print("PNGtoSVG                                                                      ")
-
-    def bmpToSvg(self, path):
+def bmp_to_svg(path):
         """Convert .bmp image to .svg using potrace.
 
         Converts the passed .bmp file to .svg using the potrace
@@ -55,7 +52,7 @@ class PNGtoSVG:
             subprocess.run(["potrace", path, "--backend", "svg", "--output", path[0:-4] + ".svg",])
             # note: the --margin parameter doesn't help me here
 
-    def pngToBmp(self, path, cli_args):
+def png_to_bmp(path, cli_args):
         """Convert .bmp image to .svg using potrace.
 
         Converts the passed .bmp file to .svg using the potrace
@@ -197,7 +194,7 @@ class PNGtoSVG:
         img.putdata(data)
         img.save(path[0:-4] + ".bmp")
 
-    def trim(self, im_path):
+def trim(im_path):
         im = Image.open(im_path)
         bg = Image.new(im.mode, im.size, im.getpixel((0, 0)))
         bg.save(im_path + "_bg.bmp")
