@@ -5,7 +5,7 @@ import cv2
 from packaging.version import Version
 from PIL import Image, ImageDraw
 
-def convert_sheet_to_png(sheet, debug_dir, default_json, cli_args, other_words_string, cols=20, rows=9):
+def sheet_to_png(sheet, debug_dir, default_json, cli_args, other_words_string, cols=20, rows=9):
     """Convert a sheet of sample writing input to a custom directory structure of PNGs.
 
     Detect all characters in the sheet as a separate contours and convert each to
@@ -145,7 +145,6 @@ def detect_characters(debug_dir, default_json, sheet_image, threshold_value, cli
         # for row in range(rows):
         #     print(contours[row])
 
-# START OF KELLY ZONE
         import math
         def small_rect(contour):
             # find a smaller rect,
@@ -525,7 +524,6 @@ def detect_characters(debug_dir, default_json, sheet_image, threshold_value, cli
         
 
 
-# END OF KELLY ZONE
 
         return sorted_characters
 

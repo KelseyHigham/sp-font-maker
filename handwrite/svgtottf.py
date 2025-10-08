@@ -11,7 +11,7 @@ import json
 import datetime
 
 
-def convert_svg_to_ttf(debug_dir, out_dir, default_json, cli_args=None, other_words_string=None):
+def svg_to_ttf(debug_dir, out_dir, default_json, cli_args=None, other_words_string=None):
     """Convert a directory with SVG images to TrueType Font.
 
     Calls a subprocess to the run this script with Fontforge Python

@@ -10,7 +10,7 @@ class PotraceNotFound(Exception):
     pass
 
 
-def convert_png_to_svg(cli_args, debug_dir):
+def png_to_svg(cli_args, debug_dir):
     """Call converters on each .png in the provider directory.
 
     Walk through the custom directory containing all .png files
