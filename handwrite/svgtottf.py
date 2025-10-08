@@ -59,8 +59,6 @@ def svg_to_ttf(debug_dir, out_dir, default_json, cli_args=None, other_words_stri
         ]
     )
 
-    add_ligatures(debug_dir, out_dir, default_json, cli_args, other_words_string)
-
 
 
 
@@ -82,7 +80,7 @@ def add_ligatures(debug_dir, out_dir, default_json, cli_args=None, other_words_s
 
         # `debug_dir` is the temp directory
 
-        cli_args_dict = json.loads(json.dumps(cli_args)) or {}
+        cli_args_dict = cli_args
 
         with open(default_json) as f:
             default_json_data = json.load(f)
@@ -92,19 +90,6 @@ def add_ligatures(debug_dir, out_dir, default_json, cli_args=None, other_words_s
             raise NameError("filename not found in config file.")
 
         family = (cli_args_dict.get("family", None) or filename)
-
-        designer = cli_args_dict.get("designer", None) or default_json_data["props"].get("designer", "jan pi toki pona")
-
-        # for generating the ilo Linku TOML files for each font,
-        # we use short license codes from the SPDX License List: https://spdx.org/licenses/
-        license = cli_args_dict.get("license", None) or default_json_data["sfnt_names"].get("License", "All rights reserved")
-        licenseurl = cli_args_dict.get("licenseurl", None) or default_json_data["sfnt_names"].get("License URL", "")
-        if license == "ofl":
-            license = "OFL-1.1"
-            licenseurl = "https://openfontlicense.org"
-        if license == "cc0":
-            license = "CC0-1.0"
-            licenseurl = "https://creativecommons.org/publicdomain/zero/1.0/"
 
         # fontTools: input font file
         infile = str(debug_dir + os.sep + (filename + " without ligatures.ttf"))
@@ -438,7 +423,36 @@ feature calt {
         # ▄  ▀▄  ▀▄▄▀  █ █ █  █
         # generate .toml file
 
+def create_toml_html(debug_dir, out_dir, default_json, cli_args=None, other_words_string=None):
         from datetime import datetime
+
+        cli_args_dict = cli_args
+
+        with open(default_json) as f:
+            default_json_data = json.load(f)
+
+        filename = (cli_args_dict.get("filename", None) or default_json_data["props"].get("filename", None))
+        if filename is None:
+            raise NameError("filename not found in config file.")
+
+        family = (cli_args_dict.get("family", None) or filename)
+
+        filename = filename + ".ttf" if not filename.endswith(".ttf") else filename
+
+        designer = cli_args_dict.get("designer", None) or default_json_data["props"].get("designer", "jan pi toki pona")
+
+        # for generating the ilo Linku TOML files for each font,
+        # we use short license codes from the SPDX License List: https://spdx.org/licenses/
+        license = cli_args_dict.get("license", None) or default_json_data["sfnt_names"].get("License", "All rights reserved")
+        licenseurl = cli_args_dict.get("licenseurl", None) or default_json_data["sfnt_names"].get("License URL", "")
+        if license == "ofl":
+            license = "OFL-1.1"
+            licenseurl = "https://openfontlicense.org"
+        if license == "cc0":
+            license = "CC0-1.0"
+            licenseurl = "https://creativecommons.org/publicdomain/zero/1.0/"
+
+
         ilo_linku_toml_file = open(out_dir + os.sep + family + ".toml", "w", encoding="utf-8")
         ilo_linku_toml_file.write('''#:schema ../../api/generated/font.json
 id        = "''' + family + '''"
@@ -509,7 +523,6 @@ style = "handwritten"
         print("🌐 If hosting, give this to " + designer + ": https://wasokeli.github.io/sp-font-maker/" + family.replace(" ", "-"))
         print("🏠 Preview in browser: file://" + os.path.abspath(out_dir + os.sep + family.replace(" ", "-") + ".html").replace("\\", "/") + "\n")
 
-        generate_web_page(out_dir, filename, family, designer, license, licenseurl, other_words_string)
 
 
 
@@ -525,7 +538,6 @@ style = "handwritten"
     #  █ █   ▀▄▄   █▄▄▀       █▄▄▀  ▀▄▄█  ▀▄▄█  ▀▄▄
     #                         █            ▄▄▀
 
-def generate_web_page(out_dir, filename, family, designer, license, licenseurl, other_words_string=None):
         other_words = []
         if other_words_string:
             other_words = other_words_string.split()

@@ -7,13 +7,15 @@ import tomllib
 
 from handwrite.sheettopng import sheet_to_png
 from handwrite.pngtosvg import png_to_svg
-from handwrite.svgtottf import svg_to_ttf
+from handwrite.svgtottf import svg_to_ttf, add_ligatures, create_toml_html
 
 
 def run(sheet, output_directory, debug_dir, default_json, cli_args, other_words_string):
     sheet_to_png(sheet, debug_dir, default_json, cli_args, other_words_string)
     png_to_svg(cli_args, debug_dir=debug_dir)
     svg_to_ttf(debug_dir, output_directory, default_json, cli_args, other_words_string)
+    add_ligatures(debug_dir, output_directory, default_json, cli_args, other_words_string)
+    create_toml_html(debug_dir, output_directory, default_json, cli_args, other_words_string)
 
 
 def converters(sheet, output_directory, debug_dir=None, default_json=None, cli_args=None, other_words_string=None):
