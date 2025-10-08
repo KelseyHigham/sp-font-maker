@@ -13,11 +13,11 @@ from handwrite.create_toml_html import create_toml_html
 
 
 def run(sheet, output_directory, debug_dir, default_json, cli_args, other_words_string):
+    create_toml_html(debug_dir, output_directory, cli_args, other_words_string)
     sheet_to_png(sheet, debug_dir, default_json, cli_args, other_words_string)
     png_to_svg(cli_args, debug_dir=debug_dir)
     svg_to_ttf(debug_dir, output_directory, default_json, cli_args, other_words_string)
     add_ligatures(debug_dir, output_directory, default_json, cli_args, other_words_string)
-    create_toml_html(debug_dir, output_directory, cli_args, other_words_string)
 
 
 def converters(sheet, output_directory, debug_dir=None, default_json=None, cli_args=None, other_words_string=None):
@@ -178,6 +178,7 @@ def main():
         _ api Keli melome Pingo penpo poni snoweli \
         _ kan kulijo misa molusa oke pa panke polinpin tona wa wasoweli waken\"`)""", default=None)
     parser.add_argument("--pixel", action='store_true', help="Pixel font (experimental, false by default)", default=False)
+    parser.add_argument("--no-toml", action='store_true', help="Skip creating a .TOML file (false by default)", default=False)
 
     args = parser.parse_args()
     # todo: skip recreating the dictionary and just do cli_args = parser.parse_args()
@@ -188,7 +189,8 @@ def main():
         "license": args.license, 
         "licenseurl": args.license_url, 
         "sheetversion": args.sheet_version,
-        "pixel": args.pixel
+        "pixel": args.pixel,
+        "notoml": args.no_toml
     }
     converters(
         args.input_path, args.output_directory, args.debug_directory, None, cli_args, args.other_words

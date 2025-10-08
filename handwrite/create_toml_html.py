@@ -39,8 +39,15 @@ def create_toml_html(debug_dir, out_dir, cli_args=None, other_words_string=None)
             licenseurl = "https://creativecommons.org/publicdomain/zero/1.0/"
 
 
-        ilo_linku_toml_file = open(out_dir + os.sep + family + ".toml", "w", encoding="utf-8")
-        ilo_linku_toml_file.write('''#:schema ../../api/generated/font.json
+
+        no_toml = cli_args_dict.get("notoml", False)
+        if no_toml:
+            print("\nSkipping ilo Linku .TOML file.\n")
+        else:
+            print("\nOpening .TOML for editing. To avoid, add `--no-toml`.\n")
+            ilo_linku_toml_file_path = out_dir + os.sep + family + ".toml"
+            ilo_linku_toml_file = open(ilo_linku_toml_file_path, "w", encoding="utf-8")
+            ilo_linku_toml_file.write('''#:schema ../../api/generated/font.json
 id        = "''' + family + '''"
 name      = "''' + family + '''"
 filename  = "''' + filename + '''"
@@ -78,17 +85,17 @@ features = [
 
 # Pick one style, or put multiple comma-separated styles in quotes.''')
 
-        pixel = cli_args_dict.get("pixel") or False
-        if pixel:
-            ilo_linku_toml_file.write('''
+            pixel = cli_args_dict.get("pixel") or False
+            if pixel:
+                ilo_linku_toml_file.write('''
 # style = "handwritten"
 style = "pixelated"''')
-        else:
-            ilo_linku_toml_file.write('''
+            else:
+                ilo_linku_toml_file.write('''
 style = "handwritten"
 # style = "pixelated"''')
 
-        ilo_linku_toml_file.write('''
+            ilo_linku_toml_file.write('''
 # style = "alternate design"
 # style = "uniform line weight"
 # style = "handdrawn"
@@ -103,8 +110,23 @@ style = "handwritten"
 # repo     = "https://github.com/wasokeli/wasokeli.github.io/tree/main/sp-font-maker"
 # webpage  = "https://wasokeli.github.io/sp-font-maker/''' + family.replace(" ", "-") + '''.html"
 ''')
-        # print("Generating " + out_dir + os.sep + family + ".toml for ilo Linku...")
-        ilo_linku_toml_file.close()
+            # print("Generating " + out_dir + os.sep + family + ".toml for ilo Linku...")
+            ilo_linku_toml_file.close()
+
+            import platform
+            import subprocess
+            if platform.system() == 'Windows':
+                os.startfile(ilo_linku_toml_file_path)
+            elif plaform.system() == 'Darwin': # macOS
+                try:
+                    subprocess.run(['open', ilo_linku_toml_file_path])
+                except:
+                    pass
+            elif plaform.system() == 'Linux':
+                try:
+                    subprocess.run(['xdg-open', ilo_linku_toml_file_path])
+                except:
+                    pass
 
         print("🌐 If hosting, give this to " + designer + ": https://wasokeli.github.io/sp-font-maker/" + family.replace(" ", "-"))
         print("🏠 Preview in browser: file://" + os.path.abspath(out_dir + os.sep + family.replace(" ", "-") + ".html").replace("\\", "/") + "\n")
