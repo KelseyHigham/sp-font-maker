@@ -44,7 +44,7 @@ def create_toml_html(debug_dir, out_dir, cli_args=None, other_words_string=None)
         if not_new:
             print("\nSkipping ilo Linku .TOML file.\n")
         else:
-            print("\nOpening ilo Linku .TOML for editing. To avoid, add `--not-new`.\n")
+            print("\nOpening ilo Linku .TOML for editing. To skip, add `--not-new`.\n")
             ilo_linku_toml_file_path = out_dir + os.sep + family + ".toml"
             ilo_linku_toml_file = open(ilo_linku_toml_file_path, "w", encoding="utf-8")
             ilo_linku_toml_file.write('''#:schema ../../api/generated/font.json
@@ -54,7 +54,7 @@ def create_toml_html(debug_dir, out_dir, cli_args=None, other_words_string=None)
 # 2. Add the URL to your .TTF file at the bottom of this .TOML file
 # 3. Fill out the rest of this .TOML file. If you don't have a repo or a webpage, leave those blank
 # 4. Submit the .TOML to this page: https://github.com/lipu-linku/sona/tree/main/fonts/metadata
-# 5. Ask for help if you need it! Join the Linku Discord, or make a GitHub Issue.
+# 5. Ask for help if you need it! Join the Linku Discord, or make a GitHub Issue on lipu-linku/sona.
 
 id        = "''' + family + '''"
 name      = "''' + family + '''"
@@ -249,15 +249,15 @@ taso pilin pi(jan ni) li suli la
 laso lete ni li lili e seli insa
 | | | li lape e ike toki
 | | | li open e ante
-| | | li esun e ko jaki| | | | | te a
-| | | | | e mu open| | | | | | ike a to
+| | | li esun e ko jaki | | | | | te a
+| | | | | e mu open | | | | | | ike a to
 
 kon pi(kule ala) li tan uta 
 | | | | li kalama utala lon telo 
 | | | | li nanpa mute 
 | | | | li tawa mun 
 | | | | li pakala nasa e suno sewi
-pimeja moli li kama namako e nasin tenpo| | | | | te mi pakala to
+pimeja moli li kama namako e nasin tenpo | | | | | te mi pakala to
 
 
 pona o kepeken alasa seme
@@ -267,7 +267,7 @@ anu pu anu nimi ante li sama kili
 te sina wile ala ni
 | sina wile mama e musi
 | sina wile olin e meli 
-| | | | e mije e tonsi to| | | | | ona li jo e ilo palisa 
+| | | | e mije e tonsi to | | | | | ona li jo e ilo palisa 
 | | | | | | | | | | | | | | | | | e sinpin tomo 
 | | | | | | | | | | | | | | | li pali e lupa
 | | | | | | | | | | | | | | telo li kama weka

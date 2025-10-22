@@ -453,7 +453,6 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
         # in sync with default.json, starting from line 216: "cartoucheMiddleTok"
         
 
-
         # for the middle portion of the cartouche, grab the rightmost 1px column
         # of the open cartouche. it'll be automatically stretched to the width
         # of a glyph when it's converted to BMP, then SVG.

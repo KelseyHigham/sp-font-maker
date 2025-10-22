@@ -510,13 +510,6 @@ ligature-aliases = [ # implemented!!!
   {ligature = "n i zero eight", target-name = "niTok.SW"},
 ]
 
-# ascii-dependencies, ligature-prerequisites, ligature-dependencies, ligature-prerequisite-glyph-names
-# fontTools.feaLib.error.FeatureLibError: The following glyph names are referenced but are missing from the glyph set:
-  # n (first found at <features>:15:25)
-# ligs are made of glyphs, not codepoints.....
-# it's not about the ascii at all
-# ligaturable glyphs
-# ligature-base-glyphs
 ligature-base-glyphs = [ # not implemented yet
   # define ASCII glyph names, so that they can be referenced in ligatures
   {codepoint = 0x5b, name = "bracketleft"},
@@ -575,8 +568,8 @@ ligature-base-glyphs = [ # not implemented yet
 # UCSUR codepoints for words not included in the default sheet, since people may write them in.
 # Currently defined in cli.py, lines 114-121.
 other_ucsur_codepoints = [ # not implemented yet
-  {codepoint = 0xf19a1, name = "apejaTok", ligature = "a p e j a"},
-  {codepoint = 0xf1984, name = "kokosilaTok",  ligature = "k o k o s i l a"},
-  {codepoint = 0xf19a0, name = "pakeTok",  ligature = "p a k e"},
-  {codepoint = 0xf19a3, name = "poweTok",  ligature = "p o w e"},
+  {codepoint = 0xf19a1, name = "apejaTok",    ligature = "a p e j a"},
+  {codepoint = 0xf1984, name = "kokosilaTok", ligature = "k o k o s i l a"},
+  {codepoint = 0xf19a0, name = "pakeTok",     ligature = "p a k e"},
+  {codepoint = 0xf19a3, name = "poweTok",     ligature = "p o w e"},
 ]
