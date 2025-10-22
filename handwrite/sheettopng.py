@@ -462,60 +462,12 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
         sorted_characters.append([roi, cartouche_middle_glyph_left, glyph_top, glyph_w, glyph_h])
 
 
-
-        # Latin characters
-
-        # add Latin [ _ ] . :, necessary for ligatures
-        sorted_characters.append(sorted_characters[120]) # bracketleft 
-        sorted_characters.append(sorted_characters[180]) # underscore  
-        sorted_characters.append(sorted_characters[121]) # bracketright
-        sorted_characters.append(sorted_characters[122]) # period
-        sorted_characters.append(sorted_characters[123]) # colon 
-
-        # add Latin a e n o, necessary for ligatures
-        sorted_characters.append(sorted_characters[0])   # a
-        sorted_characters.append(sorted_characters[9])   # e
-        sorted_characters.append(sorted_characters[148]) # n
-        sorted_characters.append(sorted_characters[68])  # o
-
-
-
-        # add every other Latin letter, for Pingo and name glyphs
-
-        sorted_characters.append(sorted_characters[0])   # A, shown as a
-        sorted_characters.append(sorted_characters[9])   # E, shown as e
-        sorted_characters.append(sorted_characters[148]) # N, shown as n
-        sorted_characters.append(sorted_characters[68])  # O, shown as o
-
-        for i,c in enumerate("ijklmpstuw"):
-            sorted_characters.append(sorted_characters[124+i]) # uppercase IJKLMPSTUW, shown as lowercase
-
-        sorted_characters.append(sorted_characters[129]) # b, shown as p
-        sorted_characters.append(sorted_characters[129]) # B, shown as p
-        sorted_characters.append(sorted_characters[130]) # c, shown as s
-        sorted_characters.append(sorted_characters[130]) # C, shown as s
-        sorted_characters.append(sorted_characters[131]) # d, shown as t
-        sorted_characters.append(sorted_characters[131]) # D, shown as t
-        sorted_characters.append(sorted_characters[129]) # f, shown as p
-        sorted_characters.append(sorted_characters[129]) # F, shown as p
-        sorted_characters.append(sorted_characters[126]) # g, shown as k
-        sorted_characters.append(sorted_characters[126]) # G, shown as k
-        sorted_characters.append(sorted_characters[126]) # h, shown as k
-        sorted_characters.append(sorted_characters[126]) # H, shown as k
-        sorted_characters.append(sorted_characters[126]) # q, shown as k
-        sorted_characters.append(sorted_characters[126]) # Q, shown as k
-        sorted_characters.append(sorted_characters[133]) # r, shown as w
-        sorted_characters.append(sorted_characters[133]) # R, shown as w
-        sorted_characters.append(sorted_characters[133]) # v, shown as w
-        sorted_characters.append(sorted_characters[133]) # V, shown as w
-        sorted_characters.append(sorted_characters[130]) # x, shown as s
-        sorted_characters.append(sorted_characters[130]) # X, shown as s
-        sorted_characters.append(sorted_characters[125]) # y, shown as j
-        sorted_characters.append(sorted_characters[125]) # Y, shown as j
-        sorted_characters.append(sorted_characters[130]) # z, shown as s
-        sorted_characters.append(sorted_characters[130]) # Z, shown as s
-        
-
+        # add base glyphs for ASCII ligatures: [_].:, a-z, A-Z
+        with open(default_json) as f:
+            default_json_data = json.load(f)
+        ligature_base_glyphs = default_json_data.get("glyphs", {}).get("ligature-base-glyphs")
+        for base_glyph in ligature_base_glyphs:
+            sorted_characters.append(sorted_characters[int(base_glyph["source-glyph"])])
 
 
         return sorted_characters
