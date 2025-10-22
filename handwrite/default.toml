@@ -498,6 +498,16 @@ synonyms = [ # implemented!!!
   {ligature = "a l i",       target-name = "aleTok"},
   {ligature = "l i n u w i", target-name = "linluwiTok"},
   {ligature = "k e p e n",   target-name = "kepekenTok"},
+  # ni-numbers, from the ligature standard
+  # (This will become nonstandard if someone draws alt ni in the normal square and standard ni in the custom square. It will require some special logic to fix.)
+  {ligature = "n i zero one",   target-name = "niTok"},
+  {ligature = "n i zero two",   target-name = "niTok.E"},
+  {ligature = "n i zero three", target-name = "niTok.N"},
+  {ligature = "n i zero four",  target-name = "niTok.W"},
+  {ligature = "n i zero five",  target-name = "niTok.SE"},
+  {ligature = "n i zero six",   target-name = "niTok.NE"},
+  {ligature = "n i zero seven", target-name = "niTok.NW"},
+  {ligature = "n i zero eight", target-name = "niTok.SW"},
 ]
 
 # ascii-dependencies, ligature-prerequisites, ligature-dependencies, ligature-prerequisite-glyph-names

@@ -176,7 +176,7 @@ feature liga {
         list_of_ligs.append(("  sub              space space   by   ideographicspace;", 2))
         list_of_ligs.append(("  sub                   hyphen   by    stackJoinTok;", 1))
 
-        # linuwi, kepen, ali
+        # linuwi, kepen, ali, ni-numbers
         synonyms = default_json_data.get("glyphs", {}).get("synonyms")
         for synonym in synonyms:
             list_of_ligs.append((
