@@ -494,7 +494,7 @@ generated = [ # not implemented yet
   {codepoint = 0xf1992, name = "cartoucheMiddleTok", type = "middle", source-glyph = "cartoucheEndTok"},
 ]
 
-synonyms = [ # implemented!!!
+ligature-aliases = [ # implemented!!!
   {ligature = "a l i",       target-name = "aleTok"},
   {ligature = "l i n u w i", target-name = "linluwiTok"},
   {ligature = "k e p e n",   target-name = "kepekenTok"},

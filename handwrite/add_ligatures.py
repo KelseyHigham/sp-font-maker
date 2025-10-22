@@ -177,11 +177,11 @@ feature liga {
         list_of_ligs.append(("  sub                   hyphen   by    stackJoinTok;", 1))
 
         # linuwi, kepen, ali, ni-numbers
-        synonyms = default_json_data.get("glyphs", {}).get("synonyms")
-        for synonym in synonyms:
+        aliases = default_json_data.get("glyphs", {}).get("ligature-aliases")
+        for alias in aliases:
             list_of_ligs.append((
-                f"  sub   {(synonym["ligature"]).rjust(22)}   by   {(synonym["target-name"]).rjust(13)};",
-                len(synonym["ligature"].split(' '))
+                f"  sub   {(alias["ligature"]).rjust(22)}   by   {(alias["target-name"]).rjust(13)};",
+                len(alias["ligature"].split(' '))
             ))
 
         # sort them by number of tokens
