@@ -90,10 +90,6 @@ def set_properties(font, cli_args, version_major, version_minor, version_patch):
         # 11: Vendor URL
         sfnt_names[11] = "https://wasokeli.github.io/sp-font-maker"
 
-        # probably best to omit this, so that the generated binaries are actually comparable
-        # ...actually fontforge stores a modification date in the `FFTM` and `head` tables, so i'd need to figure out how to get rid of those anyway
-        sfnt_names["UniqueID"] = family + " " + str(uuid.uuid4())
-
         for k, v in sfnt_names.items():
             font.appendSFNTName(str(lang), k, v)
 
@@ -576,13 +572,31 @@ def generate_font_file(font, filename, out_dir, default_json, debug_dir):
             + (filename + " without ligatures.ttf")
         )
 
-        # while os.path.exists(outfile):
-        #     outfile = os.path.splitext(outfile)[0] + " (1).ttf"
+        # For reproducible builds, set the NAME table's uniqueID field to "    en FontForge 2.0 : FontName Regular : 1-1-1970"
+        os.environ['SOURCE_DATE_EPOCH'] = "0"
+
+        # SFD
+        sfd_path = outfile[0:-4] + ".sfd"
+        font.save(sfd_path)
+
+        # For reproducible builds, modify SFD to remove `CreationTime` metadata, which goes into the HEAD table's "created" field
+        import re
+        with open(sfd_path, 'r') as file:
+            content = file.read()
+        # Replace any number after "CreationTime: " with 0
+        content = re.sub(r'(CreationTime: )\d+', r'\g<1>0', content)
+        content = re.sub(r'(ModificationTime: )\d+', r'\g<1>0', content)
+        with open(sfd_path, 'w') as file:
+            file.write(content)
 
         # Generate font, but without ligatures yet, to temporary directory
         # sys.stderr.write("\nCreating %s\n" % outfile)
-        font.generate(outfile)
-        font.save(outfile[0:-4] + ".sfd")
+        # TTF
+        import fontforge
+        font = fontforge.open(sfd_path)
+        font.generate(outfile, flags=(
+            "no-FFTM-table" # For reproducible builds; FFTM table stores a timestamp
+        ))
 
 
 
