@@ -68,20 +68,70 @@ writing_system = "sitelen pona" # pick one: sitelen pona, sitelen sitelen, alpha
 
 last_updated = "''' + datetime.now().strftime("%Y-%m") + '''"
 version      = "1"
+''')
+            other_words = []
+            nimisin  = False
+            kokosila = False
+            apeja    = False
+            pake     = False
+            powe     = False
+            names    = False
+            variants = False
+            if other_words_string:
+                other_words = other_words_string.split()
+                for word_index, word in enumerate(other_words):
+                    if word == "nimisin":
+                        nimisin  = True
+                    if word == "kokosila":
+                        kokosila = True
+                    if word == "apeja":
+                        apeja    = True
+                    if word == "pake":
+                        pake     = True
+                    if word == "powe":
+                        powe     = True
+                    if word[0].isupper():
+                        names    = True
+                    if any(char.isdigit() for char in word):
+                        variants = True
 
+            ilo_linku_toml_file.write('''
 features = [
   "ASCII transcription and codepoints",
   "UCSUR-compliant",
   "cartouches",
   "SP Font Maker words v2.2",        # unless they didn't fill out all the words
+''')
 
+            if nimisin:
+                ilo_linku_toml_file.write('\n  "Linku common & uncommon 2024"     # nimisin')
+            else:
+                ilo_linku_toml_file.write('\n  # "Linku common & uncommon 2024"   # nimisin')
+            if kokosila:
+                ilo_linku_toml_file.write('\n  "all ku suli",                     # kokosila')
+            else:
+                ilo_linku_toml_file.write('\n  # "all ku suli",                   # kokosila')
+            if kokosila and apeja and pake and powe:
+                ilo_linku_toml_file.write('\n  "all ku suli and UCSUR words",     # kokosila, apeja, pake, powe')
+            else:
+                ilo_linku_toml_file.write('\n  # "all ku suli and UCSUR words",   # kokosila, apeja, pake, powe')
+
+            
+            if names:
+                ilo_linku_toml_file.write('\n  "name glyphs",')
+            else:
+                ilo_linku_toml_file.write('\n  # "name glyphs",')
+
+
+            if variants:
+                ilo_linku_toml_file.write('\n  "character variants",')
+            else:
+                ilo_linku_toml_file.write('\n  # "character variants",')
+
+
+            ilo_linku_toml_file.write('''
   # "incomplete",
   # "variable weight",
-  # "name glyphs",
-  # "character variants",
-  # "Linku common & uncommon 2024"   # nimisin
-  # "all ku suli",                   # kokosila
-  # "all ku suli and UCSUR words",   # kokosila, apeja, pake, powe
   # "community requested nimisin",
 
   # Not implemented in SP Font Maker:
@@ -95,13 +145,11 @@ features = [
 
             pixel = cli_args_dict.get("pixel") or False
             if pixel:
-                ilo_linku_toml_file.write('''
-# style = "handwritten"
-style = "pixelated"''')
+                ilo_linku_toml_file.write('\n# style = "handwritten"')
+                ilo_linku_toml_file.write('\nstyle = "pixelated"')
             else:
-                ilo_linku_toml_file.write('''
-style = "handwritten"
-# style = "pixelated"''')
+                ilo_linku_toml_file.write('\nstyle = "handwritten"')
+                ilo_linku_toml_file.write('\n# style = "pixelated"')
 
             ilo_linku_toml_file.write('''
 # style = "alternate design"
