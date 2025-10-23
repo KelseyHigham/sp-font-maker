@@ -181,17 +181,17 @@ def main():
     parser.add_argument("--not-new", action='store_true', help="Skip creating a .TOML file (false by default)", default=False)
 
     args = parser.parse_args()
-    # todo: skip recreating the dictionary and just do cli_args = parser.parse_args()
-    cli_args = {
-        "filename": args.filename, 
-        "family": args.family, 
-        "designer": args.designer, 
-        "license": args.license, 
-        "licenseurl": args.license_url, 
-        "sheetversion": args.sheet_version,
-        "pixel": args.pixel,
-        "notnew": args.not_new
-    }
+    # cli_args = { # the format still looks like this, but we're about to recreate it
+    #     "filename": args.filename, 
+    #     "family": args.family, 
+    #     "designer": args.designer, 
+    #     "license": args.license, 
+    #     "license_url": args.license_url, 
+    #     "sheet_version": args.sheet_version,
+    #     "pixel": args.pixel,
+    #     "not_new": args.not_new,
+    # }
+    cli_args = vars(parser.parse_args())
     converters(
         args.input_path, args.output_directory, args.debug_directory, None, cli_args, args.other_words
     ) 

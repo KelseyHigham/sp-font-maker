@@ -73,7 +73,7 @@ def png_to_bmp(path, cli_args):
         pixel = cli_args.get("pixel") or False
 
         from packaging.version import Version
-        sheet_version = cli_args.get("sheetversion") or "99999999.999999.999999"
+        sheet_version = cli_args.get("sheet_version") or "99999999.999999.999999"
         if Version(sheet_version) < Version("2.1"):
             # SHEET VERSION 2.0
             # scan 2.0.x sheets with lower quality, to avoid picking up corner pixels from the gray boxes

@@ -30,7 +30,7 @@ def create_toml_html(debug_dir, out_dir, cli_args=None, other_words_string=None)
         # for generating the ilo Linku TOML files for each font,
         # we use short license codes from the SPDX License List: https://spdx.org/licenses/
         license = cli_args_dict.get("license", "All rights reserved")
-        licenseurl = cli_args_dict.get("licenseurl", "")
+        licenseurl = cli_args_dict.get("license_url", "")
         if license == "ofl":
             license = "OFL-1.1"
             licenseurl = "https://openfontlicense.org"
@@ -40,7 +40,7 @@ def create_toml_html(debug_dir, out_dir, cli_args=None, other_words_string=None)
 
 
 
-        not_new = cli_args_dict.get("notnew", False)
+        not_new = cli_args_dict.get("not_new", False)
         if not_new:
             print("\nSkipping ilo Linku .TOML file.\n")
         else:

@@ -28,7 +28,7 @@ def set_properties(font, cli_args, version_major, version_minor, version_patch):
         style = "Regular"
         designer = cli_args.get("designer", "jan pi toki pona")
         license = cli_args.get("license", "All rights reserved")
-        licenseurl = cli_args.get("licenseurl", "")
+        licenseurl = cli_args.get("license_url", "")
 
         font.familyname = fontname
         font.fontname = fontname + "-" + style

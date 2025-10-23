@@ -230,7 +230,7 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
             # print(row_x, row_y, row_w, row_h)
             # row_x, row_y, row_w, row_h = small_rect(contours[row]) # doesn't help
 
-            sheet_version = cli_args.get("sheetversion") or "99999999.999999.999999"
+            sheet_version = cli_args.get("sheet_version") or "99999999.999999.999999"
             if Version(sheet_version) < Version("3"):
                 # SHEET VERSION 2:
                 # The grid unit here is roughly 0.125cm on the printed page, or 0.25cm in the original huge file.
@@ -561,7 +561,7 @@ def pad(side, debug_dir, cli_args, char_name, resize=False):
         char_img = Image.open(debug_dir + "/" + char_name + "/" + char_name + ".png")
 
         # resize the cartouche middle from 1px wide to the standard width (for a given sheet version)
-        sheet_version = cli_args.get("sheetversion") or "99999999.999999.999999"
+        sheet_version = cli_args.get("sheet_version") or "99999999.999999.999999"
         if Version(sheet_version) < Version("3"):
             # SHEET VERSION 2: Each glyph scan area is 8x10.
             grid_scan_w = 8
