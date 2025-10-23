@@ -63,7 +63,7 @@ feature liga {
 
         # create ligature lines
         with open(default_json) as f:
-            glyphs = json.load(f).get("glyphs-fancy", {})
+            glyphs = json.load(f).get("glyphs", {}).get("sheet", {})
             for k in glyphs:
                 if 'ligature' in k:
                     lig = k['ligature']

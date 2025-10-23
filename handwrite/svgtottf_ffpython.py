@@ -129,7 +129,7 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
         # print("      It's fine, the font still works!")
 
         import psMat
-        default_glyphs = config.get("glyphs-fancy", {})
+        default_glyphs = config.get("glyphs", {}).get("sheet", {})
         generated_glyphs = config.get("glyphs", {}).get("generated-glyphs", {})
         ligature_base_glyphs = config.get("glyphs", {}).get("ligature-base-glyphs", {})
         for glyph_object in default_glyphs + generated_glyphs + ligature_base_glyphs:

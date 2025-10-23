@@ -108,7 +108,7 @@ def converters(sheet, output_directory, debug_dir=None, default_json=None, cli_a
                 # or "tokiHYPHENponaTok", which requires allcapsing HYPHEN, PLUS, and AMPERSAND in a few places in the code
                 word = "".join(letters)
 
-                glyph_json = font_data['glyphs-fancy']
+                glyph_json = font_data.get("glyphs", {}).get("sheet", {})
 
                 # TODO:
                 # here we start adding data based on hardcoded UCSUR data.

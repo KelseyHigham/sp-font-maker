@@ -391,7 +391,7 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
 
             for position, word in enumerate(other_words):
                 with open(default_json) as f:
-                    glyph_json = json.load(f).get("glyphs-fancy", {})
+                    glyph_json = json.load(f).get("glyphs", {}).get("sheet", {})
                 for default_glyph_index, default_glyph in enumerate(glyph_json):
                     if 'name' in default_glyph:
                         if default_glyph['name'] == word + "Tok":
@@ -508,7 +508,7 @@ def save_images(characters, debug_dir, default_json, cli_args):
 
             with open(default_json) as f:
                 default_json_data = json.load(f)
-                default_glyphs = default_json_data.get("glyphs-fancy", {})
+                default_glyphs = default_json_data.get("glyphs", {}).get("sheet", {})
                 generated_glyphs = default_json_data.get("glyphs", {}).get("generated-glyphs", {})
                 ligature_base_glyphs = default_json_data.get("glyphs", {}).get("ligature-base-glyphs", {})
                 glyphList = default_glyphs + generated_glyphs + ligature_base_glyphs
@@ -528,7 +528,7 @@ def save_images(characters, debug_dir, default_json, cli_args):
         # If this brittle codeblock breaks, just comment it out, and svgtottf_ffpython will size the pixel scan for an 8px font.
         with open(default_json) as f:
             json_data = json.load(f)
-        first_char_name = json_data.get("glyphs-fancy", {})[0].get('name', 'aTok')
+        first_char_name = json_data.get("glyphs", {}).get("sheet", {})[0].get('name', 'aTok')
         first_char_img  = Image.open(debug_dir + "/" + first_char_name + "/" + first_char_name + ".png")
         json_data["pixel-size"] = first_char_img.size[0]*2/3
         with open(default_json, "w") as file:
