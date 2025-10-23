@@ -467,7 +467,8 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
             default_json_data = json.load(f)
         ligature_base_glyphs = default_json_data.get("glyphs", {}).get("ligature-base-glyphs")
         for base_glyph in ligature_base_glyphs:
-            sorted_characters.append(sorted_characters[int(base_glyph["source-glyph"])])
+            if "source-glyph" in base_glyph:
+                sorted_characters.append(sorted_characters[int(base_glyph["source-glyph"])])
 
 
         return sorted_characters
@@ -506,7 +507,8 @@ def save_images(characters, debug_dir, default_json, cli_args):
         for cellNum, images in enumerate(characters):
 
             with open(default_json) as f:
-                glyphList = json.load(f).get("glyphs-fancy", {})
+                default_json_data = json.load(f)
+                glyphList = default_json_data.get("glyphs-fancy", {}) + default_json_data.get("glyphs", {}).get("ligature-base-glyphs", {})
                 curMetadatum = glyphList[cellNum]
                 if len(glyphList) > cellNum: # should this be `>=`?
                     if 'name' in curMetadatum:

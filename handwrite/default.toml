@@ -233,58 +233,6 @@ glyphs-fancy = [ # currently implemented
 
 
 
-  # define ASCII names, so that they can be referenced in ligatures
-  {codepoint = 0x5b, name = "bracketleft"},
-  {codepoint = 0x5f, name = "underscore"},
-  {codepoint = 0x5d, name = "bracketright"},
-  {codepoint = 0x2e, name = "period"},
-  {codepoint = 0x3a, name = "colon"},
-
-  {codepoint = 0x61, name = "a"},
-  {codepoint = 0x65, name = "e"},
-  {codepoint = 0x6e, name = "n"},
-  {codepoint = 0x6f, name = "o"},
-
-  {codepoint = 0x41, name = "A"},
-  {codepoint = 0x45, name = "E"},
-  {codepoint = 0x4e, name = "N"},
-  {codepoint = 0x4f, name = "O"},
-
-  {codepoint = 0x49, name = "I"},
-  {codepoint = 0x4a, name = "J"},
-  {codepoint = 0x4b, name = "K"},
-  {codepoint = 0x4c, name = "L"},
-  {codepoint = 0x4d, name = "M"},
-  {codepoint = 0x50, name = "P"},
-  {codepoint = 0x53, name = "S"},
-  {codepoint = 0x54, name = "T"},
-  {codepoint = 0x55, name = "U"},
-  {codepoint = 0x57, name = "W"},
-
-  {codepoint = 0x62, name = "b"},
-  {codepoint = 0x42, name = "B"},
-  {codepoint = 0x63, name = "c"},
-  {codepoint = 0x43, name = "C"},
-  {codepoint = 0x64, name = "d"},
-  {codepoint = 0x44, name = "D"},
-  {codepoint = 0x66, name = "f"},
-  {codepoint = 0x46, name = "F"},
-  {codepoint = 0x67, name = "g"},
-  {codepoint = 0x47, name = "G"},
-  {codepoint = 0x68, name = "h"},
-  {codepoint = 0x48, name = "H"},
-  {codepoint = 0x71, name = "q"},
-  {codepoint = 0x51, name = "Q"},
-  {codepoint = 0x72, name = "r"},
-  {codepoint = 0x52, name = "R"},
-  {codepoint = 0x76, name = "v"},
-  {codepoint = 0x56, name = "V"},
-  {codepoint = 0x78, name = "x"},
-  {codepoint = 0x58, name = "X"},
-  {codepoint = 0x79, name = "y"},
-  {codepoint = 0x59, name = "Y"},
-  {codepoint = 0x7a, name = "z"},
-  {codepoint = 0x5a, name = "Z"}
 ]
 
 [glyphs]
@@ -508,67 +456,71 @@ ligature-aliases = [ # implemented!!!
   {ligature = "n i zero six",   target-name = "niTok.NE"},
   {ligature = "n i zero seven", target-name = "niTok.NW"},
   {ligature = "n i zero eight", target-name = "niTok.SW"},
+  # todo: add nonstandard ni-numbers (ni1-ni8), but only after allowing other-words to override ligature-aliases in add_ligatures.py, line 180
 ]
 
 # Define ASCII glyphs, so that they can be referenced in ligatures.
 # This code currently runs in sheettopng.py, so `source-glyph` refers to the index of the glyph in `sorted_characters`.
 # `sorted_characters` is the input sheet verbatim, plus the generated glyph `cartoucheMiddleTok` at index 180.
 # If the implementation is moved to a later step, like svgtottf_ffpython.py, then it can hopefully reference a `target-name` instead of `source-glyph`.
-ligature-base-glyphs = [ # partly implemented! sync with the last lines of "glyphs-fancy"
+ligature-base-glyphs = [ # implemented!!!
   # punctuation
-  {source-glyph = 120}, # cartoucheStartTok
-  {source-glyph = 180}, # cartoucheMiddleTok
-  {source-glyph = 121}, # cartoucheEndTok
-  {source-glyph = 122}, # middotTok
-  {source-glyph = 123}, # colonTok
+  {codepoint = 0x5b, name = "bracketleft",  source-glyph = 120}, # cartoucheStartTok
+  {codepoint = 0x5f, name = "underscore",   source-glyph = 180}, # cartoucheMiddleTok
+  {codepoint = 0x5d, name = "bracketright", source-glyph = 121}, # cartoucheEndTok
+  {codepoint = 0x2e, name = "period",       source-glyph = 122}, # middotTok
+  {codepoint = 0x3a, name = "colon",        source-glyph = 123}, # colonTok
 
   # TOK letters, for words like Anna
-  {source-glyph = 0},   # aTok
-  {source-glyph = 9},   # eTok
-  {source-glyph = 148}, # nTok
-  {source-glyph = 68},  # oTok
-  {source-glyph = 0},   # aTok
-  {source-glyph = 9},   # eTok
-  {source-glyph = 148}, # nTok
-  {source-glyph = 68},  # oTok
+  {codepoint = 0x61, name = "a", source-glyph = 0},   # aTok
+  {codepoint = 0x65, name = "e", source-glyph = 9},   # eTok
+  {codepoint = 0x6e, name = "n", source-glyph = 148}, # nTok
+  {codepoint = 0x6f, name = "o", source-glyph = 68},  # oTok
+  {codepoint = 0x41, name = "A", source-glyph = 0},   # aTok
+  {codepoint = 0x45, name = "E", source-glyph = 9},   # eTok
+  {codepoint = 0x4e, name = "N", source-glyph = 148}, # nTok
+  {codepoint = 0x4f, name = "O", source-glyph = 68},  # oTok
 
   # capital letters, for words like Pingo
-  {source-glyph = 124}, # i
-  {source-glyph = 125}, # j
-  {source-glyph = 126}, # k
-  {source-glyph = 127}, # l
-  {source-glyph = 128}, # m
-  {source-glyph = 129}, # p
-  {source-glyph = 130}, # s
-  {source-glyph = 131}, # t
-  {source-glyph = 132}, # u
-  {source-glyph = 133}, # w
+  {codepoint = 0x49, name = "I", source-glyph = 124}, # i
+  {codepoint = 0x4a, name = "J", source-glyph = 125}, # j
+  {codepoint = 0x4b, name = "K", source-glyph = 126}, # k
+  {codepoint = 0x4c, name = "L", source-glyph = 127}, # l
+  {codepoint = 0x4d, name = "M", source-glyph = 128}, # m
+  {codepoint = 0x50, name = "P", source-glyph = 129}, # p
+  {codepoint = 0x53, name = "S", source-glyph = 130}, # s
+  {codepoint = 0x54, name = "T", source-glyph = 131}, # t
+  {codepoint = 0x55, name = "U", source-glyph = 132}, # u
+  {codepoint = 0x57, name = "W", source-glyph = 133}, # w
 
   # weird substitutions, for words like yutu 
-  {source-glyph = 129}, # p
-  {source-glyph = 129}, # p
-  {source-glyph = 130}, # s
-  {source-glyph = 130}, # s
-  {source-glyph = 131}, # t
-  {source-glyph = 131}, # t
-  {source-glyph = 129}, # p
-  {source-glyph = 129}, # p
-  {source-glyph = 126}, # k
-  {source-glyph = 126}, # k
-  {source-glyph = 126}, # k
-  {source-glyph = 126}, # k
-  {source-glyph = 126}, # k
-  {source-glyph = 126}, # k
-  {source-glyph = 133}, # w
-  {source-glyph = 133}, # w
-  {source-glyph = 133}, # w
-  {source-glyph = 133}, # w
-  {source-glyph = 130}, # s
-  {source-glyph = 130}, # s
-  {source-glyph = 125}, # j
-  {source-glyph = 125}, # j
-  {source-glyph = 130}, # s
-  {source-glyph = 130}  # s
+  {codepoint = 0x62, name = "b", source-glyph = 129}, # p
+  {codepoint = 0x42, name = "B", source-glyph = 129}, # p
+  {codepoint = 0x63, name = "c", source-glyph = 130}, # s
+  {codepoint = 0x43, name = "C", source-glyph = 130}, # s
+  {codepoint = 0x64, name = "d", source-glyph = 131}, # t
+  {codepoint = 0x44, name = "D", source-glyph = 131}, # t
+  {codepoint = 0x66, name = "f", source-glyph = 129}, # p
+  {codepoint = 0x46, name = "F", source-glyph = 129}, # p
+  {codepoint = 0x67, name = "g", source-glyph = 126}, # k
+  {codepoint = 0x47, name = "G", source-glyph = 126}, # k
+  {codepoint = 0x68, name = "h", source-glyph = 126}, # k
+  {codepoint = 0x48, name = "H", source-glyph = 126}, # k
+  {codepoint = 0x71, name = "q", source-glyph = 126}, # k
+  {codepoint = 0x51, name = "Q", source-glyph = 126}, # k
+  {codepoint = 0x72, name = "r", source-glyph = 133}, # w
+  {codepoint = 0x52, name = "R", source-glyph = 133}, # w
+  {codepoint = 0x76, name = "v", source-glyph = 133}, # w
+  {codepoint = 0x56, name = "V", source-glyph = 133}, # w
+  {codepoint = 0x78, name = "x", source-glyph = 130}, # s
+  {codepoint = 0x58, name = "X", source-glyph = 130}, # s
+  {codepoint = 0x79, name = "y", source-glyph = 125}, # j
+  {codepoint = 0x59, name = "Y", source-glyph = 125}, # j
+  {codepoint = 0x7a, name = "z", source-glyph = 130}, # s
+  {codepoint = 0x5a, name = "Z", source-glyph = 130}  # s
+
+  # todo: add blank punctuation found in svgtottf_ffpython.py
+  # codepoint, name, and width of blank glyph
 ]
 
 # UCSUR codepoints for words not included in the default sheet, since people may write them in.

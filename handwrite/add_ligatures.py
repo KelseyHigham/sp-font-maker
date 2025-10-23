@@ -177,6 +177,7 @@ feature liga {
         list_of_ligs.append(("  sub                   hyphen   by    stackJoinTok;", 1))
 
         # linuwi, kepen, ali, ni-numbers
+        # todo: allow these to be overridden by custom-words. that would help kilitelen linuwi, and any font's ni2
         aliases = default_json_data.get("glyphs", {}).get("ligature-aliases")
         for alias in aliases:
             list_of_ligs.append((
