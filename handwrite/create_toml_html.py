@@ -44,8 +44,25 @@ def create_toml_html(debug_dir, out_dir, cli_args=None, other_words_string=None)
         if not_new:
             print("\nSkipping ilo Linku .TOML file.\n")
         else:
-            print("\nOpening ilo Linku .TOML for editing. To skip, add `--not-new`.\n")
-            ilo_linku_toml_file_path = out_dir + os.sep + family + ".toml"
+            s = os.sep
+            # If the user has ilo Linku's "sona" repo on their local machine, put the .toml in there for easy updating.
+            if os.path.isdir(f"{out_dir}..{s}..{s}sona{s}fonts{s}metadata"): # two folders up from /wasokeli.github.io/sp-font-maker/
+                sona_repo_path = f"{out_dir}..{s}..{s}sona{s}fonts{s}metadata"
+            elif os.path.isdir(f"{out_dir}..{s}sona{s}fonts{s}metadata"): # theoretically, some flatter folder
+                sona_repo_path = f"{out_dir}..{s}sona{s}fonts{s}metadata"
+            if sona_repo_path:
+                ilo_linku_toml_file_path = f"{sona_repo_path}{s}{family}.toml"
+                if os.path.exists(f"{sona_repo_path}{s}{family}.toml"):
+                    print(f"\nOverwriting `{sona_repo_path}{s}{family}.toml`, and opening for editing. To skip, add `--not-new`.\n")
+                else:
+                    print(f"\nOpening `{sona_repo_path}{s}{family}.toml` for editing. To skip, add `--not-new`.\n")
+            # Otherwise, just put it in out_dir.
+            else:
+                ilo_linku_toml_file_path = out_dir + os.sep + family + ".toml"
+                if os.path.exists(f"{out_dir}{s}{family}.toml"):
+                    print(f"\nOverwriting ilo Linku .TOML, and opening for editing. To skip, add `--not-new`.\n")
+                else:
+                    print(f"\nOpening ilo Linku .TOML for editing. To skip, add `--not-new`.\n")
             ilo_linku_toml_file = open(ilo_linku_toml_file_path, "w", encoding="utf-8")
             ilo_linku_toml_file.write('''#:schema ../../api/generated/font.json
 
