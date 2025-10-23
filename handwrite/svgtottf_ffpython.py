@@ -129,7 +129,10 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
         # print("      It's fine, the font still works!")
 
         import psMat
-        for glyph_object in config["glyphs-fancy"] + config["glyphs"]["ligature-base-glyphs"]:
+        default_glyphs = config.get("glyphs-fancy", {})
+        generated_glyphs = config.get("glyphs", {}).get("generated-glyphs", {})
+        ligature_base_glyphs = config.get("glyphs", {}).get("ligature-base-glyphs", {})
+        for glyph_object in default_glyphs + generated_glyphs + ligature_base_glyphs:
             if 'name' in glyph_object:
                 name = glyph_object['name']
                 if 'codepoint' in glyph_object:

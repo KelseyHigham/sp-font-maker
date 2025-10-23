@@ -508,7 +508,10 @@ def save_images(characters, debug_dir, default_json, cli_args):
 
             with open(default_json) as f:
                 default_json_data = json.load(f)
-                glyphList = default_json_data.get("glyphs-fancy", {}) + default_json_data.get("glyphs", {}).get("ligature-base-glyphs", {})
+                default_glyphs = default_json_data.get("glyphs-fancy", {})
+                generated_glyphs = default_json_data.get("glyphs", {}).get("generated-glyphs", {})
+                ligature_base_glyphs = default_json_data.get("glyphs", {}).get("ligature-base-glyphs", {})
+                glyphList = default_glyphs + generated_glyphs + ligature_base_glyphs
                 curMetadatum = glyphList[cellNum]
                 if len(glyphList) > cellNum: # should this be `>=`?
                     if 'name' in curMetadatum:
@@ -522,7 +525,7 @@ def save_images(characters, debug_dir, default_json, cli_args):
                         )
 
         # Read pixel size and write it to default.json, so svgtottf_ffpython can use it.
-        # If this brittle codeblock breaks, just comment it out, and svgtottf_ffpython will assume an 8px font.
+        # If this brittle codeblock breaks, just comment it out, and svgtottf_ffpython will size the pixel scan for an 8px font.
         with open(default_json) as f:
             json_data = json.load(f)
         first_char_name = json_data.get("glyphs-fancy", {})[0].get('name', 'aTok')

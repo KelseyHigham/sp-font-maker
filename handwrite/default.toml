@@ -218,21 +218,6 @@ glyphs-fancy = [ # currently implemented
   {},
   {},
   {},
-
-
-
-
-
-
-
-
-
-
-  # generated from row 6, cartoucheEndTok
-  {codepoint = 0xf1992, name = "cartoucheMiddleTok", type = "middle", source-glyph = "cartoucheEndTok"},
-
-
-
 ]
 
 [glyphs]
@@ -437,7 +422,7 @@ sheet = [ # not implemented yet
   {},
 ]
 
-generated = [ # not implemented yet
+generated-glyphs = [ # not implemented yet
   # generated from row 6, cartoucheEndTok
   {codepoint = 0xf1992, name = "cartoucheMiddleTok", type = "middle", source-glyph = "cartoucheEndTok"},
 ]
