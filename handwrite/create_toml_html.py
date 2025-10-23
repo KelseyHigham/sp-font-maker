@@ -87,68 +87,55 @@ last_updated = "''' + datetime.now().strftime("%Y-%m") + '''"
 version      = "1"
 ''')
             other_words = []
-            nimisin  = False
-            kokosila = False
-            apeja    = False
-            pake     = False
-            powe     = False
-            names    = False
-            variants = False
+            apeja = False
+            pake  = False
+            powe  = False
+            prefix_nimisin  = "# "
+            prefix_kokosila = "# "
+            prefix_names    = "# "
+            prefix_variants = "# "
             if other_words_string:
                 other_words = other_words_string.split()
                 for word_index, word in enumerate(other_words):
                     if word == "nimisin":
-                        nimisin  = True
+                        prefix_nimisin  = ""
                     if word == "kokosila":
-                        kokosila = True
+                        prefix_kokosila = ""
                     if word == "apeja":
-                        apeja    = True
+                        apeja = True
                     if word == "pake":
-                        pake     = True
+                        pake  = True
                     if word == "powe":
-                        powe     = True
+                        powe  = True
                     if word[0].isupper():
-                        names    = True
+                        prefix_names    = ""
                     if any(char.isdigit() for char in word):
-                        variants = True
+                        prefix_variants = ""
+            prefix_ucsur = "# "
+            if prefix_kokosila == "" and apeja and pake and powe:
+                prefix_ucsur = ""
 
-            ilo_linku_toml_file.write('''
+            prefix_handwritten = ""
+            prefix_pixelated = "# "
+            pixel = cli_args_dict.get("pixel") or False
+            if pixel:
+                prefix_handwritten = "# "
+                prefix_pixelated = ""
+
+            ilo_linku_toml_file.write(f'''
 features = [
   "ASCII transcription and codepoints",
   "UCSUR-compliant",
   "cartouches",
   "SP Font Maker words v2.2",        # unless they didn't fill out all the words
-''')
 
-            if nimisin:
-                ilo_linku_toml_file.write('\n  "Linku common & uncommon 2024"     # nimisin')
-            else:
-                ilo_linku_toml_file.write('\n  # "Linku common & uncommon 2024"   # nimisin')
-            if kokosila:
-                ilo_linku_toml_file.write('\n  "all ku suli",                     # kokosila')
-            else:
-                ilo_linku_toml_file.write('\n  # "all ku suli",                   # kokosila')
-            if kokosila and apeja and pake and powe:
-                ilo_linku_toml_file.write('\n  "all ku suli and UCSUR words",     # kokosila, apeja, pake, powe')
-            else:
-                ilo_linku_toml_file.write('\n  # "all ku suli and UCSUR words",   # kokosila, apeja, pake, powe')
-
-            
-            if names:
-                ilo_linku_toml_file.write('\n  "name glyphs",')
-            else:
-                ilo_linku_toml_file.write('\n  # "name glyphs",')
-
-
-            if variants:
-                ilo_linku_toml_file.write('\n  "character variants",')
-            else:
-                ilo_linku_toml_file.write('\n  # "character variants",')
-
-
-            ilo_linku_toml_file.write('''
   # "incomplete",
   # "variable weight",
+  {prefix_names}"name glyphs",
+  {prefix_variants}"character variants",
+  {prefix_nimisin}"Linku common & uncommon 2024"   # nimisin
+  {prefix_kokosila}"all ku suli",                   # kokosila
+  {prefix_ucsur}"all ku suli and UCSUR words",   # kokosila, apeja, pake, powe
   # "community requested nimisin",
 
   # Not implemented in SP Font Maker:
@@ -158,19 +145,11 @@ features = [
   # "tuki tiki",
 ]
 
-# Pick one style, or put multiple comma-separated styles in quotes.''')
-
-            pixel = cli_args_dict.get("pixel") or False
-            if pixel:
-                ilo_linku_toml_file.write('\n# style = "handwritten"')
-                ilo_linku_toml_file.write('\nstyle = "pixelated"')
-            else:
-                ilo_linku_toml_file.write('\nstyle = "handwritten"')
-                ilo_linku_toml_file.write('\n# style = "pixelated"')
-
-            ilo_linku_toml_file.write('''
+# Pick one style, or put multiple comma-separated styles in quotes.
+{prefix_handwritten}style = "handwritten"
 # style = "alternate design"
 # style = "uniform line weight"
+{prefix_pixelated}style = "pixelated"
 # style = "handdrawn"
 # style = "serif"
 # style = "sans-serif"
@@ -183,7 +162,6 @@ features = [
 # webpage  = "https://wasokeli.github.io/sp-font-maker/''' + family.replace(" ", "-") + '''.html"
 # repo     = "https://github.com/wasokeli/wasokeli.github.io/tree/main/sp-font-maker"
 ''')
-            # print("Generating " + out_dir + os.sep + family + ".toml for ilo Linku...")
             ilo_linku_toml_file.close()
 
             import platform
