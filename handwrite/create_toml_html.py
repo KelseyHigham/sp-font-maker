@@ -232,11 +232,7 @@ features = [
                     bat_file.write(f'--license-url "{c['license_url']}" ')
                 if c['pixel']:
                     bat_file.write(f"--pixel")
-                import sys
-                print(sys.argv)
-                print(cli_args_dict)
                 bat_file.close()
-                pass
 
 
 
