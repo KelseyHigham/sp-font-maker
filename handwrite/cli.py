@@ -67,7 +67,8 @@ def converters(sheet, output_directory, debug_dir=None, default_json=None, cli_a
                     # consider switching to the official Adobe names for these special characters
                     # https://github.com/adobe-type-tools/agl-aglfn/
                     # https://en.wikipedia.org/wiki/Adobe_Glyph_List
-                    if letter == "-": letters[letter_index] = "hyphen"
+                    if letter == "_": letters[letter_index] = "underscore"  # (works combining, but not standalone. not supported)
+                    if letter == "-": letters[letter_index] = "hyphen"      # (works combining, but not standalone)
                     if letter == "+": letters[letter_index] = "plus"
                     if letter == "^": letters[letter_index] = "north"       # asciicircum
                     if letter == "<": letters[letter_index] = "west"        # less
