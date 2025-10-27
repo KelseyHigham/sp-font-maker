@@ -10,7 +10,7 @@ class PotraceNotFound(Exception):
     pass
 
 
-def png_to_svg(cli_args, debug_dir):
+def png_to_svg(cli_args, default_json, debug_dir):
     """Call converters on each .png in the provider directory.
 
     Walk through the custom directory containing all .png files
@@ -18,15 +18,19 @@ def png_to_svg(cli_args, debug_dir):
     """
     print("PNGtoSVG", end="\r")
     num_characters = 0
-    path = os.walk(debug_dir)
-    for root, dirs, files in path:
-        for f in files:
-            if f.endswith(".png") and not f.startswith("analysis"): # for a speedup when processing pixel fonts, require the glyph to be named in the JSON
+    with open(default_json) as f:
+        default_json_data = json.load(f)
+        default_glyphs = default_json_data.get("glyphs", {}).get("sheet", {})
+        generated_glyphs = default_json_data.get("glyphs", {}).get("generated-glyphs", {})
+        ligature_base_glyphs = default_json_data.get("glyphs", {}).get("ligature-base-glyphs", {})
+        for glyph_object in default_glyphs + generated_glyphs + ligature_base_glyphs:
+            if 'name' in glyph_object:
+                name = glyph_object['name']
+                glyph_dir = debug_dir + os.sep + name
                 num_characters += 1
-                print("PNGtoSVG", str(f[0:-4]).ljust(14, " ")[:14], "".join("." for i in range(num_characters//8)), end="\r")
-                png_to_bmp(root + "/" + f, cli_args)
-                # trim(root + "/" + f[0:-4] + ".bmp")
-                bmp_to_svg(root + "/" + f[0:-4] + ".bmp")
+                print("PNGtoSVG", name.ljust(14, " ")[:14], "".join("." for i in range(num_characters//8)), end="\r")
+                png_to_bmp(glyph_dir + os.sep + name + ".png", cli_args)
+                bmp_to_svg(glyph_dir + os.sep + name + ".bmp")
     print("PNGtoSVG                                                                      ")
 
 def bmp_to_svg(path):
@@ -193,18 +197,3 @@ def png_to_bmp(path, cli_args):
                 data.append((0, 0, 0, 1))
         img.putdata(data)
         img.save(path[0:-4] + ".bmp")
-
-def trim(im_path):
-        im = Image.open(im_path)
-        bg = Image.new(im.mode, im.size, im.getpixel((0, 0)))
-        bg.save(im_path + "_bg.bmp")
-        diff = ImageChops.difference(im, bg)
-        diff.save(im_path + "_diff.bmp")
-        bbox = list(diff.getbbox())
-        print(im_path, bbox)
-        bbox[0] -= 1
-        bbox[1] -= 1
-        bbox[2] += 1
-        bbox[3] += 1
-        cropped_im = im.crop(bbox)
-        cropped_im.save(im_path)

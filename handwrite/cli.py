@@ -15,7 +15,7 @@ from handwrite.create_toml_html import create_toml_html
 def run(sheet, output_directory, debug_dir, default_json, cli_args, other_words_string):
     create_toml_html(debug_dir, output_directory, cli_args, other_words_string)
     sheet_to_png(sheet, debug_dir, default_json, cli_args, other_words_string)
-    png_to_svg(cli_args, debug_dir=debug_dir)
+    png_to_svg(cli_args, default_json, debug_dir=debug_dir)
     svg_to_ttf(debug_dir, output_directory, default_json, cli_args, other_words_string)
     add_ligatures(debug_dir, output_directory, default_json, cli_args, other_words_string)
 
