@@ -187,6 +187,59 @@ features = [
 
 
 
+    #     █            ▄ 
+    #     █▀▀▄   ▀▀▄  ▀█▀
+    #     █  █  ▄▀▀█   █ 
+    #  ▄  █▄▄▀  ▀▄▄█   ▀▄
+    #            
+
+
+        # add to `generate_all_fonts.bat`, if it exists
+        bat_path = f"{out_dir}{os.sep}generate all fonts.bat"
+        if os.path.exists(bat_path):
+            # if not not_new:
+            bat_file = open(bat_path, "a", encoding="utf-8")
+            c = cli_args_dict
+            bat_file.write(f"\nhandwrite --debug-directory ./debug/ ")
+            if c['sheet_version']:
+                bat_file.write(f"--sheet-version {c['sheet_version'].ljust(5)} ")
+            else:
+                bat_file.write(f"                      ")
+            if c['license']:
+                if len(c['license']) == 3:
+                    bat_file.write(f"--license {c['license']} ")
+                else:
+                    # write license later, for alignment
+                    bat_file.write(f"              ")
+            else:
+                    bat_file.write(f"              ")
+            if c['designer']:
+                bat_file.write(f'--designer {f'"{c['designer']}"'.ljust(20)} ')
+            else:
+                bat_file.write(f"                                ")
+            if c['filename']:
+                bat_file.write(f'--filename "{c['filename']}" ')
+            if c['family']:
+                bat_file.write(f'--family "{c['family']}" ')
+            bat_file.write(f'{c['input_path']} ')
+            bat_file.write(f'{c['output_directory']} ')
+            if c['other_words']:
+                bat_file.write(f'--other-words "{c['other_words']}" ')
+            if c['license']:
+                if len(c['license']) != 3:
+                    bat_file.write(f'--license "{c['license']}" ')
+            if c['license_url']:
+                bat_file.write(f'--license-url "{c['license_url']}" ')
+            if c['pixel']:
+                bat_file.write(f"--pixel")
+            import sys
+            print(sys.argv)
+            print(cli_args_dict)
+            bat_file.close()
+            pass
+
+
+
 
 
 
