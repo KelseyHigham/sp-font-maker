@@ -420,87 +420,19 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
         font[0x5f].transform(psMat.translate(-1000, 0))
 
 
+        # Create characters that are rendered as zero-width or ideographic spaces.
+        # This includes actual spaces, Latin fallback, placeholders, special characters.
+        # Defined in default.toml.
+        def create_space(codepoint, name, width):
+            if name:
+                space = font.createChar(codepoint, name)
+            else:
+                space = font.createChar(codepoint)
+            space.width = width
 
-        # later i should move these into default.json
-        #   - this would facilitate the overriding that's happening in cli.py#L104-L119
-
-        # support default ASCII ligatures
-        pipe = font.createChar(ord("|"), "pipe")
-        pipe.width = 1000
-        space = font.createChar(ord(" "), "space")
-        space.width = 0
-        hyphen = font.createChar(ord("-"), "hyphen")
-        hyphen.width = 0
-        for number, name in enumerate(["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]):
-            digit = font.createChar(ord(str(number)), name)
-            digit.width = 0
-        north = font.createChar(ord("^"), "north") # todo: replace these three, and `v`, with rotated lili. it would be cute i think
-        north.width = 1000
-        west = font.createChar(ord("<"), "west")
-        west.width = 1000
-        east = font.createChar(ord(">"), "east")
-        east.width = 1000
-
-        # fallback for unsupported SP features
-        plus = font.createChar(ord("+"), "plus")
-        plus.width = 0
-        ampersand = font.createChar(ord("&"), "ampersand")
-        ampersand.width = 0
-        opencurly = font.createChar(ord("{"), "opencurly")
-        opencurly.width = 0
-        closecurly = font.createChar(ord("}"), "closecurly")
-        closecurly.width = 0
-        openparen = font.createChar(ord("("), "openparen")
-        openparen.width = 0
-        closeparen = font.createChar(ord(")"), "closeparen")
-        closeparen.width = 0
-        slash = font.createChar(ord("*"), "asterisk")
-        slash.width = 1000
-        slash = font.createChar(ord('"'), 'doublequote')
-        slash.width = 1000
-        comma = font.createChar(ord(","), "comma")
-        comma.width = 1000
-        slash = font.createChar(ord("'"), "singlequote")
-        slash.width = 1000
-
-        # fallback for text intended as sitelen Lasina
-        bang = font.createChar(ord("!"), "exclamation")
-        bang.width = 1000
-        question = font.createChar(ord("?"), "question")
-        question.width = 1000
-        semicolon = font.createChar(ord(";"), "semicolon")
-        semicolon.width = 1000
-
-        # UCSUR features
-        ideographic_space = font.createChar(ord("　"), "ideographicspace")
-        ideographic_space.width = 1000
-        zero_width = font.createChar(0x200b, "zerowidth")
-        zero_width.width = 0
-        sp_stacking_joiner = font.createChar(0xf1995, "stackJoinTok")
-        sp_stacking_joiner.width = 0
-
-        # fallback for unsupported UCSUR features
-        sp_scaling_joiner = font.createChar(0xf1996, "nestJoinTok")
-        sp_scaling_joiner.width = 0
-        zerowidthjoiner = font.createChar(0x200d, "zerowidthjoiner")
-        zerowidthjoiner.width = 0
-        sp_start_of_long_glyph = font.createChar(0xf1997)
-        sp_start_of_long_glyph.width = 0
-        sp_end_of_long_glyph = font.createChar(0xf1998)
-        sp_end_of_long_glyph.width = 0
-        sp_combining_long_glyph_extension = font.createChar(0xf1999)
-        sp_combining_long_glyph_extension.width = 0
-        sp_start_of_reverse_long_glyph = font.createChar(0xf199a)
-        sp_start_of_reverse_long_glyph.width = 0
-        sp_end_of_reverse_long_glyph = font.createChar(0xf199b)
-        sp_end_of_reverse_long_glyph.width = 0
-        # todo: add "start of long pi" as an additional codepoint for the "pi" glyph
-        # todo: then add "end of long pi" here
-
-
-
-
-
+        spaces = config.get("glyphs", {}).get("spaces", {})
+        for space in spaces:
+            create_space(space.get("codepoint", -1), space.get("name", False), space.get("width", 1000))
 
 
 
