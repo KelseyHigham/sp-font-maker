@@ -270,42 +270,35 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
                         rotated_glyph.transform(psMat.rotate(degrees_ccw /360 *math.pi*2))
                         rotated_glyph.transform(psMat.translate(-to_center_x, -to_center_y))
 
-                    if 'direction' in glyph_object:
-                        if glyph_object['direction'] == 'up':     # akesi, pipi
-                            rotate(False,  45, ".NW")
-                            rotate(False,  90, ".W")
-                            rotate(False, 135, ".SW")
-                            rotate(False, 180, ".S")
-                            rotate(False, 225, ".SE")
-                            rotate(False, 270, ".E")
-                            rotate(False, 315, ".NE")
-                        elif glyph_object['direction'] == 'down': # ni
-                            rotate(False,  45, ".SE")
-                            rotate(False,  90, ".E")
-                            rotate(False, 135, ".NE")
-                            rotate(False, 180, ".N")
-                            rotate(False, 225, ".NW")
-                            rotate(False, 270, ".W")
-                            rotate(False, 315, ".SW")
-                        elif glyph_object['direction'] == 'left': # theoretically si
-                            rotate(False,  45, ".SW")             #                i
-                            rotate(False,  90, ".S")              #                ilapa, spoon moku, dab epiku
-                            rotate(True,  315, ".SE")
-                            rotate(True,    0, ".E")
-                            rotate(True,   45, ".NE")
-                            rotate(False, 270, ".N")
-                            rotate(False, 315, ".NW")
-                        # right. redundant with the below.
-                        else:                                     # kala, kijetesantakalu, soweli, waso
-                            rotate(False,  45, ".NE")
-                            rotate(False,  90, ".N")
-                            rotate(True,  315, ".NW")
-                            rotate(True,    0, ".W")
-                            rotate(True,   45, ".SW")
-                            rotate(False, 270, ".S")
-                            rotate(False, 315, ".SE")
-                    # if direction isn't specified, then assume 'right'
-                    else:                                         # kala, kijetesantakalu, soweli, waso
+                    direction = glyph_object.get("direction", "right")
+                    if direction == 'up':
+                        # akesi, pipi
+                        rotate(False,  45, ".NW")
+                        rotate(False,  90, ".W")
+                        rotate(False, 135, ".SW")
+                        rotate(False, 180, ".S")
+                        rotate(False, 225, ".SE")
+                        rotate(False, 270, ".E")
+                        rotate(False, 315, ".NE")
+                    elif direction == 'down':
+                        # ni
+                        rotate(False,  45, ".SE")
+                        rotate(False,  90, ".E")
+                        rotate(False, 135, ".NE")
+                        rotate(False, 180, ".N")
+                        rotate(False, 225, ".NW")
+                        rotate(False, 270, ".W")
+                        rotate(False, 315, ".SW")
+                    elif direction == 'left':
+                        rotate(False,  45, ".SW")
+                        rotate(False,  90, ".S")
+                        rotate(True,  315, ".SE")
+                        rotate(True,    0, ".E")
+                        rotate(True,   45, ".NE")
+                        rotate(False, 270, ".N")
+                        rotate(False, 315, ".NW")
+                    else:
+                        # kala, kijetesantakalu, soweli, waso
                         rotate(False,  45, ".NE")
                         rotate(False,  90, ".N")
                         rotate(True,  315, ".NW")
