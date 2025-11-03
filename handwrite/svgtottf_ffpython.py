@@ -313,18 +313,8 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
 
                 # Center glyphs (including, but not limited to, rotated ones)
                 for g in rotated_glyph_set:
-
-                    # Horizontally center sitelen pona, middot, colon, letters
-                    # Do NOT center cartouches, long pi, te/to, (period?)
-                    if not (
-                        cp == 0xf1990 or cp == 0x5b or   # cartouche start
-                        cp == 0xf1991 or cp == 0x5d or   # cartouche end
-                        cp == 0xf1992 or cp == 0x5f or   # cartouche middle
-                        cp == 0x300c or                  # te (open quote)
-                        cp == 0x300d                     # to (close quote)
-                        # or cp == 0xf199c or cp == 0x2e   # period
-                        # or cp == 0xf199d or cp == 0x3a   # colon
-                    ):                
+                    center = glyph_object.get("center", "both")
+                    if center == "both" or center == "horizontal":
                         if not pixel:
                             left  = g.boundingBox()[0]
                             right = g.boundingBox()[2]
@@ -333,27 +323,7 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
                                 -right + width/2 + 500,
                                 0
                             ))
-
-                    # Vertically center sitelen pona, middot, colon
-                    # Do NOT center a-z, cartouches, long pi, te/to, (period?)
-                    if not (
-                        (0x41 <= cp <= 0x5a              # A-Z
-                            and cp != 0x41                   # A
-                            and cp != 0x45                   # E
-                            and cp != 0x4e                   # N
-                            and cp != 0x4f) or               # O
-                        (0x61 <= cp <= 0x7a              # a-z
-                            and cp != 0x61                   # a
-                            and cp != 0x65                   # e
-                            and cp != 0x6e                   # n
-                            and cp != 0x6f) or               # o
-                        cp == 0xf1990 or cp == 0x5b or   # cartouche start
-                        cp == 0xf1991 or cp == 0x5d or   # cartouche end
-                        cp == 0xf1992 or cp == 0x5f or   # cartouche middle
-                        cp == 0x300c or                  # te (open quote)
-                        cp == 0x300d                     # to (close quote)
-                        # or cp == 0xf199c or cp == 0x2e   # period
-                    ):
+                    if center == "both" or center == "vertical":
                         if not pixel:
                             bottom = g.boundingBox()[1]
                             top    = g.boundingBox()[3]
