@@ -3,6 +3,12 @@
 [glyphs]
 
 # any glyphs on the physical sheet. maximum of one name per glyph. multiple ligatures are maybe fine?
+
+# i need to store both the glyph name, and the index (position) on the physical sheet.
+# right now, index is stored implicitly, because this is a TOML array.
+# i could turn it into a table, and add an "index" field. this would let me *actually use* TOML's syntax for defining glyphs.
+# TOML syntax is helpful for confusing cases, like generating the middle of a cartouche.
+
 sheet = [
   # row 0
   {codepoint = 0xf1900, name = "aTok",      ligature = "a"          },
@@ -23,6 +29,88 @@ synonyms = [
   {ligature = "l i n u w i", target-name = "linluwiTok"},
   {ligature = "k e p e n",   target-name = "kepekenTok"},
 ]
+
+spaces = [
+  # support default ASCII ligatures
+  {codepoint = 0x7c, width = 1000, name = "pipe"},
+  {codepoint = 0x20, width =    0, name = "space"},
+  {codepoint = 0x2d, width =    0, name = "hyphen"},
+
+  {codepoint = 0x30, width =    0, name = "zero"},
+  {codepoint = 0x31, width =    0, name = "one"},
+  {codepoint = 0x32, width =    0, name = "two"},
+  {codepoint = 0x33, width =    0, name = "three"},
+  {codepoint = 0x34, width =    0, name = "four"},
+  {codepoint = 0x35, width =    0, name = "five"},
+  {codepoint = 0x36, width =    0, name = "six"},
+  {codepoint = 0x37, width =    0, name = "seven"},
+  {codepoint = 0x38, width =    0, name = "eight"},
+  {codepoint = 0x39, width =    0, name = "nine"},
+
+  # todo: replace these three, and `v`, with rotated lili. it would be cute i think
+  {codepoint = 0x5e, width = 1000, name = "north"},
+  {codepoint = 0x3c, width = 1000, name = "west"},
+  {codepoint = 0x3e, width = 1000, name = "east"},
+  # (we treat "v" as a regular letter, instead of calling it "south")
+
+  # fallback for unsupported SP features
+  {codepoint = 0x2b, width =    0, name = "plus"},
+  {codepoint = 0x26, width =    0, name = "ampersand"},
+  {codepoint = 0x7b, width =    0, name = "opencurly"},
+  {codepoint = 0x7d, width =    0, name = "closecurly"},
+  {codepoint = 0x28, width =    0, name = "openparen"},
+  {codepoint = 0x29, width =    0, name = "closeparen"},
+  {codepoint = 0x2a, width = 1000, name = "asterisk"},
+  {codepoint = 0x22, width = 1000, name = "doublequote"},
+  {codepoint = 0x2c, width = 1000, name = "comma"},
+  {codepoint = 0x27, width = 1000, name = "singlequote"},
+
+  # fallback for text intended as sitelen Lasina
+  {codepoint = 0x21, width = 1000, name = "exclamation"},
+  {codepoint = 0x3f, width = 1000, name = "question"},
+  {codepoint = 0x3b, width = 1000, name = "semicolon"},
+
+  # UCSUR features
+  {codepoint = 0x3000,  width = 1000, name = "ideographicspace"},
+  {codepoint = 0x200b,  width =    0, name = "zerowidth"}, # zero-width space
+  {codepoint = 0xf1995, width =    0, name = "stackJoinTok"},
+
+  # fallback for unsupported UCSUR features
+  {codepoint = 0xf1996, width =    0, name = "nestJoinTok"},
+  {codepoint = 0x200d,  width =    0, name = "zerowidthjoiner"},
+  {codepoint = 0xf1997, width =    0}, # SP START OF LONG GLYPH
+  {codepoint = 0xf1998, width =    0}, # SP END OF LONG GLYPH
+  {codepoint = 0xf1999, width =    0}, # SP COMBINING LONG GLYPH EXTENSION
+  {codepoint = 0xf199a, width =    0}, # SP START OF REVERSE LONG GLYPH
+  {codepoint = 0xf199b, width =    0}, # SP END OF REVERSE LONG GLYPH
+]
+
+[[glyphs.generated]]
+name      = "cartoucheMiddleTok"
+codepoint = 0
+ligature  = "equals"
+type      = "middle"
+start-chaining-at       = "cartoucheStartTok"
+end-chaining-at         = "cartoucheEndTok"
+derive-glyph-from-index = 121 # cartoucheStartTok
+invisible-variant-name  = "invisibleCartoucheMiddleTok"
+
+[[glyphs.generated]]
+name      = "longPiMiddleTok"
+codepoint = 0            # don't reuse for other long glyphs; you can leave blank
+ligature  = "underscore" # don't reuse for other long glyphs; you can leave blank
+type      = "middle"
+start-chaining-at       = "p i longGlyphStartTok"
+end-chaining-at         = "longGlyphEndTok"
+derive-glyph-from-index = 0 # wherever long pi is in the sheet
+invisible-variant-name  = "invisibleLongPiMiddleTok"
+
+[[glyphs.generated]]
+name      = "longLaMiddleTok"
+type      = "middle"
+start-reverse-chaining-at = "closecurly l a"
+end-reverse-chaining-at   = "opencurly"
+invisible-variant-name    = "invisibleLongLaMiddleTok"
 
 [settings]
 
@@ -90,3 +178,16 @@ prerequisite_glyphs = [
 
   # glyphs for ligatures used in unsupported SP features, such as `(){}*",+&` (svgtottf_ffpython.py#L432-438)
 ]
+
+
+
+# --------
+
+# what do we need to include in the TOML to make cartouche middles *entirely* data-driven?
+# such that you can implement long pi and long awen in here?
+# in long pi, Start is 1000 wide and End is 0 wide.
+
+# out of scope for now:
+# in long ala, you can parse *backwards*, so there's technically *three* glyphs. is that just for ala?
+
+# long la requires reverse chaining. when going left-to-right, you can't tell the difference between la's { and ala's {.

@@ -218,8 +218,9 @@ sheet = [ # implemented!!!
 
 generated-glyphs = [ # partially implemented
   # `codepoint` and `name` are used. `type` and `source-glyph` are hardcoded in sheettopng.py, and it's impossible to add new generated glyphs.
-  # generated from row 6, cartoucheEndTok
-  {codepoint = 0xf1992, name = "cartoucheMiddleTok", type = "middle", source-glyph = "cartoucheEndTok"},
+  # generated from row 6, cartoucheStartTok
+    # (because in pixel fonts, the exact middle of the cartouche is on Start, not End.)
+  {codepoint = 0xf1992, name = "cartoucheMiddleTok", center = false, type = "middle", source-glyph = "cartoucheStartTok"},
 ]
 
 ligature-aliases = [ # implemented!!!
@@ -251,7 +252,7 @@ ligature-base-glyphs = [ # implemented!!!
   {codepoint = 0x2e, name = "period",       source-glyph = 122}, # middotTok
   {codepoint = 0x3a, name = "colon",        source-glyph = 123}, # colonTok
 
-  # TOK letters, for words like Anna
+  # already-a-word letters, for words like Anna
   {codepoint = 0x61, name = "a", source-glyph = 0},   # aTok
   {codepoint = 0x65, name = "e", source-glyph = 9},   # eTok
   {codepoint = 0x6e, name = "n", source-glyph = 148}, # nTok
@@ -273,7 +274,7 @@ ligature-base-glyphs = [ # implemented!!!
   {codepoint = 0x55, name = "U", source-glyph = 132}, # u
   {codepoint = 0x57, name = "W", source-glyph = 133}, # w
 
-  # weird substitutions, for words like yutu 
+  # weird substitutions, for words like yutu
   {codepoint = 0x62, name = "b", source-glyph = 129}, # p
   {codepoint = 0x42, name = "B", source-glyph = 129}, # p
   {codepoint = 0x63, name = "c", source-glyph = 130}, # s
