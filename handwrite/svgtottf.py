@@ -36,7 +36,7 @@ def svg_to_ttf(debug_dir, out_dir, default_json, cli_args=None, other_words_stri
     import subprocess
     import platform
     from packaging.version import Version
-    sheet_version = cli_args.get("sheetversion") or "99999999.999999.999999"
+    sheet_version = cli_args.get("sheet_version") or "99999999.999999.999999"
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
     svgtottf_ffpython_path = os.path.join(current_dir, 'svgtottf_ffpython.py')
