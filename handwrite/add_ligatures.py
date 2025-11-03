@@ -117,12 +117,12 @@ feature liga {
                             rotated_ligature(lig, " west",  name, ".W", 1)
                         pass
 
-                    if (k['name'] != "cartoucheStartTok" and
-                        k['name'] != "cartoucheEndTok" and
-                        k['name'] != "middotTok" and
-                        k['name'] != "colonTok" and
-                        k['name'] != "teTok" and
-                        k['name'] != "toTok"
+                    if (    k['name'] != "cartoucheStartTok"
+                        and k['name'] != "cartoucheEndTok"
+                        # and k['name'] != "middotTok"
+                        # and k['name'] != "colonTok"
+                        # and k['name'] != "teTok"
+                        # and k['name'] != "toTok"
                     ):
                         cartoucheable_and_stackable.append(k['name']) 
 

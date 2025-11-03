@@ -7,8 +7,7 @@
   # type
   # source-glyph
 
-  # stackable
-  # cartoucheable
+  # center
 
 
 # codepoint and ligature are both optional, but you need one of them if you want to be able to type your glyph.
@@ -151,22 +150,22 @@ sheet = [ # implemented!!!
   {codepoint = 0xf1977, name = "wileTok",    ligature = "w i l e"},
 
   # row 6!!!
-  {codepoint = 0xf1990, stackable = false, name = "cartoucheStartTok", ligature = "bracketleft",  cartoucheable = false, scan-shift = "right"},
-  {codepoint = 0xf1991, stackable = false, name = "cartoucheEndTok",   ligature = "bracketright", cartoucheable = false, scan-shift = "left"},
-  {codepoint = 0xf199c, stackable = false, name = "middotTok",         ligature = "period"},
-  {codepoint = 0xf199d, stackable = false, name = "colonTok",          ligature = "colon"},
-  {codepoint = 0x69,    stackable = false, name = "i"},
-  {codepoint = 0x6a,    stackable = false, name = "j"},
-  {codepoint = 0x6b,    stackable = false, name = "k"},
-  {codepoint = 0x6c,    stackable = false, name = "l"},
-  {codepoint = 0x6d,    stackable = false, name = "m"},
-  {codepoint = 0x70,    stackable = false, name = "p"},
-  {codepoint = 0x73,    stackable = false, name = "s"},
-  {codepoint = 0x74,    stackable = false, name = "t"},
-  {codepoint = 0x75,    stackable = false, name = "u"},
-  {codepoint = 0x77,    stackable = false, name = "w"},
-  {codepoint = 0x300c,                     name = "teTok",             ligature = "t e"},
-  {codepoint = 0x300d,                     name = "toTok",             ligature = "t o"},
+  {codepoint = 0xf1990, name = "cartoucheStartTok", ligature = "bracketleft",  center = false, scan-shift = "right"},
+  {codepoint = 0xf1991, name = "cartoucheEndTok",   ligature = "bracketright", center = false, scan-shift = "left"},
+  {codepoint = 0xf199c, name = "middotTok",         ligature = "period"},
+  {codepoint = 0xf199d, name = "colonTok",          ligature = "colon"},
+  {codepoint = 0x69,    name = "i"},
+  {codepoint = 0x6a,    name = "j"},
+  {codepoint = 0x6b,    name = "k"},
+  {codepoint = 0x6c,    name = "l"},
+  {codepoint = 0x6d,    name = "m"},
+  {codepoint = 0x70,    name = "p"},
+  {codepoint = 0x73,    name = "s"},
+  {codepoint = 0x74,    name = "t"},
+  {codepoint = 0x75,    name = "u"},
+  {codepoint = 0x77,    name = "w"},
+  {codepoint = 0x300c,  name = "teTok",             ligature = "t e",          center = false},
+  {codepoint = 0x300d,  name = "toTok",             ligature = "t o",          center = false},
   {}, # these blank rows get populated from `other_words_string` in `cli.py`
   {},
   {},

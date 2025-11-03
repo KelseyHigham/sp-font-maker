@@ -11,15 +11,11 @@ sheet = [
   {codepoint = 0xf1902, name = "alaTok",    ligature = "a l a"      },
 
   # row 6
-  {codepoint = 0xf1990, stackable = false, name = "cartoucheStartTok", ligature = "bracketleft",  cartoucheable = false, scan-shift = "right"},
-  {codepoint = 0xf1991, stackable = false, name = "cartoucheEndTok",   ligature = "bracketright", cartoucheable = false, scan-shift = "left"},
-  {codepoint = 0xf199c, stackable = false, name = "middotTok",         ligature = "period"},
-  {codepoint = 0xf199d, stackable = false, name = "colonTok",          ligature = "colon"},
-  {codepoint = 0x69,    stackable = false, name = "i"},
-]
-
-generated = [
-  {codepoint = 0, name = "cartoucheMiddleTok", ligature = "equals", type = "middle", source-glyph-index = 121 }
+  {codepoint = 0xf1990, name = "cartoucheStartTok", ligature = "bracketleft",  center = false, scan-shift = "right"},
+  {codepoint = 0xf1991, name = "cartoucheEndTok",   ligature = "bracketright", center = false, scan-shift = "left"},
+  {codepoint = 0xf199c, name = "middotTok",         ligature = "period"},
+  {codepoint = 0xf199d, name = "colonTok",          ligature = "colon"},
+  {codepoint = 0x69,    name = "i"},
 ]
 
 synonyms = [

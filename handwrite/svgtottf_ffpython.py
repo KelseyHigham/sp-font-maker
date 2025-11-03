@@ -372,12 +372,12 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
                 for glyph in rotated_glyph_set:
                     stacking = False
                     if 'ligature' in glyph_object:
-                        if (name != "cartoucheStartTok" and
-                            name != "cartoucheEndTok" and
-                            name != "middotTok" and
-                            name != "colonTok" and
-                            name != "teTok" and
-                            name != "toTok"
+                        if (    name != "cartoucheStartTok"
+                            and name != "cartoucheEndTok"
+                            # and name != "middotTok"
+                            # and name != "colonTok"
+                            # and name != "teTok"
+                            # and name != "toTok"
                         ):
                             stacking = True
                             g_bottom = font.createChar(-1, glyph.glyphname + ".bottom")
