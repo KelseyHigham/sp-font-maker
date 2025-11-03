@@ -60,44 +60,13 @@ def converters(sheet, output_directory, debug_dir=None, default_json=None, cli_a
             167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179  # 13 cells
         ]
 
+        special_character_names = font_data.get("glyphs", {}).get("special-characters-to-ligatures", {})
         for position, word in enumerate(other_words):
             if word != "_":
                 letters = list(word)
                 for letter_index, letter in enumerate(letters):
-                    # consider switching to the official Adobe names for these special characters
-                    # https://github.com/adobe-type-tools/agl-aglfn/
-                    # https://en.wikipedia.org/wiki/Adobe_Glyph_List
-                    if letter == "_": letters[letter_index] = "underscore"  # (works combining, but not standalone. not supported)
-                    if letter == "-": letters[letter_index] = "hyphen"      # (works combining, but not standalone)
-                    if letter == "+": letters[letter_index] = "plus"
-                    if letter == "^": letters[letter_index] = "north"       # asciicircum
-                    if letter == "<": letters[letter_index] = "west"        # less
-                    if letter == ">": letters[letter_index] = "east"        # greater
-                    if letter == "&": letters[letter_index] = "ampersand"
-                    if letter == ",": letters[letter_index] = "comma"
-                    if letter == "!": letters[letter_index] = "exclamation" # exclam
-                    if letter == "?": letters[letter_index] = "question"
-                    if letter == "0": letters[letter_index] = "zero"
-                    if letter == "1": letters[letter_index] = "one"
-                    if letter == "2": letters[letter_index] = "two"
-                    if letter == "3": letters[letter_index] = "three"
-                    if letter == "4": letters[letter_index] = "four"
-                    if letter == "5": letters[letter_index] = "five"
-                    if letter == "6": letters[letter_index] = "six"
-                    if letter == "7": letters[letter_index] = "seven"
-                    if letter == "8": letters[letter_index] = "eight"
-                    if letter == "9": letters[letter_index] = "nine"
-                    if letter == "{": letters[letter_index] = "opencurly"   # braceleft
-                    if letter == "}": letters[letter_index] = "closecurly"  # braceright
-                    if letter == "(": letters[letter_index] = "openparen"   # parenleft
-                    if letter == ")": letters[letter_index] = "closeparen"  # parenright
-                    if letter == "[": letters[letter_index] = "bracketleft"
-                    if letter == "]": letters[letter_index] = "bracketright"
-                    if letter == ";": letters[letter_index] = "semicolon"
-                    if letter == "|": letters[letter_index] = "pipe"        # bar
-                    if letter == "*": letters[letter_index] = "asterisk"
-                    if letter == '"': letters[letter_index] = 'doublequote' # quotedbl
-                    if letter == "'": letters[letter_index] = "singlequote" # quotesingle
+                    if letter in special_character_names:
+                        letters[letter_index] = special_character_names[letter]
 
                 # todo: we don't differentiate letters from renamed special characters, we just concatenate them.
                 # so we end up with glyph names like "tokihyphenponaTok", which is nonstandard and hard to read.
@@ -111,22 +80,14 @@ def converters(sheet, output_directory, debug_dir=None, default_json=None, cli_a
 
                 glyph_json = font_data.get("glyphs", {}).get("sheet", {})
 
-                # TODO:
-                # here we start adding data based on hardcoded UCSUR data.
-                # this logic should be reworked to read from default_json instead.
-                # for unused_ucsur_word in default_json:
-                    # if glyph["name"] == unused_ucsur_word:
-                        # do the things
-                if   word == "apeja":
-                    glyph_json[blank_cells[position]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": 0xf19a1}
-                elif word == "kokosila":
-                    glyph_json[blank_cells[position]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": 0xf1984}
-                elif word == "pake":
-                    glyph_json[blank_cells[position]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": 0xf19a0}
-                elif word == "powe":
-                    glyph_json[blank_cells[position]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": 0xf19a3}
-                else:
-
+                # If a custom word has an UCSUR codepoint, assign it.
+                unused_ucsur_words = font_data.get("glyphs", {}).get("other-ucsur-codepoints", {})
+                ucsur = False
+                for unused_ucsur_word in unused_ucsur_words:
+                    if word + "Tok" == unused_ucsur_word.get("name", ""):
+                        ucsur = True
+                        glyph_json[blank_cells[position]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": unused_ucsur_word.get("codepoint", -1)}
+                if not ucsur:
                     # check if it's a redraw of an existing sheet glyph
                     redraw = False
                     for default_glyph in glyph_json:

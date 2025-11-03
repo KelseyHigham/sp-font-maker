@@ -358,10 +358,52 @@ spaces = [
 ]
 
 # UCSUR codepoints for words not included in the default sheet, since people may write them in.
-# Currently defined in cli.py, lines 114-121.
-other_ucsur_codepoints = [ # not implemented yet
+other-ucsur-codepoints = [ # implemented!!
   {codepoint = 0xf19a1, name = "apejaTok",    ligature = "a p e j a"},
   {codepoint = 0xf1984, name = "kokosilaTok", ligature = "k o k o s i l a"},
   {codepoint = 0xf19a0, name = "pakeTok",     ligature = "p a k e"},
   {codepoint = 0xf19a3, name = "poweTok",     ligature = "p o w e"},
 ]
+
+[glyphs.special-characters-to-ligatures] # implemented!!
+# Used for parsing `--other-words`.
+# Consider switching to the official Adobe names for these special characters:
+#   https://github.com/adobe-type-tools/agl-aglfn/
+#   https://en.wikipedia.org/wiki/Adobe_Glyph_List
+
+# default ASCII ligatures
+"|" = "pipe"        # bar
+"-" = "hyphen"      # (works combining, but not standalone)
+"0" = "zero"
+"1" = "one"
+"2" = "two"
+"3" = "three"
+"4" = "four"
+"5" = "five"
+"6" = "six"
+"7" = "seven"
+"8" = "eight"
+"9" = "nine"
+"^" = "north"       # asciicircum
+"<" = "west"        # less
+">" = "east"        # greater
+"[" = "bracketleft"
+"]" = "bracketright"
+"_" = "underscore"  # (works combining, but not standalone. not supported)
+
+# fallback for unsupported SP features
+"+" = "plus"
+"&" = "ampersand"
+"{" = "opencurly"   # braceleft
+"}" = "closecurly"  # braceright
+"(" = "openparen"   # parenleft
+")" = "closeparen"  # parenright
+"*" = "asterisk"
+'"' = 'doublequote' # quotedbl
+"," = "comma"
+"'" = "singlequote" # quotesingle
+
+# fallback for text intended as sitelen Lasina
+"!" = "exclamation" # exclam
+"?" = "question"
+";" = "semicolon"

@@ -348,9 +348,7 @@ feature calt {
         from fontTools import ttLib  # camelCase!
         tt = ttLib.TTFont(infile, recalcTimestamp=False)
         from fontTools.feaLib import builder  # camelCase!
-        # with `addOpenTypeFeatures          (tt, file,   debug=True)`, the debug info includes the .fea filename.
-        # with `addOpenTypeFeaturesFromString(tt, string, debug=True)`, the filename is only reported as `<feature>`.
-        builder.addOpenTypeFeaturesFromString(tt, ligatures_string, debug=True)
+        builder.addOpenTypeFeatures(tt, debug_dir + os.sep + family + ".fea", debug=True)
         sys.stderr.write("Generating %s...\n" % outfile)
         tt.save(outfile)
         print("\a")
