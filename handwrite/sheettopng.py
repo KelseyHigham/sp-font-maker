@@ -223,6 +223,9 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
         # containing the characters should have the maximum area, so we loop through the first
         # rows*colums contours and add them to final list after cropping.
         characters = []
+        with open(default_json) as f:
+            default_json_data = json.load(f)
+        sheet_glyphs = default_json_data.get("glyphs", {}).get("sheet", {})
         for row in range(rows):
             # Calculate the bounding of the contour and approximate the height
             # and width for final cropping.
@@ -315,15 +318,12 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
                     # don't apply this algorithm to ijklmpstuw, where it's mostly useless
                     # don't apply this algorithm to pixel art, where it's useless at best
                     centered = True
-                    if row == 6:
-                        if (col == 0  or # cartouche open
-                            col == 1  or # cartouche close
-                            col == 14 or # te
-                            col == 15):  # to
-                            centered = False
-                            # print("not centered:", row, col)
-                            # don't affect x_shift during cartouches and te/to, because they're likely to be off to the side
-                            x_shift = prev_x_shift
+                    index = row*cols + col
+                    current_glyph = sheet_glyphs[index] if len(sheet_glyphs) > index else {}
+                    centered = current_glyph.get("center", True)
+                    if not centered:
+                        # don't affect x_shift during cartouches and te/to, because they're likely to be off to the side
+                        x_shift = prev_x_shift
 
                     prev_x_shift = x_shift
                     # print("shift:", int(centroid_x - glyph_w/2), int(centroid_y - glyph_h/2))
@@ -463,8 +463,6 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
 
 
         # add base glyphs for ASCII ligatures: [_].:, a-z, A-Z
-        with open(default_json) as f:
-            default_json_data = json.load(f)
         ligature_base_glyphs = default_json_data.get("glyphs", {}).get("ligature-base-glyphs")
         for base_glyph in ligature_base_glyphs:
             if "source-glyph" in base_glyph:
