@@ -153,30 +153,7 @@ feature liga {
                         cartoucheable_and_stackable.append(k['name'] + ".NW")
                         cartoucheable_and_stackable.append(k['name'] + ".SW")
 
-        # candidate for removal later, because 
-            # it doesn't play well with HTML
-            # it interferes with an alignment style that's easy to read and works across platforms:
-                # soweli li wile moku
-                # |      li lukin e sewi
-                # |      |  |     e ma
-                # |      |  |     e poka
-                # |      li kama lukin e kili
-                # |      |  |    |     | |    lon kasi
-                # |      li moku e kili
-            # here's that style with the interference:
-                # soweli li wile moku
-                # | li lukin e sewi
-                # | | | e ma
-                # | | | e poka
-                # | li kama lukin e kili
-                # | | | | | | lon kasi
-                # | li moku e kili
-        # in the future, full-width spaces can be inserted with `|`.
-        # this removal may be disruptive, though, and should only be performed with community consensus. 
-        list_of_ligs.append(("  sub              space space   by   ideographicspace;", 2))
-        list_of_ligs.append(("  sub                   hyphen   by    stackJoinTok;", 1))
-
-        # linuwi, kepen, ali, ni-numbers
+        # linuwi, kepen, ali, ni-numbers, space space, hyphen
         # todo: allow these to be overridden by custom-words. that would help kilitelen linuwi, and any font's ni2
         aliases = default_json_data.get("glyphs", {}).get("ligature-aliases")
         for alias in aliases:

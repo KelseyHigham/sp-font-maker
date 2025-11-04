@@ -238,6 +238,28 @@ ligature-aliases = [ # implemented!!!
   {ligature = "n i zero seven", target-name = "niTok.NW"},
   {ligature = "n i zero eight", target-name = "niTok.SW"},
   # todo: add nonstandard ni-numbers (ni1-ni8), but only after allowing other-words to override ligature-aliases in add_ligatures.py, line 180
+  {ligature = "hyphen",      target-name = "stackJoinTok"},
+  # candidate for removal later, because 
+    # it doesn't play well with HTML
+    # it interferes with an alignment style that's easy to read and works across platforms:
+        # soweli li wile moku
+        # |      li lukin e sewi
+        # |      |  |     e ma
+        # |      |  |     e poka
+        # |      li kama lukin e kili
+        # |      |  |    |     | |    lon kasi
+        # |      li moku e kili
+    # here's that style with the interference:
+        # soweli li wile moku
+        # | li lukin e sewi
+        # | | | e ma
+        # | | | e poka
+        # | li kama lukin e kili
+        # | | | | | | lon kasi
+        # | li moku e kili
+  # in the future, full-width spaces can be inserted with `|`.
+  # this removal may be disruptive, though, and should only be performed with community consensus. 
+  {ligature = "space space", target-name = "ideographicspace"},
 ]
 
 # Define ASCII glyphs, so that they can be referenced in ligatures.

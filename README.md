@@ -27,19 +27,19 @@ Currently, the architecture looks like this:
     - also adds them to `glyphs_with_ligatures`, for cartouching
     - also hard-codes the list `cartoucheable_non_words`
   - `svgtottf:add_glyphs` goes through `glyphs-fancy`, and adds each character to the font file, using the `codepoint` field if present
-- `cli.py`
-  - custom words
   - codepoints for UCSUR words not included on the template
   - mapping of ASCII special characters used in custom ligatures, to legal glyph names for those characters
+  - copy existing glyphs to create ASCII codepoints
+  - add ligature for `space space`
+- `cli.py`
+  - positions of custom word slots
   - open question: how should i associate the custom words string with the default page? is it just a first-page-only feature?
 - `sheettopng.py`
   - omit certain glyphs (cartouche, ijklmpstuw vertically, te/to, pixel fonts) from having their *scan areas* centered
     - note that the *vector glyphs themselves* are actually centered later
   - shift cartouche scan area
   - generate PNG for the inner part of the cartouche
-  - copy existing glyphs to create ASCII codepoints
 - `svgtottf.py` (including `_ffpython`)
-  - add ligature for `space space`
   - print default glyphs on preview webpage
   - print custom glyphs on preview webpage, passed in directly from `cli.py`
   - add characters for zero-width space and ideographic space
