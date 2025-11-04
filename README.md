@@ -31,19 +31,22 @@ Currently, the architecture looks like this:
   - mapping of ASCII special characters used in custom ligatures, to legal glyph names for those characters
   - copy existing glyphs to create ASCII codepoints
   - add ligature for `space space`
+  - omit certain glyphs (cartouche, ijklmpstuw vertically, te/to, pixel fonts) from having their *scan areas* centered
+    - note that the *vector glyphs themselves* are actually centered later
+  - add characters for zero-width space and ideographic space
+  - add blank full- and zero-width glyphs for special characters
 - `cli.py`
   - positions of custom word slots
   - open question: how should i associate the custom words string with the default page? is it just a first-page-only feature?
 - `sheettopng.py`
-  - omit certain glyphs (cartouche, ijklmpstuw vertically, te/to, pixel fonts) from having their *scan areas* centered
-    - note that the *vector glyphs themselves* are actually centered later
+  - positions of custom word slots
   - shift cartouche scan area
   - generate PNG for the inner part of the cartouche
-- `svgtottf.py` (including `_ffpython`)
+- `add_ligatures.py`
+- `create_toml_html.py`
   - print default glyphs on preview webpage
   - print custom glyphs on preview webpage, passed in directly from `cli.py`
-  - add characters for zero-width space and ideographic space
-  - add blank full- and zero-width glyphs for special characters
+- `svgtottf.py` (including `_ffpython`)
 
 This complexity prevents us from adding [these features](https://github.com/KelseyHigham/sp-font-maker/issues/1).
 
