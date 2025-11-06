@@ -193,7 +193,7 @@ def png_to_bmp(path, cli_args):
         for pix in list(img.getdata()):
             if pix[0] >= threshold and pix[1] >= threshold and pix[3] >= threshold:
                 data.append((255, 255, 255, 0))
-            else:
+            else:  # Treat as writing
                 data.append((0, 0, 0, 1))
         img.putdata(data)
         img.save(path[0:-4] + ".bmp")
