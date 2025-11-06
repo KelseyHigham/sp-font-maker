@@ -7,63 +7,63 @@ from datetime import datetime
 
 
 
-        #    ▄                █
-        #   ▀█▀  ▄▀▀▄  █▀▄▀▄  █
-        #    █   █  █  █ █ █  █
-        # ▄  ▀▄  ▀▄▄▀  █ █ █  █
-        # generate .toml file
+#    ▄                █
+#   ▀█▀  ▄▀▀▄  █▀▄▀▄  █
+#    █   █  █  █ █ █  █
+# ▄  ▀▄  ▀▄▄▀  █ █ █  █
+# generate .toml file
 
 def create_toml_html(debug_dir, out_dir, cli_args=None, other_words_string=None):
 
-        cli_args_dict = cli_args
+    cli_args_dict = cli_args
 
-        filename = (cli_args_dict.get("filename", "Untitled"))
-        if filename is None:
-            raise NameError("filename not found in config file.")
+    filename = (cli_args_dict.get("filename", "Untitled"))
+    if filename is None:
+        raise NameError("filename not found in config file.")
 
-        family = (cli_args_dict.get("family", None) or filename)
+    family = (cli_args_dict.get("family", None) or filename)
 
-        filename = filename + ".ttf" if not filename.endswith(".ttf") else filename
+    filename = filename + ".ttf" if not filename.endswith(".ttf") else filename
 
-        designer = cli_args_dict.get("designer", "jan pi toki pona")
+    designer = cli_args_dict.get("designer", "jan pi toki pona")
 
-        # for generating the ilo Linku TOML files for each font,
-        # we use short license codes from the SPDX License List: https://spdx.org/licenses/
-        license = cli_args_dict.get("license", "All rights reserved")
-        licenseurl = cli_args_dict.get("license_url", "")
-        if license == "ofl":
-            license = "OFL-1.1"
-            licenseurl = "https://openfontlicense.org"
-        if license == "cc0":
-            license = "CC0-1.0"
-            licenseurl = "https://creativecommons.org/publicdomain/zero/1.0/"
+    # for generating the ilo Linku TOML files for each font,
+    # we use short license codes from the SPDX License List: https://spdx.org/licenses/
+    license = cli_args_dict.get("license", "All rights reserved")
+    licenseurl = cli_args_dict.get("license_url", "")
+    if license == "ofl":
+        license = "OFL-1.1"
+        licenseurl = "https://openfontlicense.org"
+    if license == "cc0":
+        license = "CC0-1.0"
+        licenseurl = "https://creativecommons.org/publicdomain/zero/1.0/"
 
 
 
-        not_new = cli_args_dict.get("not_new", False)
-        if not_new:
-            print("\nSkipping ilo Linku .TOML file.\n")
-        else:
-            s = os.sep
-            # If the user has ilo Linku's "sona" repo on their local machine, put the .toml in there for easy updating.
-            if os.path.isdir(f"{out_dir}..{s}..{s}sona{s}fonts{s}metadata"): # two folders up from /wasokeli.github.io/sp-font-maker/
-                sona_repo_path = f"{out_dir}..{s}..{s}sona{s}fonts{s}metadata"
-            elif os.path.isdir(f"{out_dir}..{s}sona{s}fonts{s}metadata"): # theoretically, some flatter folder
-                sona_repo_path = f"{out_dir}..{s}sona{s}fonts{s}metadata"
-            if sona_repo_path:
-                ilo_linku_toml_file_path = f"{sona_repo_path}{s}{family}.toml"
-                if os.path.exists(f"{sona_repo_path}{s}{family}.toml"):
-                    print(f"\nOverwriting `{sona_repo_path}{s}{family}.toml`, and opening for editing. To skip, add `--not-new`.\n")
-                else:  # New file in sona repo
-                    print(f"\nOpening `{sona_repo_path}{s}{family}.toml` for editing. To skip, add `--not-new`.\n")
-            else:  # Otherwise, just put it in out_dir.
-                ilo_linku_toml_file_path = out_dir + os.sep + family + ".toml"
-                if os.path.exists(f"{out_dir}{s}{family}.toml"):
-                    print(f"\nOverwriting ilo Linku .TOML, and opening for editing. To skip, add `--not-new`.\n")
-                else:  # New file in debug folder
-                    print(f"\nOpening ilo Linku .TOML for editing. To skip, add `--not-new`.\n")
-            ilo_linku_toml_file = open(ilo_linku_toml_file_path, "w", encoding="utf-8")
-            ilo_linku_toml_file.write('''#:schema ../../api/generated/font.json
+    not_new = cli_args_dict.get("not_new", False)
+    if not_new:
+        print("\nSkipping ilo Linku .TOML file.\n")
+    else:
+        s = os.sep
+        # If the user has ilo Linku's "sona" repo on their local machine, put the .toml in there for easy updating.
+        if os.path.isdir(f"{out_dir}..{s}..{s}sona{s}fonts{s}metadata"): # two folders up from /wasokeli.github.io/sp-font-maker/
+            sona_repo_path = f"{out_dir}..{s}..{s}sona{s}fonts{s}metadata"
+        elif os.path.isdir(f"{out_dir}..{s}sona{s}fonts{s}metadata"): # theoretically, some flatter folder
+            sona_repo_path = f"{out_dir}..{s}sona{s}fonts{s}metadata"
+        if sona_repo_path:
+            ilo_linku_toml_file_path = f"{sona_repo_path}{s}{family}.toml"
+            if os.path.exists(f"{sona_repo_path}{s}{family}.toml"):
+                print(f"\nOverwriting `{sona_repo_path}{s}{family}.toml`, and opening for editing. To skip, add `--not-new`.\n")
+            else:  # New file in sona repo
+                print(f"\nOpening `{sona_repo_path}{s}{family}.toml` for editing. To skip, add `--not-new`.\n")
+        else:  # Otherwise, just put it in out_dir.
+            ilo_linku_toml_file_path = out_dir + os.sep + family + ".toml"
+            if os.path.exists(f"{out_dir}{s}{family}.toml"):
+                print(f"\nOverwriting ilo Linku .TOML, and opening for editing. To skip, add `--not-new`.\n")
+            else:  # New file in debug folder
+                print(f"\nOpening ilo Linku .TOML for editing. To skip, add `--not-new`.\n")
+        ilo_linku_toml_file = open(ilo_linku_toml_file_path, "w", encoding="utf-8")
+        ilo_linku_toml_file.write('''#:schema ../../api/generated/font.json
 
 # To submit your font to ilo Linku, for use with the Discord `/sitelenpona` command:
 # 1. Upload your font to a website, like GitHub or Neocities
@@ -85,43 +85,43 @@ writing_system = "sitelen pona" # pick one: sitelen pona, sitelen sitelen, alpha
 last_updated = "''' + datetime.now().strftime("%Y-%m") + '''"
 version      = "1"
 ''')
-            other_words = []
-            apeja = False
-            pake  = False
-            powe  = False
-            prefix_nimisin  = "# "
-            prefix_kokosila = "# "
-            prefix_names    = "# "
-            prefix_variants = "# "
-            if other_words_string:
-                other_words = other_words_string.split()
-                for word_index, word in enumerate(other_words):
-                    if word == "nimisin":
-                        prefix_nimisin  = ""
-                    if word == "kokosila":
-                        prefix_kokosila = ""
-                    if word == "apeja":
-                        apeja = True
-                    if word == "pake":
-                        pake  = True
-                    if word == "powe":
-                        powe  = True
-                    if word[0].isupper():
-                        prefix_names    = ""
-                    if any(char.isdigit() for char in word):
-                        prefix_variants = ""
-            prefix_ucsur = "# "
-            if prefix_kokosila == "" and apeja and pake and powe:
-                prefix_ucsur = ""
+        other_words = []
+        apeja = False
+        pake  = False
+        powe  = False
+        prefix_nimisin  = "# "
+        prefix_kokosila = "# "
+        prefix_names    = "# "
+        prefix_variants = "# "
+        if other_words_string:
+            other_words = other_words_string.split()
+            for word_index, word in enumerate(other_words):
+                if word == "nimisin":
+                    prefix_nimisin  = ""
+                if word == "kokosila":
+                    prefix_kokosila = ""
+                if word == "apeja":
+                    apeja = True
+                if word == "pake":
+                    pake  = True
+                if word == "powe":
+                    powe  = True
+                if word[0].isupper():
+                    prefix_names    = ""
+                if any(char.isdigit() for char in word):
+                    prefix_variants = ""
+        prefix_ucsur = "# "
+        if prefix_kokosila == "" and apeja and pake and powe:
+            prefix_ucsur = ""
 
-            prefix_handwritten = ""
-            prefix_pixelated = "# "
-            pixel = cli_args_dict.get("pixel") or False
-            if pixel:
-                prefix_handwritten = "# "
-                prefix_pixelated = ""
+        prefix_handwritten = ""
+        prefix_pixelated = "# "
+        pixel = cli_args_dict.get("pixel") or False
+        if pixel:
+            prefix_handwritten = "# "
+            prefix_pixelated = ""
 
-            ilo_linku_toml_file.write(f'''
+        ilo_linku_toml_file.write(f'''
 features = [
   "ASCII transcription and codepoints",
   "UCSUR-compliant",
@@ -161,25 +161,25 @@ features = [
 # webpage  = "https://wasokeli.github.io/sp-font-maker/''' + family.replace(" ", "-") + '''.html"
 # repo     = "https://github.com/wasokeli/wasokeli.github.io/tree/main/sp-font-maker"
 ''')
-            ilo_linku_toml_file.close()
+        ilo_linku_toml_file.close()
 
-            import platform
-            import subprocess
-            if platform.system() == 'Windows':
-                os.startfile(ilo_linku_toml_file_path)
-            elif plaform.system() == 'Darwin': # macOS
-                try:
-                    subprocess.run(['open', ilo_linku_toml_file_path])
-                except:
-                    pass
-            elif plaform.system() == 'Linux':
-                try:
-                    subprocess.run(['xdg-open', ilo_linku_toml_file_path])
-                except:
-                    pass
+        import platform
+        import subprocess
+        if platform.system() == 'Windows':
+            os.startfile(ilo_linku_toml_file_path)
+        elif plaform.system() == 'Darwin': # macOS
+            try:
+                subprocess.run(['open', ilo_linku_toml_file_path])
+            except:
+                pass
+        elif plaform.system() == 'Linux':
+            try:
+                subprocess.run(['xdg-open', ilo_linku_toml_file_path])
+            except:
+                pass
 
-        print("🌐 If hosting, give this to " + designer + ": https://wasokeli.github.io/sp-font-maker/" + family.replace(" ", "-"))
-        print("🏠 Preview in browser: file://" + os.path.abspath(out_dir + os.sep + family.replace(" ", "-") + ".html").replace("\\", "/") + "\n")
+    print("🌐 If hosting, give this to " + designer + ": https://wasokeli.github.io/sp-font-maker/" + family.replace(" ", "-"))
+    print("🏠 Preview in browser: file://" + os.path.abspath(out_dir + os.sep + family.replace(" ", "-") + ".html").replace("\\", "/") + "\n")
 
 
 
@@ -193,44 +193,44 @@ features = [
     #            
 
 
-        # add to `generate_all_fonts.bat`, if it exists
-        bat_path = f"{out_dir}{os.sep}generate all fonts.bat"
-        if os.path.exists(bat_path):
-            if not not_new:
-                bat_file = open(bat_path, "a", encoding="utf-8")
-                c = cli_args_dict
-                bat_file.write(f"\nhandwrite --debug-directory ./debug/ ")
-                if c['sheet_version']:
-                    bat_file.write(f"--sheet-version {c['sheet_version'].ljust(5)} ")
-                else:
-                    bat_file.write(f"                      ")
-                if c['license']:
-                    if len(c['license']) == 3:
-                        bat_file.write(f"--license {c['license']} ")
-                    else:  # write license later, for alignment
-                        bat_file.write(f"              ")
-                else:
-                        bat_file.write(f"              ")
-                if c['designer']:
-                    bat_file.write(f'--designer {f'"{c['designer']}"'.ljust(20)} ')
-                else:
-                    bat_file.write(f"                                ")
-                if c['filename']:
-                    bat_file.write(f'--filename "{c['filename']}" ')
-                if c['family']:
-                    bat_file.write(f'--family "{c['family']}" ')
-                bat_file.write(f'{c['input_path']} ')
-                bat_file.write(f'{c['output_directory']} ')
-                if c['other_words']:
-                    bat_file.write(f'--other-words "{c['other_words']}" ')
-                if c['license']:
-                    if len(c['license']) != 3:
-                        bat_file.write(f'--license "{c['license']}" ')
-                if c['license_url']:
-                    bat_file.write(f'--license-url "{c['license_url']}" ')
-                if c['pixel']:
-                    bat_file.write(f"--pixel")
-                bat_file.close()
+    # add to `generate_all_fonts.bat`, if it exists
+    bat_path = f"{out_dir}{os.sep}generate all fonts.bat"
+    if os.path.exists(bat_path):
+        if not not_new:
+            bat_file = open(bat_path, "a", encoding="utf-8")
+            c = cli_args_dict
+            bat_file.write(f"\nhandwrite --debug-directory ./debug/ ")
+            if c['sheet_version']:
+                bat_file.write(f"--sheet-version {c['sheet_version'].ljust(5)} ")
+            else:
+                bat_file.write(f"                      ")
+            if c['license']:
+                if len(c['license']) == 3:
+                    bat_file.write(f"--license {c['license']} ")
+                else:  # write license later, for alignment
+                    bat_file.write(f"              ")
+            else:
+                    bat_file.write(f"              ")
+            if c['designer']:
+                bat_file.write(f'--designer {f'"{c['designer']}"'.ljust(20)} ')
+            else:
+                bat_file.write(f"                                ")
+            if c['filename']:
+                bat_file.write(f'--filename "{c['filename']}" ')
+            if c['family']:
+                bat_file.write(f'--family "{c['family']}" ')
+            bat_file.write(f'{c['input_path']} ')
+            bat_file.write(f'{c['output_directory']} ')
+            if c['other_words']:
+                bat_file.write(f'--other-words "{c['other_words']}" ')
+            if c['license']:
+                if len(c['license']) != 3:
+                    bat_file.write(f'--license "{c['license']}" ')
+            if c['license_url']:
+                bat_file.write(f'--license-url "{c['license_url']}" ')
+            if c['pixel']:
+                bat_file.write(f"--pixel")
+            bat_file.close()
 
 
 
@@ -244,16 +244,16 @@ features = [
     #  █ █   ▀▄▄   █▄▄▀       █▄▄▀  ▀▄▄█  ▀▄▄█  ▀▄▄
     #                         █            ▄▄▀
 
-        other_words = []
-        if other_words_string:
-            other_words = other_words_string.split()
-            for word_index, word in enumerate(other_words):
-                if word == "_":
-                    other_words[word_index] = "|"
+    other_words = []
+    if other_words_string:
+        other_words = other_words_string.split()
+        for word_index, word in enumerate(other_words):
+            if word == "_":
+                other_words[word_index] = "|"
 
-        example_web_page = open(out_dir + os.sep + family.replace(" ", "-") + ".html", "w", encoding="utf-8")
+    example_web_page = open(out_dir + os.sep + family.replace(" ", "-") + ".html", "w", encoding="utf-8")
 
-        example_web_page.write(
+    example_web_page.write(
 """
 <meta charset="utf-8" />
 <style type=\"text/css\">
@@ -399,8 +399,8 @@ function redrawTextarea(e) {
 }
 </script>
 """
-        )
-        example_web_page.close()
+    )
+    example_web_page.close()
 
 
 
@@ -410,77 +410,77 @@ function redrawTextarea(e) {
 
 
 
-        #  ▀  █             █      ▀        █                                         ▀
-        # ▀█  █  ▄▀▀▄       █     ▀█  █▀▀▄  █ ▄▀  █  █       █▀▀▄  █▄▀  ▄▀▀▄  █   █  ▀█  ▄▀▀▄  █   █
-        #  █  █  █  █       █      █  █  █  █▀▄   █  █       █  █  █    █▄▄█   █ █    █  █▄▄█  █ █ █
-        #  █  █  ▀▄▄▀       █▄▄▄   █  █  █  █  █  ▀▄▄█       █▄▄▀  █    ▀▄▄     █     █  ▀▄▄    █ █
-        #                                                    █
-        # # test ilo Linku rendering
-        # # disabled because i don't have RAQM, so i can't test it
-        # # and it seems to be hard to install on Windows
-        # # and i don't want to bother with WSL
-        # # i probably should though...
+    #  ▀  █             █      ▀        █                                         ▀
+    # ▀█  █  ▄▀▀▄       █     ▀█  █▀▀▄  █ ▄▀  █  █       █▀▀▄  █▄▀  ▄▀▀▄  █   █  ▀█  ▄▀▀▄  █   █
+    #  █  █  █  █       █      █  █  █  █▀▄   █  █       █  █  █    █▄▄█   █ █    █  █▄▄█  █ █ █
+    #  █  █  ▀▄▄▀       █▄▄▄   █  █  █  █  █  ▀▄▄█       █▄▄▀  █    ▀▄▄     █     █  ▀▄▄    █ █
+    #                                                    █
+    # # test ilo Linku rendering
+    # # disabled because i don't have RAQM, so i can't test it
+    # # and it seems to be hard to install on Windows
+    # # and i don't want to bother with WSL
+    # # i probably should though...
 
-        # from PIL import Image, ImageDraw, ImageFont
-        # from PIL import features
+    # from PIL import Image, ImageDraw, ImageFont
+    # from PIL import features
 
-        # # Check if RAQM support is enabled in Pillow
-        # if features.check_feature('raqm'):
-        #     print("RAQM support is enabled in Pillow.")
-        # else:
-        #     print("RAQM support is NOT enabled in Pillow. Linku rendering is probably borked.")
+    # # Check if RAQM support is enabled in Pillow
+    # if features.check_feature('raqm'):
+    #     print("RAQM support is enabled in Pillow.")
+    # else:
+    #     print("RAQM support is NOT enabled in Pillow. Linku rendering is probably borked.")
 
-        # from typing import Any, Dict, List, Literal
-        # BgStyle = Literal["outline"] | Literal["background"]
-        # Color = tuple[int, int, int]
-        # ColorAlpha = tuple[int, int, int, int]
+    # from typing import Any, Dict, List, Literal
+    # BgStyle = Literal["outline"] | Literal["background"]
+    # Color = tuple[int, int, int]
+    # ColorAlpha = tuple[int, int, int, int]
 
-        # def display(text: str, font_path: str, font_size: int, color: Color, bgstyle: BgStyle):
-        #     STROKE_WIDTH = round((font_size / 133) * 5)
-        #     LINE_SPACING = round((font_size / 2))
+    # def display(text: str, font_path: str, font_size: int, color: Color, bgstyle: BgStyle):
+    #     STROKE_WIDTH = round((font_size / 133) * 5)
+    #     LINE_SPACING = round((font_size / 2))
 
-        #     HPAD = round(font_size / 30)
-        #     # NOTE: the VPAD is high because keli's font tool produces fonts which cut off on the top otherwise
-        #     VPAD = round(font_size / 4) + 5
+    #     HPAD = round(font_size / 30)
+    #     # NOTE: the VPAD is high because keli's font tool produces fonts which cut off on the top otherwise
+    #     VPAD = round(font_size / 4) + 5
 
-        #     BLACK: ColorAlpha = (0x36, 0x39, 0x3F, 0xFF)
-        #     WHITE: ColorAlpha = (0xF0, 0xF0, 0xF0, 0xFF)
-        #     TRANSPARENT: ColorAlpha = (0, 0, 0, 0)
+    #     BLACK: ColorAlpha = (0x36, 0x39, 0x3F, 0xFF)
+    #     WHITE: ColorAlpha = (0xF0, 0xF0, 0xF0, 0xFF)
+    #     TRANSPARENT: ColorAlpha = (0, 0, 0, 0)
 
-        #     stroke_color = BLACK if True else WHITE
-        #     bg_color = stroke_color if bgstyle == "background" else TRANSPARENT
+    #     stroke_color = BLACK if True else WHITE
+    #     bg_color = stroke_color if bgstyle == "background" else TRANSPARENT
 
-        #     font = ImageFont.truetype(font_path, font_size)
-        #     d = ImageDraw.Draw(Image.new("RGBA", (0, 0), (0, 0, 0, 0)))
-        #     x, y, w, h = d.multiline_textbbox(
-        #         (0, 0),
-        #         text=text,
-        #         font=font,
-        #         spacing=LINE_SPACING,
-        #         stroke_width=STROKE_WIDTH,
-        #         font_size=font_size,
-        #     )
-        #     image = Image.new(
-        #         mode="RGBA",
-        #         size=(w + (HPAD * 2), h + (VPAD * 2)),
-        #         color=bg_color,
-        #     )
-        #     d = ImageDraw.Draw(image)
-        #     d.multiline_text(
-        #         (HPAD, VPAD),
-        #         text,
-        #         font=font,
-        #         fill=color,
-        #         spacing=LINE_SPACING,
-        #         stroke_width=STROKE_WIDTH,
-        #         stroke_fill=stroke_color,
-        #     )
-        #     image.save(out_dir + os.sep + "LINKU TEST - " + family + ".png")
+    #     font = ImageFont.truetype(font_path, font_size)
+    #     d = ImageDraw.Draw(Image.new("RGBA", (0, 0), (0, 0, 0, 0)))
+    #     x, y, w, h = d.multiline_textbbox(
+    #         (0, 0),
+    #         text=text,
+    #         font=font,
+    #         spacing=LINE_SPACING,
+    #         stroke_width=STROKE_WIDTH,
+    #         font_size=font_size,
+    #     )
+    #     image = Image.new(
+    #         mode="RGBA",
+    #         size=(w + (HPAD * 2), h + (VPAD * 2)),
+    #         color=bg_color,
+    #     )
+    #     d = ImageDraw.Draw(image)
+    #     d.multiline_text(
+    #         (HPAD, VPAD),
+    #         text,
+    #         font=font,
+    #         fill=color,
+    #         spacing=LINE_SPACING,
+    #         stroke_width=STROKE_WIDTH,
+    #         stroke_fill=stroke_color,
+    #     )
+    #     image.save(out_dir + os.sep + "LINKU TEST - " + family + ".png")
 
-        # display(
-        #     "󱤴󱥴󱦐󱤗󱤋󱤦󱤎󱦑󱤀", 
-        #     out_dir + os.sep + family + ".ttf",
-        #     72,
-        #     (0x0C, 0xAF, 0xF5),
-        #     "outline"
-        # )
+    # display(
+    #     "󱤴󱥴󱦐󱤗󱤋󱤦󱤎󱦑󱤀", 
+    #     out_dir + os.sep + family + ".ttf",
+    #     72,
+    #     (0x0C, 0xAF, 0xF5),
+    #     "outline"
+    # )
