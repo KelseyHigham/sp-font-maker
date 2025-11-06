@@ -89,28 +89,23 @@ feature liga {
                         rotated_ligature(lig, " west north", name, ".NW", 2)
                         rotated_ligature(lig, " v west",     name, ".SW", 2)
                         rotated_ligature(lig, " west v",     name, ".SW", 2)
-                        if 'direction' in k:
-                            if k['direction'] == 'up':
-                                rotated_ligature(lig, " v",     name, ".S", 1)
-                                rotated_ligature(lig, " east",  name, ".E", 1)
-                                rotated_ligature(lig, " north", name, "",   1) # default dir
-                                rotated_ligature(lig, " west",  name, ".W", 1)
-                            elif k['direction'] == 'down':
-                                rotated_ligature(lig, " v",     name, "",   1) # default dir
-                                rotated_ligature(lig, " east",  name, ".E", 1)
-                                rotated_ligature(lig, " north", name, ".N", 1)
-                                rotated_ligature(lig, " west",  name, ".W", 1)
-                            elif k['direction'] == 'left':
-                                rotated_ligature(lig, " v",     name, ".S", 1)
-                                rotated_ligature(lig, " east",  name, ".E", 1)
-                                rotated_ligature(lig, " north", name, ".N", 1)
-                                rotated_ligature(lig, " west",  name, "",   1) # default dir
-                            else: #right
-                                rotated_ligature(lig, " v",     name, ".S", 1)
-                                rotated_ligature(lig, " east",  name, "",   1) # default dir
-                                rotated_ligature(lig, " north", name, ".N", 1)
-                                rotated_ligature(lig, " west",  name, ".W", 1)
-                        else: # right again
+                        direction = k.get("direction", "right")
+                        if direction == 'up':
+                            rotated_ligature(lig, " v",     name, ".S", 1)
+                            rotated_ligature(lig, " east",  name, ".E", 1)
+                            rotated_ligature(lig, " north", name, "",   1) # default dir
+                            rotated_ligature(lig, " west",  name, ".W", 1)
+                        elif direction == 'down':
+                            rotated_ligature(lig, " v",     name, "",   1) # default dir
+                            rotated_ligature(lig, " east",  name, ".E", 1)
+                            rotated_ligature(lig, " north", name, ".N", 1)
+                            rotated_ligature(lig, " west",  name, ".W", 1)
+                        elif direction == 'left':
+                            rotated_ligature(lig, " v",     name, ".S", 1)
+                            rotated_ligature(lig, " east",  name, ".E", 1)
+                            rotated_ligature(lig, " north", name, ".N", 1)
+                            rotated_ligature(lig, " west",  name, "",   1) # default dir
+                        else: # right
                             rotated_ligature(lig, " v",     name, ".S", 1)
                             rotated_ligature(lig, " east",  name, "",   1) # default dir
                             rotated_ligature(lig, " north", name, ".N", 1)
@@ -127,24 +122,20 @@ feature liga {
                         cartoucheable_and_stackable.append(k['name']) 
 
                     if 'rotate' in k and k['rotate']:
-                        if 'direction' in k:
-                            if k['direction'] == 'up':
-                                cartoucheable_and_stackable.append(k['name'] + ".S")
-                                cartoucheable_and_stackable.append(k['name'] + ".E")
-                                cartoucheable_and_stackable.append(k['name'] + ".W")
-                            elif k['direction'] == 'down':
-                                cartoucheable_and_stackable.append(k['name'] + ".E")
-                                cartoucheable_and_stackable.append(k['name'] + ".N")
-                                cartoucheable_and_stackable.append(k['name'] + ".W")
-                            elif k['direction'] == 'left':
-                                cartoucheable_and_stackable.append(k['name'] + ".S")
-                                cartoucheable_and_stackable.append(k['name'] + ".E")
-                                cartoucheable_and_stackable.append(k['name'] + ".N")
-                            else: # right
-                                cartoucheable_and_stackable.append(k['name'] + ".S")
-                                cartoucheable_and_stackable.append(k['name'] + ".N")
-                                cartoucheable_and_stackable.append(k['name'] + ".W")
-                        else: # right again
+                        direction = k.get("direction", "right")
+                        if direction == 'up':
+                            cartoucheable_and_stackable.append(k['name'] + ".S")
+                            cartoucheable_and_stackable.append(k['name'] + ".E")
+                            cartoucheable_and_stackable.append(k['name'] + ".W")
+                        elif direction == 'down':
+                            cartoucheable_and_stackable.append(k['name'] + ".E")
+                            cartoucheable_and_stackable.append(k['name'] + ".N")
+                            cartoucheable_and_stackable.append(k['name'] + ".W")
+                        elif direction == 'left':
+                            cartoucheable_and_stackable.append(k['name'] + ".S")
+                            cartoucheable_and_stackable.append(k['name'] + ".E")
+                            cartoucheable_and_stackable.append(k['name'] + ".N")
+                        else: # right
                             cartoucheable_and_stackable.append(k['name'] + ".S")
                             cartoucheable_and_stackable.append(k['name'] + ".N")
                             cartoucheable_and_stackable.append(k['name'] + ".W")
