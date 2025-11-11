@@ -65,7 +65,7 @@ def create_toml_html(debug_dir, out_dir, cli_args=None, other_words_string=None)
                 # New file in debug folder
                 print(f"\nOpening ilo Linku .TOML for editing. To skip, add `--not-new`.\n")
         ilo_linku_toml_file = open(ilo_linku_toml_file_path, "w", encoding="utf-8")
-        ilo_linku_toml_file.write('''#:schema ../../api/generated/font.json
+        ilo_linku_toml_file.write(f'''#:schema ../../api/generated/font.json
 
 # To submit your font to ilo Linku, for use with the Discord `/sitelenpona` command:
 # 1. Upload your font to a website, like GitHub or Neocities
@@ -74,11 +74,11 @@ def create_toml_html(debug_dir, out_dir, cli_args=None, other_words_string=None)
 # 4. Submit the .TOML to this page: https://github.com/lipu-linku/sona/tree/main/fonts/metadata
 # 5. Ask for help if you need it! Join the Linku Discord, or make a GitHub Issue on lipu-linku/sona.
 
-id        = "''' + family + '''"
-name      = "''' + family + '''"
-filename  = "''' + filename + '''"
-creator   = ["''' + designer + '''"]
-license   = "''' + license + '''"
+id        = "{family}"
+name      = "{family}"
+filename  = "{filename}"
+creator   = ["{designer}"]
+license   = "{license}"
 ligatures = true
 ucsur     = true
 writing_system = "sitelen pona" # pick one: sitelen pona, sitelen sitelen, alphabet, syllabary, logography,
@@ -159,8 +159,8 @@ features = [
 
 [links]
 # Autofilled for Kelly's site. If you're not uploading to Kelly's site, these URLs are inaccurate; upload the font to a website like neocities.org or github.io
-# fontfile = "https://wasokeli.github.io/sp-font-maker/''' + filename.replace(" ", "%20") + '''"
-# webpage  = "https://wasokeli.github.io/sp-font-maker/''' + family.replace(" ", "-") + '''.html"
+# fontfile = "https://wasokeli.github.io/sp-font-maker/{filename.replace(" ", "%20")}"
+# webpage  = "https://wasokeli.github.io/sp-font-maker/{family.replace(" ", "-")}.html"
 # repo     = "https://github.com/wasokeli/wasokeli.github.io/tree/main/sp-font-maker"
 ''')
         ilo_linku_toml_file.close()
@@ -294,7 +294,7 @@ features = [
         padding: 1em;
     }
 </style>
-<h1>""" + "<a href='" + filename + "'>" + family + "</a>, tan " + designer + """</h1>
+""" + f"""<h1><a href='{filename}'>{family}</a>, tan {designer}</h1>
 
 <span class="tp">
 <!-- word list -->
@@ -304,12 +304,12 @@ lili linja lipu loje lon luka lukin lupa ma mama mani meli mi mije moku moli mon
 mute nanpa nasa nasin nena ni nimi noka o olin ona open pakala pali palisa pan pana pi pilin pimeja<br>
 pini pipi poka poki pona pu sama seli selo seme sewi sijelo sike sin sina sinpin sitelen sona soweli suli<br>
 suno supa suwi tan taso tawa telo tenpo toki tomo tu unpa uta utala walo wan waso wawa weka wile<br>
-[] . : i j k l m p s t u w te to """ + " ".join(other_words[0:4]) + """<br>
-kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi """ + " ".join(other_words[4:12]) + """<br>
-epiku jasima linluwi majuna meso oko su """ + " ".join(other_words[12:25]) + """<br>
+[] . : i j k l m p s t u w te to {" ".join(other_words[0:4])}<br>
+kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi {" ".join(other_words[4:12])}<br>
+epiku jasima linluwi majuna meso oko su {" ".join(other_words[12:25])}<br>
 </span>
 
-<p>License: <a href='""" + licenseurl + """'>""" + license + """</a></p>
+<p>License: <a href='{licenseurl}'>{license}</a></p>
 
 <span class="tp">
 <span style="white-space: break-spaces">
@@ -376,7 +376,7 @@ te sina wile ala ni
 
 </textarea>
 </span></span>
-
+""" + """
 <script>
 /*  workaround for Chromium
 
