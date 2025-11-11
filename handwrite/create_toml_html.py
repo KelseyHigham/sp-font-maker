@@ -54,13 +54,15 @@ def create_toml_html(debug_dir, out_dir, cli_args=None, other_words_string=None)
             ilo_linku_toml_file_path = f"{sona_repo_path}{s}{family}.toml"
             if os.path.exists(f"{sona_repo_path}{s}{family}.toml"):
                 print(f"\nOverwriting `{sona_repo_path}{s}{family}.toml`, and opening for editing. To skip, add `--not-new`.\n")
-            else:  # New file in sona repo
+            else:
                 print(f"\nOpening `{sona_repo_path}{s}{family}.toml` for editing. To skip, add `--not-new`.\n")
-        else:  # Otherwise, just put it in out_dir.
+        else:
+            # Otherwise, just put it in out_dir.
             ilo_linku_toml_file_path = out_dir + os.sep + family + ".toml"
             if os.path.exists(f"{out_dir}{s}{family}.toml"):
                 print(f"\nOverwriting ilo Linku .TOML, and opening for editing. To skip, add `--not-new`.\n")
-            else:  # New file in debug folder
+            else:
+                # New file in debug folder
                 print(f"\nOpening ilo Linku .TOML for editing. To skip, add `--not-new`.\n")
         ilo_linku_toml_file = open(ilo_linku_toml_file_path, "w", encoding="utf-8")
         ilo_linku_toml_file.write('''#:schema ../../api/generated/font.json
@@ -207,7 +209,8 @@ features = [
             if c['license']:
                 if len(c['license']) == 3:
                     bat_file.write(f"--license {c['license']} ")
-                else:  # write license later, for alignment
+                else:
+                    # Write license later, for alignment.
                     bat_file.write(f"              ")
             else:
                     bat_file.write(f"              ")

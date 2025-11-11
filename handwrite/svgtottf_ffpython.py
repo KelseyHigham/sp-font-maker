@@ -123,7 +123,6 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
     # print("Note: If you leave a glyph blank, you'll get a FontForge error like \"I'm")
     # print("      sorry this file is too complex for me to understand (or is erroneous)\".")
     # print("      It's fine, the font still works!")
-# anchor -1
     import psMat
     default_glyphs = config.get("glyphs", {}).get("sheet", {})
     generated_glyphs = config.get("glyphs", {}).get("generated-glyphs", {})
@@ -151,7 +150,6 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
             print("", end=("\r" + (" " + name + " ").ljust(11, " ") + " - "))
             g.importOutlines(src, ("removeoverlap", "correctdir"))
             g.removeOverlap()
-# anchor 0
             if version_major <3:
                 # SHEET VERSION 2 metrics, before scaling (BS) up so that the glyph is the full em height
                 # the 8x10gu SVG is scaled to .8x1em, with padding on the sides to make it 1x1em square.
@@ -188,7 +186,6 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
 
 
 
-# anchor 1
             # SCALING
 
             # Scale everything up so that the glyphs are 1em tall, instead of the cartouches
@@ -226,7 +223,6 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
 
 
 
-# anchor 2
             # create rotated glyphs
 
             rotated_glyph_set = [g] # later we'll iterate through these to generate `.top` and `.bottom` versions
@@ -310,7 +306,6 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
 
 
 
-# anchor 3
             # Center glyphs (including, but not limited to, rotated ones)
             for g in rotated_glyph_set:
                 center = glyph_object.get("center", "both")
@@ -337,9 +332,6 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
 
 
 
-# anchor 3.5
-# anchor 3.6
-# anchor 3.7
             # Create stacking glyphs (including rotated ones)
             for glyph in rotated_glyph_set:
                 stacking = False
@@ -388,7 +380,6 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
 
 
                     
-# anchor 4
     # get rid of stray metrics
     print("\r                                                ")
 
