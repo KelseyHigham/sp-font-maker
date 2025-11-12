@@ -3,10 +3,8 @@
 # i'm going to move some data from the code into this file, but i haven't implemented some of these changes yet. 
 # these fields are unused:
   # scan-shift
-
   # type
   # source-glyph
-
   # center
 
 
@@ -224,9 +222,15 @@ generated-glyphs = [ # partially implemented
 ]
 
 ligature-aliases = [ # implemented!!!
+  # respellings that are invisible to people who don't use them
   {ligature = "a l i",       target-name = "aleTok"},
   {ligature = "l i n u w i", target-name = "linluwiTok"},
   {ligature = "k e p e n",   target-name = "kepekenTok"},
+
+  # respellings for write-ins, to be implemented later
+  # {ligature = "l a 2",       target-name = "mu2Tok"},
+  # {ligature = "m u 2",       target-name = "la2Tok"},
+
   # ni-numbers, from the ligature standard
   # (This will become nonstandard if someone draws alt ni in the normal square and standard ni in the custom square. It will require some special logic to fix.)
   {ligature = "n i zero one",   target-name = "niTok"},
@@ -238,7 +242,9 @@ ligature-aliases = [ # implemented!!!
   {ligature = "n i zero seven", target-name = "niTok.NW"},
   {ligature = "n i zero eight", target-name = "niTok.SW"},
   # todo: add nonstandard ni-numbers (ni1-ni8), but only after allowing other-words to override ligature-aliases in add_ligatures.py, line 180
+
   {ligature = "hyphen",      target-name = "stackJoinTok"},
+
   # candidate for removal later, because 
     # it doesn't play well with HTML
     # it interferes with an alignment style that's easy to read and works across platforms:
@@ -262,7 +268,7 @@ ligature-aliases = [ # implemented!!!
   {ligature = "space space", target-name = "ideographicspace"},
 ]
 
-# Define ASCII glyphs, so that they can be referenced in ligatures.
+# The following glyph names are prerequisites for custom ligatures. for example, the ligature "m u s i" has "m", "u", "s", "i" as prerequisites.
 # This code currently runs in sheettopng.py, so `source-glyph` refers to the index of the glyph in `sorted_characters`.
 # `sorted_characters` is the input sheet verbatim, plus the generated glyph `cartoucheMiddleTok` at index 180.
 # If the implementation is moved to a later step, like svgtottf_ffpython.py, then it can hopefully reference a `target-name` instead of `source-glyph`.
@@ -328,41 +334,41 @@ ligature-base-glyphs = [ # implemented!!!
 
 spaces = [
   # support default ASCII ligatures
-  {codepoint = 0x7c, width = 1000, name = "pipe"},
-  {codepoint = 0x20, width =    0, name = "space"},
-  {codepoint = 0x2d, width =    0, name = "hyphen"},
-  {codepoint = 0x30, width =    0, name = "zero"},
-  {codepoint = 0x31, width =    0, name = "one"},
-  {codepoint = 0x32, width =    0, name = "two"},
-  {codepoint = 0x33, width =    0, name = "three"},
-  {codepoint = 0x34, width =    0, name = "four"},
-  {codepoint = 0x35, width =    0, name = "five"},
-  {codepoint = 0x36, width =    0, name = "six"},
-  {codepoint = 0x37, width =    0, name = "seven"},
-  {codepoint = 0x38, width =    0, name = "eight"},
-  {codepoint = 0x39, width =    0, name = "nine"},
+  {codepoint = 0x7c, width = 1000, name = "pipe"},   # |
+  {codepoint = 0x20, width =    0, name = "space"},  #  
+  {codepoint = 0x2d, width =    0, name = "hyphen"}, # -
+  {codepoint = 0x30, width =    0, name = "zero"},   # 0
+  {codepoint = 0x31, width =    0, name = "one"},    # 1
+  {codepoint = 0x32, width =    0, name = "two"},    # 2
+  {codepoint = 0x33, width =    0, name = "three"},  # 3
+  {codepoint = 0x34, width =    0, name = "four"},   # 4
+  {codepoint = 0x35, width =    0, name = "five"},   # 5
+  {codepoint = 0x36, width =    0, name = "six"},    # 6
+  {codepoint = 0x37, width =    0, name = "seven"},  # 7
+  {codepoint = 0x38, width =    0, name = "eight"},  # 8
+  {codepoint = 0x39, width =    0, name = "nine"},   # 9
   # todo: replace these three, and `v`, with rotated lili. it would be cute i think
-  {codepoint = 0x5e, width = 1000, name = "north"},
-  {codepoint = 0x3c, width = 1000, name = "west"},
-  {codepoint = 0x3e, width = 1000, name = "east"},
-  # (we treat "v" as a regular letter, instead of calling it "south")
+  {codepoint = 0x5e, width = 1000, name = "north"},  # ^
+  {codepoint = 0x3c, width = 1000, name = "west"},   # <
+  {codepoint = 0x3e, width = 1000, name = "east"},   # >
+  # (we treat "v" as a regular letter, instead of naming it "south")
 
   # fallback for unsupported SP features
-  {codepoint = 0x2b, width =    0, name = "plus"},
-  {codepoint = 0x26, width =    0, name = "ampersand"},
-  {codepoint = 0x7b, width =    0, name = "opencurly"},
-  {codepoint = 0x7d, width =    0, name = "closecurly"},
-  {codepoint = 0x28, width =    0, name = "openparen"},
-  {codepoint = 0x29, width =    0, name = "closeparen"},
-  {codepoint = 0x2a, width = 1000, name = "asterisk"},
-  {codepoint = 0x22, width = 1000, name = "doublequote"},
-  {codepoint = 0x2c, width = 1000, name = "comma"},
-  {codepoint = 0x27, width = 1000, name = "singlequote"},
+  {codepoint = 0x2b, width =    0, name = "plus"},        # +
+  {codepoint = 0x26, width =    0, name = "ampersand"},   # &
+  {codepoint = 0x7b, width =    0, name = "opencurly"},   # {
+  {codepoint = 0x7d, width =    0, name = "closecurly"},  # }
+  {codepoint = 0x28, width =    0, name = "openparen"},   # (
+  {codepoint = 0x29, width =    0, name = "closeparen"},  # )
+  {codepoint = 0x2a, width = 1000, name = "asterisk"},    # *
+  {codepoint = 0x22, width = 1000, name = "doublequote"}, # "
+  {codepoint = 0x2c, width = 1000, name = "comma"},       # ,
+  {codepoint = 0x27, width = 1000, name = "singlequote"}, # '
 
   # fallback for text intended as sitelen Lasina
-  {codepoint = 0x21, width = 1000, name = "exclamation"},
-  {codepoint = 0x3f, width = 1000, name = "question"},
-  {codepoint = 0x3b, width = 1000, name = "semicolon"},
+  {codepoint = 0x21, width = 1000, name = "exclamation"}, # !
+  {codepoint = 0x3f, width = 1000, name = "question"},    # ?
+  {codepoint = 0x3b, width = 1000, name = "semicolon"},   # ;
 
   # UCSUR features
   {codepoint = 0x3000,  width = 1000, name = "ideographicspace"},
@@ -381,14 +387,32 @@ spaces = [
 
 # UCSUR codepoints for words not included in the default sheet, since people may write them in.
 other-ucsur-codepoints = [ # implemented!!
+# Todo: Repurpose this for general data for unimplemented words. Mostly directional non-pu critters like waken
+# other-words-metadata, writein-metadata
   {codepoint = 0xf19a1, name = "apejaTok",    ligature = "a p e j a"},
   {codepoint = 0xf1984, name = "kokosilaTok", ligature = "k o k o s i l a"},
   {codepoint = 0xf19a0, name = "pakeTok",     ligature = "p a k e"},
   {codepoint = 0xf19a3, name = "poweTok",     ligature = "p o w e"},
+  # {name = "apiTok",      rotate = true},
+  # {name = "kaTok",       rotate = true, direction = "up"},
+  # {name = "jonkeTok",    rotate = true},
+  # {name = "kisaTok",     rotate = true, direction = "up"},
+  # {name = "misaTok",     rotate = true},
+  # {name = "molusaTok",   rotate = true},
+  # {name = "poniTok",     rotate = true},
+  # {name = "silapaTok",   rotate = true, direction = "left"},
+  # {name = "snoweliTok",  rotate = true},
+  # {name = "sutopatikunaTok", rotate = true},
+  # {name = "tasunTok",    rotate = true},
+  # {name = "wakenTok",    rotate = true},
+  # {name = "wasoweliTok", rotate = true},
 ]
 
 [glyphs.special-characters-to-ligatures] # implemented!!
+# writein-glyph-names, writein-special-characters
 # Used for parsing `--other-words`.
+# Used for creating the ligature used to type the custom word, AND used for the name of the custom glyph. This logic should probably be separated.
+# Consider moving this to a separate file? It's inelegant here, but more robust.
 # Consider switching to the official Adobe names for these special characters:
 #   https://github.com/adobe-type-tools/agl-aglfn/
 #   https://en.wikipedia.org/wiki/Adobe_Glyph_List
