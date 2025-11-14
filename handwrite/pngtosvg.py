@@ -73,7 +73,7 @@ def png_to_bmp(path, cli_args):
         PotraceNotFound
             Raised if potrace not found in path by shutil.which()
         """
-
+# anchor 1
         pixel = cli_args.get("pixel") or False
 
         from packaging.version import Version
@@ -103,7 +103,7 @@ def png_to_bmp(path, cli_args):
             #     print("⚠️ scanning at unnecessarily high quality")
             # glyph_width  = 400 # no visible improvement
             # glyph_height = 500
-
+# anchor 2
         elif Version(sheet_version) < Version("4"):
             # SHEET VERSION 3
 
@@ -129,7 +129,7 @@ def png_to_bmp(path, cli_args):
             #     print("⚠️ scanning at unnecessarily high quality")
             # glyph_width  = 576 # no visible improvement and really huge, probably?
             # glyph_height = 768
-
+# anchor 3
         else:
             # SHEET VERSION 4
 
@@ -164,7 +164,7 @@ def png_to_bmp(path, cli_args):
             # glyph_height = 432
 
 
-
+# anchor 4
         if pixel:
             scale = 8 # 8 for pixel fonts, lower if you wanna make it blobby
             resample = Image.Resampling.NEAREST
@@ -187,7 +187,7 @@ def png_to_bmp(path, cli_args):
             threshold = 127
         else:
             threshold = 200
-
+# anchor 5
         # a pixel becomes black if any color channel is less than 127. so... making the image monochrome before scanning doesn't actually do anything
         data = []
         for pix in list(img.getdata()):
