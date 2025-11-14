@@ -3,6 +3,7 @@ import os
 import shutil
 import subprocess
 import json
+from packaging.version import Version
 
 
 
@@ -20,9 +21,10 @@ def png_to_svg(cli_args, default_json, debug_dir):
     num_characters = 0
     with open(default_json) as f:
         default_json_data = json.load(f)
-        default_glyphs = default_json_data.get("glyphs", {}).get("sheet", {})
-        generated_glyphs = default_json_data.get("glyphs", {}).get("generated-glyphs", {})
-        ligature_base_glyphs = default_json_data.get("glyphs", {}).get("ligature-base-glyphs", {})
+        glyphs_table = default_json_data.get("glyphs", {})
+        default_glyphs = glyphs_table.get("sheet", {})
+        generated_glyphs = glyphs_table.get("generated-glyphs", {})
+        ligature_base_glyphs = glyphs_table.get("ligature-base-glyphs", {})
         for glyph_object in default_glyphs + generated_glyphs + ligature_base_glyphs:
             if 'name' in glyph_object:
                 name = glyph_object['name']
@@ -76,7 +78,6 @@ def png_to_bmp(path, cli_args):
 
     pixel = cli_args.get("pixel") or False
 
-    from packaging.version import Version
     sheet_version = cli_args.get("sheet_version") or "99999999.999999.999999"
     if Version(sheet_version) < Version("2.1"):
         # SHEET VERSION 2.0
@@ -166,12 +167,14 @@ def png_to_bmp(path, cli_args):
 
 
     if pixel:
-        scale = 8 # 8 for pixel fonts, lower if you wanna make it blobby
+        # Potrace requires 8 for pixel fonts. Use lower if you wanna make it blobby
+        scale = 8
         resample = Image.Resampling.NEAREST
         scan_area  = Image.open(path).size
         glyph_width  = scan_area[0] * scale
         glyph_height = scan_area[1] * scale
-        if glyph_height > 500 and os.path.basename(path) == "a.png": # triggers for 32px fonts and bigger
+        # Glyph scale of 500px triggers for 32px fonts and bigger
+        if glyph_height > 500 and os.path.basename(path) == "a.png":
             print(f"Glyph size: ({scan_area[1]//2}, {scan_area[1]//2})")
             print(f"Total scan area: {scan_area}")
             print(f"Upscaling to this for potrace: ({glyph_width}, {glyph_height})")

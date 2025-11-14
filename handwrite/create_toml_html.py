@@ -1,7 +1,8 @@
 import os
 import json
 from datetime import datetime
-
+import platform
+import subprocess
 
 
 
@@ -46,9 +47,11 @@ def create_toml_html(debug_dir, out_dir, cli_args=None, other_words_string=None)
     else:
         s = os.sep
         # If the user has ilo Linku's "sona" repo on their local machine, put the .toml in there for easy updating.
-        if os.path.isdir(f"{out_dir}..{s}..{s}sona{s}fonts{s}metadata"): # two folders up from /wasokeli.github.io/sp-font-maker/
+        # Two folders up from /wasokeli.github.io/sp-font-maker/:
+        if os.path.isdir(f"{out_dir}..{s}..{s}sona{s}fonts{s}metadata"):
             sona_repo_path = f"{out_dir}..{s}..{s}sona{s}fonts{s}metadata"
-        elif os.path.isdir(f"{out_dir}..{s}sona{s}fonts{s}metadata"): # theoretically, some flatter folder
+        # Theoretically, some flatter folder:
+        elif os.path.isdir(f"{out_dir}..{s}sona{s}fonts{s}metadata"):
             sona_repo_path = f"{out_dir}..{s}sona{s}fonts{s}metadata"
         if sona_repo_path:
             ilo_linku_toml_file_path = f"{sona_repo_path}{s}{family}.toml"
@@ -65,7 +68,7 @@ def create_toml_html(debug_dir, out_dir, cli_args=None, other_words_string=None)
                 # New file in debug folder
                 print(f"\nOpening ilo Linku .TOML for editing. To skip, add `--not-new`.\n")
         ilo_linku_toml_file = open(ilo_linku_toml_file_path, "w", encoding="utf-8")
-        ilo_linku_toml_file.write(f'''#:schema ../../api/generated/font.json
+        ilo_linku_toml_file.write(f"""#:schema ../../api/generated/font.json
 
 # To submit your font to ilo Linku, for use with the Discord `/sitelenpona` command:
 # 1. Upload your font to a website, like GitHub or Neocities
@@ -84,9 +87,9 @@ ucsur     = true
 writing_system = "sitelen pona" # pick one: sitelen pona, sitelen sitelen, alphabet, syllabary, logography,
                                 # tokiponido alphabet, tokiponido syllabary, tokiponido logography
 
-last_updated = "''' + datetime.now().strftime("%Y-%m") + '''"
+last_updated = "{datetime.now().strftime("%Y-%m")}"
 version      = "1"
-''')
+""")
         other_words = []
         apeja = False
         pake  = False
@@ -165,8 +168,6 @@ features = [
 ''')
         ilo_linku_toml_file.close()
 
-        import platform
-        import subprocess
         if platform.system() == 'Windows':
             os.startfile(ilo_linku_toml_file_path)
         elif plaform.system() == 'Darwin': # macOS
@@ -180,7 +181,7 @@ features = [
             except:
                 pass
 
-    print("🌐 If hosting, give this to " + designer + ": https://wasokeli.github.io/sp-font-maker/" + family.replace(" ", "-"))
+    print(f"🌐 If hosting, give this to {designer}: " + f"https://wasokeli.github.io/sp-font-maker/{family.replace(' ', '-')}")
     print("🏠 Preview in browser: file://" + os.path.abspath(out_dir + os.sep + family.replace(" ", "-") + ".html").replace("\\", "/") + "\n")
 
 
@@ -257,14 +258,14 @@ features = [
     example_web_page = open(out_dir + os.sep + family.replace(" ", "-") + ".html", "w", encoding="utf-8")
 
     example_web_page.write(
-"""
+f"""
 <meta charset="utf-8" />
 <style type=\"text/css\">
-    @font-face {
-        font-family: '""" + family + """';
-        src: url('""" + filename + """')
-    }
-    body {
+    @font-face {{
+        font-family: '{family}';
+        src: url('{filename}')
+    }}
+    body {{
         background-color: #334;
         font-size: 48px;
         /*font-size: 32px;*/ /* for slideshow */
@@ -273,28 +274,28 @@ features = [
         /*line-height: 1.5em;*/
         color: white;
         font-family: "Chalkboard SE", "Comic Sans MS", sans-serif;
-    }
-    h1 {
+    }}
+    h1 {{
         font-size: 1em;
         /*margin-bottom: 0;*/ /* for slideshow */
-    }
-    a {
+    }}
+    a {{
         color: white;
-    }
-    .tp {
-        font-family: '""" + family + """', 'Chalkboard SE', 'Comic Sans MS', sans-serif;
+    }}
+    .tp {{
+        font-family: '{family}', 'Chalkboard SE', 'Comic Sans MS', sans-serif;
         font-size: 48px;
-    }
-    textarea {
+    }}
+    textarea {{
         font-size: 1em; 
         width: 20em; 
         height: 100%; 
         background-color: #223; 
         color: white; 
         padding: 1em;
-    }
+    }}
 </style>
-""" + f"""<h1><a href='{filename}'>{family}</a>, tan {designer}</h1>
+<h1><a href='{filename}'>{family}</a>, tan {designer}</h1>
 
 <span class="tp">
 <!-- word list -->

@@ -262,6 +262,7 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
             grid_glyph_w = 4
             grid_scan_hor_padding = 1
 
+        # fmt:off
         # Convert glyph and padding from grid cells into pixels,
         # using the measured size of each row
         glyph_w      =            grid_scan_w      * row_w/grid_row_w
@@ -270,6 +271,7 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
         # horizontally centered on the scan area, which is cute
         left_padding = math.floor(grid_hor_padding * row_w/grid_row_w)
         top_padding  =            grid_ver_padding * row_h/grid_row_h
+        # fmt:on
         # print(glyph_w, glyph_h, left_padding, top_padding)
         prev_x_shift = 0
         for col in range(cols):
@@ -377,11 +379,13 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
 
     if other_words_string:
         other_words = other_words_string.split()
+        #fmt:off
         blank_cells = [ # default.toml indices of the blank cells on the page
                                                          136, 137, 138, 139, # 4 cells
                                      152, 153, 154, 155, 156, 157, 158, 159, # 8 cells
             167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179  # 13 cells
         ]
+        #fmt:on
 
         for position, word in enumerate(other_words):
             with open(default_json) as f:
@@ -400,8 +404,8 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
     # here we start messing with glyphs based on their hardcoded indices.
     # this logic should be reworked to read from default_json instead.
     # for glyph in default_json:
-        # if glyph["scan-shift"]:
-            # do the things
+    #     if glyph["scan-shift"]:
+    #         do the things
 
 
     # cartouches
@@ -582,8 +586,8 @@ def pad(side, debug_dir, cli_args, char_name, resize=False):
     # the middle of the cartouche is made from the rightmost 1px column of the open cartouche.
     # in pixel fonts, we include that 1px column in the close cartouche.
     if pixel:
-        #                              `ceil` and `floor` are for 6px and 10px fonts,
-        #                              which have 1px more padding on the left side
+        # `ceil` and `floor` are for 6px and 10px fonts,
+        # which have 1px more padding on the left side
         left_scan_padding       = math.ceil (grid_scan_hor_padding*in_pixels)
         right_scan_padding      = math.floor(grid_scan_hor_padding*in_pixels)
         cartouche_overlap_pixel = 1

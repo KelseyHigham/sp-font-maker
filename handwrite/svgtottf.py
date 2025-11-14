@@ -9,6 +9,9 @@ import sys
 import os
 import json
 import datetime
+import subprocess
+import platform
+from packaging.version import Version
 
 
 def svg_to_ttf(debug_dir, out_dir, default_json, cli_args=None, other_words_string=None):
@@ -33,9 +36,6 @@ def svg_to_ttf(debug_dir, out_dir, default_json, cli_args=None, other_words_stri
         Dictionary containing the metadata (filename, family or style)
     """
     print("SVGtoTTF")
-    import subprocess
-    import platform
-    from packaging.version import Version
     sheet_version = cli_args.get("sheet_version") or "99999999.999999.999999"
 
     current_dir = os.path.dirname(os.path.abspath(__file__))

@@ -54,11 +54,13 @@ def converters(sheet, output_directory, debug_dir=None, default_json=None, cli_a
         print(other_words[0:4])
         print(other_words[4:12])
         print(other_words[12:25])
+        # fmt:off
         blank_cells = [ # default.json indices of the blank cells on the page
                                                          136, 137, 138, 139, # 4 cells
                                      152, 153, 154, 155, 156, 157, 158, 159, # 8 cells
             167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179  # 13 cells
         ]
+        #fmt:on
 
         special_character_names = font_data.get("glyphs", {}).get("special-characters-to-ligatures", {})
         for position, word in enumerate(other_words):
@@ -70,8 +72,8 @@ def converters(sheet, output_directory, debug_dir=None, default_json=None, cli_a
 
                 # todo: we don't differentiate letters from renamed special characters, we just concatenate them.
                 # so we end up with glyph names like "tokihyphenponaTok", which is nonstandard and hard to read.
-                    # standard is to use _ for concatenating characters, and . for variants
-                    # https://github.com/adobe-type-tools/agl-specification?tab=readme-ov-file#3-examples
+                #     standard is to use _ for concatenating characters, and . for variants
+                #     https://github.com/adobe-type-tools/agl-specification?tab=readme-ov-file#3-examples
                 # also "one" and "nine" are valid toki pona, and may rarely cause name collisions, e.g. "an1" -> "anone"
                 # ideal would be "tokiTok_hyphen_ponaTok", because the convention is like "f_f_i.liga"
                 # next best thing would be "toki_hyphen_ponaTok"
@@ -117,7 +119,7 @@ def converters(sheet, output_directory, debug_dir=None, default_json=None, cli_a
 
 
 def main():
-    print("If you get errors, try `handwrite --help`. Also check the analysis PNGs in the debug directory.")
+    print("If you get errors, try `handwrite --help`. " + "Also check the analysis PNGs in the debug directory.")
     parser = argparse.ArgumentParser()
     parser.add_argument("input_path", help="Path to sample sheet")
     parser.add_argument("output_directory", help="Directory Path to save font output")
@@ -156,4 +158,4 @@ def main():
     cli_args = vars(parser.parse_args())
     converters(
         args.input_path, args.output_directory, args.debug_directory, None, cli_args, args.other_words
-    ) 
+    )

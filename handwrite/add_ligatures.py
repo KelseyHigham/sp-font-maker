@@ -1,6 +1,9 @@
 import os
 import sys
 import json
+import fontTools  # camelCase!
+from fontTools import ttLib  # camelCase!
+from fontTools.feaLib import builder  # camelCase!
 
 
 
@@ -16,7 +19,6 @@ import json
 def add_ligatures(debug_dir, out_dir, default_json, cli_args=None, other_words_string=None):
     # Now the font has exported, presumably. 
     # We're back to the `python` environment, not the `ffpython` one, so we can use libraries like fontTools, camelCase.
-    import fontTools  # camelCase!
 
     # `debug_dir` is the temp directory
 
@@ -187,7 +189,7 @@ feature liga {
 lookup step1_joinBottom {"""
     # sub   kalaTok stackJoinTok   by   kalaTok.bottom;
     for word in cartoucheable_and_stackable:
-        ligatures_string += "\n" + "  sub " +     word.rjust(12) + " stackJoinTok   by " +     word.rjust(12) + ".bottom;"
+        ligatures_string += f"\n  sub {word.rjust(12)} stackJoinTok   by {word.rjust(12)}.bottom;"
     ligatures_string += """
 } step1_joinBottom;
 
@@ -196,7 +198,7 @@ lookup step1_joinBottom {"""
 lookup step2_duplicateJoiner {"""
     # sub   kalaTok.bottom   by   kalaTok.bottom stackJoinTok;
     for word in cartoucheable_and_stackable:
-        ligatures_string += "\n" + "  sub " +     word.rjust(12) + ".bottom   by " +     word.rjust(12) + ".bottom stackJoinTok;"
+        ligatures_string += f"\n  sub {word.rjust(12)}.bottom   by {word.rjust(12)}.bottom stackJoinTok;"
     ligatures_string += """
 } step2_duplicateJoiner;
 
@@ -205,7 +207,7 @@ lookup step2_duplicateJoiner {"""
 lookup step3_joinTop {"""
     # sub   stackJoinTok liliTok   by   liliTok.top;
     for word in cartoucheable_and_stackable:
-        ligatures_string += "\n" + "  sub   stackJoinTok " +     word.rjust(12) + "   by " +     word.rjust(12) + ".top;"
+        ligatures_string += f"\n  sub   stackJoinTok {word.rjust(12)}   by {word.rjust(12)}.top;"
     ligatures_string += """
 } step3_joinTop ;
 
@@ -269,13 +271,13 @@ feature liga {                    #          kala stackJoin    lili
   #  surrounding the glyph.)
 """
     for word in cartoucheable_and_stackable:
-        ligatures_string += "  sub " +     word.rjust(12) + "   by " +     word.rjust(12) + " cartoucheMiddleTok;" + "\n"
+        ligatures_string += f"  sub {word.rjust(12)}   by {word.rjust(12)} cartoucheMiddleTok;\n"
     for word in cartoucheable_and_stackable:
-        ligatures_string += "  sub " +     word.rjust(12) + ".bottom   by " +     word.rjust(12) + ".bottom cartoucheMiddleTok;" + "\n"
+        ligatures_string += f"  sub {word.rjust(12)}.bottom   by {word.rjust(12)}.bottom cartoucheMiddleTok;\n"
     for word in cartoucheable_and_stackable:
-        ligatures_string += "  sub " +     word.rjust(12) + ".top   by " +     word.rjust(12) + ".top cartoucheMiddleTok;" + "\n"
+        ligatures_string += f"  sub {word.rjust(12)}.top   by {word.rjust(12)}.top cartoucheMiddleTok;\n"
     for non_word in cartoucheable_non_words:
-        ligatures_string += "  sub " + non_word.rjust(12) + "   by " + non_word.rjust(12) + " cartoucheMiddleTok;" + "\n"
+        ligatures_string += f"  sub {non_word.rjust(12)}   by {non_word.rjust(12)} cartoucheMiddleTok;\n"
 
     ligatures_string += """} add_cartouche_middle;
 
@@ -313,9 +315,7 @@ feature calt {
     feature_file.write(ligatures_string)
     feature_file.close()
 
-    from fontTools import ttLib  # camelCase!
     tt = ttLib.TTFont(infile, recalcTimestamp=False)
-    from fontTools.feaLib import builder  # camelCase!
     builder.addOpenTypeFeatures(tt, debug_dir + os.sep + family + ".fea", debug=True)
     sys.stderr.write("Generating %s...\n" % outfile)
     tt.save(outfile)

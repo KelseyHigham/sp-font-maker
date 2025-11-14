@@ -11,7 +11,10 @@ import os
 import json
 import uuid
 import datetime
-
+import fontforge
+import re
+import psMat
+import math
 
 #              ▄                                           ▄    ▀
 # ▄▀▀▄  ▄▀▀▄  ▀█▀       █▀▀▄  █▄▀  ▄▀▀▄  █▀▀▄  ▄▀▀▄  █▄▀  ▀█▀  ▀█  ▄▀▀▄  ▄▀▀▄
@@ -47,15 +50,18 @@ def set_properties(font, cli_args, version_major, version_minor, version_patch):
     font.hhea_linegap        = 0
 
     pixel = cli_args.get("pixel") or False
-    if version_major < 4 and not pixel: # apply the new metrics to pixel fonts retroactively, to combat blurring
+    # Apply the new metrics to pixel fonts retroactively, to combat blurring.
+    if version_major < 4 and not pixel:
         font.ascent  = 800
         font.descent = 200
         font.os2_typoascent  = 1050
         font.os2_typodescent = -450
         font.hhea_ascent     = 1050
         font.hhea_descent    = -450
-        font.uwidth = 62.5          # underline thickness is 1/16em
-        font.upos   = -200 - 62.5/2 # positioned outside of, and touching, the em square
+        # Underline thickness is 1/16em.
+        font.uwidth = 62.5
+        # Underline is positioned outside of, and touching, the em square.
+        font.upos   = -200 - 62.5/2
     else:
         font.ascent  = 875
         font.descent = 125
@@ -123,7 +129,6 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
     # print("Note: If you leave a glyph blank, you'll get a FontForge error like \"I'm")
     # print("      sorry this file is too complex for me to understand (or is erroneous)\".")
     # print("      It's fine, the font still works!")
-    import psMat
     default_glyphs = config.get("glyphs", {}).get("sheet", {})
     generated_glyphs = config.get("glyphs", {}).get("generated-glyphs", {})
     ligature_base_glyphs = config.get("glyphs", {}).get("ligature-base-glyphs", {})
@@ -170,8 +175,9 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
             def debug_metrics(word_to_debug, note=""):
                 if name == word_to_debug:
                     print("\n", g.width, g.vwidth)
-                    bottom = g.boundingBox()[1] # these numbers talk about the glyph that's actually drawn
-                    top    = g.boundingBox()[3] # so i can manipulate them with drawing
+                    # These numbers talk about the illustration itself, so "." will be smaller than "lipu".
+                    bottom = g.boundingBox()[1]
+                    top    = g.boundingBox()[3]
                     print(
                         note,
                         "top", int(top),
@@ -194,17 +200,20 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
             # move glyphs to where rescaling happens:
             # the left side of the glyph, at the height of the baseline
             if version_major < 4 and not pixel:
+                # 200 is the descent. 500 is half the glyph's height.
                 g.transform(psMat.translate(
                     -bs_glyph_wh / 2,
-                    200-500 # 200 is the descent. 500 is half the glyph's height.
+                    200-500
                 ))
             else:
+                # 125 is the descent. 500 is half the glyph's height.
                 g.transform(psMat.translate(
                     -bs_glyph_wh / 2,
-                    125-500 # 125 is the descent. 500 is half the glyph's height.
+                    125-500
                 ))
-
-            g.transform(psMat.scale(1 / bs_glyph_wh * 1000)) # divide by the SAFE area height; multiply by the SCAN area height
+                
+            # Divide by the SAFE area height; multiply by the SCAN area height.
+            g.transform(psMat.scale(1 / bs_glyph_wh * 1000))
             
             if version_major < 4 and not pixel:
                 g.transform(psMat.translate(
@@ -223,9 +232,9 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
 
 
 
-            # create rotated glyphs
-
-            rotated_glyph_set = [g] # later we'll iterate through these to generate `.top` and `.bottom` versions
+            # Create rotated glyphs.
+            # Later we'll iterate through rotated_glyph_set[] to generate `.top` and `.bottom` versions of each orientation.
+            rotated_glyph_set = [g]
             if 'rotate' in glyph_object:
                 def rotate(flip, degrees_ccw, suffix):
                     rotated_glyph = font.createChar(-1, name + suffix)
@@ -262,7 +271,6 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
                     rotated_glyph.transform(psMat.translate(to_center_x, to_center_y))
                     if flip:
                         rotated_glyph.transform(psMat.scale(-1, 1))
-                    import math
                     rotated_glyph.transform(psMat.rotate(degrees_ccw /360 *math.pi*2))
                     rotated_glyph.transform(psMat.translate(-to_center_x, -to_center_y))
 
@@ -468,7 +476,6 @@ def generate_font_file(font, filename, out_dir, default_json, debug_dir):
     font.save(sfd_path)
 
     # For reproducible builds, modify SFD to remove `CreationTime` metadata, which goes into the HEAD table's "created" field
-    import re
     with open(sfd_path, 'r') as file:
         content = file.read()
     # Replace any number after "CreationTime: " with 0
@@ -480,10 +487,10 @@ def generate_font_file(font, filename, out_dir, default_json, debug_dir):
     # Generate font, but without ligatures yet, to temporary directory
     # sys.stderr.write("\nCreating %s\n" % outfile)
     # TTF
-    import fontforge
     font = fontforge.open(sfd_path)
+    # For reproducible builds; FFTM table stores a timestamp
     font.generate(outfile, flags=(
-        "no-FFTM-table" # For reproducible builds; FFTM table stores a timestamp
+        "no-FFTM-table"
     ))
 
 
@@ -503,8 +510,7 @@ def convert_main(default_json, debug_dir, out_dir, cli_args, v_major, v_minor, v
     try:
         font = fontforge.font()
     except:
-        import fontforge
-        import psMat
+        pass
 
     with open(default_json) as f:
         config = json.load(f)
