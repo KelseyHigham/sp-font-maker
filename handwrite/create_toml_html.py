@@ -1,12 +1,8 @@
-import os
 import json
-from datetime import datetime
+import os
 import platform
 import subprocess
-
-
-
-
+from datetime import datetime
 
 #    ▄                █
 #   ▀█▀  ▄▀▀▄  █▀▄▀▄  █
@@ -14,15 +10,15 @@ import subprocess
 # ▄  ▀▄  ▀▄▄▀  █ █ █  █
 # generate .toml file
 
-def create_toml_html(debug_dir, out_dir, cli_args=None, other_words_string=None):
 
+def create_toml_html(debug_dir, out_dir, cli_args=None, other_words_string=None):
     cli_args_dict = cli_args
 
-    filename = (cli_args_dict.get("filename", "Untitled"))
+    filename = cli_args_dict.get("filename", "Untitled")
     if filename is None:
         raise NameError("filename not found in config file.")
 
-    family = (cli_args_dict.get("family", None) or filename)
+    family = cli_args_dict.get("family", None) or filename
 
     filename = filename + ".ttf" if not filename.endswith(".ttf") else filename
 
@@ -39,8 +35,6 @@ def create_toml_html(debug_dir, out_dir, cli_args=None, other_words_string=None)
         license = "CC0-1.0"
         licenseurl = "https://creativecommons.org/publicdomain/zero/1.0/"
 
-
-
     not_new = cli_args_dict.get("not_new", False)
     if not_new:
         print("\nSkipping ilo Linku .TOML file.\n")
@@ -56,19 +50,28 @@ def create_toml_html(debug_dir, out_dir, cli_args=None, other_words_string=None)
         if sona_repo_path:
             ilo_linku_toml_file_path = f"{sona_repo_path}{s}{family}.toml"
             if os.path.exists(f"{sona_repo_path}{s}{family}.toml"):
-                print(f"\nOverwriting `{sona_repo_path}{s}{family}.toml`, and opening for editing. To skip, add `--not-new`.\n")
+                print(
+                    f"\nOverwriting `{sona_repo_path}{s}{family}.toml`, and opening for editing. To skip, add `--not-new`.\n"
+                )
             else:
-                print(f"\nOpening `{sona_repo_path}{s}{family}.toml` for editing. To skip, add `--not-new`.\n")
+                print(
+                    f"\nOpening `{sona_repo_path}{s}{family}.toml` for editing. To skip, add `--not-new`.\n"
+                )
         else:
             # Otherwise, just put it in out_dir.
             ilo_linku_toml_file_path = out_dir + os.sep + family + ".toml"
             if os.path.exists(f"{out_dir}{s}{family}.toml"):
-                print(f"\nOverwriting ilo Linku .TOML, and opening for editing. To skip, add `--not-new`.\n")
+                print(
+                    f"\nOverwriting ilo Linku .TOML, and opening for editing. To skip, add `--not-new`.\n"
+                )
             else:
                 # New file in debug folder
-                print(f"\nOpening ilo Linku .TOML for editing. To skip, add `--not-new`.\n")
+                print(
+                    f"\nOpening ilo Linku .TOML for editing. To skip, add `--not-new`.\n"
+                )
         ilo_linku_toml_file = open(ilo_linku_toml_file_path, "w", encoding="utf-8")
-        ilo_linku_toml_file.write(f"""#:schema ../../api/generated/font.json
+        ilo_linku_toml_file.write(
+            f"""#:schema ../../api/generated/font.json
 
 # To submit your font to ilo Linku, for use with the Discord `/sitelenpona` command:
 # 1. Upload your font to a website, like GitHub or Neocities
@@ -89,30 +92,31 @@ writing_system = "sitelen pona" # pick one: sitelen pona, sitelen sitelen, alpha
 
 last_updated = "{datetime.now().strftime("%Y-%m")}"
 version      = "1"
-""")
+"""
+        )
         other_words = []
         apeja = False
-        pake  = False
-        powe  = False
-        prefix_nimisin  = "# "
+        pake = False
+        powe = False
+        prefix_nimisin = "# "
         prefix_kokosila = "# "
-        prefix_names    = "# "
+        prefix_names = "# "
         prefix_variants = "# "
         if other_words_string:
             other_words = other_words_string.split()
             for word_index, word in enumerate(other_words):
                 if word == "nimisin":
-                    prefix_nimisin  = ""
+                    prefix_nimisin = ""
                 if word == "kokosila":
                     prefix_kokosila = ""
                 if word == "apeja":
                     apeja = True
                 if word == "pake":
-                    pake  = True
+                    pake = True
                 if word == "powe":
-                    powe  = True
+                    powe = True
                 if word[0].isupper():
-                    prefix_names    = ""
+                    prefix_names = ""
                 if any(char.isdigit() for char in word):
                     prefix_variants = ""
         prefix_ucsur = "# "
@@ -126,7 +130,8 @@ version      = "1"
             prefix_handwritten = "# "
             prefix_pixelated = ""
 
-        ilo_linku_toml_file.write(f'''
+        ilo_linku_toml_file.write(
+            f"""
 features = [
   "ASCII transcription and codepoints",
   "UCSUR-compliant",
@@ -165,36 +170,40 @@ features = [
 # fontfile = "https://wasokeli.github.io/sp-font-maker/{filename.replace(" ", "%20")}"
 # webpage  = "https://wasokeli.github.io/sp-font-maker/{family.replace(" ", "-")}.html"
 # repo     = "https://github.com/wasokeli/wasokeli.github.io/tree/main/sp-font-maker"
-''')
+"""
+        )
         ilo_linku_toml_file.close()
 
-        if platform.system() == 'Windows':
+        if platform.system() == "Windows":
             os.startfile(ilo_linku_toml_file_path)
-        elif plaform.system() == 'Darwin': # macOS
+        elif plaform.system() == "Darwin":  # macOS
             try:
-                subprocess.run(['open', ilo_linku_toml_file_path])
+                subprocess.run(["open", ilo_linku_toml_file_path])
             except:
                 pass
-        elif plaform.system() == 'Linux':
+        elif plaform.system() == "Linux":
             try:
-                subprocess.run(['xdg-open', ilo_linku_toml_file_path])
+                subprocess.run(["xdg-open", ilo_linku_toml_file_path])
             except:
                 pass
 
-    print(f"🌐 If hosting, give this to {designer}: " + f"https://wasokeli.github.io/sp-font-maker/{family.replace(' ', '-')}")
-    print("🏠 Preview in browser: file://" + os.path.abspath(out_dir + os.sep + family.replace(" ", "-") + ".html").replace("\\", "/") + "\n")
+    print(
+        f"🌐 If hosting, give this to {designer}: "
+        + f"https://wasokeli.github.io/sp-font-maker/{family.replace(' ', '-')}"
+    )
+    print(
+        "🏠 Preview in browser: file://"
+        + os.path.abspath(
+            out_dir + os.sep + family.replace(" ", "-") + ".html"
+        ).replace("\\", "/")
+        + "\n"
+    )
 
-
-
-
-
-
-    #     █            ▄ 
+    #     █            ▄
     #     █▀▀▄   ▀▀▄  ▀█▀
-    #     █  █  ▄▀▀█   █ 
+    #     █  █  ▄▀▀█   █
     #  ▄  █▄▄▀  ▀▄▄█   ▀▄
-    #            
-
+    #
 
     # add to `generate_all_fonts.bat`, if it exists
     bat_path = f"{out_dir}{os.sep}generate all fonts.bat"
@@ -203,44 +212,38 @@ features = [
             bat_file = open(bat_path, "a", encoding="utf-8")
             c = cli_args_dict
             bat_file.write(f"\nhandwrite --debug-directory ./debug/ ")
-            if c['sheet_version']:
+            if c["sheet_version"]:
                 bat_file.write(f"--sheet-version {c['sheet_version'].ljust(5)} ")
             else:
                 bat_file.write(f"                      ")
-            if c['license']:
-                if len(c['license']) == 3:
+            if c["license"]:
+                if len(c["license"]) == 3:
                     bat_file.write(f"--license {c['license']} ")
                 else:
                     # Write license later, for alignment.
                     bat_file.write(f"              ")
             else:
-                    bat_file.write(f"              ")
-            if c['designer']:
-                bat_file.write(f'--designer {f'"{c['designer']}"'.ljust(20)} ')
+                bat_file.write(f"              ")
+            if c["designer"]:
+                bat_file.write(f"--designer {f'"{c['designer']}"'.ljust(20)} ")
             else:
                 bat_file.write(f"                                ")
-            if c['filename']:
-                bat_file.write(f'--filename "{c['filename']}" ')
-            if c['family']:
-                bat_file.write(f'--family "{c['family']}" ')
-            bat_file.write(f'{c['input_path']} ')
-            bat_file.write(f'{c['output_directory']} ')
-            if c['other_words']:
-                bat_file.write(f'--other-words "{c['other_words']}" ')
-            if c['license']:
-                if len(c['license']) != 3:
-                    bat_file.write(f'--license "{c['license']}" ')
-            if c['license_url']:
-                bat_file.write(f'--license-url "{c['license_url']}" ')
-            if c['pixel']:
+            if c["filename"]:
+                bat_file.write(f'--filename "{c["filename"]}" ')
+            if c["family"]:
+                bat_file.write(f'--family "{c["family"]}" ')
+            bat_file.write(f"{c['input_path']} ")
+            bat_file.write(f"{c['output_directory']} ")
+            if c["other_words"]:
+                bat_file.write(f'--other-words "{c["other_words"]}" ')
+            if c["license"]:
+                if len(c["license"]) != 3:
+                    bat_file.write(f'--license "{c["license"]}" ')
+            if c["license_url"]:
+                bat_file.write(f'--license-url "{c["license_url"]}" ')
+            if c["pixel"]:
                 bat_file.write(f"--pixel")
             bat_file.close()
-
-
-
-
-
-
 
     #              █
     # █   █  ▄▀▀▄  █▀▀▄       █▀▀▄   ▀▀▄  ▄▀▀█  ▄▀▀▄
@@ -255,10 +258,12 @@ features = [
             if word == "_":
                 other_words[word_index] = "|"
 
-    example_web_page = open(out_dir + os.sep + family.replace(" ", "-") + ".html", "w", encoding="utf-8")
+    example_web_page = open(
+        out_dir + os.sep + family.replace(" ", "-") + ".html", "w", encoding="utf-8"
+    )
 
     example_web_page.write(
-f"""
+        f"""
 <meta charset="utf-8" />
 <style type=\"text/css\">
     @font-face {{
@@ -377,7 +382,8 @@ te sina wile ala ni
 
 </textarea>
 </span></span>
-""" + """
+"""
+        + """
 <script>
 /*  workaround for Chromium
 
@@ -405,14 +411,6 @@ function redrawTextarea(e) {
 """
     )
     example_web_page.close()
-
-
-
-
-
-
-
-
 
     #  ▀  █             █      ▀        █                                         ▀
     # ▀█  █  ▄▀▀▄       █     ▀█  █▀▀▄  █ ▄▀  █  █       █▀▀▄  █▄▀  ▄▀▀▄  █   █  ▀█  ▄▀▀▄  █   █
@@ -482,7 +480,7 @@ function redrawTextarea(e) {
     #     image.save(out_dir + os.sep + "LINKU TEST - " + family + ".png")
 
     # display(
-    #     "󱤴󱥴󱦐󱤗󱤋󱤦󱤎󱦑󱤀", 
+    #     "󱤴󱥴󱦐󱤗󱤋󱤦󱤎󱦑󱤀",
     #     out_dir + os.sep + family + ".ttf",
     #     72,
     #     (0x0C, 0xAF, 0xF5),

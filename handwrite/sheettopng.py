@@ -1,12 +1,16 @@
-import os
 import itertools
 import json
-import cv2
 import math
+import os
+
+import cv2
 from packaging.version import Version
 from PIL import Image, ImageDraw
 
-def sheet_to_png(sheet, debug_dir, default_json, cli_args, other_words_string, cols=20, rows=9):
+
+def sheet_to_png(
+    sheet, debug_dir, default_json, cli_args, other_words_string, cols=20, rows=9
+):
     """Convert a sheet of sample writing input to a custom directory structure of PNGs.
 
     Detect all characters in the sheet as a separate contours and convert each to
@@ -29,24 +33,25 @@ def sheet_to_png(sheet, debug_dir, default_json, cli_args, other_words_string, c
     if os.path.isdir(sheet):
         raise IsADirectoryError("Sheet parameter should not be a directory.")
     characters = detect_characters(
-        debug_dir, default_json, sheet, cli_args, other_words_string, cols=cols, rows=rows
-    )
-    save_images(
-        characters, # more like cells
         debug_dir,
         default_json,
-        cli_args
+        sheet,
+        cli_args,
+        other_words_string,
+        cols=cols,
+        rows=rows,
+    )
+    save_images(
+        characters,  # more like cells
+        debug_dir,
+        default_json,
+        cli_args,
     )
 
 
-
-
-
-
-
-
-
-def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_words_string, cols=20, rows=9):
+def detect_characters(
+    debug_dir, default_json, sheet_image, cli_args, other_words_string, cols=20, rows=9
+):
     """Detect contours on the input image and filter them to get only characters.
 
     Uses opencv to threshold the image for better contour detection. After finding all
@@ -78,7 +83,7 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
     cv2.imwrite(os.path.join(debug_dir, "analysis step 2 - grayscale" + ".png"), gray)
 
     # Threshold and filter the image for better contour detection
-    threshold_value = 127 # formerly 200. change back if black rectangles aren't being detected as dark enough.
+    threshold_value = 127  # formerly 200. change back if black rectangles aren't being detected as dark enough.
     _, thresh = cv2.threshold(gray, threshold_value, 255, 1)
     cv2.imwrite(os.path.join(debug_dir, "analysis step 3 - threshold" + ".png"), thresh)
     close_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
@@ -88,14 +93,14 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
         iterations = 0
     else:
         iterations = 2
-    close = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, close_kernel, iterations=iterations)
+    close = cv2.morphologyEx(
+        thresh, cv2.MORPH_CLOSE, close_kernel, iterations=iterations
+    )
 
     cv2.imwrite(os.path.join(debug_dir, "analysis step 4 - close" + ".png"), close)
 
     # Search for contours.
-    contours, h = cv2.findContours(
-        close, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-    )
+    contours, h = cv2.findContours(close, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     # for debug imaging
     debug_image = Image.open(sheet_image).convert("RGB")
@@ -103,7 +108,7 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
     if pixel:
         debug_width = 1
     else:
-        debug_width = 2 
+        debug_width = 2
 
     # # Draw each *non-rectangular* contour on the image
     # for i, contour in enumerate(contours):
@@ -118,7 +123,7 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
 
     # Just reverse sort by area, for debug drawing.
     contours = sorted(contours, key=cv2.contourArea, reverse=True)
-    for maybe_row in range(rows*2):
+    for maybe_row in range(rows * 2):
         if len(contours) > maybe_row:
             contour_pil = [tuple(point[0]) for point in contours[maybe_row]]
             if len(contour_pil) > 1:
@@ -147,14 +152,14 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
         # but the area of contourArea
         # (doesn't help)
         left, top, width, height = cv2.boundingRect(contour)
-        area         = cv2.contourArea(contour)
-        aspect_ratio = width/height
-        center_x = left + width/2
-        center_y = top + height/2
-        width_s  = math.sqrt(area*aspect_ratio)
-        height_s = math.sqrt(area/aspect_ratio)
-        left_s = center_x - width_s/2
-        top_s  = center_y - height_s/2
+        area = cv2.contourArea(contour)
+        aspect_ratio = width / height
+        center_x = left + width / 2
+        center_y = top + height / 2
+        width_s = math.sqrt(area * aspect_ratio)
+        height_s = math.sqrt(area / aspect_ratio)
+        left_s = center_x - width_s / 2
+        top_s = center_y - height_s / 2
         return left_s, top_s, width_s, height_s
 
     # Draw each row contour on the image
@@ -174,12 +179,9 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
         # print(row)
         left, top, width, height = cv2.boundingRect(contours[row])
         # left_s, top_s, width_s, height_s = small_rect(contours[row])
-        row_areas.append(width*height)
+        row_areas.append(width * height)
 
-        roi = image[
-            top : top  + height,
-            left: left + width
-        ]
+        roi = image[top : top + height, left : left + width]
         row_images.append([roi, left, top])
 
         # # doesn't help
@@ -189,20 +191,24 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
         # ]
         # row_images.append([roi, left_s, top_s])
 
-        debug_draw.rectangle([left, top, left+width, top+height], outline="lime")
+        debug_draw.rectangle([left, top, left + width, top + height], outline="lime")
         # debug_draw.rectangle([left_s, top_s, left_s+width_s, top_s+height_s], outline="blue")
         # debug_image.save(os.path.join(debug_dir, "analysis PREVIEW" + ".png"))  # row rectangles
 
     average_row_area = 0
-    for row in range(rows): average_row_area += row_areas[row]
+    for row in range(rows):
+        average_row_area += row_areas[row]
     average_row_area /= rows
 
     too_small_row = average_row_area * 0.75
-    too_big_row   = average_row_area * 1.125
+    too_big_row = average_row_area * 1.125
     for row in range(rows):
         if not (too_small_row < row_areas[row] < too_big_row):
-            print(f"⚠️ Row[{row}] is {row_areas[row]/average_row_area:.2g}x the average row area! "
-                + "Check the analysis PNGs.\n" + "   This usually happens if someone's custom nimi label gets too close to a big black rectangle, preventing it from being recognized as a rectangle.")
+            print(
+                f"⚠️ Row[{row}] is {row_areas[row] / average_row_area:.2g}x the average row area! "
+                + "Check the analysis PNGs.\n"
+                + "   This usually happens if someone's custom nimi label gets too close to a big black rectangle, preventing it from being recognized as a rectangle."
+            )
 
     # sort top to bottom
     row_images.sort(key=lambda x: x[2])
@@ -211,7 +217,10 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
     if not os.path.exists(row_dir):
         os.mkdir(row_dir)
     for row in range(rows):
-        cv2.imwrite(os.path.join(row_dir, "analysis step 5 - row" + str(row+1) + ".png"), row_images[row][0])
+        cv2.imwrite(
+            os.path.join(row_dir, "analysis step 5 - row" + str(row + 1) + ".png"),
+            row_images[row][0],
+        )
 
     # sort the biggest 9 rows, top-to-bottom
     contours[0:9] = sorted(contours[0:9], key=lambda cnt: cv2.boundingRect(cnt)[1])
@@ -234,7 +243,7 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
         if Version(sheet_version) < Version("3"):
             # SHEET VERSION 2:
             # The grid unit here is roughly 0.125cm on the printed page, or 0.25cm in the original huge file.
-            # Each row bounding box (black line) is 164*12, 
+            # Each row bounding box (black line) is 164*12,
             grid_row_w = 164
             grid_row_h = 12
             # with 2 hor padding and 1 ver padding on each side.
@@ -275,12 +284,12 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
         # print(glyph_w, glyph_h, left_padding, top_padding)
         prev_x_shift = 0
         for col in range(cols):
-            glyph_top  = row_y + top_padding
-            glyph_left = row_x + left_padding + col*glyph_w
+            glyph_top = row_y + top_padding
+            glyph_left = row_x + left_padding + col * glyph_w
             # print("row" + str(row) + ", col" + str(col) + ": " + str(glyph_left))
             roi = image[
-                int(glyph_top ) : int(glyph_top  + glyph_h),
-                int(glyph_left) : int(glyph_left + glyph_w)
+                int(glyph_top) : int(glyph_top + glyph_h),
+                int(glyph_left) : int(glyph_left + glyph_w),
             ]
 
             # funny algorithm to center glyph scan areas while scanning.
@@ -301,21 +310,21 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
             # this is where the magic happens
             # i call it magic because i don't understand it
             moments = cv2.moments(thresh)
-            if moments['m00'] != 0:
-                centroid_x = moments['m10']/moments['m00']
-                centroid_y = moments['m01']/moments['m00']
-                x_shift = (centroid_x - glyph_w/2)
-                y_shift = (centroid_y - glyph_h/2)
+            if moments["m00"] != 0:
+                centroid_x = moments["m10"] / moments["m00"]
+                centroid_y = moments["m01"] / moments["m00"]
+                x_shift = centroid_x - glyph_w / 2
+                y_shift = centroid_y - glyph_h / 2
                 if col != 0:
-                    # avoid large deviations glyph-to-glyph, 
+                    # avoid large deviations glyph-to-glyph,
                     # by nudging halfway towards the previous glyph's shift
-                    x_shift = (x_shift + prev_x_shift)/2
+                    x_shift = (x_shift + prev_x_shift) / 2
 
                 # don't apply this algorithm to the cartouche and te/to, which it breaks
                 # don't apply this algorithm to ijklmpstuw, where it's mostly useless
                 # don't apply this algorithm to pixel art, where it's useless at best
                 centered = True
-                index = row*cols + col
+                index = row * cols + col
                 current_glyph = sheet_glyphs[index] if len(sheet_glyphs) > index else {}
                 centered = current_glyph.get("center", True)
                 if not centered:
@@ -325,12 +334,12 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
                 prev_x_shift = x_shift
                 # print("shift:", int(centroid_x - glyph_w/2), int(centroid_y - glyph_h/2))
                 new_glyph_left = glyph_left + x_shift
-                new_glyph_top  = glyph_top  + y_shift
+                new_glyph_top = glyph_top + y_shift
 
                 if centered and not pixel:
-                    # toggle this line to toggle the algorithm, 
+                    # toggle this line to toggle the algorithm,
                     # while still previewing the algorithm on "analysis PREVIEW.png".
-                    # (note that i'm only implementing horizontal shift, 
+                    # (note that i'm only implementing horizontal shift,
                     # not the vertical shift that that sheet implies.)
                     # (also note that cartouche and te/to are shown as shifted,
                     # even though they're not.)
@@ -338,24 +347,42 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
                     glyph_left = glyph_left + x_shift
 
                 roi = image[
-                    int(glyph_top ) : int(glyph_top  + glyph_h),
-                    int(glyph_left) : int(glyph_left + glyph_w)
+                    int(glyph_top) : int(glyph_top + glyph_h),
+                    int(glyph_left) : int(glyph_left + glyph_w),
                 ]
             characters.append([roi, glyph_left, glyph_top, glyph_w, glyph_h])
-            debug_draw.rectangle([old_glyph_left, old_glyph_top, old_glyph_left+glyph_w, old_glyph_top+glyph_h], 
-                outline="lime", width=debug_width)
+            debug_draw.rectangle(
+                [
+                    old_glyph_left,
+                    old_glyph_top,
+                    old_glyph_left + glyph_w,
+                    old_glyph_top + glyph_h,
+                ],
+                outline="lime",
+                width=debug_width,
+            )
             if not pixel:
-                debug_draw.rectangle([glyph_left, new_glyph_top, glyph_left+glyph_w, new_glyph_top+glyph_h], 
-                    outline="red", width=debug_width)
+                debug_draw.rectangle(
+                    [
+                        glyph_left,
+                        new_glyph_top,
+                        glyph_left + glyph_w,
+                        new_glyph_top + glyph_h,
+                    ],
+                    outline="red",
+                    width=debug_width,
+                )
             # # i don't understand the following result, but it scares me...
             # # why are the first 3 custom boxes treated as not centered?
-            # if centered: 
-            #     debug_draw.rectangle([glyph_left, new_glyph_top, glyph_left+glyph_w, new_glyph_top+glyph_h], 
+            # if centered:
+            #     debug_draw.rectangle([glyph_left, new_glyph_top, glyph_left+glyph_w, new_glyph_top+glyph_h],
             #         outline="red", fill="red", width=debug_width)
             # debug_image.save(os.path.join(debug_dir, "analysis PREVIEW" + ".png")) # every glyph
         # debug_image.save(os.path.join(debug_dir, "analysis PREVIEW" + ".png")) # every row
 
-    debug_image.save(os.path.join(debug_dir, "analysis PREVIEW" + ".png")) # after processing
+    debug_image.save(
+        os.path.join(debug_dir, "analysis PREVIEW" + ".png")
+    )  # after processing
 
     # Now we have the characters but since they are all mixed up we need to position them.
     # Sort characters based on 'y' coordinate and group them by number of rows at a time. Then
@@ -366,40 +393,32 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
     sorted_characters = []
     for row_id in range(rows):
         # sort groups of 20 glyphs by x
-        sorted_characters.extend(sorted(
-            characters[cols * row_id : cols * (row_id + 1)], 
-            key=lambda x: x[1]
-        ))
-
-
-
-
+        sorted_characters.extend(
+            sorted(characters[cols * row_id : cols * (row_id + 1)], key=lambda x: x[1])
+        )
 
     # redraws
 
     if other_words_string:
         other_words = other_words_string.split()
-        #fmt:off
+        # fmt:off
         blank_cells = [ # default.toml indices of the blank cells on the page
                                                          136, 137, 138, 139, # 4 cells
                                      152, 153, 154, 155, 156, 157, 158, 159, # 8 cells
             167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179  # 13 cells
         ]
-        #fmt:on
+        # fmt:on
 
         for position, word in enumerate(other_words):
             with open(default_json) as f:
                 glyph_json = json.load(f).get("glyphs", {}).get("sheet", {})
             for default_glyph_index, default_glyph in enumerate(glyph_json):
-                if 'name' in default_glyph:
-                    if default_glyph['name'] == word + "Tok":
-                        sorted_characters[default_glyph_index] = sorted_characters[blank_cells[position]]
+                if "name" in default_glyph:
+                    if default_glyph["name"] == word + "Tok":
+                        sorted_characters[default_glyph_index] = sorted_characters[
+                            blank_cells[position]
+                        ]
                         # todo: remove redundant glyphs from the preview web page
-
-
-
-
-
 
     # here we start messing with glyphs based on their hardcoded indices.
     # this logic should be reworked to read from default_json instead.
@@ -407,35 +426,42 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
     #     if glyph["scan-shift"]:
     #         do the things
 
-
     # cartouches
-    open_cartouche  = sorted_characters[120]
+    open_cartouche = sorted_characters[120]
     close_cartouche = sorted_characters[121]
-    glyph_left, glyph_top, glyph_w, glyph_h = open_cartouche[1], open_cartouche[2], open_cartouche[3], open_cartouche[4]
+    glyph_left, glyph_top, glyph_w, glyph_h = (
+        open_cartouche[1],
+        open_cartouche[2],
+        open_cartouche[3],
+        open_cartouche[4],
+    )
     cartouche_middle_glyph_left = glyph_left + glyph_w - 1
 
     # shift the open and close cartouche scan area inward, to match how the gray boxes are shifted
     # glyph_left = open_cartouche[1] + glyph_w/16
     # print("horizontal padding", grid_scan_hor_padding * glyph_w/grid_scan_w)
     if pixel:
-        right_scan_padding = math.floor(grid_scan_hor_padding * glyph_w/grid_scan_w)
-        left_scan_padding  = math.ceil( grid_scan_hor_padding * glyph_w/grid_scan_w)
+        right_scan_padding = math.floor(grid_scan_hor_padding * glyph_w / grid_scan_w)
+        left_scan_padding = math.ceil(grid_scan_hor_padding * glyph_w / grid_scan_w)
     else:
-        right_scan_padding = grid_scan_hor_padding * glyph_w/grid_scan_w
-        left_scan_padding  = grid_scan_hor_padding * glyph_w/grid_scan_w
+        right_scan_padding = grid_scan_hor_padding * glyph_w / grid_scan_w
+        left_scan_padding = grid_scan_hor_padding * glyph_w / grid_scan_w
 
-    glyph_left = open_cartouche[1] + grid_scan_hor_padding * glyph_w/grid_scan_w
-    roi = image[int(glyph_top ) : int(glyph_top  + glyph_h),
-                int(glyph_left) : int(glyph_left + glyph_w)]
+    glyph_left = open_cartouche[1] + grid_scan_hor_padding * glyph_w / grid_scan_w
+    roi = image[
+        int(glyph_top) : int(glyph_top + glyph_h),
+        int(glyph_left) : int(glyph_left + glyph_w),
+    ]
     sorted_characters[120][0] = roi
     sorted_characters[120][1] = glyph_left
 
-    glyph_left = close_cartouche[1] - grid_scan_hor_padding * glyph_w/grid_scan_w
-    roi = image[int(glyph_top ) : int(glyph_top  + glyph_h),
-                int(glyph_left) : int(glyph_left + glyph_w)]
+    glyph_left = close_cartouche[1] - grid_scan_hor_padding * glyph_w / grid_scan_w
+    roi = image[
+        int(glyph_top) : int(glyph_top + glyph_h),
+        int(glyph_left) : int(glyph_left + glyph_w),
+    ]
     sorted_characters[121][0] = roi
     sorted_characters[121][1] = glyph_left
-
 
     # █▀▀▀  █   █  ▀▀█▀▀  █▀▀▀▄    █
     # █▄▄    ▀▄▀     █    █   █   █ █
@@ -448,32 +474,28 @@ def detect_characters(debug_dir, default_json, sheet_image, cli_args, other_word
     # ▀▄▄▄▀  █▄▄▄   █    █      █   █  ▀▄▄▄▀
     # These are appended to the glyph list, and they need to be kept
     # in sync with default.json, starting from line 216: "cartoucheMiddleTok"
-    
 
     # for the middle portion of the cartouche, grab the rightmost 1px column
     # of the open cartouche. it'll be automatically stretched to the width
     # of a glyph when it's converted to BMP, then SVG.
-    roi = image[int(glyph_top                  ) : int(glyph_top                   + glyph_h),
-                int(cartouche_middle_glyph_left) : int(cartouche_middle_glyph_left + 1)]
+    roi = image[
+        int(glyph_top) : int(glyph_top + glyph_h),
+        int(cartouche_middle_glyph_left) : int(cartouche_middle_glyph_left + 1),
+    ]
     #                                                                    # bug? vv
-    sorted_characters.append([roi, cartouche_middle_glyph_left, glyph_top, glyph_w, glyph_h])
-
+    sorted_characters.append(
+        [roi, cartouche_middle_glyph_left, glyph_top, glyph_w, glyph_h]
+    )
 
     # add base glyphs for ASCII ligatures: [_].:, a-z, A-Z
-    ligature_base_glyphs = default_json_data.get("glyphs", {}).get("ligature-base-glyphs")
+    ligature_base_glyphs = default_json_data.get("glyphs", {}).get(
+        "ligature-base-glyphs"
+    )
     for base_glyph in ligature_base_glyphs:
         if "source-glyph" in base_glyph:
             sorted_characters.append(sorted_characters[int(base_glyph["source-glyph"])])
 
-
     return sorted_characters
-
-
-
-
-
-
-
 
 
 def save_images(characters, debug_dir, default_json, cli_args):
@@ -496,26 +518,29 @@ def save_images(characters, debug_dir, default_json, cli_args):
     # Create directory for each character and save the png for the characters
     # Structure (single sheet): UserProvidedDir/ord(character)/ord(character).png
     # Structure (multiple sheets): UserProvidedDir/sheet_filename/ord(character)/ord(character).png
-        # Kelly note: the script does not support multiple sheets, actually
+    # Kelly note: the script does not support multiple sheets, actually
 
     # Kelly note: `characters` is more like `cells`, since not every cell contains a glyph
     for cellNum, images in enumerate(characters):
-
         with open(default_json) as f:
             default_json_data = json.load(f)
             default_glyphs = default_json_data.get("glyphs", {}).get("sheet", {})
-            generated_glyphs = default_json_data.get("glyphs", {}).get("generated-glyphs", {})
-            ligature_base_glyphs = default_json_data.get("glyphs", {}).get("ligature-base-glyphs", {})
+            generated_glyphs = default_json_data.get("glyphs", {}).get(
+                "generated-glyphs", {}
+            )
+            ligature_base_glyphs = default_json_data.get("glyphs", {}).get(
+                "ligature-base-glyphs", {}
+            )
             glyphList = default_glyphs + generated_glyphs + ligature_base_glyphs
             curMetadatum = glyphList[cellNum]
-            if len(glyphList) > cellNum: # should this be `>=`?
-                if 'name' in curMetadatum:
-                    character = os.path.join(debug_dir, curMetadatum['name'])
+            if len(glyphList) > cellNum:  # should this be `>=`?
+                if "name" in curMetadatum:
+                    character = os.path.join(debug_dir, curMetadatum["name"])
                     if not os.path.exists(character):
                         os.mkdir(character)
                     # print(character, curMetadatum['name'] + ".png")
                     cv2.imwrite(
-                        os.path.join(character, curMetadatum['name'] + ".png"),
+                        os.path.join(character, curMetadatum["name"] + ".png"),
                         images[0],
                     )
 
@@ -523,33 +548,29 @@ def save_images(characters, debug_dir, default_json, cli_args):
     # If this brittle codeblock breaks, just comment it out, and svgtottf_ffpython will size the pixel scan for an 8px font.
     with open(default_json) as f:
         json_data = json.load(f)
-    first_char_name = json_data.get("glyphs", {}).get("sheet", {})[0].get('name', 'aTok')
-    first_char_img  = Image.open(debug_dir + "/" + first_char_name + "/" + first_char_name + ".png")
-    json_data["pixel-size"] = first_char_img.size[0]*2/3
+    first_char_name = (
+        json_data.get("glyphs", {}).get("sheet", {})[0].get("name", "aTok")
+    )
+    first_char_img = Image.open(
+        debug_dir + "/" + first_char_name + "/" + first_char_name + ".png"
+    )
+    json_data["pixel-size"] = first_char_img.size[0] * 2 / 3
     with open(default_json, "w") as file:
         json.dump(json_data, file, indent=4)
 
     # Trim cartouche characters
-        # We'll have to do the same thing for long pi
-        # and any other character that spans two cells
+    # We'll have to do the same thing for long pi
+    # and any other character that spans two cells
     pad("right", debug_dir, cli_args, "cartoucheStartTok")
     pad("right", debug_dir, cli_args, "bracketleft")
-    
-    pad("left",  debug_dir, cli_args, "cartoucheEndTok")
-    pad("left",  debug_dir, cli_args, "bracketright")
+
+    pad("left", debug_dir, cli_args, "cartoucheEndTok")
+    pad("left", debug_dir, cli_args, "bracketright")
 
     pad("right", debug_dir, cli_args, "cartoucheMiddleTok", True)
-    pad("left",  debug_dir, cli_args, "cartoucheMiddleTok", True)
+    pad("left", debug_dir, cli_args, "cartoucheMiddleTok", True)
     pad("right", debug_dir, cli_args, "underscore", True)
-    pad("left",  debug_dir, cli_args, "underscore", True)
-
-
-
-
-
-
-
-
+    pad("left", debug_dir, cli_args, "underscore", True)
 
 
 def pad(side, debug_dir, cli_args, char_name, resize=False):
@@ -575,11 +596,13 @@ def pad(side, debug_dir, cli_args, char_name, resize=False):
         # default bicubic resampling gives us round caps on the cartouche extension
         # which lowers the chance of overlap artifacts, from stacked antialiasing on one pixel
         # like in Arabic or Latin cursive font design
-        char_img = char_img.resize((int(char_img.height * grid_scan_w/grid_scan_h), char_img.height))
+        char_img = char_img.resize(
+            (int(char_img.height * grid_scan_w / grid_scan_h), char_img.height)
+        )
 
     draw = ImageDraw.Draw(char_img)
-    left, top, right, bottom = 0, 0, char_img.width-1, char_img.height-1
-    in_pixels = char_img.width/grid_scan_w
+    left, top, right, bottom = 0, 0, char_img.width - 1, char_img.height - 1
+    in_pixels = char_img.width / grid_scan_w
 
     pixel = cli_args.get("pixel") or False
 
@@ -588,25 +611,36 @@ def pad(side, debug_dir, cli_args, char_name, resize=False):
     if pixel:
         # `ceil` and `floor` are for 6px and 10px fonts,
         # which have 1px more padding on the left side
-        left_scan_padding       = math.ceil (grid_scan_hor_padding*in_pixels)
-        right_scan_padding      = math.floor(grid_scan_hor_padding*in_pixels)
+        left_scan_padding = math.ceil(grid_scan_hor_padding * in_pixels)
+        right_scan_padding = math.floor(grid_scan_hor_padding * in_pixels)
         cartouche_overlap_pixel = 1
-        cartouche_overlap  = 0
+        cartouche_overlap = 0
     else:
-        left_scan_padding  = grid_scan_hor_padding*in_pixels
-        right_scan_padding = grid_scan_hor_padding*in_pixels
-        cartouche_overlap  = grid_glyph_w*in_pixels/42
+        left_scan_padding = grid_scan_hor_padding * in_pixels
+        right_scan_padding = grid_scan_hor_padding * in_pixels
+        cartouche_overlap = grid_glyph_w * in_pixels / 42
         cartouche_overlap_pixel = 0
     if side == "left":
         draw.rectangle(
-            ((left,                                                                       top   ),     
-             (left + left_scan_padding - cartouche_overlap - cartouche_overlap_pixel - 1, bottom)),
-            fill="white"
+            (
+                (left, top),
+                (
+                    left
+                    + left_scan_padding
+                    - cartouche_overlap
+                    - cartouche_overlap_pixel
+                    - 1,
+                    bottom,
+                ),
+            ),
+            fill="white",
         )
     if side == "right":
         draw.rectangle(
-            ((right - right_scan_padding + cartouche_overlap + 1, top   ), 
-             (right,                                              bottom)),
-            fill="white"
+            (
+                (right - right_scan_padding + cartouche_overlap + 1, top),
+                (right, bottom),
+            ),
+            fill="white",
         )
     char_img.save(debug_dir + "/" + char_name + "/" + char_name + ".png")

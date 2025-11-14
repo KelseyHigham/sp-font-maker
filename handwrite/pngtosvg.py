@@ -1,10 +1,10 @@
-from PIL import Image, ImageChops
+import json
 import os
 import shutil
 import subprocess
-import json
-from packaging.version import Version
 
+from packaging.version import Version
+from PIL import Image, ImageChops
 
 
 class PotraceNotFound(Exception):
@@ -26,14 +26,22 @@ def png_to_svg(cli_args, default_json, debug_dir):
         generated_glyphs = glyphs_table.get("generated-glyphs", {})
         ligature_base_glyphs = glyphs_table.get("ligature-base-glyphs", {})
         for glyph_object in default_glyphs + generated_glyphs + ligature_base_glyphs:
-            if 'name' in glyph_object:
-                name = glyph_object['name']
+            if "name" in glyph_object:
+                name = glyph_object["name"]
                 glyph_dir = debug_dir + os.sep + name
                 num_characters += 1
-                print("PNGtoSVG", name.ljust(14, " ")[:14], "".join("." for i in range(num_characters//8)), end="\r")
+                print(
+                    "PNGtoSVG",
+                    name.ljust(14, " ")[:14],
+                    "".join("." for i in range(num_characters // 8)),
+                    end="\r",
+                )
                 png_to_bmp(glyph_dir + os.sep + name + ".png", cli_args)
                 bmp_to_svg(glyph_dir + os.sep + name + ".bmp")
-    print("PNGtoSVG                                                                      ")
+    print(
+        "PNGtoSVG                                                                      "
+    )
+
 
 def bmp_to_svg(path):
     """Convert .bmp image to .svg using potrace.
@@ -55,8 +63,18 @@ def bmp_to_svg(path):
     if shutil.which("potrace") is None:
         raise PotraceNotFound("Potrace is either not installed or not in path")
     else:
-        subprocess.run(["potrace", path, "--backend", "svg", "--output", path[0:-4] + ".svg",])
+        subprocess.run(
+            [
+                "potrace",
+                path,
+                "--backend",
+                "svg",
+                "--output",
+                path[0:-4] + ".svg",
+            ]
+        )
         # note: the --margin parameter doesn't help me here
+
 
 def png_to_bmp(path, cli_args):
     """Convert .bmp image to .svg using potrace.
@@ -82,7 +100,7 @@ def png_to_bmp(path, cli_args):
     if Version(sheet_version) < Version("2.1"):
         # SHEET VERSION 2.0
         # scan 2.0.x sheets with lower quality, to avoid picking up corner pixels from the gray boxes
-        glyph_width  = 100
+        glyph_width = 100
         glyph_height = 125
     elif Version(sheet_version) < Version("3"):
         # SHEET VERSION 2.1
@@ -97,7 +115,7 @@ def png_to_bmp(path, cli_args):
         # glyph_width  = 100
         # glyph_height = 125
 
-        glyph_width  = 200 # good balance
+        glyph_width = 200  # good balance
         glyph_height = 250
 
         # if os.path.basename(path) == "a.png":
@@ -123,7 +141,7 @@ def png_to_bmp(path, cli_args):
         # glyph_width  = 144
         # glyph_height = 192
 
-        glyph_width  = 288 # good balance
+        glyph_width = 288  # good balance
         glyph_height = 384
 
         # if os.path.basename(path) == "a.png":
@@ -151,7 +169,7 @@ def png_to_bmp(path, cli_args):
 
         # if os.path.basename(path) == "a.png":
         #     print("scanning at good quality")
-        glyph_width  = 216
+        glyph_width = 216
         glyph_height = 288
 
         # # if os.path.basename(path) == "a.png":
@@ -164,25 +182,27 @@ def png_to_bmp(path, cli_args):
         # glyph_width  = 324
         # glyph_height = 432
 
-
-
     if pixel:
         # Potrace requires 8 for pixel fonts. Use lower if you wanna make it blobby
         scale = 8
         resample = Image.Resampling.NEAREST
-        scan_area  = Image.open(path).size
-        glyph_width  = scan_area[0] * scale
+        scan_area = Image.open(path).size
+        glyph_width = scan_area[0] * scale
         glyph_height = scan_area[1] * scale
         # Glyph scale of 500px triggers for 32px fonts and bigger
         if glyph_height > 500 and os.path.basename(path) == "a.png":
-            print(f"Glyph size: ({scan_area[1]//2}, {scan_area[1]//2})")
+            print(f"Glyph size: ({scan_area[1] // 2}, {scan_area[1] // 2})")
             print(f"Total scan area: {scan_area}")
             print(f"Upscaling to this for potrace: ({glyph_width}, {glyph_height})")
             print("High-res pixel font, this will take a while, be patient!")
     else:
         resample = Image.Resampling.BILINEAR
 
-    img = Image.open(path).convert("RGBA").resize((glyph_width, glyph_height), resample=resample)
+    img = (
+        Image.open(path)
+        .convert("RGBA")
+        .resize((glyph_width, glyph_height), resample=resample)
+    )
 
     # Threshold image to convert each pixel to either black or white.
     # Changed from 200 to 127, which makes two of the 2.0.0 fonts look worse, but improves just about everything newer.

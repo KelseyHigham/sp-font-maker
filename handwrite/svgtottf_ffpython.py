@@ -1,4 +1,3 @@
-
 #    █▀▀▀               ▄   █▀▀▀                              █▀▀▀▄         ▄   █
 #    █▄▄   ▄▀▀▄  █▀▀▄  ▀█▀  █▄▄   ▄▀▀▄  █▄▀  ▄▀▀█  ▄▀▀▄       █   █  █  █  ▀█▀  █▀▀▄  ▄▀▀▄  █▀▀▄
 #    █     █  █  █  █   █   █     █  █  █    █  █  █▄▄█       █▀▀▀   █  █   █   █  █  █  █  █  █
@@ -6,15 +5,16 @@
 #                                             ▄▄▀                     ▄▄▀
 # This file is run with the Python distribution that's bundled with FontForge.
 
-import sys
-import os
-import json
-import uuid
 import datetime
-import fontforge
-import re
-import psMat
+import json
 import math
+import os
+import re
+import sys
+import uuid
+
+import fontforge
+import psMat
 
 #              ▄                                           ▄    ▀
 # ▄▀▀▄  ▄▀▀▄  ▀█▀       █▀▀▄  █▄▀  ▄▀▀▄  █▀▀▄  ▄▀▀▄  █▄▀  ▀█▀  ▀█  ▄▀▀▄  ▄▀▀▄
@@ -22,10 +22,11 @@ import math
 # ▀▄▄▀  ▀▄▄    ▀▄       █▄▄▀  █    ▀▄▄▀  █▄▄▀  ▀▄▄   █     ▀▄   █  ▀▄▄   ▀▄▄▀
 #                       █                █
 
+
 def set_properties(font, cli_args, version_major, version_minor, version_patch):
     """Set metadata of the font."""
     sfnt_names = {}
-    lang = "English (US)" # `sfnt_names` are stored under the language
+    lang = "English (US)"  # `sfnt_names` are stored under the language
     fontname = cli_args.get("filename", "Untitled")
     family = cli_args.get("family", None) or fontname
     style = "Regular"
@@ -42,35 +43,35 @@ def set_properties(font, cli_args, version_major, version_minor, version_patch):
     #             - https://fontforge.org/docs/scripting/python/fontforge.html#fontforge.font.os2_codepages
     font.os2_vendor = "SPFM"
 
-    font.os2_typoascent_add  = False # "Is Offset" checkbox in FontForge
+    font.os2_typoascent_add = False  # "Is Offset" checkbox in FontForge
     font.os2_typodescent_add = False
-    font.os2_typolinegap     = 0
-    font.hhea_ascent_add     = False
-    font.hhea_descent_add    = False
-    font.hhea_linegap        = 0
+    font.os2_typolinegap = 0
+    font.hhea_ascent_add = False
+    font.hhea_descent_add = False
+    font.hhea_linegap = 0
 
     pixel = cli_args.get("pixel") or False
     # Apply the new metrics to pixel fonts retroactively, to combat blurring.
     if version_major < 4 and not pixel:
-        font.ascent  = 800
+        font.ascent = 800
         font.descent = 200
-        font.os2_typoascent  = 1050
+        font.os2_typoascent = 1050
         font.os2_typodescent = -450
-        font.hhea_ascent     = 1050
-        font.hhea_descent    = -450
+        font.hhea_ascent = 1050
+        font.hhea_descent = -450
         # Underline thickness is 1/16em.
         font.uwidth = 62.5
         # Underline is positioned outside of, and touching, the em square.
-        font.upos   = -200 - 62.5/2
+        font.upos = -200 - 62.5 / 2
     else:
-        font.ascent  = 875
+        font.ascent = 875
         font.descent = 125
-        font.os2_typoascent  = 1125 
+        font.os2_typoascent = 1125
         font.os2_typodescent = -375
-        font.hhea_ascent     = 1125
-        font.hhea_descent    = -375
+        font.hhea_ascent = 1125
+        font.hhea_descent = -375
         font.uwidth = 62.5
-        font.upos   = -125 - 62.5/2
+        font.upos = -125 - 62.5 / 2
 
     # String fields built-in to the ffpython API: ['Copyright', 'Family', 'UniqueID', 'Fullname', 'Version', 'PostScriptName', 'License', 'License URL']
     sfnt_names["Family"] = family
@@ -78,7 +79,9 @@ def set_properties(font, cli_args, version_major, version_minor, version_patch):
     sfnt_names["PostScriptName"] = family.replace(" ", "-") + "-" + style
     sfnt_names["SubFamily"] = style
     sfnt_names["Designer"] = designer
-    sfnt_names["Copyright"] = "(C) Copyright " + designer + ", " + str(datetime.datetime.now().year)
+    sfnt_names["Copyright"] = (
+        "(C) Copyright " + designer + ", " + str(datetime.datetime.now().year)
+    )
     sfnt_names["License"] = license
     sfnt_names["License URL"] = licenseurl
     if license == "ofl":
@@ -100,20 +103,16 @@ def set_properties(font, cli_args, version_major, version_minor, version_patch):
         font.appendSFNTName(str(lang), k, v)
 
 
-
-
-
-
-
-
-
 #          █     █             █              █
 #  ▀▀▄  ▄▀▀█  ▄▀▀█       ▄▀▀█  █  █  █  █▀▀▄  █▀▀▄  ▄▀▀▄
 # ▄▀▀█  █  █  █  █       █  █  █  █  █  █  █  █  █   ▀▄
 # ▀▄▄█  ▀▄▄█  ▀▄▄█       ▀▄▄█  █  ▀▄▄█  █▄▄▀  █  █  ▀▄▄▀
 #                         ▄▄▀      ▄▄▀  █
 
-def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, version_patch):
+
+def add_glyphs(
+    font, config, cli_args, debug_dir, version_major, version_minor, version_patch
+):
     """Read and add SVG images as glyphs to the font.
 
     Walks through the provided directory and uses each ord(character).svg file
@@ -133,10 +132,10 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
     generated_glyphs = config.get("glyphs", {}).get("generated-glyphs", {})
     ligature_base_glyphs = config.get("glyphs", {}).get("ligature-base-glyphs", {})
     for glyph_object in default_glyphs + generated_glyphs + ligature_base_glyphs:
-        if 'name' in glyph_object:
-            name = glyph_object['name']
-            if 'codepoint' in glyph_object:
-                cp = glyph_object['codepoint']
+        if "name" in glyph_object:
+            name = glyph_object["name"]
+            if "codepoint" in glyph_object:
+                cp = glyph_object["codepoint"]
             else:
                 cp = 0
 
@@ -155,7 +154,7 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
             print("", end=("\r" + (" " + name + " ").ljust(11, " ") + " - "))
             g.importOutlines(src, ("removeoverlap", "correctdir"))
             g.removeOverlap()
-            if version_major <3:
+            if version_major < 3:
                 # SHEET VERSION 2 metrics, before scaling (BS) up so that the glyph is the full em height
                 # the 8x10gu SVG is scaled to .8x1em, with padding on the sides to make it 1x1em square.
                 # in sv2, the imported SVG spans -200 to 800 vertically.
@@ -177,20 +176,20 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
                     print("\n", g.width, g.vwidth)
                     # These numbers talk about the illustration itself, so "." will be smaller than "lipu".
                     bottom = g.boundingBox()[1]
-                    top    = g.boundingBox()[3]
+                    top = g.boundingBox()[3]
                     print(
                         note,
-                        "top", int(top),
-                        "bottom", int(bottom),
-                        "sum", int(top-bottom)
+                        "top",
+                        int(top),
+                        "bottom",
+                        int(bottom),
+                        "sum",
+                        int(top - bottom),
                     )
 
             # debug_metrics("aTok", "before scaling")
 
             pixel = cli_args.get("pixel") or False
-
-
-
 
             # SCALING
 
@@ -201,41 +200,27 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
             # the left side of the glyph, at the height of the baseline
             if version_major < 4 and not pixel:
                 # 200 is the descent. 500 is half the glyph's height.
-                g.transform(psMat.translate(
-                    -bs_glyph_wh / 2,
-                    200-500
-                ))
+                g.transform(psMat.translate(-bs_glyph_wh / 2, 200 - 500))
             else:
                 # 125 is the descent. 500 is half the glyph's height.
-                g.transform(psMat.translate(
-                    -bs_glyph_wh / 2,
-                    125-500
-                ))
-                
+                g.transform(psMat.translate(-bs_glyph_wh / 2, 125 - 500))
+
             # Divide by the SAFE area height; multiply by the SCAN area height.
             g.transform(psMat.scale(1 / bs_glyph_wh * 1000))
-            
+
             if version_major < 4 and not pixel:
-                g.transform(psMat.translate(
-                    500, 
-                    500-200
-                ))
+                g.transform(psMat.translate(500, 500 - 200))
             else:
-                g.transform(psMat.translate(
-                    500, 
-                    500-125
-                ))
+                g.transform(psMat.translate(500, 500 - 125))
 
             g.width = 1000
             g.vwidth = 1000
 
-
-
-
             # Create rotated glyphs.
             # Later we'll iterate through rotated_glyph_set[] to generate `.top` and `.bottom` versions of each orientation.
             rotated_glyph_set = [g]
-            if 'rotate' in glyph_object:
+            if "rotate" in glyph_object:
+
                 def rotate(flip, degrees_ccw, suffix):
                     rotated_glyph = font.createChar(-1, name + suffix)
                     font.selection.select(g)
@@ -255,96 +240,95 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
                         # with assumed 1px space between glyphs.
                         pixel_size = config.get("pixel-size", 8)
                         if pixel_size % 4 == 0:
-                            # If the em size is a multiple of 4, then the total scan width is even. 
+                            # If the em size is a multiple of 4, then the total scan width is even.
                             # Normal case. Assume that there's 1px empty space on the right.
-                            to_center_x = -1000/pixel_size * (pixel_size-1)/2
+                            to_center_x = -1000 / pixel_size * (pixel_size - 1) / 2
                         else:
                             # If the total scan width is *odd*, then we've arbitrarily chosen to put the
                             # extra 1px padding on the left, balancing out the 1px empty space on the right.
-                            # Happens with 6px and 10px fonts. 
+                            # Happens with 6px and 10px fonts.
                             # Weird case. Assume that the glyph is perfectly centered.
-                            to_center_x = -1000/pixel_size * pixel_size/2
+                            to_center_x = -1000 / pixel_size * pixel_size / 2
                         # Regardless, the vertical scan area is even, so we assume
                         # there's 1px empty space on the bottom.
-                        to_center_y = -1000/pixel_size * (pixel_size+1)/2 + 125
+                        to_center_y = -1000 / pixel_size * (pixel_size + 1) / 2 + 125
 
                     rotated_glyph.transform(psMat.translate(to_center_x, to_center_y))
                     if flip:
                         rotated_glyph.transform(psMat.scale(-1, 1))
-                    rotated_glyph.transform(psMat.rotate(degrees_ccw /360 *math.pi*2))
+                    rotated_glyph.transform(
+                        psMat.rotate(degrees_ccw / 360 * math.pi * 2)
+                    )
                     rotated_glyph.transform(psMat.translate(-to_center_x, -to_center_y))
 
                 direction = glyph_object.get("direction", "right")
-                if direction == 'up':
+                if direction == "up":
                     # akesi, pipi
-                    rotate(False,  45, ".NW")
-                    rotate(False,  90, ".W")
+                    rotate(False, 45, ".NW")
+                    rotate(False, 90, ".W")
                     rotate(False, 135, ".SW")
                     rotate(False, 180, ".S")
                     rotate(False, 225, ".SE")
                     rotate(False, 270, ".E")
                     rotate(False, 315, ".NE")
-                elif direction == 'down':
+                elif direction == "down":
                     # ni
-                    rotate(False,  45, ".SE")
-                    rotate(False,  90, ".E")
+                    rotate(False, 45, ".SE")
+                    rotate(False, 90, ".E")
                     rotate(False, 135, ".NE")
                     rotate(False, 180, ".N")
                     rotate(False, 225, ".NW")
                     rotate(False, 270, ".W")
                     rotate(False, 315, ".SW")
-                elif direction == 'left':
-                    rotate(False,  45, ".SW")
-                    rotate(False,  90, ".S")
-                    rotate(True,  315, ".SE")
-                    rotate(True,    0, ".E")
-                    rotate(True,   45, ".NE")
+                elif direction == "left":
+                    rotate(False, 45, ".SW")
+                    rotate(False, 90, ".S")
+                    rotate(True, 315, ".SE")
+                    rotate(True, 0, ".E")
+                    rotate(True, 45, ".NE")
                     rotate(False, 270, ".N")
                     rotate(False, 315, ".NW")
                 else:  # right
                     # kala, kijetesantakalu, soweli, waso
-                    rotate(False,  45, ".NE")
-                    rotate(False,  90, ".N")
-                    rotate(True,  315, ".NW")
-                    rotate(True,    0, ".W")
-                    rotate(True,   45, ".SW")
+                    rotate(False, 45, ".NE")
+                    rotate(False, 90, ".N")
+                    rotate(True, 315, ".NW")
+                    rotate(True, 0, ".W")
+                    rotate(True, 45, ".SW")
                     rotate(False, 270, ".S")
                     rotate(False, 315, ".SE")
-
-
-
 
             # Center glyphs (including, but not limited to, rotated ones)
             for g in rotated_glyph_set:
                 center = glyph_object.get("center", "both")
                 if center == "both" or center == "horizontal":
                     if not pixel:
-                        left  = g.boundingBox()[0]
+                        left = g.boundingBox()[0]
                         right = g.boundingBox()[2]
                         width = right - left
-                        g.transform(psMat.translate(
-                            -right + width/2 + 500,
-                            0
-                        ))
+                        g.transform(psMat.translate(-right + width / 2 + 500, 0))
                 if center == "both" or center == "vertical":
                     if not pixel:
                         bottom = g.boundingBox()[1]
-                        top    = g.boundingBox()[3]
-                        g.transform(psMat.translate(
-                            0, 
-                            font.ascent - top - ((font.ascent + font.descent) - (top - bottom)) / 2
-                        ))
+                        top = g.boundingBox()[3]
+                        g.transform(
+                            psMat.translate(
+                                0,
+                                font.ascent
+                                - top
+                                - ((font.ascent + font.descent) - (top - bottom)) / 2,
+                            )
+                        )
 
                 g.width = 1000
                 g.vwidth = 1000
 
-
-
             # Create stacking glyphs (including rotated ones)
             for glyph in rotated_glyph_set:
                 stacking = False
-                if 'ligature' in glyph_object:
-                    if (    name != "cartoucheStartTok"
+                if "ligature" in glyph_object:
+                    if (
+                        name != "cartoucheStartTok"
                         and name != "cartoucheEndTok"
                         # and name != "middotTok"
                         # and name != "colonTok"
@@ -353,7 +337,7 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
                     ):
                         stacking = True
                         g_bottom = font.createChar(-1, glyph.glyphname + ".bottom")
-                        g_top    = font.createChar(-1, glyph.glyphname + ".top")
+                        g_top = font.createChar(-1, glyph.glyphname + ".top")
 
                 if stacking:
                     font.selection.select(glyph)
@@ -362,32 +346,29 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
                     font.paste()
                     g_bottom.width = 1000
                     g_bottom.vwidth = 1000
-                    g_top   .width = 0
-                    g_top   .vwidth = 1000
+                    g_top.width = 0
+                    g_top.vwidth = 1000
                     if version_major < 4 and not pixel:
                         # move up, so that the origin is in the bottom left
                         g_bottom.transform(psMat.translate(0, 200))
-                        g_top   .transform(psMat.translate(0, 200))
+                        g_top.transform(psMat.translate(0, 200))
                         # scale down to 4:3
                         g_bottom.transform(psMat.scale(1, 0.75))
-                        g_top   .transform(psMat.scale(1, 0.75))
+                        g_top.transform(psMat.scale(1, 0.75))
                         # reposition
-                        g_bottom.transform(psMat.translate(0,    -250 - 200))
-                        g_top   .transform(psMat.translate(-1000, 500 - 200))
+                        g_bottom.transform(psMat.translate(0, -250 - 200))
+                        g_top.transform(psMat.translate(-1000, 500 - 200))
                     else:
                         # move up, so that the origin is in the bottom left
                         g_bottom.transform(psMat.translate(0, 125))
-                        g_top   .transform(psMat.translate(0, 125))
+                        g_top.transform(psMat.translate(0, 125))
                         # scale down to 4:3
                         g_bottom.transform(psMat.scale(1, 0.75))
-                        g_top   .transform(psMat.scale(1, 0.75))
+                        g_top.transform(psMat.scale(1, 0.75))
                         # reposition
-                        g_bottom.transform(psMat.translate(0,    -250 - 125))
-                        g_top   .transform(psMat.translate(-1000, 500 - 125))
+                        g_bottom.transform(psMat.translate(0, -250 - 125))
+                        g_top.transform(psMat.translate(-1000, 500 - 125))
 
-
-
-                    
     # get rid of stray metrics
     print("\r                                                ")
 
@@ -415,11 +396,10 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
         #       "bottom", int(g.boundingBox()[1]), "top",   int(g.boundingBox()[3]))
 
     # combining cartouche extension (the middle of the cartouche)
-    font[0xf1992].width = 0
-    font[0xf1992].transform(psMat.translate(-1000, 0))
-    font[0x5f].width = 0
-    font[0x5f].transform(psMat.translate(-1000, 0))
-
+    font[0xF1992].width = 0
+    font[0xF1992].transform(psMat.translate(-1000, 0))
+    font[0x5F].width = 0
+    font[0x5F].transform(psMat.translate(-1000, 0))
 
     # Create characters that are rendered as zero-width or ideographic spaces.
     # This includes actual spaces, Latin fallback, placeholders, special characters.
@@ -433,9 +413,11 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
 
     spaces = config.get("glyphs", {}).get("spaces", {})
     for space in spaces:
-        create_space(space.get("codepoint", -1), space.get("name", False), space.get("width", 1000))
-
-
+        create_space(
+            space.get("codepoint", -1),
+            space.get("name", False),
+            space.get("width", 1000),
+        )
 
 
 #                                    ▄               ▄▀▀              ▄         ▄▀▀  ▀  █
@@ -443,6 +425,7 @@ def add_glyphs(font, config, cli_args, debug_dir, version_major, version_minor, 
 # █  █  █▄▄█  █  █  █▄▄█  █   ▄▀▀█   █   █▄▄█        █   █  █  █  █   █         █    █  █  █▄▄█
 # ▀▄▄█  ▀▄▄   █  █  ▀▄▄   █   ▀▄▄█   ▀▄  ▀▄▄         █   ▀▄▄▀  █  █   ▀▄        █    █  █  ▀▄▄
 #  ▄▄▀
+
 
 def generate_font_file(font, filename, out_dir, default_json, debug_dir):
     """Output TTF file.
@@ -469,19 +452,19 @@ def generate_font_file(font, filename, out_dir, default_json, debug_dir):
     )
 
     # For reproducible builds, set the NAME table's uniqueID field to "    en FontForge 2.0 : FontName Regular : 1-1-1970"
-    os.environ['SOURCE_DATE_EPOCH'] = "0"
+    os.environ["SOURCE_DATE_EPOCH"] = "0"
 
     # SFD
     sfd_path = outfile[0:-4] + ".sfd"
     font.save(sfd_path)
 
     # For reproducible builds, modify SFD to remove `CreationTime` metadata, which goes into the HEAD table's "created" field
-    with open(sfd_path, 'r') as file:
+    with open(sfd_path, "r") as file:
         content = file.read()
     # Replace any number after "CreationTime: " with 0
-    content = re.sub(r'(CreationTime: )\d+', r'\g<1>0', content)
-    content = re.sub(r'(ModificationTime: )\d+', r'\g<1>0', content)
-    with open(sfd_path, 'w') as file:
+    content = re.sub(r"(CreationTime: )\d+", r"\g<1>0", content)
+    content = re.sub(r"(ModificationTime: )\d+", r"\g<1>0", content)
+    with open(sfd_path, "w") as file:
         file.write(content)
 
     # Generate font, but without ligatures yet, to temporary directory
@@ -489,16 +472,7 @@ def generate_font_file(font, filename, out_dir, default_json, debug_dir):
     # TTF
     font = fontforge.open(sfd_path)
     # For reproducible builds; FFTM table stores a timestamp
-    font.generate(outfile, flags=(
-        "no-FFTM-table"
-    ))
-
-
-
-
-
-
-
+    font.generate(outfile, flags=("no-FFTM-table"))
 
 
 #                                      ▄                        ▀
@@ -518,7 +492,9 @@ def convert_main(default_json, debug_dir, out_dir, cli_args, v_major, v_minor, v
 
     font = fontforge.font()
     set_properties(font, cli_args_dict, int(v_major), int(v_minor), int(v_patch))
-    add_glyphs(font, config, cli_args_dict, debug_dir, int(v_major), int(v_minor), int(v_patch))
+    add_glyphs(
+        font, config, cli_args_dict, debug_dir, int(v_major), int(v_minor), int(v_patch)
+    )
 
     # Generate font and save as a .ttf file
     filename = cli_args_dict.get("filename", "Untitled")
@@ -528,4 +504,12 @@ def convert_main(default_json, debug_dir, out_dir, cli_args, v_major, v_minor, v
 if __name__ == "__main__":
     if len(sys.argv) != 8:
         raise ValueError("Incorrect call to SVGtoTTF")
-    convert_main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7])
+    convert_main(
+        sys.argv[1],
+        sys.argv[2],
+        sys.argv[3],
+        sys.argv[4],
+        sys.argv[5],
+        sys.argv[6],
+        sys.argv[7],
+    )

@@ -1,6 +1,6 @@
 # def create_state(sheet, debug_dir, out_dir, default_json, cli_args, other_words_string):
 #     state = {
-#         sheet: 
+#         sheet:
 #     }
 #     return state
 

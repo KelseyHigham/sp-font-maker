@@ -1,20 +1,22 @@
-
-#                           █                  █▀▀▀▄         ▄   █               
+#                           █                  █▀▀▀▄         ▄   █
 #    █▄▀  ▄▀▀▄  ▄▀▀█  █  █  █   ▀▀▄  █▄▀       █   █  █  █  ▀█▀  █▀▀▄  ▄▀▀▄  █▀▀▄
 #    █    █▄▄█  █  █  █  █  █  ▄▀▀█  █         █▀▀▀   █  █   █   █  █  █  █  █  █
 #    █    ▀▄▄   ▀▄▄█  ▀▄▄█  █  ▀▄▄█  █         █      ▀▄▄█   ▀▄  █  █  ▀▄▄▀  █  █
 #                ▄▄▀                                   ▄▄▀
 
-import sys
-import os
-import json
 import datetime
-import subprocess
+import json
+import os
 import platform
+import subprocess
+import sys
+
 from packaging.version import Version
 
 
-def svg_to_ttf(debug_dir, out_dir, default_json, cli_args=None, other_words_string=None):
+def svg_to_ttf(
+    debug_dir, out_dir, default_json, cli_args=None, other_words_string=None
+):
     """Convert a directory with SVG images to TrueType Font.
 
     Calls a subprocess to the run this script with Fontforge Python
@@ -39,14 +41,10 @@ def svg_to_ttf(debug_dir, out_dir, default_json, cli_args=None, other_words_stri
     sheet_version = cli_args.get("sheet_version") or "99999999.999999.999999"
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    svgtottf_ffpython_path = os.path.join(current_dir, 'svgtottf_ffpython.py')
+    svgtottf_ffpython_path = os.path.join(current_dir, "svgtottf_ffpython.py")
 
     subprocess.run(
-        (
-            ["ffpython"]
-            if platform.system() == "Windows"
-            else ["fontforge", "-script"]
-        )
+        (["ffpython"] if platform.system() == "Windows" else ["fontforge", "-script"])
         + [
             svgtottf_ffpython_path,
             default_json,
@@ -55,6 +53,6 @@ def svg_to_ttf(debug_dir, out_dir, default_json, cli_args=None, other_words_stri
             json.dumps(cli_args),
             str(Version(sheet_version).major),
             str(Version(sheet_version).minor),
-            str(Version(sheet_version).micro)
+            str(Version(sheet_version).micro),
         ]
     )

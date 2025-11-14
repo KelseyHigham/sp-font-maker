@@ -1,15 +1,16 @@
+import argparse
+import json
 import os
 import shutil
-import argparse
 import tempfile
-import json
+
 import tomllib
 
-from handwrite.sheettopng import sheet_to_png
-from handwrite.pngtosvg import png_to_svg
-from handwrite.svgtottf import svg_to_ttf
 from handwrite.add_ligatures import add_ligatures
 from handwrite.create_toml_html import create_toml_html
+from handwrite.pngtosvg import png_to_svg
+from handwrite.sheettopng import sheet_to_png
+from handwrite.svgtottf import svg_to_ttf
 
 
 def run(sheet, output_directory, debug_dir, default_json, cli_args, other_words_string):
@@ -17,10 +18,19 @@ def run(sheet, output_directory, debug_dir, default_json, cli_args, other_words_
     sheet_to_png(sheet, debug_dir, default_json, cli_args, other_words_string)
     png_to_svg(cli_args, default_json, debug_dir=debug_dir)
     svg_to_ttf(debug_dir, output_directory, default_json, cli_args, other_words_string)
-    add_ligatures(debug_dir, output_directory, default_json, cli_args, other_words_string)
+    add_ligatures(
+        debug_dir, output_directory, default_json, cli_args, other_words_string
+    )
 
 
-def converters(sheet, output_directory, debug_dir=None, default_json=None, cli_args=None, other_words_string=None):
+def converters(
+    sheet,
+    output_directory,
+    debug_dir=None,
+    default_json=None,
+    cli_args=None,
+    other_words_string=None,
+):
     # debug/temp directory
     if not debug_dir:
         debug_dir = tempfile.mkdtemp()
@@ -36,11 +46,11 @@ def converters(sheet, output_directory, debug_dir=None, default_json=None, cli_a
             os.path.dirname(os.path.realpath(__file__)), "default.toml"
         )
         default_json = default_config
-    
+
     # read initial config data from TOML
     with open(default_json, "rb") as file:
         font_data = tomllib.load(file)
-    
+
     # save as JSON in debug directory. we'll edit it to add custom words.
     # extra config sheets should be merged into the same working JSON file.
     # ...we do this exact thing again after populating other_words... this is redundant.
@@ -60,9 +70,11 @@ def converters(sheet, output_directory, debug_dir=None, default_json=None, cli_a
                                      152, 153, 154, 155, 156, 157, 158, 159, # 8 cells
             167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179  # 13 cells
         ]
-        #fmt:on
+        # fmt:on
 
-        special_character_names = font_data.get("glyphs", {}).get("special-characters-to-ligatures", {})
+        special_character_names = font_data.get("glyphs", {}).get(
+            "special-characters-to-ligatures", {}
+        )
         for position, word in enumerate(other_words):
             if word != "_":
                 letters = list(word)
@@ -83,25 +95,33 @@ def converters(sheet, output_directory, debug_dir=None, default_json=None, cli_a
                 glyph_json = font_data.get("glyphs", {}).get("sheet", {})
 
                 # If a custom word has an UCSUR codepoint, assign it.
-                unused_ucsur_words = font_data.get("glyphs", {}).get("other-ucsur-codepoints", {})
+                unused_ucsur_words = font_data.get("glyphs", {}).get(
+                    "other-ucsur-codepoints", {}
+                )
                 ucsur = False
                 for unused_ucsur_word in unused_ucsur_words:
                     if word + "Tok" == unused_ucsur_word.get("name", ""):
                         ucsur = True
-                        glyph_json[blank_cells[position]] = {"name": word + "Tok", "ligature": " ".join(letters), "codepoint": unused_ucsur_word.get("codepoint", -1)}
+                        glyph_json[blank_cells[position]] = {
+                            "name": word + "Tok",
+                            "ligature": " ".join(letters),
+                            "codepoint": unused_ucsur_word.get("codepoint", -1),
+                        }
                 if not ucsur:
                     # check if it's a redraw of an existing sheet glyph
                     redraw = False
                     for default_glyph in glyph_json:
-                        if 'name' in default_glyph:
-                            if default_glyph['name'] == word + "Tok":
+                        if "name" in default_glyph:
+                            if default_glyph["name"] == word + "Tok":
                                 redraw = True
                                 # todo: remove redundant glyphs from the preview web page
 
                     if not redraw:
                         # finally, the common case of a custom word
-                        glyph_json[blank_cells[position]]['name'] = word + "Tok"
-                        glyph_json[blank_cells[position]]['ligature'] = " ".join(letters)
+                        glyph_json[blank_cells[position]]["name"] = word + "Tok"
+                        glyph_json[blank_cells[position]]["ligature"] = " ".join(
+                            letters
+                        )
 
     with open(default_json, "w") as file:
         json.dump(font_data, file, indent=4)
@@ -112,50 +132,97 @@ def converters(sheet, output_directory, debug_dir=None, default_json=None, cli_a
     if os.path.isdir(sheet):
         raise IsADirectoryError("Sheet parameter should not be a directory.")
     else:
-        run(sheet, output_directory, debug_dir, default_json, cli_args, other_words_string)
+        run(
+            sheet,
+            output_directory,
+            debug_dir,
+            default_json,
+            cli_args,
+            other_words_string,
+        )
 
     if isTempdir:
         shutil.rmtree(debug_dir)
 
 
 def main():
-    print("If you get errors, try `handwrite --help`. " + "Also check the analysis PNGs in the debug directory.")
+    print(
+        "If you get errors, try `handwrite --help`. "
+        + "Also check the analysis PNGs in the debug directory."
+    )
     parser = argparse.ArgumentParser()
     parser.add_argument("input_path", help="Path to sample sheet")
     parser.add_argument("output_directory", help="Directory Path to save font output")
-    parser.add_argument("--debug-directory", help="Generate in-progress PNGs, BMPs, SVGs, SFDs, and TTFs to this path \
-        (Temp by default)", default=None)
-    parser.add_argument("--filename", help="Font File name (\"MyFont\" by default)", default=None)
-    parser.add_argument("--family", help="Font Family name (filename by default)", default=None)
-    parser.add_argument("--designer", help="Font Designer name (\"me\" by default)", default=None)
-    parser.add_argument("--license", help="Font License. \
+    parser.add_argument(
+        "--debug-directory",
+        help="Generate in-progress PNGs, BMPs, SVGs, SFDs, and TTFs to this path \
+        (Temp by default)",
+        default=None,
+    )
+    parser.add_argument(
+        "--filename", help='Font File name ("MyFont" by default)', default=None
+    )
+    parser.add_argument(
+        "--family", help="Font Family name (filename by default)", default=None
+    )
+    parser.add_argument(
+        "--designer", help='Font Designer name ("me" by default)', default=None
+    )
+    parser.add_argument(
+        "--license",
+        help='Font License. \
         (`--license ofl` and `--license cc0` will populate License and LicenseURL appropriately. \
-        IMPORTANT: The command line tool defaults to \"All rights reserved\", even though the sheet defaults to OFL.)", default=None)
-    parser.add_argument("--license-url", help="Font License URL (\"\" by default)", default=None)
-    parser.add_argument("--sheet-version", help="Sheet version (latest by default)", default=None)
-    parser.add_argument("--other-words", help="""List of other words in the custom cells. Use _ to ignore a cell.
+        IMPORTANT: The command line tool defaults to "All rights reserved", even though the sheet defaults to OFL.)',
+        default=None,
+    )
+    parser.add_argument(
+        "--license-url", help='Font License URL ("" by default)', default=None
+    )
+    parser.add_argument(
+        "--sheet-version", help="Sheet version (latest by default)", default=None
+    )
+    parser.add_argument(
+        "--other-words",
+        help="""List of other words in the custom cells. Use _ to ignore a cell.
 
         IMPORTANT: Add a _ to the left of every custom row, where the empty space is.
 
         Example: `--other-words \"\
         _ kiki kokosila usawi \
         _ api Keli melome Pingo penpo poni snoweli \
-        _ kan kulijo misa molusa oke pa panke polinpin tona wa wasoweli waken\"`)""", default=None)
-    parser.add_argument("--pixel", action='store_true', help="Pixel font (experimental, false by default)", default=False)
-    parser.add_argument("--not-new", action='store_true', help="Skip creating a .TOML file (false by default)", default=False)
+        _ kan kulijo misa molusa oke pa panke polinpin tona wa wasoweli waken\"`)""",
+        default=None,
+    )
+    parser.add_argument(
+        "--pixel",
+        action="store_true",
+        help="Pixel font (experimental, false by default)",
+        default=False,
+    )
+    parser.add_argument(
+        "--not-new",
+        action="store_true",
+        help="Skip creating a .TOML file (false by default)",
+        default=False,
+    )
 
     args = parser.parse_args()
     # cli_args = { # the format still looks like this, but we're about to recreate it
-    #     "filename": args.filename, 
-    #     "family": args.family, 
-    #     "designer": args.designer, 
-    #     "license": args.license, 
-    #     "license_url": args.license_url, 
+    #     "filename": args.filename,
+    #     "family": args.family,
+    #     "designer": args.designer,
+    #     "license": args.license,
+    #     "license_url": args.license_url,
     #     "sheet_version": args.sheet_version,
     #     "pixel": args.pixel,
     #     "not_new": args.not_new,
     # }
     cli_args = vars(parser.parse_args())
     converters(
-        args.input_path, args.output_directory, args.debug_directory, None, cli_args, args.other_words
+        args.input_path,
+        args.output_directory,
+        args.debug_directory,
+        None,
+        cli_args,
+        args.other_words,
     )
