@@ -250,7 +250,7 @@
 
   {ligature = "hyphen",      target-name = "stackJoinTok"},
 
-  # candidate for removal later, because 
+  # candidate for removal later, because
     # it doesn't play well with HTML
     # it interferes with an alignment style that's easy to read and works across platforms:
         # soweli li wile moku
@@ -269,7 +269,7 @@
         # | | | | | | lon kasi
         # | li moku e kili
   # in the future, full-width spaces can be inserted with `|`.
-  # this removal may be disruptive, though, and should only be performed with community consensus. 
+  # this removal may be disruptive, though, and should only be performed with community consensus.
   {ligature = "space space", target-name = "ideographicspace"},
 ]
 
@@ -342,7 +342,7 @@
 -=[
   # support default ASCII ligatures
   {codepoint = 0x7c, width = 1000, name = "pipe"},   # |
-  {codepoint = 0x20, width =    0, name = "space"},  #  
+  {codepoint = 0x20, width =    0, name = "space"},  #
   {codepoint = 0x2d, width =    0, name = "hyphen"}, # -
   {codepoint = 0x30, width =    0, name = "zero"},   # 0
   {codepoint = 0x31, width =    0, name = "one"},    # 1
