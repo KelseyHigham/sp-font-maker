@@ -3,8 +3,9 @@
 # - generated
 # - ascii-base
 # - spaces
-# ligature-aliases
-# writein
+# ligatures
+# - aliases
+# writeins
 # - special-characters
 # - metadata
 
@@ -333,9 +334,6 @@
   {codepoint = 0x59, name = "Y", source-glyph = 125}, # j
   {codepoint = 0x7a, name = "z", source-glyph = 130}, # s
   {codepoint = 0x5a, name = "Z", source-glyph = 130}  # s
-
-  # todo: add blank punctuation found in svgtottf_ffpython.py
-  # codepoint, name, and width of blank glyph
 ]
 
 [glyphs.spaces]
@@ -395,7 +393,7 @@
 # UCSUR codepoints for words not included in the default sheet, since people may write them in.
 # Todo: Repurpose this for general data for unimplemented words. Mostly directional non-pu critters like waken
 # other-words-metadata, writein-metadata
-[writein.metadata]
+[writeins.metadata]
 -=[ # implemented!!
   {codepoint = 0xf19a1, name = "apejaTok",    ligature = "a p e j a"},
   {codepoint = 0xf1984, name = "kokosilaTok", ligature = "k o k o s i l a"},
@@ -417,7 +415,7 @@
 ]
 
 # writein-glyph-names
-[writein.special-characters] # implemented!!
+[writeins.special-characters] # implemented!!
 # Used for parsing `--other-words`.
 # Used for creating the ligature used to type the custom word, AND used for the name of the custom glyph. This logic should probably be separated.
 # Consider moving this to a separate file? It's inelegant here, but more robust.
@@ -462,7 +460,11 @@
 "?" = "question"
 ";" = "semicolon"
 
+
+
 # --------
+
+
 
 # what do we need to include in the TOML to make cartouche middles *entirely* data-driven?
 # such that you can implement long pi and long awen in here?

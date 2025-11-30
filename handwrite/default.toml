@@ -1,3 +1,12 @@
+# glyphs
+# - sheet
+# - generated-glyphs
+# - ligature-aliases
+# - ligature-base-glyphs
+# - spaces
+# - other-ucsur-codepoints
+# - special-characters-to-ligatures
+
 # this format is VERY subject to change! still in the design phase!
 
 # i'm going to move some data from the code into this file, but i haven't implemented some of these changes yet.
