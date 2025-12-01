@@ -77,10 +77,19 @@ def converters(
         )
         for position, word in enumerate(other_words):
             if word != "_":
-                letters = list(word)
-                for letter_index, letter in enumerate(letters):
-                    if letter in special_character_names:
-                        letters[letter_index] = special_character_names[letter]
+                alias_words = word.split("/")
+                word = alias_words[0]
+                alias_words = alias_words[1:]
+
+                # Replace special characters in `word`
+                letters = [special_character_names.get(ch, ch) for ch in word]
+
+                # Then identically replace special characters for each alias
+                aliases_letters = []
+                for alias in alias_words:
+                    aliases_letters.append(
+                        [special_character_names.get(ch, ch) for ch in alias]
+                    )
 
                 # todo: we don't differentiate letters from renamed special characters, we just concatenate them.
                 # so we end up with glyph names like "tokihyphenponaTok", which is nonstandard and hard to read.
@@ -91,6 +100,16 @@ def converters(
                 # next best thing would be "toki_hyphen_ponaTok"
                 # or "tokiHYPHENponaTok", which requires allcapsing HYPHEN, PLUS, and AMPERSAND in a few places in the code
                 word = "".join(letters)
+
+                # Write ligature aliases to JSON
+                lig_aliases = font_data.get("glyphs", {}).get("ligature-aliases", {})
+                for wi, alias in enumerate(alias_words):
+                    lig_aliases.append(
+                        {
+                            "ligature": " ".join(aliases_letters[wi]),
+                            "target-name": word + "Tok",
+                        }
+                    )
 
                 glyph_json = font_data.get("glyphs", {}).get("sheet", {})
 
@@ -107,6 +126,7 @@ def converters(
                             "ligature": " ".join(letters),
                             "codepoint": unused_ucsur_word.get("codepoint", -1),
                         }
+
                 if not ucsur:
                     # check if it's a redraw of an existing sheet glyph
                     redraw = False

@@ -414,7 +414,7 @@ def detect_characters(
                 glyph_json = json.load(f).get("glyphs", {}).get("sheet", {})
             for default_glyph_index, default_glyph in enumerate(glyph_json):
                 if "name" in default_glyph:
-                    if default_glyph["name"] == word + "Tok":
+                    if default_glyph["name"] == word.split("/")[0] + "Tok":
                         sorted_characters[default_glyph_index] = sorted_characters[
                             blank_cells[position]
                         ]
