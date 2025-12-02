@@ -13,7 +13,12 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/builtree/handwrite",
     packages=setuptools.find_packages(),
-    install_requires=["opencv-python", "Pillow>=11.1", "fonttools>=4.55.6", "packaging"],
+    install_requires=[
+        "opencv-python",
+        "Pillow>=11.1",
+        "fonttools>=4.55.6",
+        "packaging",
+    ],
     extras_require={
         "dev": [
             "pre-commit",
