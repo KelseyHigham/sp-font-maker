@@ -22,6 +22,7 @@
 
 
 [glyphs]
+# defaults: rotate = false, direction = "right", center = false
 
 sheet = [ # implemented!!!
   # row 0
@@ -223,11 +224,11 @@ sheet = [ # implemented!!!
   {},
 ]
 
-generated-glyphs = [ # partially implemented
-  # `codepoint` and `name` are used. `type` and `source-glyph` are hardcoded in sheettopng.py, and it's impossible to add new generated glyphs.
+generated-glyphs = [
+  # hardcoded in sheettopng.py; improve this when adding long pi
   # generated from row 6, cartoucheStartTok
     # (because in pixel fonts, the exact middle of the cartouche is on Start, not End.)
-  {codepoint = 0xf1992, name = "cartoucheMiddleTok", center = false, type = "middle", source-glyph = "cartoucheStartTok"},
+  {codepoint = 0xf1992, name = "cartoucheMiddleTok"},
 ]
 
 ligature-aliases = [ # implemented!!!
