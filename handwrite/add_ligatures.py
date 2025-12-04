@@ -157,13 +157,21 @@ feature liga {
     # linuwi, kepen, ali, ni-numbers, space space, hyphen
     # todo: allow these to be overridden by custom-words. that would help kilitelen linuwi, and any font's ni2
     aliases = default_json_data.get("glyphs", {}).get("ligature-aliases")
+    glyphs = default_json_data.get("glyphs", {}).get("sheet")
     for alias in aliases:
-        list_of_ligs.append(
-            (
-                f"  sub   {(alias['ligature']).rjust(22)}   by   {(alias['target-name']).rjust(13)};",
-                len(alias["ligature"].split(" ")),
+        if (
+            # If the ligature alias's target exists
+            alias["target-name"] in cartoucheable_and_stackable
+            # If we're not redirecting a writein glyph's ligature to a default glyph
+            and alias["ligature"].replace(" ", "") + "Tok"
+            not in cartoucheable_and_stackable
+        ):
+            list_of_ligs.append(
+                (
+                    f"  sub   {(alias['ligature']).rjust(22)}   by   {(alias['target-name']).rjust(13)};",
+                    len(alias["ligature"].split(" ")),
+                )
             )
-        )
 
     # sort them by number of tokens
     list_of_ligs.sort(reverse=True, key=lambda x: x[1])
