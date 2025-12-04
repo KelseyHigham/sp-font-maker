@@ -229,14 +229,14 @@
 
 [ligatures.aliases]
 -=[ # implemented!!!
-  # respellings that are invisible to people who don't use them
+  # alternate spellings that are invisible to people who don't use them
   {ligature = "a l i",       target-name = "aleTok"},
   {ligature = "l i n u w i", target-name = "linluwiTok"},
   {ligature = "k e p e n",   target-name = "kepekenTok"},
 
-  # respellings for write-ins, to be implemented later
-  # {ligature = "l a 2",       target-name = "mu2Tok"},
-  # {ligature = "m u 2",       target-name = "la2Tok"},
+  # alternate spellings for write-ins
+  {ligature = "l a 2",       target-name = "mu2Tok"},
+  {ligature = "m u 2",       target-name = "la2Tok"},
 
   # ni-numbers, from the ligature standard
   # (This will become nonstandard if someone draws alt ni in the normal square and standard ni in the custom square. It will require some special logic to fix.)
