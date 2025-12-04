@@ -116,37 +116,31 @@ def converters(
                         }
                     )
 
-                glyph_json = font_data.get("glyphs", {}).get("sheet", {})
+                glyphs_json = font_data.get("glyphs", {}).get("sheet", {})
 
-                # If a custom word has an UCSUR codepoint, assign it.
-                unused_ucsur_words = font_data.get("glyphs", {}).get(
-                    "other-ucsur-codepoints", {}
-                )
-                ucsur = False
-                for unused_ucsur_word in unused_ucsur_words:
-                    if word + "Tok" == unused_ucsur_word.get("name", ""):
-                        ucsur = True
-                        glyph_json[blank_cells[position]] = {
-                            "name": word + "Tok",
-                            "ligature": " ".join(letters),
-                            "codepoint": unused_ucsur_word.get("codepoint", -1),
-                        }
+                # check if it's a redraw of an existing sheet glyph
+                redraw = False
+                for default_glyph in glyphs_json:
+                    if "name" in default_glyph:
+                        if default_glyph["name"] == word + "Tok":
+                            redraw = True
+                            # todo: remove redundant glyphs from the preview web page
 
-                if not ucsur:
-                    # check if it's a redraw of an existing sheet glyph
-                    redraw = False
-                    for default_glyph in glyph_json:
-                        if "name" in default_glyph:
-                            if default_glyph["name"] == word + "Tok":
-                                redraw = True
-                                # todo: remove redundant glyphs from the preview web page
+                if not redraw:
+                    word_json = glyphs_json[blank_cells[position]]
 
-                    if not redraw:
-                        # finally, the common case of a custom word
-                        glyph_json[blank_cells[position]]["name"] = word + "Tok"
-                        glyph_json[blank_cells[position]]["ligature"] = " ".join(
-                            letters
-                        )
+                    # The common case of a custom word
+                    word_json["name"] = word + "Tok"
+                    word_json["ligature"] = " ".join(letters)
+
+                    # If a writein word has default metadata (e.g. codepoint, rotate, direction), assign it.
+                    writein_potential_words = font_data.get("glyphs", {}).get(
+                        "writein-metadata", {}
+                    )
+                    for potential_word in writein_potential_words:
+                        if word + "Tok" == potential_word.get("name", ""):
+                            for key, val in potential_word.items():
+                                word_json.setdefault(key, val)
 
     with open(default_json, "w") as file:
         json.dump(font_data, file, indent=4)

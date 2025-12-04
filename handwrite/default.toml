@@ -4,8 +4,7 @@
 # - ligature-aliases
 # - ligature-base-glyphs
 # - spaces
-# - other-ucsur-codepoints
-# - special-characters-to-ligatures
+# - writein-metadata
 
 # this format is VERY subject to change! still in the design phase!
 
@@ -251,7 +250,6 @@ ligature-aliases = [ # implemented!!!
   {ligature = "n i zero six",   target-name = "niTok.NE"},
   {ligature = "n i zero seven", target-name = "niTok.NW"},
   {ligature = "n i zero eight", target-name = "niTok.SW"},
-  # todo: add nonstandard ni-numbers (ni1-ni8), but only after allowing other-words to override ligature-aliases in add_ligatures.py, line 180
 
   {ligature = "hyphen",      target-name = "stackJoinTok"},
 
@@ -395,14 +393,13 @@ spaces = [
   {codepoint = 0xf199b, width =    0}, # SP END OF REVERSE LONG GLYPH
 ]
 
-# UCSUR codepoints for words not included in the default sheet, since people may write them in.
-other-ucsur-codepoints = [ # implemented!!
+# Metadata for words not included in the default sheet, since people may write them in.
+writein-metadata = [ # implemented!!
 # Todo: Repurpose this for general data for unimplemented words. Mostly directional non-pu critters like waken
-# other-words-metadata, writein-metadata
-  {codepoint = 0xf19a1, name = "apejaTok",    ligature = "a p e j a"},
-  {codepoint = 0xf1984, name = "kokosilaTok", ligature = "k o k o s i l a"},
-  {codepoint = 0xf19a0, name = "pakeTok",     ligature = "p a k e"},
-  {codepoint = 0xf19a3, name = "poweTok",     ligature = "p o w e"},
+  {codepoint = 0xf19a1, name = "apejaTok"},
+  {codepoint = 0xf1984, name = "kokosilaTok"},
+  {codepoint = 0xf19a0, name = "pakeTok"},
+  {codepoint = 0xf19a3, name = "poweTok"},
   # {name = "apiTok",      rotate = true},
   # {name = "kaTok",       rotate = true, direction = "up"},
   # {name = "jonkeTok",    rotate = true},
