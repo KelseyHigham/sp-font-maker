@@ -256,7 +256,9 @@ features = [
         other_words = other_words_string.split()
         for word_index, word in enumerate(other_words):
             if word == "_":
-                other_words[word_index] = "|"
+                word = "|"
+            word = word.split("/")[0]
+            other_words[word_index] = word
 
     example_web_page = open(
         out_dir + os.sep + family.replace(" ", "-") + ".html", "w", encoding="utf-8"
@@ -292,11 +294,11 @@ features = [
         font-size: 48px;
     }}
     textarea {{
-        font-size: 1em; 
-        width: 20em; 
-        height: 100%; 
-        background-color: #223; 
-        color: white; 
+        font-size: 1em;
+        width: 20em;
+        height: 100%;
+        background-color: #223;
+        color: white;
         padding: 1em;
     }}
 </style>
@@ -325,25 +327,25 @@ toki ni li kepeken nimi pu ale
 telo oko li ken ante e pilin
 tan jan [kiwen en] [tomo anu mi insa]:
 
-| telo li kama 
+| telo li kama
 | | | tan oko loje tu pi(jan wan)
-| | li sitelen sike suwi 
-| | | lon anpa sinpin 
+| | li sitelen sike suwi
+| | | lon anpa sinpin
 | ona li wile tawa ma
 taso ona li awen lon sijelo
-| | li pini 
-| | | lon len 
+| | li pini
+| | | lon len
 | | li weka
 sona la
-| waso en kala en pipi 
+| waso en kala en pipi
 | en akesi en soweli ale li ken pana sama
-taso pilin pi(jan ni) li suli la 
+taso pilin pi(jan ni) li suli la
 | | | | | | | telo lukin li sin
 | | | | | | | | | li wawa
-| | | | | | | | | li selo e ijo poka 
-| | | | | | | | | | | e tomo e noka e supa moku 
-| | | | | | | | | | | e pan e poki kiwen e monsi 
-| | | | | | | | | | | e luka e lawa e nena 
+| | | | | | | | | li selo e ijo poka
+| | | | | | | | | | | e tomo e noka e supa moku
+| | | | | | | | | | | e pan e poki kiwen e monsi
+| | | | | | | | | | | e luka e lawa e nena
 | | | | | | | | | | | e kute e linja sewi kin
 laso lete ni li lili e seli insa
 | | | li lape e ike toki
@@ -351,28 +353,28 @@ laso lete ni li lili e seli insa
 | | | li esun e ko jaki | | | | | te a
 | | | | | e mu open | | | | | | ike a to
 
-kon pi(kule ala) li tan uta 
-| | | | li kalama utala lon telo 
-| | | | li nanpa mute 
-| | | | li tawa mun 
+kon pi(kule ala) li tan uta
+| | | | li kalama utala lon telo
+| | | | li nanpa mute
+| | | | li tawa mun
 | | | | li pakala nasa e suno sewi
 pimeja moli li kama namako e nasin tenpo | | | | | te mi pakala to
 
 
 pona o kepeken alasa seme
-| mani anu unpa 
-anu pu anu nimi ante li sama kili 
+| mani anu unpa
+anu pu anu nimi ante li sama kili
 | | | | | | tan kasi pi(lipu jelo moli)
 te sina wile ala ni
 | sina wile mama e musi
-| sina wile olin e meli 
-| | | | e mije e tonsi to | | | | | ona li jo e ilo palisa 
-| | | | | | | | | | | | | | | | | e sinpin tomo 
+| sina wile olin e meli
+| | | | e mije e tonsi to | | | | | ona li jo e ilo palisa
+| | | | | | | | | | | | | | | | | e sinpin tomo
 | | | | | | | | | | | | | | | li pali e lupa
 | | | | | | | | | | | | | | telo li kama weka
 | | | | | | | | | | | | | | laso li kama walo
-| | | | | | | | | | | | | | jan li tawa lupa 
-| | | | | | | | | | | | | | | li tawa nasin open 
+| | | | | | | | | | | | | | jan li tawa lupa
+| | | | | | | | | | | | | | | li tawa nasin open
 | | | | | | | | | | | | | | | li tawa kulupu
 | | | | | | | | | | | | | pona kama li wile e wawa
 | | | | | | | | | | | | taso laso weka li kama ken e ni
@@ -387,7 +389,7 @@ te sina wile ala ni
 <script>
 /*  workaround for Chromium
 
-    Chrome has a bug where ligatures aren't properly applied at typing-time. 
+    Chrome has a bug where ligatures aren't properly applied at typing-time.
     for example, if you type "pona", it erroneously shows a p followed by a sideways 6, rather than one smile.
     i work around this by refreshing the textarea after every keystroke.
     i refresh the textarea by changing one property, back and forth between two values that will result in the same appearance on most modern devices.
