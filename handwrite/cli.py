@@ -72,9 +72,14 @@ def converters(
         ]
         # fmt:on
 
-        special_character_names = font_data.get("glyphs", {}).get(
-            "special-characters-to-ligatures", {}
-        )
+        base_glyphs = font_data.get("glyphs", {}).get("ligature-base-glyphs", {})
+        space_glyphs = font_data.get("glyphs", {}).get("spaces", {})
+        combined_glyphs = base_glyphs + space_glyphs
+        special_character_names = {
+            glyph["writein"]: glyph["name"]
+            for glyph in combined_glyphs
+            if "writein" in glyph and "name" in glyph
+        }
         for position, word in enumerate(other_words):
             if word != "_":
                 alias_words = word.split("/")

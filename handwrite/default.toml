@@ -284,11 +284,11 @@ ligature-aliases = [ # implemented!!!
 # If the implementation is moved to a later step, like svgtottf_ffpython.py, then it can hopefully reference a `target-name` instead of `source-glyph`.
 ligature-base-glyphs = [ # implemented!!!
   # punctuation
-  {codepoint = 0x5b, name = "bracketleft",  source-glyph = 120}, # cartoucheStartTok
-  {codepoint = 0x5f, name = "underscore",   source-glyph = 180}, # cartoucheMiddleTok
-  {codepoint = 0x5d, name = "bracketright", source-glyph = 121}, # cartoucheEndTok
-  {codepoint = 0x2e, name = "period",       source-glyph = 122}, # middotTok
-  {codepoint = 0x3a, name = "colon",        source-glyph = 123}, # colonTok
+  {codepoint = 0x5b, name = "bracketleft",  writein = "[", source-glyph = 120}, # cartoucheStartTok
+  {codepoint = 0x5f, name = "underscore",   writein = "_", source-glyph = 180}, # cartoucheMiddleTok
+  {codepoint = 0x5d, name = "bracketright", writein = "]", source-glyph = 121}, # cartoucheEndTok
+  {codepoint = 0x2e, name = "period",                      source-glyph = 122}, # middotTok
+  {codepoint = 0x3a, name = "colon",                       source-glyph = 123}, # colonTok
 
   # already-a-word letters, for words like Anna
   {codepoint = 0x61, name = "a", source-glyph = 0},   # aTok
@@ -344,41 +344,41 @@ ligature-base-glyphs = [ # implemented!!!
 
 spaces = [
   # support default ASCII ligatures
-  {codepoint = 0x7c, width = 1000, name = "pipe"},   # |
-  {codepoint = 0x20, width =    0, name = "space"},  #
-  {codepoint = 0x2d, width =    0, name = "hyphen"}, # -
-  {codepoint = 0x30, width =    0, name = "zero"},   # 0
-  {codepoint = 0x31, width =    0, name = "one"},    # 1
-  {codepoint = 0x32, width =    0, name = "two"},    # 2
-  {codepoint = 0x33, width =    0, name = "three"},  # 3
-  {codepoint = 0x34, width =    0, name = "four"},   # 4
-  {codepoint = 0x35, width =    0, name = "five"},   # 5
-  {codepoint = 0x36, width =    0, name = "six"},    # 6
-  {codepoint = 0x37, width =    0, name = "seven"},  # 7
-  {codepoint = 0x38, width =    0, name = "eight"},  # 8
-  {codepoint = 0x39, width =    0, name = "nine"},   # 9
+  {codepoint = 0x7c, width = 1000, name = "pipe",   writein = "|"},
+  {codepoint = 0x20, width =    0, name = "space"},
+  {codepoint = 0x2d, width =    0, name = "hyphen", writein = "-"},
+  {codepoint = 0x30, width =    0, name = "zero",   writein = "0"},
+  {codepoint = 0x31, width =    0, name = "one",    writein = "1"},
+  {codepoint = 0x32, width =    0, name = "two",    writein = "2"},
+  {codepoint = 0x33, width =    0, name = "three",  writein = "3"},
+  {codepoint = 0x34, width =    0, name = "four",   writein = "4"},
+  {codepoint = 0x35, width =    0, name = "five",   writein = "5"},
+  {codepoint = 0x36, width =    0, name = "six",    writein = "6"},
+  {codepoint = 0x37, width =    0, name = "seven",  writein = "7"},
+  {codepoint = 0x38, width =    0, name = "eight",  writein = "8"},
+  {codepoint = 0x39, width =    0, name = "nine",   writein = "9"},
   # todo: replace these three, and `v`, with rotated lili. it would be cute i think
-  {codepoint = 0x5e, width = 1000, name = "north"},  # ^
-  {codepoint = 0x3c, width = 1000, name = "west"},   # <
-  {codepoint = 0x3e, width = 1000, name = "east"},   # >
+  {codepoint = 0x5e, width = 1000, name = "north",  writein = "^"},
+  {codepoint = 0x3c, width = 1000, name = "west",   writein = "<"},
+  {codepoint = 0x3e, width = 1000, name = "east",   writein = ">"},
   # (we treat "v" as a regular letter, instead of naming it "south")
 
   # fallback for unsupported SP features
-  {codepoint = 0x2b, width =    0, name = "plus"},        # +
-  {codepoint = 0x26, width =    0, name = "ampersand"},   # &
-  {codepoint = 0x7b, width =    0, name = "opencurly"},   # {
-  {codepoint = 0x7d, width =    0, name = "closecurly"},  # }
-  {codepoint = 0x28, width =    0, name = "openparen"},   # (
-  {codepoint = 0x29, width =    0, name = "closeparen"},  # )
-  {codepoint = 0x2a, width = 1000, name = "asterisk"},    # *
-  {codepoint = 0x22, width = 1000, name = "doublequote"}, # "
-  {codepoint = 0x2c, width = 1000, name = "comma"},       # ,
-  {codepoint = 0x27, width = 1000, name = "singlequote"}, # '
+  {codepoint = 0x2b, width =    0, name = "plus",        writein = "+"},
+  {codepoint = 0x26, width =    0, name = "ampersand",   writein = "&"},
+  {codepoint = 0x7b, width =    0, name = "opencurly",   writein = "{"},
+  {codepoint = 0x7d, width =    0, name = "closecurly",  writein = "}"},
+  {codepoint = 0x28, width =    0, name = "openparen",   writein = "("},
+  {codepoint = 0x29, width =    0, name = "closeparen",  writein = ")"},
+  {codepoint = 0x2a, width = 1000, name = "asterisk",    writein = "*"},
+  {codepoint = 0x22, width = 1000, name = "doublequote", writein = "'"},
+  {codepoint = 0x2c, width = 1000, name = "comma",       writein = ","},
+  {codepoint = 0x27, width = 1000, name = "singlequote", writein = "'"},
 
   # fallback for text intended as sitelen Lasina
-  {codepoint = 0x21, width = 1000, name = "exclamation"}, # !
-  {codepoint = 0x3f, width = 1000, name = "question"},    # ?
-  {codepoint = 0x3b, width = 1000, name = "semicolon"},   # ;
+  {codepoint = 0x21, width = 1000, name = "exclamation", writein = "!"},
+  {codepoint = 0x3f, width = 1000, name = "question",    writein = "?"},
+  {codepoint = 0x3b, width = 1000, name = "semicolon",   writein = ";"},
 
   # UCSUR features
   {codepoint = 0x3000,  width = 1000, name = "ideographicspace"},
@@ -417,49 +417,3 @@ other-ucsur-codepoints = [ # implemented!!
   # {name = "wakenTok",    rotate = true},
   # {name = "wasoweliTok", rotate = true},
 ]
-
-[glyphs.special-characters-to-ligatures] # implemented!!
-# writein-glyph-names, writein-special-characters
-# Used for parsing `--other-words`.
-# Used for creating the ligature used to type the custom word, AND used for the name of the custom glyph. This logic should probably be separated.
-# Consider moving this to a separate file? It's inelegant here, but more robust.
-# Consider switching to the official Adobe names for these special characters:
-#   https://github.com/adobe-type-tools/agl-aglfn/
-#   https://en.wikipedia.org/wiki/Adobe_Glyph_List
-
-# default ASCII ligatures
-"|" = "pipe"        # bar
-"-" = "hyphen"      # (works combining, but not standalone)
-"0" = "zero"
-"1" = "one"
-"2" = "two"
-"3" = "three"
-"4" = "four"
-"5" = "five"
-"6" = "six"
-"7" = "seven"
-"8" = "eight"
-"9" = "nine"
-"^" = "north"       # asciicircum
-"<" = "west"        # less
-">" = "east"        # greater
-"[" = "bracketleft"
-"]" = "bracketright"
-"_" = "underscore"  # (works combining, but not standalone. not supported)
-
-# fallback for unsupported SP features
-"+" = "plus"
-"&" = "ampersand"
-"{" = "opencurly"   # braceleft
-"}" = "closecurly"  # braceright
-"(" = "openparen"   # parenleft
-")" = "closeparen"  # parenright
-"*" = "asterisk"
-'"' = 'doublequote' # quotedbl
-"," = "comma"
-"'" = "singlequote" # quotesingle
-
-# fallback for text intended as sitelen Lasina
-"!" = "exclamation" # exclam
-"?" = "question"
-";" = "semicolon"
