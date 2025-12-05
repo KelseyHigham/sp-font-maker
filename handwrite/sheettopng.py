@@ -513,17 +513,18 @@ def save_images(characters, debug_dir, default_json, cli_args):
     # Kelly note: the script does not support multiple sheets, actually
 
     # Kelly note: `characters` is more like `cells`, since not every cell contains a glyph
-    for cellNum, images in enumerate(characters):
-        with open(default_json) as f:
-            default_json_data = json.load(f)
-            default_glyphs = default_json_data.get("glyphs", {}).get("sheet", {})
-            generated_glyphs = default_json_data.get("glyphs", {}).get(
-                "generated-glyphs", {}
-            )
-            ligature_base_glyphs = default_json_data.get("glyphs", {}).get(
-                "ligature-base-glyphs", {}
-            )
-            glyphList = default_glyphs + generated_glyphs + ligature_base_glyphs
+
+    with open(default_json) as f:
+        default_json_data = json.load(f)
+        default_glyphs = default_json_data.get("glyphs", {}).get("sheet", {})
+        generated_glyphs = default_json_data.get("glyphs", {}).get(
+            "generated-glyphs", {}
+        )
+        ligature_base_glyphs = default_json_data.get("glyphs", {}).get(
+            "ligature-base-glyphs", {}
+        )
+        glyphList = default_glyphs + generated_glyphs + ligature_base_glyphs
+        for cellNum, images in enumerate(characters):
             curMetadatum = glyphList[cellNum]
             if len(glyphList) > cellNum:  # should this be `>=`?
                 if "name" in curMetadatum:
