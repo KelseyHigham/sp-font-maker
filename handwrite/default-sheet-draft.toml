@@ -1,7 +1,7 @@
 # glyphs
 # - sheet
-# - generated
-# - duplicates
+# - derived
+# - copies
 # - spaces
 # ligature-aliases
 # writein-metadata
@@ -216,10 +216,10 @@
   {},
 ]
 
-[glyphs.generated]
+[glyphs.derived]
 -=[
   # hardcoded in sheettopng.py; improve this when adding long pi
-  # generated from row 6, cartoucheStartTok
+  # derived from row 6, cartoucheStartTok
     # (because in pixel fonts, the exact middle of the cartouche is on Start, not End.)
   {codepoint = 0xf1992, name = "cartoucheMiddleTok"},
 ]

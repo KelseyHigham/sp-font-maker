@@ -129,8 +129,8 @@ def add_glyphs(
     # print("      sorry this file is too complex for me to understand (or is erroneous)\".")
     # print("      It's fine, the font still works!")
     default_glyphs = config.get("glyphs", {}).get("sheet", {})
-    generated_glyphs = config.get("glyphs", {}).get("generated-glyphs", {})
-    ligature_base_glyphs = config.get("glyphs", {}).get("ligature-base-glyphs", {})
+    generated_glyphs = config.get("glyphs", {}).get("derived", {})
+    ligature_base_glyphs = config.get("glyphs", {}).get("copies", {})
     for glyph_object in default_glyphs + generated_glyphs + ligature_base_glyphs:
         if "name" in glyph_object:
             name = glyph_object["name"]

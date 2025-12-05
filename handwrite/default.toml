@@ -1,8 +1,8 @@
 # glyphs
 # - sheet
-# - generated-glyphs
+# - derived
 # - ligature-aliases
-# - ligature-base-glyphs
+# - copies
 # - spaces
 # - writein-metadata
 
@@ -221,7 +221,7 @@ sheet = [ # implemented!!!
   {},
 ]
 
-generated-glyphs = [
+derived = [
   # hardcoded in sheettopng.py; improve this when adding long pi
   # generated from row 6, cartoucheStartTok
     # (because in pixel fonts, the exact middle of the cartouche is on Start, not End.)
@@ -278,7 +278,7 @@ ligature-aliases = [ # implemented!!!
 # This code currently runs in sheettopng.py, so `source-glyph` refers to the index of the glyph in `sorted_characters`.
 # `sorted_characters` is the input sheet verbatim, plus the generated glyph `cartoucheMiddleTok` at index 180.
 # If the implementation is moved to a later step, like svgtottf_ffpython.py, then it can hopefully reference a `target-name` instead of `source-glyph`.
-ligature-base-glyphs = [ # implemented!!!
+copies = [ # implemented!!!
   # punctuation
   {codepoint = 0x5b, name = "bracketleft",  writein = "[", source-glyph = 120}, # cartoucheStartTok
   {codepoint = 0x5f, name = "underscore",   writein = "_", source-glyph = 180}, # cartoucheMiddleTok

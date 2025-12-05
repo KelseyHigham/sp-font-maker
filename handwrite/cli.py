@@ -72,7 +72,7 @@ def converters(
         ]
         # fmt:on
 
-        base_glyphs = font_data.get("glyphs", {}).get("ligature-base-glyphs", {})
+        base_glyphs = font_data.get("glyphs", {}).get("copies", {})
         space_glyphs = font_data.get("glyphs", {}).get("spaces", {})
         combined_glyphs = base_glyphs + space_glyphs
         special_character_names = {
