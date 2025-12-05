@@ -1,13 +1,10 @@
 # glyphs
 # - sheet
 # - generated
-# - ascii-base
+# - duplicates
 # - spaces
-# ligatures
-# - aliases
-# writeins
-# - special-characters
-# - metadata
+# ligature-aliases
+# writein-metadata
 
 # i need to store both the glyph name, and the index (position) on the physical sheet.
 # right now, index is stored implicitly, because these are arrays.
@@ -279,7 +276,7 @@
 # This code currently runs in sheettopng.py, so `source-glyph` refers to the index of the glyph in `sorted_characters`.
 # `sorted_characters` is the input sheet verbatim, plus the generated glyph `cartoucheMiddleTok` at index 180.
 # If the implementation is moved to a later step, like svgtottf_ffpython.py, then it can hopefully reference a `target-name` instead of `source-glyph`.
-[glyphs.ascii-base]
+[glyphs.duplicates]
 -=[ # implemented!!!
   # punctuation
   {codepoint = 0x5b, name = "bracketleft",  writein = "[", source-glyph = 120}, # cartoucheStartTok
@@ -394,7 +391,7 @@
 # UCSUR codepoints for words not included in the default sheet, since people may write them in.
 # Todo: Repurpose this for general data for unimplemented words. Mostly directional non-pu critters like waken
 # other-words-metadata, writein-metadata
-[writeins.metadata]
+[writein-metadata]
 -=[ # implemented!!
   {codepoint = 0xf19a1, name = "apejaTok",    ligature = "a p e j a"},
   {codepoint = 0xf1984, name = "kokosilaTok", ligature = "k o k o s i l a"},

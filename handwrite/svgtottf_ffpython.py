@@ -11,7 +11,6 @@ import math
 import os
 import re
 import sys
-import uuid
 
 import fontforge
 import psMat

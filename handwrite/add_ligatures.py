@@ -2,7 +2,6 @@ import json
 import os
 import sys
 
-import fontTools  # camelCase!
 from fontTools import ttLib  # camelCase!
 from fontTools.feaLib import builder  # camelCase!
 

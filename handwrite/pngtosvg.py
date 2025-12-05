@@ -4,7 +4,7 @@ import shutil
 import subprocess
 
 from packaging.version import Version
-from PIL import Image, ImageChops
+from PIL import Image
 
 
 class PotraceNotFound(Exception):

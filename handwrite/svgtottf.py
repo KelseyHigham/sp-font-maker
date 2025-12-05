@@ -4,12 +4,10 @@
 #    █    ▀▄▄   ▀▄▄█  ▀▄▄█  █  ▀▄▄█  █         █      ▀▄▄█   ▀▄  █  █  ▀▄▄▀  █  █
 #                ▄▄▀                                   ▄▄▀
 
-import datetime
 import json
 import os
 import platform
 import subprocess
-import sys
 
 from packaging.version import Version
 
