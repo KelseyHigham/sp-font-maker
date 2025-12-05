@@ -48,6 +48,7 @@ def set_properties(font, cli_args, version_major, version_minor, version_patch):
     font.hhea_ascent_add = False
     font.hhea_descent_add = False
     font.hhea_linegap = 0
+    font.hasvmetrics = 1
 
     pixel = cli_args.get("pixel") or False
     # Apply the new metrics to pixel fonts retroactively, to combat blurring.
@@ -396,8 +397,10 @@ def add_glyphs(
 
     # combining cartouche extension (the middle of the cartouche)
     font[0xF1992].width = 0
+    font[0xF1992].vwidth = 0
     font[0xF1992].transform(psMat.translate(-1000, 0))
     font[0x5F].width = 0
+    font[0x5F].vwidth = 0
     font[0x5F].transform(psMat.translate(-1000, 0))
 
     # Create characters that are rendered as zero-width or ideographic spaces.
@@ -409,6 +412,7 @@ def add_glyphs(
         else:
             space = font.createChar(codepoint)
         space.width = width
+        space.vwidth = width
 
     spaces = config.get("glyphs", {}).get("spaces", {})
     for space in spaces:

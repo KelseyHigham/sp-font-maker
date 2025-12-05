@@ -302,7 +302,11 @@ features = [
     }}
 </style>
 <h1><a href='{filename}'>{family}</a>, tan {designer}</h1>
-
+<!-- vertical test -->
+<!-- <p class="tp" style="writing-mode: vertical-rl; font-feature-settings: 'calt';"> -->
+<!-- 󱤴󱤑󱦐󱥠󱦜󱤑󱦜󱤧󱦝󱦑<br> -->
+<!-- 「󱤴󱥠󱤉󱥁󱥧󱥚󱥩󱤅」<br> -->
+<!-- </p> -->
 <span class="tp">
 <!-- word list -->
 a akesi ala alasa ale anpa ante anu awen e en esun ijo ike ilo insa jaki jan jelo jo<br>
