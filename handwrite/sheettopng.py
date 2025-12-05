@@ -437,16 +437,9 @@ def detect_characters(
     cartouche_middle_glyph_left = glyph_left + glyph_w - 1
 
     # shift the open and close cartouche scan area inward, to match how the gray boxes are shifted
-    # glyph_left = open_cartouche[1] + glyph_w/16
-    # print("horizontal padding", grid_scan_hor_padding * glyph_w/grid_scan_w)
-    if pixel:
-        right_scan_padding = math.floor(grid_scan_hor_padding * glyph_w / grid_scan_w)
-        left_scan_padding = math.ceil(grid_scan_hor_padding * glyph_w / grid_scan_w)
-    else:
-        right_scan_padding = grid_scan_hor_padding * glyph_w / grid_scan_w
-        left_scan_padding = grid_scan_hor_padding * glyph_w / grid_scan_w
+    scan_shift = grid_scan_hor_padding * glyph_w / grid_scan_w
 
-    glyph_left = open_cartouche[1] + grid_scan_hor_padding * glyph_w / grid_scan_w
+    glyph_left = open_cartouche[1] + math.floor(scan_shift)
     roi = image[
         int(glyph_top) : int(glyph_top + glyph_h),
         int(glyph_left) : int(glyph_left + glyph_w),
@@ -454,7 +447,7 @@ def detect_characters(
     sorted_characters[120][0] = roi
     sorted_characters[120][1] = glyph_left
 
-    glyph_left = close_cartouche[1] - grid_scan_hor_padding * glyph_w / grid_scan_w
+    glyph_left = close_cartouche[1] - math.ceil(scan_shift)
     roi = image[
         int(glyph_top) : int(glyph_top + glyph_h),
         int(glyph_left) : int(glyph_left + glyph_w),
