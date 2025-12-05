@@ -395,13 +395,16 @@ def add_glyphs(
         # #     -200ish                            800ish
         #       "bottom", int(g.boundingBox()[1]), "top",   int(g.boundingBox()[3]))
 
-    # combining cartouche extension (the middle of the cartouche)
-    font[0xF1992].width = 0
-    font[0xF1992].vwidth = 0
-    font[0xF1992].transform(psMat.translate(-1000, 0))
-    font[0x5F].width = 0
-    font[0x5F].vwidth = 0
-    font[0x5F].transform(psMat.translate(-1000, 0))
+    # Combining cartouche extension (the middle of the cartouche)
+    # This will also apply to long pi
+    default_glyphs = config.get("glyphs", {}).get("sheet", {})
+    generated_glyphs = config.get("glyphs", {}).get("derived", {})
+    ligature_base_glyphs = config.get("glyphs", {}).get("copies", {})
+    for glyph_object in default_glyphs + generated_glyphs + ligature_base_glyphs:
+        if glyph_object.get("type", "none") == "middle":
+            font[glyph_object["name"]].width = 0
+            font[glyph_object["name"]].vwidth = 0
+            font[glyph_object["name"]].transform(psMat.translate(-1000, 0))
 
     # Create characters that are rendered as zero-width or ideographic spaces.
     # This includes actual spaces, Latin fallback, placeholders, special characters.

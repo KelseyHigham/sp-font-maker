@@ -221,11 +221,15 @@ sheet = [ # implemented!!!
   {},
 ]
 
+# This doesn't generate ligatures; only the glyph.
+# `type = "middle"` creates a combining glyph, derived from the source glyph's rightmost column of pixels, stretched to full width.
+# Omitting `type` just copies the glyph, same as putting a glyph in `copies`, although this category doesn't support `writein`.
+# ...I should consolidate these two categories, huh...
 derived = [
   # hardcoded in sheettopng.py; improve this when adding long pi
   # generated from row 6, cartoucheStartTok
     # (because in pixel fonts, the exact middle of the cartouche is on Start, not End.)
-  {codepoint = 0xf1992, name = "cartoucheMiddleTok"},
+  {codepoint = 0xf1992, name = "cartoucheMiddleTok", derived-from-glyph = 120, type = "middle"},
 ]
 
 ligature-aliases = [ # implemented!!!
@@ -280,11 +284,11 @@ ligature-aliases = [ # implemented!!!
 # If the implementation is moved to a later step, like svgtottf_ffpython.py, then it can hopefully reference a `target-name` instead of `source-glyph`.
 copies = [ # implemented!!!
   # punctuation
-  {codepoint = 0x5b, name = "bracketleft",  writein = "[", source-glyph = 120}, # cartoucheStartTok
-  {codepoint = 0x5f, name = "underscore",   writein = "_", source-glyph = 180}, # cartoucheMiddleTok
-  {codepoint = 0x5d, name = "bracketright", writein = "]", source-glyph = 121}, # cartoucheEndTok
-  {codepoint = 0x2e, name = "period",                      source-glyph = 122}, # middotTok
-  {codepoint = 0x3a, name = "colon",                       source-glyph = 123}, # colonTok
+  {codepoint = 0x5b, name = "bracketleft",  writein = "[", source-glyph = 120},                  # cartoucheStartTok
+  {codepoint = 0x5f, name = "underscore",   writein = "_", source-glyph = 180, type = "middle"}, # cartoucheMiddleTok
+  {codepoint = 0x5d, name = "bracketright", writein = "]", source-glyph = 121},                  # cartoucheEndTok
+  {codepoint = 0x2e, name = "period",                      source-glyph = 122},                  # middotTok
+  {codepoint = 0x3a, name = "colon",                       source-glyph = 123},                  # colonTok
 
   # already-a-word letters, for words like Anna
   {codepoint = 0x61, name = "a", source-glyph = 0},   # aTok

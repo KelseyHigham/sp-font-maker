@@ -434,7 +434,6 @@ def detect_characters(
         open_cartouche[3],
         open_cartouche[4],
     )
-    cartouche_middle_glyph_left = glyph_left + glyph_w - 1
 
     # shift the open and close cartouche scan area inward, to match how the gray boxes are shifted
     scan_shift = grid_scan_hor_padding * glyph_w / grid_scan_w
@@ -459,25 +458,44 @@ def detect_characters(
     # █▄▄    ▀▄▀     █    █   █   █ █
     # █      ▄▀▄     █    █▀█▀   █▄▄▄█
     # █▄▄▄  █   █    █    █  ▀▄  █   █
-
+    #
     # ▄▀▀▀▄  █    █   █  █▀▀▀▄  █   █  ▄▀▀▀▄
     # █      █     █ █   █   █  █▄▄▄█  ▀▄▄▄
     # █  ▀█  █      █    █▀▀▀   █   █      █
     # ▀▄▄▄▀  █▄▄▄   █    █      █   █  ▀▄▄▄▀
-    # These are appended to the glyph list, and they need to be kept
-    # in sync with default.json, starting from line 216: "cartoucheMiddleTok"
+    #
+    # These are appended to the glyph list. default.toml currently references indices with `source-glyph` and `derived-from-glyph` fields, so reordering entries can break things.
 
-    # for the middle portion of the cartouche, grab the rightmost 1px column
-    # of the open cartouche. it'll be automatically stretched to the width
-    # of a glyph when it's converted to BMP, then SVG.
-    roi = image[
-        int(glyph_top) : int(glyph_top + glyph_h),
-        int(cartouche_middle_glyph_left) : int(cartouche_middle_glyph_left + 1),
-    ]
-    #                                                                    # bug? vv
-    sorted_characters.append(
-        [roi, cartouche_middle_glyph_left, glyph_top, glyph_w, glyph_h]
-    )
+    with open(default_json) as f:
+        default_json_data = json.load(f)
+        generated_glyphs = default_json_data.get("glyphs", {}).get("derived", {})
+        for generated_glyph in generated_glyphs:
+            source = sorted_characters[generated_glyph["derived-from-glyph"]]
+            source_left, source_top, source_w, source_h = (
+                source[1],
+                source[2],
+                source[3],
+                source[4],
+            )
+            if generated_glyph.get("type", "none") == "middle":
+                # For the middle portion of the cartouche, grab the rightmost 1px column
+                # of the open cartouche. It'll be automatically stretched to the width
+                # of a glyph when it's converted to BMP, then SVG.
+                derived_left = source_left + source_w - 1
+                roi = image[
+                    int(source_top) : int(source_top + source_h),
+                    int(derived_left) : int(derived_left + 1),
+                ]
+            else:
+                # Plain copy
+                derived_left = source_left
+                roi = image[
+                    int(source_top) : int(source_top + source_h),
+                    int(source_left) : int(source_left + source_w),
+                ]
+            sorted_characters.append(
+                [roi, derived_left, source_top, source_w, source_h]
+            )
 
     # add base glyphs for ASCII ligatures: [_].:, a-z, A-Z
     ligature_base_glyphs = default_json_data.get("glyphs", {}).get("copies")
@@ -554,10 +572,16 @@ def save_images(characters, debug_dir, default_json, cli_args):
     pad("left", debug_dir, cli_args, "cartoucheEndTok")
     pad("left", debug_dir, cli_args, "bracketright")
 
-    pad("right", debug_dir, cli_args, "cartoucheMiddleTok", True)
-    pad("left", debug_dir, cli_args, "cartoucheMiddleTok", True)
-    pad("right", debug_dir, cli_args, "underscore", True)
-    pad("left", debug_dir, cli_args, "underscore", True)
+    # Derived glyphs: cartoucheMiddleTok, underscore, long pi middle, etc.
+    with open(default_json) as f:
+        default_json_data = json.load(f)
+        derived_glyphs = default_json_data.get("glyphs", {}).get("derived", {})
+        copied_glyphs = default_json_data.get("glyphs", {}).get("copies", {})
+        combined_glyphs = derived_glyphs + copied_glyphs
+        for glyph in combined_glyphs:
+            if glyph.get("type", "none") == "middle":
+                pad("right", debug_dir, cli_args, glyph["name"], True)
+                pad("left", debug_dir, cli_args, glyph["name"], True)
 
 
 def pad(side, debug_dir, cli_args, char_name, resize=False):
