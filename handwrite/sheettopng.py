@@ -81,8 +81,10 @@ def detect_characters(
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     cv2.imwrite(os.path.join(debug_dir, "analysis step 2 - grayscale" + ".png"), gray)
 
-    # Threshold and filter the image for better contour detection
-    threshold_value = 127  # formerly 200. change back if black rectangles aren't being detected as dark enough.
+    # Threshold and filter the image for better contour detection.
+    # Formerly 200. Change back if black rectangles aren't being detected as dark
+    # enough.
+    threshold_value = 127
     _, thresh = cv2.threshold(gray, threshold_value, 255, 1)
     cv2.imwrite(os.path.join(debug_dir, "analysis step 3 - threshold" + ".png"), thresh)
     close_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
@@ -241,7 +243,8 @@ def detect_characters(
         sheet_version = cli_args.get("sheet_version") or "99999999.999999.999999"
         if Version(sheet_version) < Version("3"):
             # SHEET VERSION 2:
-            # The grid unit here is roughly 0.125cm on the printed page, or 0.25cm in the original huge file.
+            # The grid unit here is roughly 0.125cm on the printed page, or 0.25cm in
+            # the original huge file.
             # Each row bounding box (black line) is 164*12,
             grid_row_w = 164
             grid_row_h = 12
@@ -256,7 +259,8 @@ def detect_characters(
             grid_scan_hor_padding = 0.5
         else:
             # SHEET VERSIONS 3, 4:
-            # The grid unit here is roughly 1/6cm on the printed page, or 1/3cm in the original huge file.
+            # The grid unit here is roughly 1/6cm on the printed page, or 1/3cm in the
+            # original huge file.
             # Each row bounding box (black line) is 126x12,
             grid_row_w = 126
             grid_row_h = 12
@@ -327,7 +331,8 @@ def detect_characters(
                 current_glyph = sheet_glyphs[index] if len(sheet_glyphs) > index else {}
                 centered = current_glyph.get("center", True)
                 if not centered:
-                    # don't affect x_shift during cartouches and te/to, because they're likely to be off to the side
+                    # don't affect x_shift during cartouches and te/to, because they're
+                    # likely to be off to the side
                     x_shift = prev_x_shift
 
                 prev_x_shift = x_shift
@@ -419,8 +424,8 @@ def detect_characters(
                         ]
                         # todo: remove redundant glyphs from the preview web page
 
-    # here we start messing with glyphs based on their hardcoded indices.
-    # this logic should be reworked to read from default_json instead.
+    # Here we start messing with glyphs based on their hardcoded indices.
+    # This logic should be reworked to read from default_json instead.
     # for glyph in default_json:
     #     if glyph["scan-shift"]:
     #         do the things
@@ -435,7 +440,8 @@ def detect_characters(
         open_cartouche[4],
     )
 
-    # shift the open and close cartouche scan area inward, to match how the gray boxes are shifted
+    # Shift the open and close cartouche scan area inward, to match how the gray boxes
+    # are shifted.
     scan_shift = grid_scan_hor_padding * glyph_w / grid_scan_w
 
     glyph_left = open_cartouche[1] + math.floor(scan_shift)
@@ -454,17 +460,13 @@ def detect_characters(
     sorted_characters[121][0] = roi
     sorted_characters[121][1] = glyph_left
 
-    # █▀▀▀  █   █  ▀▀█▀▀  █▀▀▀▄    █
-    # █▄▄    ▀▄▀     █    █   █   █ █
-    # █      ▄▀▄     █    █▀█▀   █▄▄▄█
-    # █▄▄▄  █   █    █    █  ▀▄  █   █
-    #
-    # ▄▀▀▀▄  █    █   █  █▀▀▀▄  █   █  ▄▀▀▀▄
-    # █      █     █ █   █   █  █▄▄▄█  ▀▄▄▄
-    # █  ▀█  █      █    █▀▀▀   █   █      █
-    # ▀▄▄▄▀  █▄▄▄   █    █      █   █  ▀▄▄▄▀
-    #
-    # These are appended to the glyph list. default.toml currently references indices with `source-glyph` and `derived-from-glyph` fields, so reordering entries can break things.
+    #          ▄                 █         █
+    # ▄▀▄ ▀▄▀ ▀█▀ █▄▀ ▄▀█    ▄▀█ █ █ █ █▀▄ █▀▄ ▄▀▀
+    # ▀█▄ ▄▀▄  ▀▄ █   ▀▄█    ▀▄█ █ ▀▄█ █▄▀ █ █ ▄█▀
+    #                        ▄▄▀   ▄▄▀ █
+    # These are appended to the glyph list. default.toml currently references indices
+    # with `source-glyph` and `derived-from-glyph` fields, so reordering entries can
+    # break things.
 
     with open(default_json) as f:
         default_json_data = json.load(f)
@@ -497,7 +499,7 @@ def detect_characters(
                 [roi, derived_left, source_top, source_w, source_h]
             )
 
-    # add base glyphs for ASCII ligatures: [_].:, a-z, A-Z
+    # Add base glyphs for ASCII ligatures: [_].:, a-z, A-Z
     ligature_base_glyphs = default_json_data.get("glyphs", {}).get("copies")
     for base_glyph in ligature_base_glyphs:
         if "source-glyph" in base_glyph:
@@ -550,7 +552,8 @@ def save_images(characters, debug_dir, default_json, cli_args):
                     )
 
     # Read pixel size and write it to default.json, so svgtottf_ffpython can use it.
-    # If this brittle codeblock breaks, just comment it out, and svgtottf_ffpython will size the pixel scan for an 8px font.
+    # If this brittle codeblock breaks, just comment it out, and svgtottf_ffpython will
+    # size the pixel scan for an 8px font.
     with open(default_json) as f:
         json_data = json.load(f)
     first_char_name = (
@@ -564,7 +567,7 @@ def save_images(characters, debug_dir, default_json, cli_args):
         json.dump(json_data, file, indent=4)
 
     # Trim cartouche characters
-    # We'll have to do the same thing for long pi
+    # We'll have to do the same thing for long pi,
     # and any other character that spans two cells
     pad("right", debug_dir, cli_args, "cartoucheStartTok")
     pad("right", debug_dir, cli_args, "bracketleft")
@@ -587,7 +590,8 @@ def save_images(characters, debug_dir, default_json, cli_args):
 def pad(side, debug_dir, cli_args, char_name, resize=False):
     char_img = Image.open(debug_dir + "/" + char_name + "/" + char_name + ".png")
 
-    # resize the cartouche middle from 1px wide to the standard width (for a given sheet version)
+    # Resize the cartouche middle from 1px wide to the standard width (for a given sheet
+    # version):
     sheet_version = cli_args.get("sheet_version") or "99999999.999999.999999"
     if Version(sheet_version) < Version("3"):
         # SHEET VERSION 2: Each glyph scan area is 8x10.
@@ -604,9 +608,10 @@ def pad(side, debug_dir, cli_args, char_name, resize=False):
         grid_glyph_w = 4
         grid_scan_hor_padding = 1
     if resize:
-        # default bicubic resampling gives us round caps on the cartouche extension
-        # which lowers the chance of overlap artifacts, from stacked antialiasing on one pixel
-        # like in Arabic or Latin cursive font design
+        # Default bicubic resampling gives us round caps on the cartouche extension.
+        # This lowers the chance of the overlap artifacts that you get from stacked
+        # antialiasing on one pixel. The same solution is used in Arabic or Latin
+        # cursive font design.
         char_img = char_img.resize(
             (int(char_img.height * grid_scan_w / grid_scan_h), char_img.height)
         )
@@ -617,8 +622,9 @@ def pad(side, debug_dir, cli_args, char_name, resize=False):
 
     pixel = cli_args.get("pixel") or False
 
-    # the middle of the cartouche is made from the rightmost 1px column of the open cartouche.
-    # in pixel fonts, we include that 1px column in the close cartouche.
+    # The middle of the cartouche is made from the rightmost 1px column of the open
+    # cartouche.
+    # In pixel fonts, we include that 1px column in the close cartouche.
     if pixel:
         # `ceil` and `floor` are for 6px and 10px fonts,
         # which have 1px more padding on the left side

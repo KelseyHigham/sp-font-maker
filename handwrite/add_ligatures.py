@@ -5,18 +5,18 @@ import sys
 from fontTools import ttLib  # camelCase!
 from fontTools.feaLib import builder  # camelCase!
 
-# █   ▀               ▄
-# █  ▀█  ▄▀▀█   ▀▀▄  ▀█▀  █  █  █▄▀  ▄▀▀▄  ▄▀▀▄
-# █   █  █  █  ▄▀▀█   █   █  █  █    █▄▄█   ▀▄
-# █   █  ▀▄▄█  ▀▄▄█   ▀▄  ▀▄▄█  █    ▀▄▄   ▀▄▄▀
-#         ▄▄▀
+# █ ▀          ▄
+# █ █ ▄▀█ ▄▀█ ▀█▀ █ █ █▄▀ ▄▀▄ ▄▀▀
+# █ █ ▀▄█ ▀▄█  ▀▄ ▀▄█ █   ▀█▄ ▄█▀
+#     ▄▄▀
 
 
 def add_ligatures(
     debug_dir, out_dir, default_json, cli_args=None, other_words_string=None
 ):
     # Now the font has exported, presumably.
-    # We're back to the `python` environment, not the `ffpython` one, so we can use libraries like fontTools, camelCase.
+    # We're back to the `python` environment, not the `ffpython` one, so we can use
+    # libraries like fontTools, camelCase.
 
     # `debug_dir` is the temp directory
 
@@ -58,10 +58,10 @@ languagesystem latn dflt; # people can edit the font in fontforge after??
 feature liga {
 """
     list_of_ligs = []
-    # cartouchable and stackable glyphs with ligatures
+    # Cartouchable and stackable glyphs with ligatures:
     cartoucheable_and_stackable = []
 
-    # create ligature lines
+    # Create ligature lines.
     with open(default_json) as f:
         glyphs = json.load(f).get("glyphs", {}).get("sheet", {})
         for k in glyphs:
@@ -69,7 +69,7 @@ feature liga {
                 lig = k["ligature"]
                 name = k["name"]
 
-                # create tuples of ligature text, followed by ligature length by tokens
+                # Create tuples of ligature text, followed by ligature length by tokens.
                 list_of_ligs.append(
                     (
                         f"  sub   {lig.rjust(22)}   by   {name.rjust(13)};",
@@ -154,14 +154,14 @@ feature liga {
                     cartoucheable_and_stackable.append(k["name"] + ".SW")
 
     # linuwi, kepen, ali, ni-numbers, space space, hyphen
-    # todo: allow these to be overridden by custom-words. that would help kilitelen linuwi, and any font's ni2
     aliases = default_json_data.get("glyphs", {}).get("ligature-aliases")
     glyphs = default_json_data.get("glyphs", {}).get("sheet")
     for alias in aliases:
         if (
-            # If the ligature alias's target exists
+            # If the ligature alias's target exists:
             alias["target-name"] in cartoucheable_and_stackable
-            # If we're not redirecting a writein glyph's ligature to a default glyph
+            # And if we're not redirecting a writein glyph's ligature to a default
+            # glyph:
             and alias["ligature"].replace(" ", "") + "Tok"
             not in cartoucheable_and_stackable
         ):
@@ -172,10 +172,10 @@ feature liga {
                 )
             )
 
-    # sort them by number of tokens
+    # Sort them by number of tokens.
     list_of_ligs.sort(reverse=True, key=lambda x: x[1])
 
-    # add to our cool string
+    # Add to our cool string.
     for line in list_of_ligs:
         ligatures_string += line[0] + "\n"
 

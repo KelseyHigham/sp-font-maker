@@ -1,8 +1,7 @@
-#    █▀▀▀               ▄   █▀▀▀                              █▀▀▀▄         ▄   █
-#    █▄▄   ▄▀▀▄  █▀▀▄  ▀█▀  █▄▄   ▄▀▀▄  █▄▀  ▄▀▀█  ▄▀▀▄       █   █  █  █  ▀█▀  █▀▀▄  ▄▀▀▄  █▀▀▄
-#    █     █  █  █  █   █   █     █  █  █    █  █  █▄▄█       █▀▀▀   █  █   █   █  █  █  █  █  █
-#    █     ▀▄▄▀  █  █   ▀▄  █     ▀▄▄▀  █    ▀▄▄█  ▀▄▄        █      ▀▄▄█   ▀▄  █  █  ▀▄▄▀  █  █
-#                                             ▄▄▀                     ▄▄▀
+# █▀▀          ▄  █▀▀                    █▀▄      ▄  █
+# █▄  ▄▀▄ █▀▄ ▀█▀ █▄  ▄▀▄ █▄▀ ▄▀█ ▄▀▄    █▄▀ █ █ ▀█▀ █▀▄ ▄▀▄ █▀▄
+# █   ▀▄▀ █ █  ▀▄ █   ▀▄▀ █   ▀▄█ ▀█▄    █   ▀▄█  ▀▄ █ █ ▀▄▀ █ █
+#                             ▄▄▀            ▄▄▀
 # This file is run with the Python distribution that's bundled with FontForge.
 
 import datetime
@@ -15,11 +14,11 @@ import sys
 import fontforge
 import psMat
 
-#              ▄                                           ▄    ▀
-# ▄▀▀▄  ▄▀▀▄  ▀█▀       █▀▀▄  █▄▀  ▄▀▀▄  █▀▀▄  ▄▀▀▄  █▄▀  ▀█▀  ▀█  ▄▀▀▄  ▄▀▀▄
-#  ▀▄   █▄▄█   █        █  █  █    █  █  █  █  █▄▄█  █     █    █  █▄▄█   ▀▄
-# ▀▄▄▀  ▀▄▄    ▀▄       █▄▄▀  █    ▀▄▄▀  █▄▄▀  ▀▄▄   █     ▀▄   █  ▀▄▄   ▀▄▄▀
-#                       █                █
+
+#          ▄                              ▄  ▀
+# ▄▀▀ ▄▀▄ ▀█▀    █▀▄ █▄▀ ▄▀▄ █▀▄ ▄▀▄ █▄▀ ▀█▀ █ ▄▀▄ ▄▀▀
+# ▄█▀ ▀█▄  ▀▄    █▄▀ █   ▀▄▀ █▄▀ ▀█▄ █    ▀▄ █ ▀█▄ ▄█▀
+#                █           █
 
 
 def set_properties(font, cli_args, version_major, version_minor, version_patch):
@@ -73,7 +72,8 @@ def set_properties(font, cli_args, version_major, version_minor, version_patch):
         font.uwidth = 62.5
         font.upos = -125 - 62.5 / 2
 
-    # String fields built-in to the ffpython API: ['Copyright', 'Family', 'UniqueID', 'Fullname', 'Version', 'PostScriptName', 'License', 'License URL']
+    # String fields built-in to the ffpython API: ['Copyright', 'Family', 'UniqueID',
+    # 'Fullname', 'Version', 'PostScriptName', 'License', 'License URL']
     sfnt_names["Family"] = family
     sfnt_names["Fullname"] = family + " " + style
     sfnt_names["PostScriptName"] = family.replace(" ", "-") + "-" + style
@@ -103,11 +103,10 @@ def set_properties(font, cli_args, version_major, version_minor, version_patch):
         font.appendSFNTName(str(lang), k, v)
 
 
-#          █     █             █              █
-#  ▀▀▄  ▄▀▀█  ▄▀▀█       ▄▀▀█  █  █  █  █▀▀▄  █▀▀▄  ▄▀▀▄
-# ▄▀▀█  █  █  █  █       █  █  █  █  █  █  █  █  █   ▀▄
-# ▀▄▄█  ▀▄▄█  ▀▄▄█       ▀▄▄█  █  ▀▄▄█  █▄▄▀  █  █  ▀▄▄▀
-#                         ▄▄▀      ▄▄▀  █
+#       █   █        █         █
+# ▄▀█ ▄▀█ ▄▀█    ▄▀█ █ █ █ █▀▄ █▀▄ ▄▀▀
+# ▀▄█ ▀▄█ ▀▄█    ▀▄█ █ ▀▄█ █▄▀ █ █ ▄█▀
+#                ▄▄▀   ▄▄▀ █
 
 
 def add_glyphs(
@@ -145,36 +144,41 @@ def add_glyphs(
             else:
                 g = font.createChar(cp, name)
 
-            # Get outlines
+            # Get glyph outlines from SVG.
             src = "{}/{}.svg".format(name, name)
             src = debug_dir + os.sep + src
-
             # importOutlines() will print FontForge errors for blank glyphs.
             # Prepend what glyph they refer to.
             print("", end=("\r" + (" " + name + " ").ljust(11, " ") + " - "))
             g.importOutlines(src, ("removeoverlap", "correctdir"))
             g.removeOverlap()
+
             if version_major < 3:
-                # SHEET VERSION 2 metrics, before scaling (BS) up so that the glyph is the full em height
-                # the 8x10gu SVG is scaled to .8x1em, with padding on the sides to make it 1x1em square.
-                # in sv2, the imported SVG spans -200 to 800 vertically.
+                # SHEET VERSION 2 metrics, before scaling (BS) up so that the glyph is
+                # the full em height.
+                # The 8x10gu SVG is scaled to .8x1em, with padding on the sides to make
+                # it 1x1em square.
+                # In sv2, the imported SVG spans -200 to 800 vertically.
                 bs_scan_hor_padding = 50
                 bs_glyph_wh = 700
             else:
-                # SHEET VERSION 3 metrics, before scaling (BS) up so that the glyph is the full em height
-                # the 6x8gu SVG is scaled to .75x1em, with padding on the sides to make it 1x1em square.
-                # in sv3, the imported SVG spans -200 to 800 vertically.
-                # in sv4, the imported SVG spans -125 to 875 vertically.
+                # SHEET VERSION 3 metrics, before scaling (BS) up so that the glyph is
+                # the full em height.
+                # The 6x8gu SVG is scaled to .75x1em, with padding on the sides to make
+                # it 1x1em square.
+                # In sv3, the imported SVG spans -200 to 800 vertically.
+                # In sv4, the imported SVG spans -125 to 875 vertically.
                 bs_scan_hor_padding = 125
                 bs_glyph_wh = 500
 
-            # shift by the left margin, to remove the squaring padding.
+            # Shift by the left margin, to remove the squaring padding.
             g.transform(psMat.translate(-bs_scan_hor_padding, 0))
 
             def debug_metrics(word_to_debug, note=""):
                 if name == word_to_debug:
                     print("\n", g.width, g.vwidth)
-                    # These numbers talk about the illustration itself, so "." will be smaller than "lipu".
+                    # These numbers talk about the illustration itself, so "." will be
+                    # smaller than "lipu".
                     bottom = g.boundingBox()[1]
                     top = g.boundingBox()[3]
                     print(
@@ -193,11 +197,12 @@ def add_glyphs(
 
             # SCALING
 
-            # Scale everything up so that the glyphs are 1em tall, instead of the cartouches
-            # The scaling center is the baseline, far left
+            # Scale everything up so that the glyphs are 1em tall, instead of the
+            # cartouches.
+            # The scaling center is the baseline, far left.
 
-            # move glyphs to where rescaling happens:
-            # the left side of the glyph, at the height of the baseline
+            # Move glyphs to where rescaling happens: the left side of the glyph, at the
+            # height of the baseline.
             if version_major < 4 and not pixel:
                 # 200 is the descent. 500 is half the glyph's height.
                 g.transform(psMat.translate(-bs_glyph_wh / 2, 200 - 500))
@@ -217,11 +222,19 @@ def add_glyphs(
             g.vwidth = 1000
 
             # Create rotated glyphs.
-            # Later we'll iterate through rotated_glyph_set[] to generate `.top` and `.bottom` versions of each orientation.
+            # Later we'll iterate through rotated_glyph_set[] to generate `.top` and
+            # `.bottom` versions of each orientation.
             rotated_glyph_set = [g]
             if "rotate" in glyph_object:
 
                 def rotate(flip, degrees_ccw, suffix):
+                    # Todo: add "name" and "g" as params, then pull this function out to
+                    # the top.
+                    # ...Uhh also return the rotated glyph, so it can be appended to
+                    # rotated_glyph_set.
+                    # If we pull *that* out, then it's appropriate to use this to
+                    # generate rotated cartouche parts.
+
                     rotated_glyph = font.createChar(-1, name + suffix)
                     font.selection.select(g)
                     font.copy()
@@ -240,12 +253,15 @@ def add_glyphs(
                         # with assumed 1px space between glyphs.
                         pixel_size = config.get("pixel-size", 8)
                         if pixel_size % 4 == 0:
-                            # If the em size is a multiple of 4, then the total scan width is even.
-                            # Normal case. Assume that there's 1px empty space on the right.
+                            # If the em size is a multiple of 4, then the total scan
+                            # width is even.
+                            # Normal case. Assume that there's 1px empty space on the
+                            # right.
                             to_center_x = -1000 / pixel_size * (pixel_size - 1) / 2
                         else:
-                            # If the total scan width is *odd*, then we've arbitrarily chosen to put the
-                            # extra 1px padding on the left, balancing out the 1px empty space on the right.
+                            # If the total scan width is *odd*, then we've arbitrarily
+                            # chosen to put the extra 1px padding on the left, balancing
+                            # out the 1px empty space on the right.
                             # Happens with 6px and 10px fonts.
                             # Weird case. Assume that the glyph is perfectly centered.
                             to_center_x = -1000 / pixel_size * pixel_size / 2
@@ -372,29 +388,6 @@ def add_glyphs(
     # get rid of stray metrics
     print("\r                                                ")
 
-    # originally 800x1000, minus 50 margin on each side for scanning margin
-    # ...though the vertical situation might be more complicated?
-    for glyph in font:
-        # self.font[glyph].width = 700
-        # self.font[glyph].vwidth = 900  # used in vertical writing. might need to revise
-        # self.font[glyph].width = 1000
-        # self.font[glyph].vwidth = 1000  # used in vertical writing. might need to revise
-        pass
-
-        # # Test centering
-        # g = self.font[glyph]
-        # # "If the glyph is not in the font’s encoding then a number will be returned beyond the encoding size (or in some cases -1 will be returned)."
-        # # https://fontforge.org/docs/scripting/python/fontforge.html#fontforge.glyph.encoding
-        # if 0 < g.encoding < 0x110000:
-        #     cp = g.encoding
-        # else:
-        #     cp = 0
-        # print(chr(cp), g.glyphname.ljust(9), "- " \
-        # #     -50ish                             750ish
-        #       "left",   int(g.boundingBox()[0]), "right", int(g.boundingBox()[2]), \
-        # #     -200ish                            800ish
-        #       "bottom", int(g.boundingBox()[1]), "top",   int(g.boundingBox()[3]))
-
     # Combining cartouche extension (the middle of the cartouche)
     # This will also apply to long pi
     default_glyphs = config.get("glyphs", {}).get("sheet", {})
@@ -426,11 +419,10 @@ def add_glyphs(
         )
 
 
-#                                    ▄               ▄▀▀              ▄         ▄▀▀  ▀  █
-# ▄▀▀█  ▄▀▀▄  █▀▀▄  ▄▀▀▄  █▄▀  ▀▀▄  ▀█▀  ▄▀▀▄       ▀█▀  ▄▀▀▄  █▀▀▄  ▀█▀       ▀█▀  ▀█  █  ▄▀▀▄
-# █  █  █▄▄█  █  █  █▄▄█  █   ▄▀▀█   █   █▄▄█        █   █  █  █  █   █         █    █  █  █▄▄█
-# ▀▄▄█  ▀▄▄   █  █  ▀▄▄   █   ▀▄▄█   ▀▄  ▀▄▄         █   ▀▄▄▀  █  █   ▀▄        █    █  █  ▀▄▄
-#  ▄▄▀
+#                          ▄         ▄▀          ▄     ▄▀ ▀ █
+# ▄▀█ ▄▀▄ █▀▄ ▄▀▄ █▄▀ ▄▀█ ▀█▀ ▄▀▄    █▀ ▄▀▄ █▀▄ ▀█▀    █▀ █ █ ▄▀▄
+# ▀▄█ ▀█▄ █ █ ▀█▄ █   ▀▄█  ▀▄ ▀█▄    █  ▀▄▀ █ █  ▀▄    █  █ █ ▀█▄
+# ▄▄▀
 
 
 def generate_font_file(font, filename, out_dir, default_json, debug_dir):
@@ -457,14 +449,16 @@ def generate_font_file(font, filename, out_dir, default_json, debug_dir):
         + (filename + " without ligatures.ttf")
     )
 
-    # For reproducible builds, set the NAME table's uniqueID field to "    en FontForge 2.0 : FontName Regular : 1-1-1970"
+    # For reproducible builds, set the NAME table's uniqueID field to:
+    #     `    en FontForge 2.0 : FontName Regular : 1-1-1970`
     os.environ["SOURCE_DATE_EPOCH"] = "0"
 
     # SFD
     sfd_path = outfile[0:-4] + ".sfd"
     font.save(sfd_path)
 
-    # For reproducible builds, modify SFD to remove `CreationTime` metadata, which goes into the HEAD table's "created" field
+    # For reproducible builds, modify SFD to remove `CreationTime` metadata, which goes
+    # into the HEAD table's "created" field
     with open(sfd_path, "r") as file:
         content = file.read()
     # Replace any number after "CreationTime: " with 0
@@ -481,11 +475,12 @@ def generate_font_file(font, filename, out_dir, default_json, debug_dir):
     font.generate(outfile, flags=("no-FFTM-table"))
 
 
-#                                      ▄                        ▀
-# ▄▀▀▄  ▄▀▀▄  █▀▀▄  █   █  ▄▀▀▄  █▄▀  ▀█▀         █▀▄▀▄   ▀▀▄  ▀█  █▀▀▄
-# █     █  █  █  █   █ █   █▄▄█  █     █          █ █ █  ▄▀▀█   █  █  █
-# ▀▄▄▀  ▀▄▄▀  █  █    █    ▀▄▄   █     ▀▄         █ █ █  ▀▄▄█   █  █  █
-#                                         ▄▄▄▄▄▄▄
+#                          ▄                 ▀
+# ▄▀▀ ▄▀▄ █▀▄ █ █ ▄▀▄ █▄▀ ▀█▀      █▀▄▀▄ ▄▀█ █ █▀▄
+# ▀▄▄ ▀▄▀ █ █  █  ▀█▄ █    ▀▄      █ █ █ ▀▄█ █ █ █
+#                             ▀▀▀▀
+
+
 def convert_main(default_json, debug_dir, out_dir, cli_args, v_major, v_minor, v_patch):
     try:
         font = fontforge.font()

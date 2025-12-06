@@ -6,22 +6,21 @@
 # - spaces
 # - writein-metadata
 
-# this format is VERY subject to change! still in the design phase!
+# This format is VERY subject to change! Still in the design phase!
 
-# i'm going to move some data from the code into this file, but i haven't implemented some of these changes yet.
-# these fields are unused:
+# These fields are currently unused, and internally their values are hard-coded:
   # scan-shift
-  # type
 
 
-# codepoint and ligature are both optional, but you need one of them if you want to be able to type your glyph.
-# name is mandatory, i think?
+# `codepoint` and `ligature` are both optional, but you need one of them if you
+# want to be able to type your glyph.
+# `name` is mandatory, I think?
 
 
 [glyphs]
-# defaults: rotate = false, direction = "right", center = false
+# Defaults: rotate = false, direction = "right", center = false
 
-sheet = [ # implemented!!!
+sheet = [ # Implemented!!!
   # row 0
   {codepoint = 0xf1900, name = "aTok",       ligature = "a"},
   {codepoint = 0xf1901, name = "akesiTok",   ligature = "a k e s i", rotate = true, direction = "up"},
@@ -171,7 +170,7 @@ sheet = [ # implemented!!!
   {codepoint = 0x77,    name = "w",                                            center = "horizontal"},
   {codepoint = 0x300c,  name = "teTok",             ligature = "t e",          center = false},
   {codepoint = 0x300d,  name = "toTok",             ligature = "t o",          center = false},
-  {}, # these blank rows get populated from `other_words_string` in `cli.py`
+  {}, # These blank rows get populated from `other_words_string` in `cli.py`
   {},
   {},
   {},
@@ -222,28 +221,39 @@ sheet = [ # implemented!!!
 ]
 
 # This doesn't generate ligatures; only the glyph.
-# `type = "middle"` creates a combining glyph, derived from the source glyph's rightmost column of pixels, stretched to full width.
-# Omitting `type` just copies the glyph, same as putting a glyph in `copies`, although this category doesn't support `writein`.
+#
+# `type = "middle"` creates a combining glyph, derived from the source glyph's
+# rightmost column of pixels, stretched to full width.
+#
+# Omitting `type` just copies the glyph, same as putting a glyph in `copies`,
+# although this category doesn't support `writein`.
 # ...I should consolidate these two categories, huh...
+#
+# Others:
+# - lili
+# - rotations for vertical text
 derived = [
-  # hardcoded in sheettopng.py; improve this when adding long pi
-  # generated from row 6, cartoucheStartTok
-    # (because in pixel fonts, the exact middle of the cartouche is on Start, not End.)
+  # Hardcoded in sheettopng.py; improve this when adding long pi.
+  # Generated from row 6, cartoucheStartTok.
+  # - (Because in pixel fonts, the exact middle of the cartouche is on Start,
+  #   not End.)
   {codepoint = 0xf1992, name = "cartoucheMiddleTok", derived-from-glyph = 120, type = "middle"},
 ]
 
 ligature-aliases = [ # implemented!!!
-  # alternate spellings that are invisible to people who don't use them
+  # Alternate spellings that are invisible to people who don't use them:
   {ligature = "a l i",       target-name = "aleTok"},
   {ligature = "l i n u w i", target-name = "linluwiTok"},
   {ligature = "k e p e n",   target-name = "kepekenTok"},
 
-  # alternate spellings for write-ins
+  # Alternate spellings for write-ins:
   {ligature = "l a 2",       target-name = "mu2Tok"},
   {ligature = "m u 2",       target-name = "la2Tok"},
 
-  # ni-numbers, from the ligature standard
-  # (This will become nonstandard if someone draws alt ni in the normal square and standard ni in the custom square. It will require some special logic to fix.)
+  # ni-numbers, from the ligature standard:
+  # (This will become nonstandard if someone draws alt ni in the normal square
+  # and standard ni in the custom square. It will require some special logic to
+  # fix.)
   {ligature = "n i zero one",   target-name = "niTok"},
   {ligature = "n i zero two",   target-name = "niTok.E"},
   {ligature = "n i zero three", target-name = "niTok.N"},
@@ -255,42 +265,51 @@ ligature-aliases = [ # implemented!!!
 
   {ligature = "hyphen",      target-name = "stackJoinTok"},
 
-  # candidate for removal later, because
-    # it doesn't play well with HTML
-    # it interferes with an alignment style that's easy to read and works across platforms:
-        # soweli li wile moku
-        # |      li lukin e sewi
-        # |      |  |     e ma
-        # |      |  |     e poka
-        # |      li kama lukin e kili
-        # |      |  |    |     | |    lon kasi
-        # |      li moku e kili
-    # here's that style with the interference:
-        # soweli li wile moku
-        # | li lukin e sewi
-        # | | | e ma
-        # | | | e poka
-        # | li kama lukin e kili
-        # | | | | | | lon kasi
-        # | li moku e kili
-  # in the future, full-width spaces can be inserted with `|`.
-  # this removal may be disruptive, though, and should only be performed with community consensus.
+  # Candidate for removal later, because:
+  #   It doesn't play well with HTML.
+  #   It interferes with an alignment style that's easy to read and works across
+  #   platforms:
+  #       soweli li wile moku
+  #       |      li lukin e sewi
+  #       |      |  |     e ma
+  #       |      |  |     e poka
+  #       |      li kama lukin e kili
+  #       |      |  |    |     | |    lon kasi
+  #       |      li moku e kili
+    # Here's that style with the interference:
+  #       soweli li wile moku
+  #       | li lukin e sewi
+  #       | | | e ma
+  #       | | | e poka
+  #       | li kama lukin e kili
+  #       | | | | | | lon kasi
+  #       | li moku e kili
+  # In the future, full-width spaces can be inserted with `|`.
+  # This removal may be disruptive, though, and should only be performed with
+  # community consensus.
   {ligature = "space space", target-name = "ideographicspace"},
 ]
 
-# The following glyph names are prerequisites for custom ligatures. for example, the ligature "m u s i" has "m", "u", "s", "i" as prerequisites.
-# This code currently runs in sheettopng.py, so `source-glyph` refers to the index of the glyph in `sorted_characters`.
-# `sorted_characters` is the input sheet verbatim, plus the generated glyph `cartoucheMiddleTok` at index 180.
-# If the implementation is moved to a later step, like svgtottf_ffpython.py, then it can hopefully reference a `target-name` instead of `source-glyph`.
+# The following glyph names are prerequisites for custom ligatures. for example,
+# the ligature "m u s i" has "m", "u", "s", "i" as prerequisites.
+#
+# This code currently runs in sheettopng.py, so `source-glyph` refers to the
+# index of the glyph in `sorted_characters`.
+#
+# `sorted_characters` is the input sheet verbatim, plus the generated glyph
+# `cartoucheMiddleTok` at index 180.
+#
+# If the implementation is moved to a later step, like svgtottf_ffpython.py,
+# then it can hopefully reference a `target-name` instead of `source-glyph`.
 copies = [ # implemented!!!
-  # punctuation
+  # Punctuation:
   {codepoint = 0x5b, name = "bracketleft",  writein = "[", source-glyph = 120},                  # cartoucheStartTok
   {codepoint = 0x5f, name = "underscore",   writein = "_", source-glyph = 180, type = "middle"}, # cartoucheMiddleTok
   {codepoint = 0x5d, name = "bracketright", writein = "]", source-glyph = 121},                  # cartoucheEndTok
   {codepoint = 0x2e, name = "period",                      source-glyph = 122},                  # middotTok
   {codepoint = 0x3a, name = "colon",                       source-glyph = 123},                  # colonTok
 
-  # already-a-word letters, for words like Anna
+  # Already-a-word letters, for words like Anna:
   {codepoint = 0x61, name = "a", source-glyph = 0},   # aTok
   {codepoint = 0x65, name = "e", source-glyph = 9},   # eTok
   {codepoint = 0x6e, name = "n", source-glyph = 148}, # nTok
@@ -300,7 +319,7 @@ copies = [ # implemented!!!
   {codepoint = 0x4e, name = "N", source-glyph = 148}, # nTok
   {codepoint = 0x4f, name = "O", source-glyph = 68},  # oTok
 
-  # capital letters, for words like Pingo
+  # Capital letters, for words like Pingo:
   {codepoint = 0x49, name = "I", source-glyph = 124}, # i
   {codepoint = 0x4a, name = "J", source-glyph = 125}, # j
   {codepoint = 0x4b, name = "K", source-glyph = 126}, # k
@@ -312,7 +331,7 @@ copies = [ # implemented!!!
   {codepoint = 0x55, name = "U", source-glyph = 132}, # u
   {codepoint = 0x57, name = "W", source-glyph = 133}, # w
 
-  # weird substitutions, for words like yutu
+  # Weird substitutions, for words like yutu:
   {codepoint = 0x62, name = "b", source-glyph = 129}, # p
   {codepoint = 0x42, name = "B", source-glyph = 129}, # p
   {codepoint = 0x63, name = "c", source-glyph = 130}, # s
@@ -337,13 +356,10 @@ copies = [ # implemented!!!
   {codepoint = 0x59, name = "Y", source-glyph = 125}, # j
   {codepoint = 0x7a, name = "z", source-glyph = 130}, # s
   {codepoint = 0x5a, name = "Z", source-glyph = 130}  # s
-
-  # todo: add blank punctuation found in svgtottf_ffpython.py
-  # codepoint, name, and width of blank glyph
 ]
 
 spaces = [
-  # support default ASCII ligatures
+  # Support default ASCII ligatures:
   {codepoint = 0x7c, width = 1000, name = "pipe",   writein = "|"},
   {codepoint = 0x20, width =    0, name = "space"},
   {codepoint = 0x2d, width =    0, name = "hyphen", writein = "-"},
@@ -357,13 +373,14 @@ spaces = [
   {codepoint = 0x37, width =    0, name = "seven",  writein = "7"},
   {codepoint = 0x38, width =    0, name = "eight",  writein = "8"},
   {codepoint = 0x39, width =    0, name = "nine",   writein = "9"},
-  # todo: replace these three, and `v`, with rotated lili. it would be cute i think
+  # Todo: Replace these three, and `v`, with rotated lili. It would be cute I
+  # think:
   {codepoint = 0x5e, width = 1000, name = "north",  writein = "^"},
   {codepoint = 0x3c, width = 1000, name = "west",   writein = "<"},
   {codepoint = 0x3e, width = 1000, name = "east",   writein = ">"},
-  # (we treat "v" as a regular letter, instead of naming it "south")
+  # (We treat "v" as a regular letter, instead of naming it "south".)
 
-  # fallback for unsupported SP features
+  # Fallback for unsupported SP features:
   {codepoint = 0x2b, width =    0, name = "plus",        writein = "+"},
   {codepoint = 0x26, width =    0, name = "ampersand",   writein = "&"},
   {codepoint = 0x7b, width =    0, name = "opencurly",   writein = "{"},
@@ -375,17 +392,17 @@ spaces = [
   {codepoint = 0x2c, width = 1000, name = "comma",       writein = ","},
   {codepoint = 0x27, width = 1000, name = "singlequote", writein = "'"},
 
-  # fallback for text intended as sitelen Lasina
+  # Fallback for text intended as sitelen Lasina:
   {codepoint = 0x21, width = 1000, name = "exclamation", writein = "!"},
   {codepoint = 0x3f, width = 1000, name = "question",    writein = "?"},
   {codepoint = 0x3b, width = 1000, name = "semicolon",   writein = ";"},
 
-  # UCSUR features
+  # UCSUR features:
   {codepoint = 0x3000,  width = 1000, name = "ideographicspace"},
   {codepoint = 0x200b,  width =    0, name = "zerowidthspace"},
   {codepoint = 0xf1995, width =    0, name = "stackJoinTok"},
 
-  # fallback for unsupported UCSUR features
+  # Fallback for unsupported UCSUR features:
   {codepoint = 0xf1996, width =    0, name = "nestJoinTok"},
   {codepoint = 0x200d,  width =    0, name = "zerowidthjoiner"},
   {codepoint = 0xf1997, width =    0}, # SP START OF LONG GLYPH
@@ -395,9 +412,9 @@ spaces = [
   {codepoint = 0xf199b, width =    0}, # SP END OF REVERSE LONG GLYPH
 ]
 
-# Metadata for words not included in the default sheet, since people may write them in.
-writein-metadata = [ # implemented!!
-# Todo: Repurpose this for general data for unimplemented words. Mostly directional non-pu critters like waken
+# Metadata for words not included in the default sheet, since people may write
+# them in.
+writein-metadata = [ # Implemented!!
   {codepoint = 0xf19a1, name = "apejaTok"},
   {codepoint = 0xf1984, name = "kokosilaTok"},
   {codepoint = 0xf19a0, name = "pakeTok"},

@@ -3,11 +3,9 @@ import platform
 import subprocess
 from datetime import datetime
 
-#    ▄                █
-#   ▀█▀  ▄▀▀▄  █▀▄▀▄  █
-#    █   █  █  █ █ █  █
-# ▄  ▀▄  ▀▄▄▀  █ █ █  █
-# generate .toml file
+#    ▄            █
+#   ▀█▀ ▄▀▄ █▀▄▀▄ █
+# ▄  ▀▄ ▀▄▀ █ █ █ █
 
 
 def create_toml_html(debug_dir, out_dir, cli_args=None, other_words_string=None):
@@ -23,7 +21,7 @@ def create_toml_html(debug_dir, out_dir, cli_args=None, other_words_string=None)
 
     designer = cli_args_dict.get("designer", "jan pi toki pona")
 
-    # for generating the ilo Linku TOML files for each font,
+    # For generating the ilo Linku TOML files for each font,
     # we use short license codes from the SPDX License List: https://spdx.org/licenses/
     license = cli_args_dict.get("license", "All rights reserved")
     licenseurl = cli_args_dict.get("license_url", "")
@@ -39,7 +37,8 @@ def create_toml_html(debug_dir, out_dir, cli_args=None, other_words_string=None)
         print("\nSkipping ilo Linku .TOML file.\n")
     else:
         s = os.sep
-        # If the user has ilo Linku's "sona" repo on their local machine, put the .toml in there for easy updating.
+        # If the user has ilo Linku's "sona" repo on their local machine, put the .toml
+        # in there for easy updating.
         # Two folders up from /wasokeli.github.io/sp-font-maker/:
         if os.path.isdir(f"{out_dir}..{s}..{s}sona{s}fonts{s}metadata"):
             sona_repo_path = f"{out_dir}..{s}..{s}sona{s}fonts{s}metadata"
@@ -198,13 +197,11 @@ features = [
         + "\n"
     )
 
-    #     █            ▄
-    #     █▀▀▄   ▀▀▄  ▀█▀
-    #     █  █  ▄▀▀█   █
-    #  ▄  █▄▄▀  ▀▄▄█   ▀▄
-    #
+    #   █        ▄
+    #   █▀▄ ▄▀█ ▀█▀
+    # ▄ █▄▀ ▀▄█  ▀▄
 
-    # add to `generate_all_fonts.bat`, if it exists
+    # Add to `generate_all_fonts.bat`, if it exists.
     bat_path = f"{out_dir}{os.sep}generate all fonts.bat"
     if os.path.exists(bat_path):
         if not not_new:
@@ -244,11 +241,10 @@ features = [
                 bat_file.write(f"--pixel")
             bat_file.close()
 
-    #              █
-    # █   █  ▄▀▀▄  █▀▀▄       █▀▀▄   ▀▀▄  ▄▀▀█  ▄▀▀▄
-    # █ █ █  █▄▄█  █  █       █  █  ▄▀▀█  █  █  █▄▄█
-    #  █ █   ▀▄▄   █▄▄▀       █▄▄▀  ▀▄▄█  ▀▄▄█  ▀▄▄
-    #                         █            ▄▄▀
+    #           █
+    # █ █ █ ▄▀▄ █▀▄    █▀▄ ▄▀█ ▄▀█ ▄▀▄
+    #  █ █  ▀█▄ █▄▀    █▄▀ ▀▄█ ▀▄█ ▀█▄
+    #                  █       ▄▄▀
 
     other_words = []
     if other_words_string:
@@ -417,11 +413,10 @@ function redrawTextarea(e) {
     )
     example_web_page.close()
 
-    #  ▀  █             █      ▀        █                                         ▀
-    # ▀█  █  ▄▀▀▄       █     ▀█  █▀▀▄  █ ▄▀  █  █       █▀▀▄  █▄▀  ▄▀▀▄  █   █  ▀█  ▄▀▀▄  █   █
-    #  █  █  █  █       █      █  █  █  █▀▄   █  █       █  █  █    █▄▄█   █ █    █  █▄▄█  █ █ █
-    #  █  █  ▀▄▄▀       █▄▄▄   █  █  █  █  █  ▀▄▄█       █▄▄▀  █    ▀▄▄     █     █  ▀▄▄    █ █
-    #                                                    █
+    # ▀ █        █   ▀     █                          ▀
+    # █ █ ▄▀▄    █   █ █▀▄ █▄▀ █ █    █▀▄ █▄▀ ▄▀▄ █ █ █ ▄▀▄ █ █ █
+    # █ █ ▀▄▀    █▄▄ █ █ █ █ █ ▀▄█    █▄▀ █   ▀█▄  █  █ ▀█▄  █ █
+    #                                 █
     # # test ilo Linku rendering
     # # disabled because i don't have RAQM, so i can't test it
     # # and it seems to be hard to install on Windows

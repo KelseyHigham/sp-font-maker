@@ -6,18 +6,15 @@
 # ligature-aliases
 # writein-metadata
 
-# i need to store both the glyph name, and the index (position) on the physical sheet.
-# right now, index is stored implicitly, because these are arrays.
-# i could turn them into tables, and add an "index" field. this would let me use TOML headers.
-
-# i could aaalsooo do this hack, for readable headers:
+# Hack for readable TOML headers:
 # [glyphs.sheet]
 # -=[]
 
 [glyphs.sheet]
-# defaults: rotate = false, direction = "right", center = false
--=[ # implemented!!!
-  # row 0
+# Defaults: rotate = false, direction = "right", center = true, scan-shift =
+# "none"
+-=[ # Implemented!!!
+  # Row 0
   {codepoint = 0xf1900, name = "aTok",       ligature = "a"},
   {codepoint = 0xf1901, name = "akesiTok",   ligature = "a k e s i", rotate = true, direction = "up"},
   {codepoint = 0xf1902, name = "alaTok",     ligature = "a l a"},
@@ -39,7 +36,7 @@
   {codepoint = 0xf1912, name = "jeloTok",    ligature = "j e l o"},
   {codepoint = 0xf1913, name = "joTok",      ligature = "j o"},
 
-  # row 1
+  # Row 1
   {codepoint = 0xf1914, name = "kalaTok",    ligature = "k a l a", rotate = true},
   {codepoint = 0xf1915, name = "kalamaTok",  ligature = "k a l a m a"},
   {codepoint = 0xf1916, name = "kamaTok",    ligature = "k a m a"},
@@ -61,7 +58,7 @@
   {codepoint = 0xf1926, name = "leteTok",    ligature = "l e t e"},
   {codepoint = 0xf1927, name = "liTok",      ligature = "l i"},
 
-  # row 2
+  # Row 2
   {codepoint = 0xf1928, name = "liliTok",    ligature = "l i l i"},
   {codepoint = 0xf1929, name = "linjaTok",   ligature = "l i n j a"},
   {codepoint = 0xf192a, name = "lipuTok",    ligature = "l i p u"},
@@ -83,7 +80,7 @@
   {codepoint = 0xf193a, name = "munTok",     ligature = "m u n"},
   {codepoint = 0xf193b, name = "musiTok",    ligature = "m u s i"},
 
-  # row 3
+  # Row 3
   {codepoint = 0xf193c, name = "muteTok",    ligature = "m u t e"},
   {codepoint = 0xf193d, name = "nanpaTok",   ligature = "n a n p a"},
   {codepoint = 0xf193e, name = "nasaTok",    ligature = "n a s a"},
@@ -105,7 +102,7 @@
   {codepoint = 0xf194e, name = "pilinTok",   ligature = "p i l i n"},
   {codepoint = 0xf194f, name = "pimejaTok",  ligature = "p i m e j a"},
 
-  # row 4
+  # Row 4
   {codepoint = 0xf1950, name = "piniTok",    ligature = "p i n i"},
   {codepoint = 0xf1951, name = "pipiTok",    ligature = "p i p i", rotate = true, direction = "up"},
   {codepoint = 0xf1952, name = "pokaTok",    ligature = "p o k a"},
@@ -127,7 +124,7 @@
   {codepoint = 0xf1962, name = "soweliTok",  ligature = "s o w e l i", rotate = true},
   {codepoint = 0xf1963, name = "suliTok",    ligature = "s u l i"},
 
-  # row 5
+  # Row 5
   {codepoint = 0xf1964, name = "sunoTok",    ligature = "s u n o"},
   {codepoint = 0xf1965, name = "supaTok",    ligature = "s u p a"},
   {codepoint = 0xf1966, name = "suwiTok",    ligature = "s u w i"},
@@ -149,7 +146,7 @@
   {codepoint = 0xf1976, name = "wekaTok",    ligature = "w e k a"},
   {codepoint = 0xf1977, name = "wileTok",    ligature = "w i l e"},
 
-  # row 6!!!
+  # Row 6!!!
   {codepoint = 0xf1990, name = "cartoucheStartTok", ligature = "bracketleft",  center = false, scan-shift = "right"},
   {codepoint = 0xf1991, name = "cartoucheEndTok",   ligature = "bracketright", center = false, scan-shift = "left"},
   {codepoint = 0xf199c, name = "middotTok",         ligature = "period"},
@@ -166,12 +163,12 @@
   {codepoint = 0x77,    name = "w",                                            center = "horizontal"},
   {codepoint = 0x300c,  name = "teTok",             ligature = "t e",          center = false},
   {codepoint = 0x300d,  name = "toTok",             ligature = "t o",          center = false},
-  {}, # these blank rows get populated from `other_words_string` in `cli.py`
+  {}, # These blank rows get populated from `other_words_string` in `cli.py`.
   {},
   {},
   {},
 
-  # row 7
+  # Row 7
   {codepoint = 0xf1980, name = "kijetesantakaluTok", ligature = "k i j e t e s a n t a k a l u", rotate = true},
   {codepoint = 0xf1979, name = "kinTok",      ligature = "k i n"},
   {codepoint = 0xf197b, name = "kipisiTok",   ligature = "k i p i s i"},
@@ -193,7 +190,7 @@
   {},
   {},
 
-  # row 8
+  # Row 8
   {codepoint = 0xf1983, name = "epikuTok",   ligature = "e p i k u"},
   {codepoint = 0xf197f, name = "jasimaTok",  ligature = "j a s i m a"},
   {                     name = "linluwiTok", ligature = "l i n l u w i"},
@@ -218,25 +215,27 @@
 
 [glyphs.derived]
 -=[
-  # hardcoded in sheettopng.py; improve this when adding long pi
-  # derived from row 6, cartoucheStartTok
-    # (because in pixel fonts, the exact middle of the cartouche is on Start, not End.)
+  # Hardcoded in sheettopng.py; improve this when adding long pi.
+  # Derived from row 6, cartoucheStartTok.
+  # - (Because in pixel fonts, the exact middle of the cartouche is on Start, not End.)
   {codepoint = 0xf1992, name = "cartoucheMiddleTok"},
 ]
 
 [ligatures.aliases]
--=[ # implemented!!!
-  # alternate spellings that are invisible to people who don't use them
+-=[ # Implemented!!!
+  # Alternate spellings that are invisible to people who don't use them:
   {ligature = "a l i",       target-name = "aleTok"},
   {ligature = "l i n u w i", target-name = "linluwiTok"},
   {ligature = "k e p e n",   target-name = "kepekenTok"},
 
-  # alternate spellings for write-ins
+  # Alternate spellings for write-ins:
   {ligature = "l a 2",       target-name = "mu2Tok"},
   {ligature = "m u 2",       target-name = "la2Tok"},
 
-  # ni-numbers, from the ligature standard
-  # (This will become nonstandard if someone draws alt ni in the normal square and standard ni in the custom square. It will require some special logic to fix.)
+  # ni-numbers, from the ligature standard.
+  # (This will become nonstandard if someone draws alt ni in the normal square
+  # and standard ni in the custom square. It will require some special logic to
+  # fix.)
   {ligature = "n i zero one",   target-name = "niTok"},
   {ligature = "n i zero two",   target-name = "niTok.E"},
   {ligature = "n i zero three", target-name = "niTok.N"},
@@ -245,47 +244,55 @@
   {ligature = "n i zero six",   target-name = "niTok.NE"},
   {ligature = "n i zero seven", target-name = "niTok.NW"},
   {ligature = "n i zero eight", target-name = "niTok.SW"},
-  # todo: add nonstandard ni-numbers (ni1-ni8), but only after allowing other-words to override ligature-aliases in add_ligatures.py, line 180
 
   {ligature = "hyphen",      target-name = "stackJoinTok"},
 
-  # candidate for removal later, because
-    # it doesn't play well with HTML
-    # it interferes with an alignment style that's easy to read and works across platforms:
-        # soweli li wile moku
-        # |      li lukin e sewi
-        # |      |  |     e ma
-        # |      |  |     e poka
-        # |      li kama lukin e kili
-        # |      |  |    |     | |    lon kasi
-        # |      li moku e kili
-    # here's that style with the interference:
-        # soweli li wile moku
-        # | li lukin e sewi
-        # | | | e ma
-        # | | | e poka
-        # | li kama lukin e kili
-        # | | | | | | lon kasi
-        # | li moku e kili
-  # in the future, full-width spaces can be inserted with `|`.
-  # this removal may be disruptive, though, and should only be performed with community consensus.
+  # Candidate for removal later, because
+  # - It doesn't play well with HTML.
+  # - It interferes with an alignment style that's easy to read and works across
+  #   platforms:
+  #       soweli li wile moku
+  #       |      li lukin e sewi
+  #       |      |  |     e ma
+  #       |      |  |     e poka
+  #       |      li kama lukin e kili
+  #       |      |  |    |     | |    lon kasi
+  #       |      li moku e kili
+  # Here's that style with the interference:
+  #       soweli li wile moku
+  #       | li lukin e sewi
+  #       | | | e ma
+  #       | | | e poka
+  #       | li kama lukin e kili
+  #       | | | | | | lon kasi
+  #       | li moku e kili
+  # In the future, full-width spaces can be inserted with `|`.
+  # This removal may be disruptive, though, and should only be performed with
+  # community consensus.
   {ligature = "space space", target-name = "ideographicspace"},
 ]
 
-# The following glyph names are prerequisites for custom ligatures. for example, the ligature "m u s i" has "m", "u", "s", "i" as prerequisites.
-# This code currently runs in sheettopng.py, so `source-glyph` refers to the index of the glyph in `sorted_characters`.
-# `sorted_characters` is the input sheet verbatim, plus the generated glyph `cartoucheMiddleTok` at index 180.
-# If the implementation is moved to a later step, like svgtottf_ffpython.py, then it can hopefully reference a `target-name` instead of `source-glyph`.
+# The following glyph names are prerequisites for custom ligatures. for example,
+# the ligature "m u s i" has "m", "u", "s", "i" as prerequisites.
+#
+# This code currently runs in sheettopng.py, so `source-glyph` refers to the
+# index of the glyph in `sorted_characters`.
+#
+# `sorted_characters` is the input sheet verbatim, plus the generated glyph
+# `cartoucheMiddleTok` at index 180.
+#
+# If the implementation is moved to a later step, like svgtottf_ffpython.py,
+# then it can hopefully reference a `target-name` instead of `source-glyph`.
 [glyphs.duplicates]
--=[ # implemented!!!
-  # punctuation
+-=[ # Implemented!!!
+  # Punctuation:
   {codepoint = 0x5b, name = "bracketleft",  writein = "[", source-glyph = 120}, # cartoucheStartTok
   {codepoint = 0x5f, name = "underscore",   writein = "_", source-glyph = 180}, # cartoucheMiddleTok
   {codepoint = 0x5d, name = "bracketright", writein = "]", source-glyph = 121}, # cartoucheEndTok
   {codepoint = 0x2e, name = "period",                      source-glyph = 122}, # middotTok
   {codepoint = 0x3a, name = "colon",                       source-glyph = 123}, # colonTok
 
-  # already-a-word letters, for words like Anna
+  # Already-a-word letters, for words like Anna:
   {codepoint = 0x61, name = "a", source-glyph = 0},   # aTok
   {codepoint = 0x65, name = "e", source-glyph = 9},   # eTok
   {codepoint = 0x6e, name = "n", source-glyph = 148}, # nTok
@@ -295,7 +302,7 @@
   {codepoint = 0x4e, name = "N", source-glyph = 148}, # nTok
   {codepoint = 0x4f, name = "O", source-glyph = 68},  # oTok
 
-  # capital letters, for words like Pingo
+  # Capital letters, for words like Pingo:
   {codepoint = 0x49, name = "I", source-glyph = 124}, # i
   {codepoint = 0x4a, name = "J", source-glyph = 125}, # j
   {codepoint = 0x4b, name = "K", source-glyph = 126}, # k
@@ -307,7 +314,7 @@
   {codepoint = 0x55, name = "U", source-glyph = 132}, # u
   {codepoint = 0x57, name = "W", source-glyph = 133}, # w
 
-  # weird substitutions, for words like yutu
+  # Weird substitutions, for words like yutu:
   {codepoint = 0x62, name = "b", source-glyph = 129}, # p
   {codepoint = 0x42, name = "B", source-glyph = 129}, # p
   {codepoint = 0x63, name = "c", source-glyph = 130}, # s
@@ -336,7 +343,7 @@
 
 [glyphs.spaces]
 -=[
-  # support default ASCII ligatures
+  # Support default ASCII ligatures:
   {codepoint = 0x7c, width = 1000, name = "pipe",   writein = "|"},
   {codepoint = 0x20, width =    0, name = "space"},
   {codepoint = 0x2d, width =    0, name = "hyphen", writein = "-"},
@@ -350,13 +357,14 @@
   {codepoint = 0x37, width =    0, name = "seven",  writein = "7"},
   {codepoint = 0x38, width =    0, name = "eight",  writein = "8"},
   {codepoint = 0x39, width =    0, name = "nine",   writein = "9"},
-  # todo: replace these three, and `v`, with rotated lili. it would be cute i think
+  # Todo: Replace these three, and `v`, with rotated lili. It would be cute I
+  # think.
   {codepoint = 0x5e, width = 1000, name = "north",  writein = "^"},
   {codepoint = 0x3c, width = 1000, name = "west",   writein = "<"},
   {codepoint = 0x3e, width = 1000, name = "east",   writein = ">"},
-  # (we treat "v" as a regular letter, instead of naming it "south")
+  # (We treat "v" as a regular letter, instead of naming it "south".)
 
-  # fallback for unsupported SP features
+  # Fallback for unsupported SP features:
   {codepoint = 0x2b, width =    0, name = "plus",        writein = "+"},
   {codepoint = 0x26, width =    0, name = "ampersand",   writein = "&"},
   {codepoint = 0x7b, width =    0, name = "opencurly",   writein = "{"},
@@ -368,17 +376,17 @@
   {codepoint = 0x2c, width = 1000, name = "comma",       writein = ","},
   {codepoint = 0x27, width = 1000, name = "singlequote", writein = "'"},
 
-  # fallback for text intended as sitelen Lasina
+  # Fallback for text intended as sitelen Lasina:
   {codepoint = 0x21, width = 1000, name = "exclamation", writein = "!"},
   {codepoint = 0x3f, width = 1000, name = "question",    writein = "?"},
   {codepoint = 0x3b, width = 1000, name = "semicolon",   writein = ";"},
 
-  # UCSUR features
+  # UCSUR features:
   {codepoint = 0x3000,  width = 1000, name = "ideographicspace"},
   {codepoint = 0x200b,  width =    0, name = "zerowidthspace"},
   {codepoint = 0xf1995, width =    0, name = "stackJoinTok"},
 
-  # fallback for unsupported UCSUR features
+  # Fallback for unsupported UCSUR features:
   {codepoint = 0xf1996, width =    0, name = "nestJoinTok"},
   {codepoint = 0x200d,  width =    0, name = "zerowidthjoiner"},
   {codepoint = 0xf1997, width =    0}, # SP START OF LONG GLYPH
@@ -388,11 +396,12 @@
   {codepoint = 0xf199b, width =    0}, # SP END OF REVERSE LONG GLYPH
 ]
 
-# UCSUR codepoints for words not included in the default sheet, since people may write them in.
-# Todo: Repurpose this for general data for unimplemented words. Mostly directional non-pu critters like waken
-# other-words-metadata, writein-metadata
+# UCSUR codepoints for words not included in the default sheet, since people may
+# write them in.
+# Todo: Repurpose this for general data for unimplemented words. Mostly
+# directional non-pu critters like waken
 [writein-metadata]
--=[ # implemented!!
+-=[ # Implemented!!
   {codepoint = 0xf19a1, name = "apejaTok",    ligature = "a p e j a"},
   {codepoint = 0xf1984, name = "kokosilaTok", ligature = "k o k o s i l a"},
   {codepoint = 0xf19a0, name = "pakeTok",     ligature = "p a k e"},
@@ -417,11 +426,14 @@
 
 
 
-# what do we need to include in the TOML to make cartouche middles *entirely* data-driven?
+# what do we need to include in the TOML to make cartouche middles *entirely*
+# data-driven?
 # such that you can implement long pi and long awen in here?
 # in long pi, Start is 1000 wide and End is 0 wide.
 
 # out of scope for now:
-# in long ala, you can parse *backwards*, so there's technically *three* glyphs. is that just for ala?
+# in long ala, you can parse *backwards*, so there's technically *three* glyphs.
+# is that just for ala?
 
-# long la requires reverse chaining. when going left-to-right, you can't tell the difference between la's { and ala's {.
+# long la requires reverse chaining. when going left-to-right, you can't tell
+# the difference between la's { and ala's {.

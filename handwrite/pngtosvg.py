@@ -99,7 +99,8 @@ def png_to_bmp(path, cli_args):
     sheet_version = cli_args.get("sheet_version") or "99999999.999999.999999"
     if Version(sheet_version) < Version("2.1"):
         # SHEET VERSION 2.0
-        # scan 2.0.x sheets with lower quality, to avoid picking up corner pixels from the gray boxes
+        # Scan 2.0.x sheets with lower quality, to avoid picking up corner pixels from
+        # the gray boxes.
         glyph_width = 100
         glyph_height = 125
     elif Version(sheet_version) < Version("3"):
@@ -205,13 +206,15 @@ def png_to_bmp(path, cli_args):
     )
 
     # Threshold image to convert each pixel to either black or white.
-    # Changed from 200 to 127, which makes two of the 2.0.0 fonts look worse, but improves just about everything newer.
+    # Changed from 200 to 127, which makes two of the 2.0.0 fonts look worse, but
+    # improves just about everything newer.
     if Version(sheet_version) > Version("2"):
         threshold = 127
     else:
         threshold = 200
 
-    # a pixel becomes black if any color channel is less than 127. so... making the image monochrome before scanning doesn't actually do anything
+    # A pixel becomes black if any color channel is less than 127. so... making the
+    # image monochrome before scanning doesn't actually do anything.
     data = []
     for pix in list(img.getdata()):
         if pix[0] >= threshold and pix[1] >= threshold and pix[3] >= threshold:

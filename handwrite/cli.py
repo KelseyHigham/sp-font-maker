@@ -31,7 +31,7 @@ def converters(
     cli_args=None,
     other_words_string=None,
 ):
-    # debug/temp directory
+    # Debug/temp directory:
     if not debug_dir:
         debug_dir = tempfile.mkdtemp()
         isTempdir = True
@@ -47,13 +47,13 @@ def converters(
         )
         default_json = default_config
 
-    # read initial config data from TOML
+    # Read initial config data from TOML.
     with open(default_json, "rb") as file:
         font_data = tomllib.load(file)
 
-    # save as JSON in debug directory. we'll edit it to add custom words.
-    # extra config sheets should be merged into the same working JSON file.
-    # ...we do this exact thing again after populating other_words... this is redundant.
+    # Save as JSON in debug directory. We'll edit it to add custom words.
+    # Extra config sheets should be merged into the same working JSON file.
+    # ...We do this exact thing again after populating other_words... This is redundant.
     json_path = os.path.join(debug_dir, "default.json")
     with open(json_path, "w") as file:
         json.dump(font_data, file, indent=4)
@@ -86,27 +86,33 @@ def converters(
                 word = alias_words[0]
                 alias_words = alias_words[1:]
 
-                # Replace special characters in `word`
+                # Replace special characters in `word`.
                 letters = [special_character_names.get(ch, ch) for ch in word]
 
-                # Then identically replace special characters for each alias
+                # Then identically replace special characters for each alias.
                 aliases_letters = []
                 for alias in alias_words:
                     aliases_letters.append(
                         [special_character_names.get(ch, ch) for ch in alias]
                     )
 
-                # todo: we don't differentiate letters from renamed special characters, we just concatenate them.
-                # so we end up with glyph names like "tokihyphenponaTok", which is nonstandard and hard to read.
-                #     standard is to use _ for concatenating characters, and . for variants
+                # Todo: We don't differentiate letters from renamed special characters,
+                # we just concatenate them.
+                # So we end up with glyph names like "tokihyphenponaTok", which is
+                # nonstandard and hard to read.
+                #     Standard is to use _ for concatenating characters, and . for
+                #     variants:
                 #     https://github.com/adobe-type-tools/agl-specification?tab=readme-ov-file#3-examples
-                # also "one" and "nine" are valid toki pona, and may rarely cause name collisions, e.g. "an1" -> "anone"
-                # ideal would be "tokiTok_hyphen_ponaTok", because the convention is like "f_f_i.liga"
-                # next best thing would be "toki_hyphen_ponaTok"
-                # or "tokiHYPHENponaTok", which requires allcapsing HYPHEN, PLUS, and AMPERSAND in a few places in the code
+                # Also "one" and "nine" are valid toki pona, and may rarely cause name
+                # collisions, e.g. "an1" -> "anone".
+                # Ideal would be "tokiTok_hyphen_ponaTok", because the convention is
+                # like "f_f_i.liga".
+                # Next best thing would be "toki_hyphen_ponaTok".
+                # Or "tokiHYPHENponaTok", which requires allcapsing HYPHEN, PLUS, and
+                # AMPERSAND in a few places in the code.
                 word = "".join(letters)
 
-                # Write ligature aliases to JSON
+                # Write ligature aliases to JSON.
                 lig_aliases = font_data.get("glyphs", {}).get("ligature-aliases", {})
                 for wi, alias in enumerate(alias_words):
                     lig_aliases.append(
@@ -118,22 +124,23 @@ def converters(
 
                 glyphs_json = font_data.get("glyphs", {}).get("sheet", {})
 
-                # check if it's a redraw of an existing sheet glyph
+                # Check if it's a redraw of an existing sheet glyph.
                 redraw = False
                 for default_glyph in glyphs_json:
                     if "name" in default_glyph:
                         if default_glyph["name"] == word + "Tok":
                             redraw = True
-                            # todo: remove redundant glyphs from the preview web page
+                            # Todo: Remove redundant glyphs from the preview web page.
 
                 if not redraw:
                     word_json = glyphs_json[blank_cells[position]]
 
-                    # The common case of a custom word
+                    # The common case of a custom word.
                     word_json["name"] = word + "Tok"
                     word_json["ligature"] = " ".join(letters)
 
-                    # If a writein word has default metadata (e.g. codepoint, rotate, direction), assign it.
+                    # If a writein word has default metadata (e.g. codepoint, rotate,
+                    # direction), assign it.
                     writein_potential_words = font_data.get("glyphs", {}).get(
                         "writein-metadata", {}
                     )
@@ -226,7 +233,7 @@ def main():
     )
 
     args = parser.parse_args()
-    # cli_args = { # the format still looks like this, but we're about to recreate it
+    # cli_args = { # The format looks like this:
     #     "filename": args.filename,
     #     "family": args.family,
     #     "designer": args.designer,
