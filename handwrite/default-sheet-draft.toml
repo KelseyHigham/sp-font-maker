@@ -1,19 +1,30 @@
-# glyphs
+config-protocol-version = "0.1"
+
+# glyphs (defaults for create-rotations, source-dir, center, hor-offset, derive-type, rotation-deg)
 # - sheet
 # - derived
-# - copies
 # - spaces
-# ligature-aliases
 # writein-metadata
+# ligature-aliases
 
-# Hack for readable TOML headers:
-# [glyphs.sheet]
-# -=[]
 
-[glyphs.sheet]
+
+#  ▄▄ █▄   ▄▄  ▄▄ ▄█▄
+# ▀▄▄ █ █ █▄▀ █▄▀  █
+# ▀▀  ▀ ▀  ▀▀  ▀▀  ▀▀
+
 # Defaults: rotate = false, direction = "right", center = true, scan-shift =
 # "none"
--=[ # Implemented!!!
+#
+# `rotate` (create-rotations?) creates 8 rotated versions of a glyph, wth names
+# like `akesiTok.S`, `akesiTok.NW`. You can indicate the `direction`
+# (source-dir? original-dir?) that the original glyph drawing is
+# pointing.
+#
+# `scan-shift` (hor-offset?) changes a glyph's horizontal origin. The input sheet nudges the
+# left cartouche and the right cartouche towards each other, so that they can
+# touch instead of being separated by the usual margin.
+glyphs.sheet = [ # Implemented!!!
   # Row 0
   {codepoint = 0xf1900, name = "aTok",       ligature = "a"},
   {codepoint = 0xf1901, name = "akesiTok",   ligature = "a k e s i", rotate = true, direction = "up"},
@@ -213,78 +224,41 @@
   {},
 ]
 
-[glyphs.derived]
--=[
+
+
+#  ▄█  ▄▄  ▄▄ ▀ ▄ ▄  ▄▄  ▄█
+# █ █ █▄▀ █   █ ▀▄▀ █▄▀ █ █
+#  ▀▀  ▀▀ ▀   ▀  ▀   ▀▀  ▀▀
+
+# `type = "middle"` creates a combining glyph, derived from the source glyph's
+# rightmost column of pixels, stretched to full width.
+# - This doesn't generate ligatures; only the glyph.
+#
+# Omitting `type` just copies the glyph, same as putting a glyph in `copies`,
+# although this category doesn't support `writein`.
+# ...I should consolidate these two categories, huh...
+#
+# Others:
+# - lili
+# - rotations for vertical text
+glyphs.derived = [
   # Hardcoded in sheettopng.py; improve this when adding long pi.
   # Derived from row 6, cartoucheStartTok.
   # - (Because in pixel fonts, the exact middle of the cartouche is on Start, not End.)
-  {codepoint = 0xf1992, name = "cartoucheMiddleTok"},
-]
+  {codepoint = 0xf1992, name = "cartoucheMiddleTok", type = "middle", source-glyph = 120}, # cartoucheStartTok
 
-[ligatures.aliases]
--=[ # Implemented!!!
-  # Alternate spellings that are invisible to people who don't use them:
-  {ligature = "a l i",       target-name = "aleTok"},
-  {ligature = "l i n u w i", target-name = "linluwiTok"},
-  {ligature = "k e p e n",   target-name = "kepekenTok"},
+  # The following glyph names are prerequisites for custom ligatures. For example,
+  # the ligature "m u s i" has "m", "u", "s", "i" as prerequisites.
+  #
+  # This code currently runs in sheettopng.py, so `source-glyph` refers to the
+  # index of the glyph in `sorted_characters`.
+  #
+  # `sorted_characters` is the input sheet verbatim, plus the generated glyph
+  # `cartoucheMiddleTok` at index 180.
+  #
+  # If the implementation is moved to a later step, like svgtottf_ffpython.py,
+  # then it can hopefully reference a `target-name` instead of `source-glyph`.
 
-  # Alternate spellings for write-ins:
-  {ligature = "l a 2",       target-name = "mu2Tok"},
-  {ligature = "m u 2",       target-name = "la2Tok"},
-
-  # ni-numbers, from the ligature standard.
-  # (This will become nonstandard if someone draws alt ni in the normal square
-  # and standard ni in the custom square. It will require some special logic to
-  # fix.)
-  {ligature = "n i zero one",   target-name = "niTok"},
-  {ligature = "n i zero two",   target-name = "niTok.E"},
-  {ligature = "n i zero three", target-name = "niTok.N"},
-  {ligature = "n i zero four",  target-name = "niTok.W"},
-  {ligature = "n i zero five",  target-name = "niTok.SE"},
-  {ligature = "n i zero six",   target-name = "niTok.NE"},
-  {ligature = "n i zero seven", target-name = "niTok.NW"},
-  {ligature = "n i zero eight", target-name = "niTok.SW"},
-
-  {ligature = "hyphen",      target-name = "stackJoinTok"},
-
-  # Candidate for removal later, because
-  # - It doesn't play well with HTML.
-  # - It interferes with an alignment style that's easy to read and works across
-  #   platforms:
-  #       soweli li wile moku
-  #       |      li lukin e sewi
-  #       |      |  |     e ma
-  #       |      |  |     e poka
-  #       |      li kama lukin e kili
-  #       |      |  |    |     | |    lon kasi
-  #       |      li moku e kili
-  # Here's that style with the interference:
-  #       soweli li wile moku
-  #       | li lukin e sewi
-  #       | | | e ma
-  #       | | | e poka
-  #       | li kama lukin e kili
-  #       | | | | | | lon kasi
-  #       | li moku e kili
-  # In the future, full-width spaces can be inserted with `|`.
-  # This removal may be disruptive, though, and should only be performed with
-  # community consensus.
-  {ligature = "space space", target-name = "ideographicspace"},
-]
-
-# The following glyph names are prerequisites for custom ligatures. for example,
-# the ligature "m u s i" has "m", "u", "s", "i" as prerequisites.
-#
-# This code currently runs in sheettopng.py, so `source-glyph` refers to the
-# index of the glyph in `sorted_characters`.
-#
-# `sorted_characters` is the input sheet verbatim, plus the generated glyph
-# `cartoucheMiddleTok` at index 180.
-#
-# If the implementation is moved to a later step, like svgtottf_ffpython.py,
-# then it can hopefully reference a `target-name` instead of `source-glyph`.
-[glyphs.duplicates]
--=[ # Implemented!!!
   # Punctuation:
   {codepoint = 0x5b, name = "bracketleft",  writein = "[", source-glyph = 120}, # cartoucheStartTok
   {codepoint = 0x5f, name = "underscore",   writein = "_", source-glyph = 180}, # cartoucheMiddleTok
@@ -341,8 +315,13 @@
   {codepoint = 0x5a, name = "Z", source-glyph = 130}  # s
 ]
 
-[glyphs.spaces]
--=[
+
+
+#  ▄▄ ▄▄   ▄▄  ▄▄  ▄▄  ▄▄
+# ▀▄▄ █ █ █ █ █   █▄▀ ▀▄▄
+# ▀▀  █▀   ▀▀  ▀▀  ▀▀ ▀▀
+
+glyphs.spaces = [
   # Support default ASCII ligatures:
   {codepoint = 0x7c, width = 1000, name = "pipe",   writein = "|"},
   {codepoint = 0x20, width =    0, name = "space"},
@@ -396,30 +375,81 @@
   {codepoint = 0xf199b, width =    0}, # SP END OF REVERSE LONG GLYPH
 ]
 
-# UCSUR codepoints for words not included in the default sheet, since people may
-# write them in.
-# Todo: Repurpose this for general data for unimplemented words. Mostly
-# directional non-pu critters like waken
-[writein-metadata]
--=[ # Implemented!!
+
+
+# ▄ ▄ ▄  ▄▄ ▀ ▄█▄  ▄▄ ▀ ▄▄     ▄▄▄▄   ▄▄ ▄█▄  ▄▄  ▄█  ▄▄ ▄█▄  ▄▄
+# ▀▄▀▄▀ █   █  █  █▄▀ █ █ █    █ █ █ █▄▀  █  █ █ █ █ █ █  █  █ █
+#  ▀ ▀  ▀   ▀  ▀▀  ▀▀ ▀ ▀ ▀    ▀ ▀ ▀  ▀▀  ▀▀  ▀▀  ▀▀  ▀▀  ▀▀  ▀▀
+
+writein-metadata = [ # Implemented!!
+  # UCSUR codepoints for words not included in the default sheet, since people
+  # may write them in.
   {codepoint = 0xf19a1, name = "apejaTok",    ligature = "a p e j a"},
   {codepoint = 0xf1984, name = "kokosilaTok", ligature = "k o k o s i l a"},
   {codepoint = 0xf19a0, name = "pakeTok",     ligature = "p a k e"},
   {codepoint = 0xf19a3, name = "poweTok",     ligature = "p o w e"},
-  # {name = "apiTok",      rotate = true},
-  # {name = "kaTok",       rotate = true, direction = "up"},
-  # {name = "jonkeTok",    rotate = true},
-  # {name = "kisaTok",     rotate = true, direction = "up"},
-  # {name = "misaTok",     rotate = true},
-  # {name = "molusaTok",   rotate = true},
-  # {name = "poniTok",     rotate = true},
-  # {name = "silapaTok",   rotate = true, direction = "left"},
-  # {name = "snoweliTok",  rotate = true},
-  # {name = "sutopatikunaTok", rotate = true},
-  # {name = "tasunTok",    rotate = true},
-  # {name = "wakenTok",    rotate = true},
-  # {name = "wasoweliTok", rotate = true},
+
+  # Critters, which are rotated
+  {                     name = "apiTok",      rotate = true},
+  {                     name = "kaTok",       rotate = true, direction = "up"},
+  {                     name = "jonkeTok",    rotate = true},
+  {                     name = "kisaTok",     rotate = true, direction = "up"},
+  {                     name = "misaTok",     rotate = true},
+  {                     name = "molusaTok",   rotate = true},
+  {                     name = "poniTok",     rotate = true},
+  {                     name = "silapaTok",   rotate = true, direction = "left"},
+  {                     name = "snoweliTok",  rotate = true},
+  {                     name = "sutopatikunaTok", rotate = true},
+  {                     name = "tasunTok",    rotate = true},
+  {                     name = "wakenTok",    rotate = true},
+  {                     name = "wasoweliTok", rotate = true},
+
+  # Tally marks from "nasin sitelen kalama pi linja lili"
+  {name = "commaTok",                     type = "combining"},
+  {name = "commacommaTok",                type = "combining"},
+  {name = "commacommacommaTok",           type = "combining"},
+  {name = "commacommacommacommaTok",      type = "combining"},
+  {name = "commacommacommacommacommaTok", type = "combining"},
 ]
+
+
+
+# █ ▀  ▄▄  ▄▄ ▄█▄ ▄ ▄  ▄▄  ▄▄     ▄▄ █ ▀  ▄▄  ▄▄  ▄▄  ▄▄
+# █ █ █▄█ █ █  █  █ █ █   █▄▀    █ █ █ █ █ █ ▀▄▄ █▄▀ ▀▄▄
+# ▀ ▀ ▄▄▀  ▀▀  ▀▀  ▀▀ ▀    ▀▀     ▀▀ ▀ ▀  ▀▀ ▀▀   ▀▀ ▀▀
+
+ligatures.aliases = [ # Implemented!!!
+  # Common alternate spellings. (We deliberately exclude abbreviations like
+  # tenpo's "ten" that appears as you're typing "tenpo".)
+  {ligature = "a l i",       target-name = "aleTok"},
+  {ligature = "l i n u w i", target-name = "linluwiTok"},
+  {ligature = "k e p e n",   target-name = "kepekenTok"},
+
+  # Alternate spellings for write-ins. When used as a dialog marker, "la" is
+  # clearer than "mu".
+  {ligature = "l a 2",       target-name = "mu2Tok"},
+  {ligature = "m u 2",       target-name = "la2Tok"},
+
+  # ni-numbers, from the ligature standard.
+  # (This will become nonstandard if someone draws alt ni in the normal square
+  # and standard ni in the custom square. It would require some special logic to
+  # fix.)
+  {ligature = "n i zero one",   target-name = "niTok"},
+  {ligature = "n i zero two",   target-name = "niTok.E"},
+  {ligature = "n i zero three", target-name = "niTok.N"},
+  {ligature = "n i zero four",  target-name = "niTok.W"},
+  {ligature = "n i zero five",  target-name = "niTok.SE"},
+  {ligature = "n i zero six",   target-name = "niTok.NE"},
+  {ligature = "n i zero seven", target-name = "niTok.NW"},
+  {ligature = "n i zero eight", target-name = "niTok.SW"},
+
+  {ligature = "hyphen",      target-name = "stackJoinTok"},
+
+  # This ligature doesn't work in HTML, where consecutive whitespace is
+  # normally collapsed. In that case, type a space with `|` instead.
+  {ligature = "space space", target-name = "ideographicspace"},
+]
+
 
 
 # --------
