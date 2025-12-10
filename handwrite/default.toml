@@ -20,6 +20,12 @@
 [glyphs]
 # Defaults: rotate = false, direction = "right", center = false
 
+
+
+#  ▄▄ █▄   ▄▄  ▄▄ ▄█▄
+# ▀▄▄ █ █ █▄▀ █▄▀  █
+# ▀▀  ▀ ▀  ▀▀  ▀▀  ▀▀
+
 sheet = [ # Implemented!!!
   # row 0
   {codepoint = 0xf1900, name = "aTok",       ligature = "a"},
@@ -220,6 +226,12 @@ sheet = [ # Implemented!!!
   {},
 ]
 
+
+
+#  ▄█  ▄▄  ▄▄ ▀ ▄ ▄  ▄▄  ▄█
+# █ █ █▄▀ █   █ ▀▄▀ █▄▀ █ █
+#  ▀▀  ▀▀ ▀   ▀  ▀   ▀▀  ▀▀
+
 # This doesn't generate ligatures; only the glyph.
 #
 # `type = "middle"` creates a combining glyph, derived from the source glyph's
@@ -228,6 +240,8 @@ sheet = [ # Implemented!!!
 # Omitting `type` just copies the glyph, same as putting a glyph in `copies`,
 # although this category doesn't support `writein`.
 # ...I should consolidate these two categories, huh...
+# - DONE: support `writein` for `derived`
+# - TODO: check if there's any other differences between `derived` and `copies`
 #
 # Others:
 # - lili
@@ -239,6 +253,12 @@ derived = [
   #   not End.)
   {codepoint = 0xf1992, name = "cartoucheMiddleTok", derived-from-glyph = 120, type = "middle"},
 ]
+
+
+
+# █ ▀  ▄▄  ▄▄ ▄█▄ ▄ ▄  ▄▄  ▄▄     ▄▄ █ ▀  ▄▄  ▄▄  ▄▄  ▄▄
+# █ █ █▄█ █ █  █  █ █ █   █▄▀    █ █ █ █ █ █ ▀▄▄ █▄▀ ▀▄▄
+# ▀ ▀ ▄▄▀  ▀▀  ▀▀  ▀▀ ▀    ▀▀     ▀▀ ▀ ▀  ▀▀ ▀▀   ▀▀ ▀▀
 
 ligature-aliases = [ # implemented!!!
   # Alternate spellings that are invisible to people who don't use them:
@@ -289,6 +309,12 @@ ligature-aliases = [ # implemented!!!
   # community consensus.
   {ligature = "space space", target-name = "ideographicspace"},
 ]
+
+
+
+#  ▄▄  ▄  ▄▄  ▀  ▄▄  ▄▄
+# █   █ █ █ █ █ █▄▀ ▀▄▄
+#  ▀▀  ▀  █▀  ▀  ▀▀ ▀▀
 
 # The following glyph names are prerequisites for custom ligatures. for example,
 # the ligature "m u s i" has "m", "u", "s", "i" as prerequisites.
@@ -358,6 +384,12 @@ copies = [ # implemented!!!
   {codepoint = 0x5a, name = "Z", source-glyph = 130}  # s
 ]
 
+
+
+#  ▄▄ ▄▄   ▄▄  ▄▄  ▄▄  ▄▄
+# ▀▄▄ █ █ █ █ █   █▄▀ ▀▄▄
+# ▀▀  █▀   ▀▀  ▀▀  ▀▀ ▀▀
+
 spaces = [
   # Support default ASCII ligatures:
   {codepoint = 0x7c, width = 1000, name = "pipe",   writein = "|"},
@@ -412,6 +444,12 @@ spaces = [
   {codepoint = 0xf199b, width =    0}, # SP END OF REVERSE LONG GLYPH
 ]
 
+
+
+# ▄ ▄ ▄  ▄▄ ▀ ▄█▄  ▄▄ ▀ ▄▄     ▄▄▄▄   ▄▄ ▄█▄  ▄▄  ▄█  ▄▄ ▄█▄  ▄▄
+# ▀▄▀▄▀ █   █  █  █▄▀ █ █ █    █ █ █ █▄▀  █  █ █ █ █ █ █  █  █ █
+#  ▀ ▀  ▀   ▀  ▀▀  ▀▀ ▀ ▀ ▀    ▀ ▀ ▀  ▀▀  ▀▀  ▀▀  ▀▀  ▀▀  ▀▀  ▀▀
+
 # Metadata for words not included in the default sheet, since people may write
 # them in.
 writein-metadata = [ # Implemented!!
@@ -419,6 +457,7 @@ writein-metadata = [ # Implemented!!
   {codepoint = 0xf1984, name = "kokosilaTok"},
   {codepoint = 0xf19a0, name = "pakeTok"},
   {codepoint = 0xf19a3, name = "poweTok"},
+
   {                     name = "apiTok",      rotate = true},
   {                     name = "KeliTok",     rotate = true},
   {                     name = "kijesankaluTok",  rotate = true},
