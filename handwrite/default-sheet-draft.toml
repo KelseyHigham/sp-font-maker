@@ -405,11 +405,21 @@ writein-metadata = [ # Implemented!!
   {                     name = "wasoweliTok", rotate = true},
 
   # Tally marks from "nasin sitelen kalama pi linja lili"
-  {name = "commaTok",                     type = "combining"},
-  {name = "commacommaTok",                type = "combining"},
-  {name = "commacommacommaTok",           type = "combining"},
-  {name = "commacommacommacommaTok",      type = "combining"},
-  {name = "commacommacommacommacommaTok", type = "combining"},
+  {name = "commaTok",                                                                       type = "combining"},
+  {name = "commacommaTok",                                                                  type = "combining"},
+  {name = "commacommacommaTok",                                                             type = "combining"},
+  {name = "commacommacommacommaTok",                                                        type = "combining"},
+  {name = "commacommacommacommacommaTok",                                                   type = "combining"},
+  {name = "commacommacommacommacommacommaTok",                                              type = "combining"},
+  {name = "commacommacommacommacommacommacommaTok",                                         type = "combining"},
+  {name = "commacommacommacommacommacommacommacommaTok",                                    type = "combining"},
+  {name = "commacommacommacommacommacommacommacommacommaTok",                               type = "combining"},
+  {name = "commacommacommacommacommacommacommacommacommacommaTok",                          type = "combining"},
+  {name = "commacommacommacommacommacommacommacommacommacommacommaTok",                     type = "combining"},
+  {name = "commacommacommacommacommacommacommacommacommacommacommacommaTok",                type = "combining"},
+  {name = "commacommacommacommacommacommacommacommacommacommacommacommacommaTok",           type = "combining"},
+  {name = "commacommacommacommacommacommacommacommacommacommacommacommacommacommaTok",      type = "combining"},
+  {name = "commacommacommacommacommacommacommacommacommacommacommacommacommacommacommaTok", type = "combining"},
 ]
 
 
