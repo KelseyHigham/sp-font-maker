@@ -31,3 +31,18 @@
 # - dj (as config): glyphs-fancy
 # - dj (as config): pixel_size
 # - ca: filename
+
+# --------
+
+
+# what do we need to include in the TOML to make cartouche middles *entirely*
+# data-driven?
+# such that you can implement long pi and long awen in here?
+# in long pi, Start is 1000 wide and End is 0 wide.
+
+# out of scope for now:
+# in long ala, you can parse *backwards*, so there's technically *three* glyphs.
+# is that just for ala?
+
+# long la requires reverse chaining. when going left-to-right, you can't tell
+# the difference between la's { and ala's {.

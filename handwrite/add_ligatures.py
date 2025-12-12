@@ -63,7 +63,7 @@ feature liga {
 
     # Create ligature lines.
     with open(default_json) as f:
-        glyphs = json.load(f).get("glyphs", {}).get("sheet", {})
+        glyphs = json.load(f).get("glyphs", {}).get("sheet", [])
         for k in glyphs:
             if "ligature" in k:
                 lig = k["ligature"]
@@ -154,8 +154,8 @@ feature liga {
                     cartoucheable_and_stackable.append(k["name"] + ".SW")
 
     # linuwi, kepen, ali, ni-numbers, space space, hyphen
-    aliases = default_json_data.get("glyphs", {}).get("ligature-aliases")
-    glyphs = default_json_data.get("glyphs", {}).get("sheet")
+    aliases = default_json_data.get("glyphs", {}).get("ligature-aliases", [])
+    glyphs = default_json_data.get("glyphs", {}).get("sheet", [])
     for alias in aliases:
         if (
             # If the ligature alias's target exists:

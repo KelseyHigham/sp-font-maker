@@ -232,7 +232,7 @@ def detect_characters(
     characters = []
     with open(default_json) as f:
         default_json_data = json.load(f)
-    sheet_glyphs = default_json_data.get("glyphs", {}).get("sheet", {})
+    sheet_glyphs = default_json_data.get("glyphs", {}).get("sheet", [])
     for row in range(rows):
         # Calculate the bounding of the contour and approximate the height
         # and width for final cropping.
@@ -415,7 +415,7 @@ def detect_characters(
 
         for position, word in enumerate(other_words):
             with open(default_json) as f:
-                glyph_json = json.load(f).get("glyphs", {}).get("sheet", {})
+                glyph_json = json.load(f).get("glyphs", {}).get("sheet", [])
             for default_glyph_index, default_glyph in enumerate(glyph_json):
                 if "name" in default_glyph:
                     if default_glyph["name"] == word.split("/")[0] + "Tok":
@@ -470,16 +470,18 @@ def detect_characters(
 
     with open(default_json) as f:
         default_json_data = json.load(f)
-        generated_glyphs = default_json_data.get("glyphs", {}).get("derived", {})
-        for generated_glyph in generated_glyphs:
-            source = sorted_characters[generated_glyph["derived-from-glyph"]]
+        glyphs_derived = default_json_data.get("glyphs", {}).get("derived", [])
+        glyphs_copies = default_json_data.get("glyphs", {}).get("copies", [])
+        glyphs_list = glyphs_derived + glyphs_copies
+        for glyph_derived in glyphs_list:
+            source = sorted_characters[glyph_derived["source-glyph"]]
             source_left, source_top, source_w, source_h = (
                 source[1],
                 source[2],
                 source[3],
                 source[4],
             )
-            if generated_glyph.get("type", "none") == "middle":
+            if glyph_derived.get("type", "none") == "middle":
                 # For the middle portion of the cartouche, grab the rightmost 1px column
                 # of the open cartouche. It'll be automatically stretched to the width
                 # of a glyph when it's converted to BMP, then SVG.
@@ -488,22 +490,13 @@ def detect_characters(
                     int(source_top) : int(source_top + source_h),
                     int(derived_left) : int(derived_left + 1),
                 ]
+                sorted_characters.append(
+                    [roi, derived_left, source_top, source_w, source_h]
+                )
             else:
-                # Plain copy
-                derived_left = source_left
-                roi = image[
-                    int(source_top) : int(source_top + source_h),
-                    int(source_left) : int(source_left + source_w),
-                ]
-            sorted_characters.append(
-                [roi, derived_left, source_top, source_w, source_h]
-            )
-
-    # Add base glyphs for ASCII ligatures: [_].:, a-z, A-Z
-    ligature_base_glyphs = default_json_data.get("glyphs", {}).get("copies")
-    for base_glyph in ligature_base_glyphs:
-        if "source-glyph" in base_glyph:
-            sorted_characters.append(sorted_characters[int(base_glyph["source-glyph"])])
+                # Plain copy.
+                # Mostly base glyphs for ASCII ligatures: [_].:, a-z, A-Z
+                sorted_characters.append(source)
 
     return sorted_characters
 
@@ -534,10 +527,10 @@ def save_images(characters, debug_dir, default_json, cli_args):
 
     with open(default_json) as f:
         default_json_data = json.load(f)
-        default_glyphs = default_json_data.get("glyphs", {}).get("sheet", {})
-        generated_glyphs = default_json_data.get("glyphs", {}).get("derived", {})
-        ligature_base_glyphs = default_json_data.get("glyphs", {}).get("copies", {})
-        glyphList = default_glyphs + generated_glyphs + ligature_base_glyphs
+        glyphs_sheet = default_json_data.get("glyphs", {}).get("sheet", [])
+        glyphs_derived = default_json_data.get("glyphs", {}).get("derived", [])
+        glyphs_copies = default_json_data.get("glyphs", {}).get("copies", [])
+        glyphList = glyphs_sheet + glyphs_derived + glyphs_copies
         for cellNum, images in enumerate(characters):
             curMetadatum = glyphList[cellNum]
             if len(glyphList) > cellNum:  # should this be `>=`?
@@ -557,7 +550,7 @@ def save_images(characters, debug_dir, default_json, cli_args):
     with open(default_json) as f:
         json_data = json.load(f)
     first_char_name = (
-        json_data.get("glyphs", {}).get("sheet", {})[0].get("name", "aTok")
+        json_data.get("glyphs", {}).get("sheet", [])[0].get("name", "aTok")
     )
     first_char_img = Image.open(
         debug_dir + "/" + first_char_name + "/" + first_char_name + ".png"
@@ -578,8 +571,8 @@ def save_images(characters, debug_dir, default_json, cli_args):
     # Derived glyphs: cartoucheMiddleTok, underscore, long pi middle, etc.
     with open(default_json) as f:
         default_json_data = json.load(f)
-        derived_glyphs = default_json_data.get("glyphs", {}).get("derived", {})
-        copied_glyphs = default_json_data.get("glyphs", {}).get("copies", {})
+        derived_glyphs = default_json_data.get("glyphs", {}).get("derived", [])
+        copied_glyphs = default_json_data.get("glyphs", {}).get("copies", [])
         combined_glyphs = derived_glyphs + copied_glyphs
         for glyph in combined_glyphs:
             if glyph.get("type", "none") == "middle":

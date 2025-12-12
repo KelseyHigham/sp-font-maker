@@ -127,9 +127,9 @@ def add_glyphs(
     # print("Note: If you leave a glyph blank, you'll get a FontForge error like \"I'm")
     # print("      sorry this file is too complex for me to understand (or is erroneous)\".")
     # print("      It's fine, the font still works!")
-    default_glyphs = config.get("glyphs", {}).get("sheet", {})
-    generated_glyphs = config.get("glyphs", {}).get("derived", {})
-    ligature_base_glyphs = config.get("glyphs", {}).get("copies", {})
+    default_glyphs = config.get("glyphs", {}).get("sheet", [])
+    generated_glyphs = config.get("glyphs", {}).get("derived", [])
+    ligature_base_glyphs = config.get("glyphs", {}).get("copies", [])
     for glyph_object in default_glyphs + generated_glyphs + ligature_base_glyphs:
         if "name" in glyph_object:
             name = glyph_object["name"]
@@ -390,9 +390,9 @@ def add_glyphs(
 
     # Combining cartouche extension (the middle of the cartouche)
     # This will also apply to long pi
-    default_glyphs = config.get("glyphs", {}).get("sheet", {})
-    generated_glyphs = config.get("glyphs", {}).get("derived", {})
-    ligature_base_glyphs = config.get("glyphs", {}).get("copies", {})
+    default_glyphs = config.get("glyphs", {}).get("sheet", [])
+    generated_glyphs = config.get("glyphs", {}).get("derived", [])
+    ligature_base_glyphs = config.get("glyphs", {}).get("copies", [])
     for glyph_object in default_glyphs + generated_glyphs + ligature_base_glyphs:
         if glyph_object.get("type", "none") == "middle":
             font[glyph_object["name"]].width = 0
@@ -410,7 +410,7 @@ def add_glyphs(
         space.width = width
         space.vwidth = width
 
-    spaces = config.get("glyphs", {}).get("spaces", {})
+    spaces = config.get("glyphs", {}).get("spaces", [])
     for space in spaces:
         create_space(
             space.get("codepoint", -1),

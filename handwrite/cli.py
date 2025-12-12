@@ -72,9 +72,10 @@ def converters(
         ]
         # fmt:on
 
-        base_glyphs = font_data.get("glyphs", {}).get("copies", {})
-        space_glyphs = font_data.get("glyphs", {}).get("spaces", {})
-        combined_glyphs = base_glyphs + space_glyphs
+        base_glyphs = font_data.get("glyphs", {}).get("copies", [])
+        space_glyphs = font_data.get("glyphs", {}).get("spaces", [])
+        derived_glyphs = font_data.get("glyphs", {}).get("derived", [])
+        combined_glyphs = base_glyphs + space_glyphs + derived_glyphs
         special_character_names = {
             glyph["writein"]: glyph["name"]
             for glyph in combined_glyphs
@@ -113,7 +114,7 @@ def converters(
                 word = "".join(letters)
 
                 # Write ligature aliases to JSON.
-                lig_aliases = font_data.get("glyphs", {}).get("ligature-aliases", {})
+                lig_aliases = font_data.get("glyphs", {}).get("ligature-aliases", [])
                 for wi, alias in enumerate(alias_words):
                     lig_aliases.append(
                         {
@@ -122,7 +123,7 @@ def converters(
                         }
                     )
 
-                glyphs_json = font_data.get("glyphs", {}).get("sheet", {})
+                glyphs_json = font_data.get("glyphs", {}).get("sheet", [])
 
                 # Check if it's a redraw of an existing sheet glyph.
                 redraw = False
@@ -142,7 +143,7 @@ def converters(
                     # If a writein word has default metadata (e.g. codepoint, rotate,
                     # direction), assign it.
                     writein_potential_words = font_data.get("glyphs", {}).get(
-                        "writein-metadata", {}
+                        "writein-metadata", []
                     )
                     for potential_word in writein_potential_words:
                         if word + "Tok" == potential_word.get("name", ""):
@@ -228,7 +229,7 @@ def main():
     parser.add_argument(
         "--not-new",
         action="store_true",
-        help="Skip creating a .TOML file (false by default)",
+        help="Skip creating a .TOML file, and skip writing to `generate all fonts.bat` (false by default)",
         default=False,
     )
 

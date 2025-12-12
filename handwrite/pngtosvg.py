@@ -22,9 +22,9 @@ def png_to_svg(cli_args, default_json, debug_dir):
     with open(default_json) as f:
         default_json_data = json.load(f)
         glyphs_table = default_json_data.get("glyphs", {})
-        default_glyphs = glyphs_table.get("sheet", {})
-        generated_glyphs = glyphs_table.get("derived", {})
-        ligature_base_glyphs = glyphs_table.get("copies", {})
+        default_glyphs = glyphs_table.get("sheet", [])
+        generated_glyphs = glyphs_table.get("derived", [])
+        ligature_base_glyphs = glyphs_table.get("copies", [])
         for glyph_object in default_glyphs + generated_glyphs + ligature_base_glyphs:
             if "name" in glyph_object:
                 name = glyph_object["name"]
