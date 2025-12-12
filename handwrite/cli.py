@@ -114,7 +114,7 @@ def converters(
                 word = "".join(letters)
 
                 # Write ligature aliases to JSON.
-                lig_aliases = font_data.get("glyphs", {}).get("ligature-aliases", [])
+                lig_aliases = font_data.get("ligature-aliases", [])
                 for wi, alias in enumerate(alias_words):
                     lig_aliases.append(
                         {
@@ -142,9 +142,7 @@ def converters(
 
                     # If a writein word has default metadata (e.g. codepoint, rotate,
                     # direction), assign it.
-                    writein_potential_words = font_data.get("glyphs", {}).get(
-                        "writein-metadata", []
-                    )
+                    writein_potential_words = font_data.get("writein-metadata", [])
                     for potential_word in writein_potential_words:
                         if word + "Tok" == potential_word.get("name", ""):
                             for key, val in potential_word.items():

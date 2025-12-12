@@ -154,7 +154,7 @@ feature liga {
                     cartoucheable_and_stackable.append(k["name"] + ".SW")
 
     # linuwi, kepen, ali, ni-numbers, space space, hyphen
-    aliases = default_json_data.get("glyphs", {}).get("ligature-aliases", [])
+    aliases = default_json_data.get("ligature-aliases", [])
     glyphs = default_json_data.get("glyphs", {}).get("sheet", [])
     for alias in aliases:
         if (

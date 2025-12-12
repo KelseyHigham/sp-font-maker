@@ -2,12 +2,16 @@
 # - sheet
 # - derived
 # - spaces
-# - ligature-aliases
-# - writein-metadata
+# ligature-aliases
+# writein-metadata
 
-# This format is VERY subject to change! Still in the design phase!
+# Defaults: rotate = false, direction = "right", center = false, scan-shift =
+# "none"
+# `name` is mandatory; every other field is optional.
 
 # Kelly notes, remove later:
+#     This format is VERY subject to change! Still in the design phase!
+#
 #     These fields are currently unused, and internally their values are
 #     hard-coded:
 #       - scan-shift
@@ -15,14 +19,7 @@
 #     `codepoint` and `ligature` are both optional, but you need one of them if you
 #     want to be able to type your glyph.
 #     `name` is mandatory, I think?
-
-
-[glyphs]
-# Defaults: rotate = false, direction = "right", center = false, scan-shift =
-# "none"
-# `name` is mandatory; every other field is optional.
-
-# Kelly notes, remove later:
+#
 #     Potential renamings:
 #       - rotate: create-rotations
 #       - direction: source-dir, original-dir
@@ -30,6 +27,8 @@
 #       - scan-shift: hor-offset
 #       - type: derive-type
 #       - rotation-deg (currently unused): rotation-amount
+
+
 
 #  ▄▄ █▄   ▄▄  ▄▄ ▄█▄
 # ▀▄▄ █ █ █▄▀ █▄▀  █
@@ -44,7 +43,7 @@
 # `scan-shift` changes a glyph's horizontal origin. The input sheet nudges the
 # left cartouche and the right cartouche towards each other, so that they can
 # touch instead of being separated by the usual margin.
-sheet = [
+glyphs.sheet = [
   # row 0
   {codepoint = 0xf1900, name = "aTok",       ligature = "a"},
   {codepoint = 0xf1901, name = "akesiTok",   ligature = "a k e s i", rotate = true, direction = "up"},
@@ -251,7 +250,7 @@ sheet = [
 #  ▀▀  ▀▀ ▀   ▀  ▀   ▀▀  ▀▀
 
 # Copies of other glyphs, and glyphs generated from other glyphs.
-derived = [
+glyphs.derived = [
 
   # The following glyph names are prerequisites for custom ligatures. for example,
   # the ligature "m u s i" has "m", "u", "s", "i" as prerequisites.
@@ -349,7 +348,7 @@ derived = [
 # ▀▄▄ █ █ █ █ █   █▄▀ ▀▄▄
 # ▀▀  █▀   ▀▀  ▀▀  ▀▀ ▀▀
 
-spaces = [
+glyphs.spaces = [
   # Support default ASCII ligatures:
   {codepoint = 0x7c, width = 1000, name = "pipe",   writein = "|"},
   {codepoint = 0x20, width =    0, name = "space"},
