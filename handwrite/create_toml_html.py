@@ -40,25 +40,27 @@ def create_toml_html(debug_dir, out_dir, cli_args=None, other_words_string=None)
         # If the user has ilo Linku's "sona" repo on their local machine, put the .toml
         # in there for easy updating.
         # Two folders up from /wasokeli.github.io/sp-font-maker/:
-        if os.path.isdir(f"{out_dir}..{s}..{s}sona{s}fonts{s}metadata"):
-            sona_repo_path = f"{out_dir}..{s}..{s}sona{s}fonts{s}metadata"
+        two_levels_up = f"{out_dir}..{s}..{s}sona{s}fonts{s}metadata"
+        one_level_up = f"{out_dir}..{s}sona{s}fonts{s}metadata"
+        if os.path.isdir(two_levels_up):
+            sona_repo_path = two_levels_up
         # Theoretically, some flatter folder:
-        elif os.path.isdir(f"{out_dir}..{s}sona{s}fonts{s}metadata"):
-            sona_repo_path = f"{out_dir}..{s}sona{s}fonts{s}metadata"
+        elif os.path.isdir(one_level_up):
+            sona_repo_path = one_level_up
         if sona_repo_path:
             ilo_linku_toml_file_path = f"{sona_repo_path}{s}{family}.toml"
-            if os.path.exists(f"{sona_repo_path}{s}{family}.toml"):
+            if os.path.exists(ilo_linku_toml_file_path):
                 print(
-                    f"\nOverwriting `{sona_repo_path}{s}{family}.toml`, and opening for editing. To skip, add `--not-new`.\n"
+                    f"\nOverwriting `{ilo_linku_toml_file_path}`, and opening for editing. To skip, add `--not-new`.\n"
                 )
             else:
                 print(
-                    f"\nOpening `{sona_repo_path}{s}{family}.toml` for editing. To skip, add `--not-new`.\n"
+                    f"\nOpening `{ilo_linku_toml_file_path}` for editing. To skip, add `--not-new`.\n"
                 )
         else:
             # Otherwise, just put it in out_dir.
             ilo_linku_toml_file_path = out_dir + os.sep + family + ".toml"
-            if os.path.exists(f"{out_dir}{s}{family}.toml"):
+            if os.path.exists(ilo_linku_toml_file_path):
                 print(
                     f"\nOverwriting ilo Linku .TOML, and opening for editing. To skip, add `--not-new`.\n"
                 )
