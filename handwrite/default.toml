@@ -389,9 +389,12 @@ glyphs.spaces = [
   {codepoint = 0x3b, width = 1000, name = "semicolon",   writein = ";"},
 
   # UCSUR features:
-  {codepoint = 0x3000,  width = 1000, name = "ideographicspace"},
+  # The `space space` ligature doesn't work in HTML, where consecutive
+  # whitespace is normally collapsed. In that case, type a space with `|`
+  # instead.
+  {codepoint = 0x3000,  width = 1000, name = "ideographicspace", ligature = "space space"},
   {codepoint = 0x200b,  width =    0, name = "zerowidthspace"},
-  {codepoint = 0xf1995, width =    0, name = "stackJoinTok"},
+  {codepoint = 0xf1995, width =    0, name = "stackJoinTok",     ligature = "hyphen"},
 
   # Fallback for unsupported UCSUR features:
   {codepoint = 0xf1996, width =    0, name = "nestJoinTok"},
@@ -435,12 +438,6 @@ ligature-aliases = [ # implemented!!!
   {ligature = "n i zero six",   target-name = "niTok.NE"},
   {ligature = "n i zero seven", target-name = "niTok.NW"},
   {ligature = "n i zero eight", target-name = "niTok.SW"},
-
-  {ligature = "hyphen",      target-name = "stackJoinTok"},
-
-  # This ligature doesn't work in HTML, where consecutive whitespace is
-  # normally collapsed. In that case, type a space with `|` instead.
-  {ligature = "space space", target-name = "ideographicspace"},
 ]
 
 

@@ -63,7 +63,11 @@ feature liga {
 
     # Create ligature lines.
     with open(default_json) as f:
-        glyphs = json.load(f).get("glyphs", {}).get("sheet", [])
+        json_glyphs = json.load(f).get("glyphs", {})
+        glyphs_sheet = json_glyphs.get("sheet", [])
+        glyphs_derived = json_glyphs.get("derived", [])
+        glyphs_spaces = json_glyphs.get("spaces", [])
+        glyphs = glyphs_sheet + glyphs_derived + glyphs_spaces
         for k in glyphs:
             if "ligature" in k:
                 lig = k["ligature"]
@@ -127,6 +131,8 @@ feature liga {
                     # and k['name'] != "colonTok"
                     # and k['name'] != "teTok"
                     # and k['name'] != "toTok"
+                    and k["name"] != "stackJoinTok"
+                    and k["name"] != "ideographicspace"
                 ):
                     cartoucheable_and_stackable.append(k["name"])
 
