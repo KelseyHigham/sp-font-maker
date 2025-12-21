@@ -1,9 +1,10 @@
-# glyphs
-# - sheet
-# - derived
-# - spaces
-# ligature-aliases
-# writein-metadata
+# Table of contents:
+#   glyphs
+#   - sheet
+#   - derived
+#   - spaces
+#   ligature-aliases
+#   writein-metadata
 
 # Defaults: rotate = false, direction = "right", center = false, scan-shift =
 # "none"
@@ -43,6 +44,20 @@
 # `scan-shift` changes a glyph's horizontal origin. The input sheet nudges the
 # left cartouche and the right cartouche towards each other, so that they can
 # touch instead of being separated by the usual margin.
+
+# Kelly note, remove later:
+#     Change this API from
+#         name = "akesiTok", ligature = "a k e s i"
+#     to
+#         word = "akesi"
+#     which generates:
+#         word = "akesi", glyph-name = "akesiTok", ligature = "a k e s i"
+#     Similarly, the writein
+#         word = "penpo/penpo01"
+#     generates:
+#         word = "penpo", glyph-name = "penpoTok", ligature = "p e n p o"
+#         ligature = "p e n p o zeno one", target-name = "penpoTok"
+
 glyphs.sheet = [
   # row 0
   {codepoint = 0xf1900, name = "aTok",       ligature = "a"},
