@@ -1,21 +1,28 @@
-def create_state(sheet, debug_dir, out_dir, default_json, cli_args, other_words_string):
-    state = {
-        sheet:
-    }
-    return state
+Where are cartouches still hard-coded? Where would we require special attention for long pi?
+- add_ligatures.py, inevitably
+- more places, probably
 
-what does everyone need from default_json and cli_args?
-- can we just pass everyone the CONTENTS of cli_args instead of a bundle???
-- `default.toml` has glyphs in separate sections, but `serialized_glyphs.json` has them in the pile that svgtottf_ffpython needs
+---
+
+What does everyone need from default_json and cli_args?
+- Can we just pass everyone the CONTENTS of cli_args instead of a bundle?
 sheettopng.py:
-- dj: glyphs-fancy
+- dj: glyphs.sheet
+- dj: glyphs.derived
+- dj: glyphs.copied
+- dj: *writes* pixel_size
 - ca: version
 - ca: pixelated
 pngtosvg.py:
-- dj: [nothing]
+- dj: glyphs.sheet
+- dj: glyphs.derived
+- dj: glyphs.copied
 - ca: pixelated
 - ca: version
-svgtottf.py:
+svgtottf.py: & svgtottf_ffpython.py:
+- dj (as config): glyphs-fancy
+- dj (as config): pixel_size
+- ca: filename
 add_ligatures:
 - dj: glyphs-fancy
 - ca: family
@@ -27,10 +34,6 @@ create_toml_html:
 - ca: designer
 - ca: license
 - ca: license url
-svgtottf_ffpython.py:
-- dj (as config): glyphs-fancy
-- dj (as config): pixel_size
-- ca: filename
 
 --------
 
