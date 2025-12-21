@@ -226,10 +226,13 @@ features = [
                 bat_file.write(f"--designer {f'"{c['designer']}"'.ljust(20)} ")
             else:
                 bat_file.write(f"                                ")
-            if c["filename"]:
-                bat_file.write(f'--filename "{c["filename"]}" ')
             if c["family"]:
-                bat_file.write(f'--family "{c["family"]}" ')
+                bat_file.write(f"--family {f'"{c['family']}"'.ljust(33)} ")
+            if c["filename"]:
+                # If filename is just family with hyphens, then we can omit it, because
+                # the script generates that filename anyway
+                if c.get("family", "").replace(" ", "-") != c["filename"]:
+                    bat_file.write(f'--filename "{c["filename"]}" ')
             bat_file.write(f"{c['input_path']} ")
             bat_file.write(f"{c['output_directory']} ")
             if c["other_words"]:

@@ -243,6 +243,8 @@ def main():
     #     "not_new": args.not_new,
     # }
     cli_args = vars(parser.parse_args())
+    if cli_args["family"] is not None and cli_args["filename"] is None:
+        cli_args["filename"] = cli_args["family"].replace(" ", "-")
     converters(
         args.input_path,
         args.output_directory,
