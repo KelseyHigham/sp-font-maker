@@ -53,7 +53,7 @@ languagesystem latn dflt; # people can edit the font in fontforge after??
 
 
 
-# LIGATURES
+# WORDS
 
 feature liga {
 """
@@ -196,6 +196,17 @@ feature liga {
 
 
 
+# WRITEIN COMBOS
+# (Fill this in later)
+
+
+
+
+
+
+
+
+
 """
 
     ligatures_string += """# KULUPU COMBOS
@@ -221,7 +232,7 @@ feature liga {
 
 """
 
-    ligatures_string += """# STACKING
+    ligatures_string += """# STACKING COMBOS
 
 # let's say we have the input string `kala stackJoin lili`, and we want to turn it into `kala.bottom lili.top`
 
@@ -236,7 +247,8 @@ lookup step1_joinBottom {"""
     # sub   kalaTok stackJoinTok   by   kalaTok.bottom;
     for word in cartoucheable_and_stackable:
         ligatures_string += (
-            f"\n  sub {word.rjust(12)} stackJoinTok   by {word.rjust(12)}.bottom;"
+            f"\n  sub {word.rjust(12)}    stackJoinTok   by {word.rjust(12)}.bottom;"
+            f"\n  sub {word.rjust(12)} zerowidthjoiner   by {word.rjust(12)}.bottom;"
         )
     ligatures_string += """
 } step1_joinBottom;
@@ -382,10 +394,12 @@ feature calt {
   # If a glyph follows a cartouche middle, add a cartouche middle after the glyph.
   sub   cartoucheMiddleTok [@cartoucheableGlyph]'   lookup add_cartouche_middle;
   # # (Bug: The following line doesn't do anything? So instead, we draw the cartouche middle twice, making cartouche middles too thick.)
+  # # (Try moving this line up!! This is ultimately like a ligature in that it needs to be sorted longest-to-shortest.)
   # sub   cartoucheMiddleTok space [@cartoucheableGlyph]'   lookup add_cartouche_middle;
 
   # # Stacked glyphs
   # # (Bug: The following lines don't do anything? So instead, we draw the cartouche middle twice, making cartouche middles too thick.)
+  # # (Same here!!)
   # sub   cartoucheStartTok [@stackableBottom] [@stackableTop]'   lookup add_cartouche_middle;
   # sub   cartoucheMiddleTok [@stackableBottom] [@stackableTop]'   lookup add_cartouche_middle;
 } calt;
