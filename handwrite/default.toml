@@ -410,10 +410,10 @@ glyphs.spaces = [
   {codepoint = 0x3000,  width = 1000, name = "ideographicspace", ligature = "space space"},
   {codepoint = 0x200b,  width =    0, name = "zerowidthspace"},
   {codepoint = 0xf1995, width =    0, name = "stackJoinTok",     ligature = "hyphen"},
+  {codepoint = 0x200d,  width =    0, name = "zerowidthjoiner",  ligature = "ampersand"},
 
   # Fallback for unsupported UCSUR features:
   {codepoint = 0xf1996, width =    0, name = "nestJoinTok"},
-  {codepoint = 0x200d,  width =    0, name = "zerowidthjoiner"},
   {codepoint = 0xf1997, width =    0}, # SP START OF LONG GLYPH
   {codepoint = 0xf1998, width =    0}, # SP END OF LONG GLYPH
   {codepoint = 0xf1999, width =    0}, # SP COMBINING LONG GLYPH EXTENSION

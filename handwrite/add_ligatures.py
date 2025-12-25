@@ -132,6 +132,7 @@ feature liga {
                     # and k['name'] != "teTok"
                     # and k['name'] != "toTok"
                     and k["name"] != "stackJoinTok"
+                    and k["name"] != "zerowidthjoiner"
                     and k["name"] != "ideographicspace"
                 ):
                     cartoucheable_and_stackable.append(k["name"])
@@ -164,10 +165,10 @@ feature liga {
     glyphs = default_json_data.get("glyphs", {}).get("sheet", [])
     for alias in aliases:
         if (
-            # If the ligature alias's target exists:
+            # If the ligature alias's target (e.g. "kepekenTok") exists:
             alias["target-name"] in cartoucheable_and_stackable
-            # And if we're not redirecting a writein glyph's ligature to a default
-            # glyph:
+            # And if we're not redirecting a writein glyph's ligature (e.g. "k e p e n")
+            # to a default glyph, thereby preventing the writein from being written:
             and alias["ligature"].replace(" ", "") + "Tok"
             not in cartoucheable_and_stackable
         ):
@@ -184,6 +185,25 @@ feature liga {
     # Add to our cool string.
     for line in list_of_ligs:
         ligatures_string += line[0] + "\n"
+
+    ligatures_string += """} liga;
+
+
+
+
+
+
+
+
+
+"""
+
+    ligatures_string += """# KULUPU COMBOS
+
+feature liga {
+"""
+    for word in cartoucheable_and_stackable:
+        ligatures_string += f"  sub   kulupuTok zerowidthjoiner {word.ljust(12)}   by   kulupuTok_zerowidthjoiner_{word};\n"
 
     ligatures_string += """} liga;
 

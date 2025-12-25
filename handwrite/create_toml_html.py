@@ -328,6 +328,12 @@ epiku jasima linluwi majuna meso oko su {" ".join(other_words[12:25])}<br>
 <p>License: <a href='{licenseurl}'>{license}</a></p>
 
 <span class="tp">
+<textarea class="tp" title="sina ken pana-wile e kulupu&sitelen lon ni<v">sina ken pana-wile e kulupu&sitelen lon ni<v
+
+</textarea>
+</span>
+
+<span class="tp">
 <span style="white-space: break-spaces">
 <!-- telo oko li ken ante e pilin, by jan Ke Tami -->
 toki ni li kepeken nimi pu ale
@@ -388,9 +394,6 @@ te sina wile ala ni
 | | | | | | | | | | | | taso laso weka li kama ken e ni
 
 
-<textarea class="tp">sina ken sitelen-wile lon ni<v
-
-</textarea>
 </span></span>
 """
         + """

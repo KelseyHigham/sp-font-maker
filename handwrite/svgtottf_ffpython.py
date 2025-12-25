@@ -132,6 +132,11 @@ def add_glyphs(
     ligature_base_glyphs = config.get("glyphs", {}).get("copies", [])
     for glyph_object in default_glyphs + generated_glyphs + ligature_base_glyphs:
         if "name" in glyph_object:
+
+            #  ▄▄  ▄▄  ▄▄  ▄▄ ▄█▄  ▄▄
+            # █   █   █▄▀ █ █  █  █▄▀
+            #  ▀▀ ▀    ▀▀  ▀▀  ▀▀  ▀▀
+
             name = glyph_object["name"]
             if "codepoint" in glyph_object:
                 cp = glyph_object["codepoint"]
@@ -152,6 +157,10 @@ def add_glyphs(
             print("", end=("\r" + (" " + name + " ").ljust(11, " ") + " - "))
             g.importOutlines(src, ("removeoverlap", "correctdir"))
             g.removeOverlap()
+
+            #  ▄▄  ▄▄  ▄▄ █  ▄▄
+            # ▀▄▄ █   █ █ █ █▄▀
+            # ▀▀   ▀▀  ▀▀ ▀  ▀▀
 
             if version_major < 3:
                 # SHEET VERSION 2 metrics, before scaling (BS) up so that the glyph is
@@ -220,6 +229,10 @@ def add_glyphs(
 
             g.width = 1000
             g.vwidth = 1000
+
+            #  ▄▄  ▄▄  ▄▄  ▄▄ ▄█▄  ▄▄     ▄▄  ▄  ▄█▄  ▄▄ ▄█▄ ▀  ▄  ▄▄   ▄▄
+            # █   █   █▄▀ █ █  █  █▄▀    █   █ █  █  █ █  █  █ █ █ █ █ ▀▄▄
+            #  ▀▀ ▀    ▀▀  ▀▀  ▀▀  ▀▀    ▀    ▀   ▀▀  ▀▀  ▀▀ ▀  ▀  ▀ ▀ ▀▀
 
             # Create rotated glyphs.
             # Later we'll iterate through rotated_glyph_set[] to generate `.top` and
@@ -314,6 +327,10 @@ def add_glyphs(
                     rotate(False, 270, ".S")
                     rotate(False, 315, ".SE")
 
+            #  ▄▄  ▄▄ ▄▄  ▄█▄  ▄▄  ▄▄
+            # █   █▄▀ █ █  █  █▄▀ █
+            #  ▀▀  ▀▀ ▀ ▀  ▀▀  ▀▀ ▀
+
             # Center glyphs (including, but not limited to, rotated ones)
             for g in rotated_glyph_set:
                 center = glyph_object.get("center", "both")
@@ -339,6 +356,10 @@ def add_glyphs(
                 g.width = 1000
                 g.vwidth = 1000
 
+            #  ▄▄  ▄▄  ▄▄  ▄▄ ▄█▄  ▄▄     ▄▄ ▄█▄  ▄▄  ▄▄ █ ▄ ▀ ▄▄   ▄▄
+            # █   █   █▄▀ █ █  █  █▄▀    ▀▄▄  █  █ █ █   ██  █ █ █ █▄█
+            #  ▀▀ ▀    ▀▀  ▀▀  ▀▀  ▀▀    ▀▀   ▀▀  ▀▀  ▀▀ ▀ ▀ ▀ ▀ ▀ ▄▄▀
+
             # Create stacking glyphs (including rotated ones)
             for glyph in rotated_glyph_set:
                 stacking = False
@@ -360,33 +381,86 @@ def add_glyphs(
                     font.copy()
                     font.selection.select(g_bottom, g_top)
                     font.paste()
+
+                    if version_major < 4 and not pixel:
+                        descender_height = 200
+                    else:
+                        descender_height = 125
+                    # move up, so that the origin is in the bottom left
+                    g_bottom.transform(psMat.translate(0, descender_height))
+                    g_top.transform(psMat.translate(0, descender_height))
+                    # scale down to 4:3
+                    g_bottom.transform(psMat.scale(1, 0.75))
+                    g_top.transform(psMat.scale(1, 0.75))
+                    # move back down
+                    g_bottom.transform(psMat.translate(0, -descender_height))
+                    g_top.transform(psMat.translate(0, -descender_height))
+
+                    # position
+                    g_bottom.transform(psMat.translate(0, -250))
+                    g_top.transform(psMat.translate(-1000, 500))
+
                     g_bottom.width = 1000
                     g_bottom.vwidth = 1000
                     g_top.width = 0
                     g_top.vwidth = 1000
+
+            #  ▄▄  ▄▄  ▄▄  ▄▄ ▄█▄  ▄▄    █ ▄ ▄ ▄ █ ▄ ▄ ▄▄  ▄ ▄ ▄▀▄   ▄ ▄ ▄  ▄   ▄▄  ▄█
+            # █   █   █▄▀ █ █  █  █▄▀    ██  █ █ █ █ █ █ █ █ █ ▄▀▀▄▀ ▀▄▀▄▀ █ █ █   █ █
+            #  ▀▀ ▀    ▀▀  ▀▀  ▀▀  ▀▀    ▀ ▀  ▀▀ ▀  ▀▀ █▀   ▀▀  ▀▀ ▀  ▀ ▀   ▀  ▀    ▀▀
+
+            # Create kulupu'd glyphs (including rotated ones)
+            for glyph in rotated_glyph_set:
+                kulupu = False
+                if "ligature" in glyph_object:
+                    if (
+                        name != "cartoucheStartTok"
+                        and name != "cartoucheEndTok"
+                        # and name != "middotTok"
+                        # and name != "colonTok"
+                        # and name != "teTok"
+                        # and name != "toTok"
+                    ):
+                        kulupu = True
+                        g_kulupu = font.createChar(
+                            -1, "kulupuTok_zerowidthjoiner_" + glyph.glyphname
+                        )
+
+                if kulupu:
+                    # Draw
+                    font.selection.select(glyph)
+                    font.copy()
+                    font.selection.select(g_kulupu)
+                    font.paste()
+                    g_kulupu.transform(psMat.translate(-1000, 0))
+                    font.pasteInto()
+                    g_kulupu.transform(psMat.translate(500, -1000))
+                    font.pasteInto()
+                    g_kulupu.transform(psMat.translate(500, 1000))
+
+                    # Scale
                     if version_major < 4 and not pixel:
-                        # move up, so that the origin is in the bottom left
-                        g_bottom.transform(psMat.translate(0, 200))
-                        g_top.transform(psMat.translate(0, 200))
-                        # scale down to 4:3
-                        g_bottom.transform(psMat.scale(1, 0.75))
-                        g_top.transform(psMat.scale(1, 0.75))
-                        # reposition
-                        g_bottom.transform(psMat.translate(0, -250 - 200))
-                        g_top.transform(psMat.translate(-1000, 500 - 200))
+                        descender_height = 200
                     else:
-                        # move up, so that the origin is in the bottom left
-                        g_bottom.transform(psMat.translate(0, 125))
-                        g_top.transform(psMat.translate(0, 125))
-                        # scale down to 4:3
-                        g_bottom.transform(psMat.scale(1, 0.75))
-                        g_top.transform(psMat.scale(1, 0.75))
-                        # reposition
-                        g_bottom.transform(psMat.translate(0, -250 - 125))
-                        g_top.transform(psMat.translate(-1000, 500 - 125))
+                        descender_height = 125
+                    # move up, so that the origin is in the bottom left
+                    g_kulupu.transform(psMat.translate(0, descender_height))
+                    # scale down to 3:3
+                    g_kulupu.transform(psMat.scale(0.75, 0.75))
+                    # move back down
+                    g_kulupu.transform(psMat.translate(0, -descender_height))
+
+                    # Position
+                    g_kulupu.transform(psMat.translate(0, -250))
+                    g_kulupu.width = 1500
+                    g_kulupu.vwidth = 1500
 
     # get rid of stray metrics
     print("\r                                                ")
+
+    #  ▄▄  ▄  ▄▄▄▄  █▄  ▀ ▄▄  ▀ ▄▄   ▄▄
+    # █   █ █ █ █ █ █ █ █ █ █ █ █ █ █▄█
+    #  ▀▀  ▀  ▀ ▀ ▀ ▀▀  ▀ ▀ ▀ ▀ ▀ ▀ ▄▄▀
 
     # Combining cartouche extension (the middle of the cartouche)
     # This will also apply to long pi
