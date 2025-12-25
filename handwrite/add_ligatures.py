@@ -205,7 +205,11 @@ feature liga {
     for word in cartoucheable_and_stackable:
         ligatures_string += f"  sub   kulupuTok zerowidthjoiner {word.ljust(12)}   by   kulupuTok_zerowidthjoiner_{word};\n"
 
-    ligatures_string += """} liga;
+    ligatures_string += """
+  # While typing, preview kulupu mode by showing a giant kulupu. Remove this if it
+  # causes bugs.
+  sub   kulupuTok zerowidthjoiner   by   kulupuTok_zerowidthjoiner_ijoTok;
+} liga;
 
 
 
