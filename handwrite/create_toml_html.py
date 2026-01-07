@@ -300,6 +300,37 @@ features = [
         font-family: '{family}', 'Chalkboard SE', 'Comic Sans MS', sans-serif;
         font-size: 48px;
     }}
+    .word-list {{
+        display: flex;
+        flex-wrap: wrap;
+        align-items: start;
+        align-content: flex-start;
+    }}
+    .word {{
+        width: 48px;
+        text-align: center;
+    }}
+    .label {{
+        font-family: 'Chalkboard SE', 'Comic Sans MS', sans-serif;
+        font-size: 16px;
+        min-height: 48px;
+        width: 48px;
+        display: inline-block;
+        opacity: 0.5;
+        overflow-wrap: break-word;
+    }}
+    .hidden.label {{
+        display: none;
+    }}
+    .license-and-checkbox {{
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+    }}
+    .checkbox {{
+        font-size: 16px;
+        opacity: 0.5;
+    }}
     textarea {{
         font-size: 1em;
         width: 20em;
@@ -316,7 +347,8 @@ features = [
 <!-- 「󱤴󱥠󱤉󱥁󱥧󱥚󱥩󱤅」<br> -->
 <!-- </p> -->
 <span class="tp">
-<!-- word list -->"""
+    <!-- word list -->
+"""
     )
 
     #     # Hardcoded word list
@@ -342,6 +374,7 @@ features = [
     glyphs_codepoints = (
         glyphs.get("derived", []) + glyphs.get("spaces", []) + glyphs_sheet
     )
+    # Dict of glyph name to glyph data, for getting the codepoint from the name
     glyphs_cached = {
         item["name"]: {k: v for k, v in item.items() if k != "name"}
         for item in glyphs_codepoints
@@ -353,27 +386,81 @@ features = [
         # glyphs with ligatures, we convert from the ligature back into the original
         # string.
         #
-        # Note that this isn't recursive. It might break with more complicated
-        # ligatures. In that case, revert to the hard-coded solution above.
+        # Note that this isn't recursive. It will break with two-layer ligatures. In
+        # that case, probably just revert to the hard-coded solution above, which
+        # doesn't provide glyph labels.
+        hyphenations = {
+            "kalama": "ka&shy;lama",
+            "kepeken": "kepe&shy;ken",
+            "kulupu": "ku&shy;lupu",
+            "pakala": "pa&shy;kala",
+            "pimeja": "pi&shy;meja",
+            "sinpin": "sin&shy;pin",
+            "kijetesantakalu": "kijete&shy;santa&shy;kalu",
+            "lanpan": "lan&shy;pan",
+            "misikeke": "misi&shy;keke",
+            "monsuta": "mon&shy;suta",
+            "namako": "na&shy;mako",
+            "jasima": "ja&shy;sima",
+            "linluwi": "lin&shy;luwi",
+            "majuna": "ma&shy;juna",
+            "kokosila": "koko&shy;sila",
+            "melome": "me&shy;lome",
+            "silapa1": "sila&shy;pa1",
+            "silapa2": "sila&shy;pa2",
+            "silapa3": "sila&shy;pa3",
+            "snoweli": "sno&shy;weli",
+            "wasoweli": "waso&shy;weli",
+        }
         word = ""
+        word_label = ""
+        # word_separator is omitted between cartouche ends to avoid triggering a bug in
+        # the ligature code: A space redundantly inserts the middle of a cartouche,
+        # making `[ ]` appear broken. When that bug is fixed, all words can just get a
+        # `\n` after them.
+        word_separator = ""
         if "ligature" in glyph:
             for letter in glyph["ligature"].split(" "):
-                word += chr(glyphs_cached.get(letter, {}).get("codepoint", 0x20))
+                letter_string = chr(
+                    glyphs_cached.get(letter, {}).get("codepoint", 0x20)
+                )
+                word += letter_string
+                word_label += letter_string
+                if letter_string == "-" or letter_string == "+" or letter_string == "&":
+                    word_label += "<br>"
+            if word in hyphenations:
+                word_label = hyphenations[word]
             if glyph["ligature"] != "bracketleft":
-                word += " "
+                word_separator += "\n"
         else:
             if "name" in glyph:
-                word += glyph["name"] + " "
+                word += glyph["name"]
+                word_separator += "\n"
             else:
-                word += "| "
-        word_list += word
+                word += "|"
+                word_separator += "\n"
+                word_label = " "
+        word_list += (
+            '        <div class="word">'
+            + word
+            + "<br>"
+            + '<span class="hidden label">'
+            + (word_label or word)
+            + "</span>"
+            + "</div>"
+            + word_separator
+        )
 
-    example_web_page.write("<div >" + word_list + "</div>")
+    example_web_page.write('    <div class="word-list">\n' + word_list + "</div>")
 
     example_web_page.write(
         f"""
 </span>
-<p>License: <a href='{licenseurl}'>{license}</a></p>
+
+<p class="license-and-checkbox">
+    <span>License: <a href='{licenseurl}'>{license}</a></span>
+    <span><input type="checkbox" id="labelsCheckbox" onchange="toggleLabels()" class="checkbox"><label for="labelsCheckbox" class="checkbox">Label glyphs</label></span>
+</p>
 
 <span class="tp">
 <textarea class="tp" title="sina ken pana-wile e kulupu&sitelen lon ni<v">sina ken pana-wile e kulupu&sitelen lon ni<v
@@ -467,6 +554,21 @@ function redrawTextarea(e) {
     textarea.style.fontVariantLigatures = 'common-ligatures';
     cssToggle = true;
   }
+}
+
+
+
+function toggleLabels() {
+  const labels = document.querySelectorAll('.label');
+  const labelGlyphsCheckbox = document.getElementById('labelsCheckbox');
+
+  labels.forEach(label => {
+    if (labelGlyphsCheckbox.checked) {
+      label.classList.remove('hidden');
+    } else {
+      label.classList.add('hidden');
+    }
+  });
 }
 </script>
 """
