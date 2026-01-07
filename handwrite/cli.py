@@ -1,3 +1,5 @@
+# 📎
+
 import argparse
 import json
 import os
@@ -14,7 +16,9 @@ from handwrite.svgtottf import svg_to_ttf
 
 
 def run(sheet, output_directory, debug_dir, default_json, cli_args, other_words_string):
-    create_toml_html(debug_dir, output_directory, cli_args, other_words_string)
+    create_toml_html(
+        debug_dir, output_directory, default_json, cli_args, other_words_string
+    )
     sheet_to_png(sheet, debug_dir, default_json, cli_args, other_words_string)
     png_to_svg(cli_args, default_json, debug_dir=debug_dir)
     svg_to_ttf(debug_dir, output_directory, default_json, cli_args, other_words_string)
@@ -243,8 +247,11 @@ def main():
     #     "not_new": args.not_new,
     # }
     cli_args = vars(parser.parse_args())
+
+    # Get filename from family
     if cli_args["family"] is not None and cli_args["filename"] is None:
         cli_args["filename"] = cli_args["family"].replace(" ", "-")
+
     converters(
         args.input_path,
         args.output_directory,

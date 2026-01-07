@@ -1,3 +1,4 @@
+import json
 import os
 import platform
 import subprocess
@@ -8,7 +9,9 @@ from datetime import datetime
 # ▄  ▀▄ ▀▄▀ █ █ █ █
 
 
-def create_toml_html(debug_dir, out_dir, cli_args=None, other_words_string=None):
+def create_toml_html(
+    debug_dir, out_dir, default_json, cli_args=None, other_words_string=None
+):
     cli_args_dict = cli_args
 
     filename = cli_args_dict.get("filename", "Untitled")
@@ -313,18 +316,63 @@ features = [
 <!-- 「󱤴󱥠󱤉󱥁󱥧󱥚󱥩󱤅」<br> -->
 <!-- </p> -->
 <span class="tp">
-<!-- word list -->
-a akesi ala alasa ale anpa ante anu awen e en esun ijo ike ilo insa jaki jan jelo jo<br>
-kala kalama kama kasi ken kepeken kili kiwen ko kon kule kulupu kute la lape laso lawa len lete li<br>
-lili linja lipu loje lon luka lukin lupa ma mama mani meli mi mije moku moli monsi mu mun musi<br>
-mute nanpa nasa nasin nena ni nimi noka o olin ona open pakala pali palisa pan pana pi pilin pimeja<br>
-pini pipi poka poki pona pu sama seli selo seme sewi sijelo sike sin sina sinpin sitelen sona soweli suli<br>
-suno supa suwi tan taso tawa telo tenpo toki tomo tu unpa uta utala walo wan waso wawa weka wile<br>
-[] . : i j k l m p s t u w te to {" ".join(other_words[0:4])}<br>
-kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi {" ".join(other_words[4:12])}<br>
-epiku jasima linluwi majuna meso oko su {" ".join(other_words[12:25])}<br>
-</span>
+<!-- word list -->"""
+    )
 
+    #     # Hardcoded word list
+    #     example_web_page.write(
+    #         f"""
+    # a akesi ala alasa ale anpa ante anu awen e en esun ijo ike ilo insa jaki jan jelo jo<br>
+    # kala kalama kama kasi ken kepeken kili kiwen ko kon kule kulupu kute la lape laso lawa len lete li<br>
+    # lili linja lipu loje lon luka lukin lupa ma mama mani meli mi mije moku moli monsi mu mun musi<br>
+    # mute nanpa nasa nasin nena ni nimi noka o olin ona open pakala pali palisa pan pana pi pilin pimeja<br>
+    # pini pipi poka poki pona pu sama seli selo seme sewi sijelo sike sin sina sinpin sitelen sona soweli suli<br>
+    # suno supa suwi tan taso tawa telo tenpo toki tomo tu unpa uta utala walo wan waso wawa weka wile<br>
+    # [] . : i j k l m p s t u w te to {" ".join(other_words[0:4])}<br>
+    # kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi {" ".join(other_words[4:12])}<br>
+    # epiku jasima linluwi majuna meso oko su {" ".join(other_words[12:25])}<br>
+    # """
+    #     )
+
+    # Softcoded word list
+    with open(default_json) as f:
+        default_json_data = json.load(f)
+    glyphs = default_json_data.get("glyphs", {})
+    glyphs_sheet = glyphs.get("sheet", [])
+    glyphs_codepoints = (
+        glyphs.get("derived", []) + glyphs.get("spaces", []) + glyphs_sheet
+    )
+    glyphs_cached = {
+        item["name"]: {k: v for k, v in item.items() if k != "name"}
+        for item in glyphs_codepoints
+        if "name" in item
+    }
+    word_list = ""
+    for glyph in glyphs_sheet:
+        # The glyph field doesn't include the unescaped string to type a glyph. For
+        # glyphs with ligatures, we convert from the ligature back into the original
+        # string.
+        #
+        # Note that this isn't recursive. It might break with more complicated
+        # ligatures. In that case, revert to the hard-coded solution above.
+        word = ""
+        if "ligature" in glyph:
+            for letter in glyph["ligature"].split(" "):
+                word += chr(glyphs_cached.get(letter, {}).get("codepoint", 0x20))
+            if glyph["ligature"] != "bracketleft":
+                word += " "
+        else:
+            if "name" in glyph:
+                word += glyph["name"] + " "
+            else:
+                word += "| "
+        word_list += word
+
+    example_web_page.write("<div >" + word_list + "</div>")
+
+    example_web_page.write(
+        f"""
+</span>
 <p>License: <a href='{licenseurl}'>{license}</a></p>
 
 <span class="tp">
