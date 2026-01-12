@@ -49,3 +49,25 @@ is that just for ala?
 
 long la requires reverse chaining. when going left-to-right, you can't tell
 the difference between la's { and ala's {.
+
+
+-----
+
+
+things to test for, when i eventually add regression testing
+this will probably need to be evaluated by eye
+
+- ascii and ucsur
+- cartouches
+- stacking
+- kulupu&word
+- redraws
+- rotated critters
+
+do writeins work?
+- stacked not overridden
+- kulupu&word not overridden
+- ni-numbers not overridden
+- kepen not overridden
+- multiple ligatures with `/` not overridden
+- rotate writein critters
