@@ -71,3 +71,12 @@ do writeins work?
 - kepen not overridden
 - multiple ligatures with `/` not overridden
 - rotate writein critters
+
+-----
+
+
+PLANNED BREAKING CHANGES, PROBABLY BATCH THEM:
+- Make output directory optional. Default to working directory
+- Change cli tool name to `sp-font-maker`
+- Change word placeholder to `-`, probably? Because `_` interferes with the
+  standard long pi
