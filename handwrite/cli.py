@@ -5,6 +5,7 @@ import json
 import os
 import shutil
 import tempfile
+from pathlib import Path
 
 import tomllib
 
@@ -248,9 +249,45 @@ def main():
     # }
     cli_args = vars(parser.parse_args())
 
+    # Get designer from "tan" string, if available
+    if cli_args["designer"] is None:
+        tan = ""
+        designer = ""
+        if cli_args["family"] is not None:
+            font_name, tan, designer = cli_args["family"].partition(" tan ")
+        if tan == "" and cli_args["filename"] is not None:
+            font_name, tan, designer = (
+                cli_args["filename"].replace("-", " ").partition(" tan ")
+            )
+        if tan == "":
+            font_name, tan, designer = (
+                Path(cli_args["input_path"]).stem.replace("-", " ").partition(" tan ")
+            )
+        if tan == " tan ":
+            cli_args["designer"] = designer
+            print(f"Designer inferred: {designer}")
+
     # Get filename from family
     if cli_args["family"] is not None and cli_args["filename"] is None:
         cli_args["filename"] = cli_args["family"].replace(" ", "-")
+        print(f"Filename inferred: {cli_args["filename"]}")
+
+    # Get family from filename
+    if cli_args["family"] is None and cli_args["filename"] is not None:
+        cli_args["family"] = cli_args["filename"].replace("-", " ")
+        print(f"Family inferred: {cli_args["family"]}")
+
+    # Get family and filename from image name
+    if cli_args["family"] is None and cli_args["filename"] is None:
+        cli_args["family"] = Path(cli_args["input_path"]).stem.replace("-", " ")
+        cli_args["filename"] = Path(cli_args["input_path"]).stem.replace(" ", "-")
+        print(f"Family inferred: {cli_args["family"]}")
+        print(f"Filename inferred: {cli_args["filename"]}")
+
+    # Make up a guy
+    if cli_args["designer"] is None:
+        cli_args["designer"] = "Designer unknown"
+        print('Designer not specified; defaulting to "Designer unknown"')
 
     converters(
         args.input_path,
