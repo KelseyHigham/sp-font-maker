@@ -485,7 +485,8 @@ def detect_characters(
                 # For the middle portion of the cartouche, grab the rightmost 1px column
                 # of the open cartouche. It'll be automatically stretched to the width
                 # of a glyph when it's converted to BMP, then SVG.
-                derived_left = source_left + source_w - 1
+                scan_shift = grid_scan_hor_padding * source_w / grid_scan_w
+                derived_left = source_left + source_w - 1 - math.floor(scan_shift)
                 roi = image[
                     int(source_top) : int(source_top + source_h),
                     int(derived_left) : int(derived_left + 1),
