@@ -12,6 +12,7 @@ import os
 import shutil
 import tempfile
 from pathlib import Path
+from packaging.version import Version
 
 import tomllib
 
@@ -22,11 +23,26 @@ from handwrite.sheettopng import sheet_to_png
 from handwrite.svgtottf import svg_to_ttf
 
 
-def run(sheet, output_directory, debug_dir, default_json, cli_args, other_words_string):
+def run(
+    sheet,
+    output_directory,
+    debug_dir,
+    default_json,
+    cli_args,
+    other_words_string,
+    writein_cell_indices,
+):
     create_toml_html(
         debug_dir, output_directory, default_json, cli_args, other_words_string
     )
-    sheet_to_png(sheet, debug_dir, default_json, cli_args, other_words_string)
+    sheet_to_png(
+        sheet,
+        debug_dir,
+        default_json,
+        cli_args,
+        other_words_string,
+        writein_cell_indices,
+    )
     png_to_svg(cli_args, default_json, debug_dir=debug_dir)
     svg_to_ttf(debug_dir, output_directory, default_json, cli_args, other_words_string)
     add_ligatures(
@@ -52,15 +68,49 @@ def converters(
         print("Debug directory does not exist. Creating it at", debug_dir)
         os.makedirs(debug_dir, exist_ok=True)
 
-    if default_json is None:
-        default_config = os.path.join(
-            os.path.dirname(os.path.realpath(__file__)), "default.toml"
-        )
-        default_json = default_config
+    default_json = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), "default.toml"
+    )
 
     # Read initial config data from TOML.
     with open(default_json, "rb") as file:
         font_data = tomllib.load(file)
+    glyphs_json = font_data.get("glyphs", {}).get("sheet", [])
+
+    # Map the `--other-words` list to the blank cells in default.toml.
+    writein_cell_indices = []
+    for cell_index, cell in enumerate(glyphs_json):
+        if not cell:
+            writein_cell_indices.append(cell_index)
+
+    sheet_version = cli_args.get("sheet_version") or "99999999.999999.999999"
+    if Version(sheet_version) < Version("5"):
+        # This block replaces the word list in default.toml with a word list from
+        # another file, such as `default-sheet-v1--v4.toml`.
+        # Currently, there haven't been any word list updates, so it replaces with data
+        # from the same file, which is redundant.
+
+        # Overwrite glyphs.sheet from the older TOML.
+        # If we update the word list in v5, then replace this line with something like
+        # `default-sheet-v1--v4.toml`.
+        old_toml = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)), "default.toml"
+        )
+        with open(old_toml, "rb") as file:
+            old_font_data = tomllib.load(file)
+        old_glyphs_json = old_font_data.get("glyphs", {}).get("sheet", [])
+        font_data["glyphs"]["sheet"] = old_glyphs_json
+        glyphs_json = font_data.get("glyphs", {}).get("sheet", [])
+
+        # Regenerate from the overwritten sheet.
+        writein_cell_indices = []
+        for cell_index, cell in enumerate(glyphs_json):
+            if not cell:
+                writein_cell_indices.append(cell_index)
+    else:
+        # v5 or newer. If the new word list is the same as the old one, then this should
+        # behave identically.
+        pass
 
     # Save as JSON in debug directory. We'll edit it to add custom words.
     # Extra config sheets should be merged into the same working JSON file.
@@ -73,16 +123,21 @@ def converters(
 
     if other_words_string:
         other_words = other_words_string.split()
-        print(other_words[0:4])
-        print(other_words[4:12])
-        print(other_words[12:25])
-        # fmt:off
-        blank_cells = [ # default.json indices of the blank cells on the page
-                                                         136, 137, 138, 139, # 4 cells
-                                     152, 153, 154, 155, 156, 157, 158, 159, # 8 cells
-            167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179  # 13 cells
-        ]
-        # fmt:on
+
+        # Print the custom words which have been written in, grouped by row
+        printable_list = []
+        cell_index = writein_cell_indices[0]
+        previous_row = cell_index - cell_index % 20
+        for word_index, word in enumerate(other_words):
+            cell_index = writein_cell_indices[word_index]
+            current_row = cell_index - cell_index % 20
+            if current_row == previous_row:
+                printable_list.append(word)
+            else:
+                print(printable_list)
+                previous_row = cell_index - cell_index % 20
+                printable_list = [word]
+        print(printable_list)
 
         base_glyphs = font_data.get("glyphs", {}).get("copies", [])
         space_glyphs = font_data.get("glyphs", {}).get("spaces", [])
@@ -135,8 +190,6 @@ def converters(
                         }
                     )
 
-                glyphs_json = font_data.get("glyphs", {}).get("sheet", [])
-
                 # Check if it's a redraw of an existing sheet glyph.
                 redraw = False
                 for default_glyph in glyphs_json:
@@ -146,7 +199,7 @@ def converters(
                             # Todo: Remove redundant glyphs from the preview web page.
 
                 if not redraw:
-                    word_json = glyphs_json[blank_cells[position]]
+                    word_json = glyphs_json[writein_cell_indices[position]]
 
                     # The common case of a custom word.
                     word_json["name"] = word + "Tok"
@@ -176,6 +229,7 @@ def converters(
             default_json,
             cli_args,
             other_words_string,
+            writein_cell_indices,
         )
 
     if isTempdir:

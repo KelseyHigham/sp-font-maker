@@ -8,7 +8,14 @@ from PIL import Image, ImageDraw
 
 
 def sheet_to_png(
-    sheet, debug_dir, default_json, cli_args, other_words_string, cols=20, rows=9
+    sheet,
+    debug_dir,
+    default_json,
+    cli_args,
+    other_words_string,
+    writein_cell_indices,
+    cols=20,
+    rows=9,
 ):
     """Convert a sheet of sample writing input to a custom directory structure of PNGs.
 
@@ -37,6 +44,7 @@ def sheet_to_png(
         sheet,
         cli_args,
         other_words_string,
+        writein_cell_indices,
         cols=cols,
         rows=rows,
     )
@@ -49,7 +57,14 @@ def sheet_to_png(
 
 
 def detect_characters(
-    debug_dir, default_json, sheet_image, cli_args, other_words_string, cols=20, rows=9
+    debug_dir,
+    default_json,
+    sheet_image,
+    cli_args,
+    other_words_string,
+    writein_cell_indices,
+    cols=20,
+    rows=9,
 ):
     """Detect contours on the input image and filter them to get only characters.
 
@@ -405,23 +420,16 @@ def detect_characters(
 
     if other_words_string:
         other_words = other_words_string.split()
-        # fmt:off
-        blank_cells = [ # default.toml indices of the blank cells on the page
-                                                         136, 137, 138, 139, # 4 cells
-                                     152, 153, 154, 155, 156, 157, 158, 159, # 8 cells
-            167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179  # 13 cells
-        ]
-        # fmt:on
 
         # Match each writein to its cell, so that we can scan the writein redraw cell
+        with open(default_json) as f:
+            glyphs_json = json.load(f).get("glyphs", {}).get("sheet", [])
         for position, word in enumerate(other_words):
-            with open(default_json) as f:
-                glyph_json = json.load(f).get("glyphs", {}).get("sheet", [])
-            for default_glyph_index, default_glyph in enumerate(glyph_json):
+            for default_glyph_index, default_glyph in enumerate(glyphs_json):
                 if "name" in default_glyph:
                     if default_glyph["name"] == word.split("/")[0] + "Tok":
                         sorted_characters[default_glyph_index] = sorted_characters[
-                            blank_cells[position]
+                            writein_cell_indices[position]
                         ]
 
     # Here we start messing with glyphs based on their hardcoded indices.
