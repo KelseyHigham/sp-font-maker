@@ -1,3 +1,10 @@
+# Handles 4 things:
+# 1. Create a .toml to submit to ilo-Linku/sona/fonts/metadata
+# 2. Add a line to `wasokeli/wasokeli.github.io/sp-font-maker/generate all fonts.bat`
+# 3. Create the web page for previewing the font
+# 4. Preview how the font will look with the ilo Linku renderer. (Currently not working
+#    and commented out)
+
 import json
 import os
 import platform

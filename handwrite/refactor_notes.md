@@ -74,9 +74,18 @@ do writeins work?
 
 -----
 
-
 PLANNED BREAKING CHANGES, PROBABLY BATCH THEM:
 - Make output directory optional. Default to working directory
 - Change cli tool name to `sp-font-maker`
-- Change word placeholder to `-`, probably? Because `_` interferes with the
-  standard long pi
+- Change word placeholder to `-`, probably? Because `_` interferes with
+  writein hacky long pi
+
+-----
+
+What should we call it when default_json is stored as a dict in memory?
+- font_data
+- config
+
+What about when it's just the URI of a JSON or TOML file?
+- font_data_json, font_data_toml
+- config_json, config_toml

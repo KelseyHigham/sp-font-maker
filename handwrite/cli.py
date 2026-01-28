@@ -1,5 +1,11 @@
 # 📎
 
+# Accept input from the command line.
+# Currently, it's not really possible to generate a font without this. That prevents us
+# from gaining these benefits:
+# - It would be nice to be able to skip scanning a bitmap and generate from SVG directly
+# - It would be nice to implement tests again
+
 import argparse
 import json
 import os
@@ -58,9 +64,10 @@ def converters(
 
     # Save as JSON in debug directory. We'll edit it to add custom words.
     # Extra config sheets should be merged into the same working JSON file.
-    # ...We do this exact thing again after populating other_words... This is redundant.
     json_path = os.path.join(debug_dir, "default.json")
     with open(json_path, "w") as file:
+        # ...We do this exact thing again after populating other_words... This is
+        # redundant.
         json.dump(font_data, file, indent=4)
     default_json = json_path
 

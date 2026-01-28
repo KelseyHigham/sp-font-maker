@@ -413,6 +413,7 @@ def detect_characters(
         ]
         # fmt:on
 
+        # Match each writein to its cell, so that we can scan the writein redraw cell
         for position, word in enumerate(other_words):
             with open(default_json) as f:
                 glyph_json = json.load(f).get("glyphs", {}).get("sheet", [])
@@ -422,7 +423,6 @@ def detect_characters(
                         sorted_characters[default_glyph_index] = sorted_characters[
                             blank_cells[position]
                         ]
-                        # todo: remove redundant glyphs from the preview web page
 
     # Here we start messing with glyphs based on their hardcoded indices.
     # This logic should be reworked to read from default_json instead.
