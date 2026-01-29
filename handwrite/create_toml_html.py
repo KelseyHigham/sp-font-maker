@@ -80,8 +80,7 @@ def create_toml_html(
                     f"\nOpening ilo Linku .TOML for editing. To skip, add `--not-new`.\n"
                 )
         ilo_linku_toml_file = open(ilo_linku_toml_file_path, "w", encoding="utf-8")
-        ilo_linku_toml_file.write(
-            f"""#:schema ../../api/generated/font.json
+        ilo_linku_toml_file.write(f"""#:schema ../../api/generated/font.json
 
 # To submit your font to ilo Linku, for use with the Discord `/sitelenpona` command:
 # 1. Upload your font to a website, like GitHub or Neocities
@@ -102,8 +101,7 @@ writing_system = "sitelen pona" # pick one: sitelen pona, sitelen sitelen, alpha
 
 last_updated = "{datetime.now().strftime("%Y-%m")}"
 version      = "1"
-"""
-        )
+""")
         other_words = []
         apeja = False
         pake = False
@@ -140,8 +138,7 @@ version      = "1"
             prefix_handwritten = "# "
             prefix_pixelated = ""
 
-        ilo_linku_toml_file.write(
-            f"""
+        ilo_linku_toml_file.write(f"""
 features = [
   "ASCII transcription and codepoints",
   "UCSUR-compliant",
@@ -180,8 +177,7 @@ features = [
 # fontfile = "https://wasokeli.github.io/sp-font-maker/{filename.replace(" ", "%20")}"
 # webpage  = "https://wasokeli.github.io/sp-font-maker/{family.replace(" ", "-")}.html"
 # repo     = "https://github.com/wasokeli/wasokeli.github.io/tree/main/sp-font-maker"
-"""
-        )
+""")
         ilo_linku_toml_file.close()
 
         if platform.system() == "Windows":
@@ -278,8 +274,7 @@ features = [
         out_dir + os.sep + family.replace(" ", "-") + ".html", "w", encoding="utf-8"
     )
 
-    example_web_page.write(
-        f"""
+    example_web_page.write(f"""
 <meta charset="utf-8" />
 <style type=\"text/css\">
     @font-face {{
@@ -355,8 +350,7 @@ features = [
 <!-- </p> -->
 <span class="tp">
     <!-- word list -->
-"""
-    )
+""")
 
     #     # Hardcoded word list
     #     example_web_page.write(
