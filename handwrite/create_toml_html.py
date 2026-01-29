@@ -127,9 +127,9 @@ version      = "1"
                     prefix_names = ""
                 if any(char.isdigit() for char in word):
                     prefix_variants = ""
-        prefix_ucsur = "# "
+        prefix_ucsur_2022 = "# "
         if prefix_kokosila == "" and apeja and pake and powe:
-            prefix_ucsur = ""
+            prefix_ucsur_2022 = ""
 
         prefix_handwritten = ""
         prefix_pixelated = "# "
@@ -151,7 +151,7 @@ features = [
   {prefix_variants}"character variants",
   {prefix_nimisin}"Linku common & uncommon 2024",  # nimisin
   {prefix_kokosila}"all ku suli",                   # kokosila
-  {prefix_ucsur}"all ku suli and UCSUR words",   # kokosila, apeja, pake, powe
+  {prefix_ucsur_2022}"all UCSUR 2022 words",          # kokosila, apeja, pake, powe
   # "community requested nimisin",
 
   # Not implemented in SP Font Maker:
