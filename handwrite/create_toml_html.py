@@ -152,7 +152,7 @@ features = [
   # "variable weight",
   {prefix_names}"name glyphs",
   {prefix_variants}"character variants",
-  {prefix_nimisin}"Linku common & uncommon 2024"   # nimisin
+  {prefix_nimisin}"Linku common & uncommon 2024",  # nimisin
   {prefix_kokosila}"all ku suli",                   # kokosila
   {prefix_ucsur}"all ku suli and UCSUR words",   # kokosila, apeja, pake, powe
   # "community requested nimisin",
