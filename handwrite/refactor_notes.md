@@ -89,3 +89,33 @@ What should we call it when default_json is stored as a dict in memory?
 What about when it's just the URI of a JSON or TOML file?
 - font_data_json, font_data_toml
 - config_json, config_toml
+
+-----
+
+feature suggestion: automatically generate a cartouche for words which aren't included in the template by default
+- (stretch goal: words that people don't fill out)
+
+implementation:
+- in the .fea file, within `# WORDS`, create glyphs based on ligatures in the first step, like usual.
+  - like this: `sub o k e by okeTok`
+  - this avoids the case of "k o k o s i l a" turning into "koTok koTok s i laTok"
+  - we'll also need to actually create those glyphs, i think, as ideographic spaces.
+- before any `# COMBOS` (so that replacements can include combos), create replacements like this:
+  - `sub okeTok by cartoucheStart oTok kenTok eTok cartoucheEnd`
+
+-----
+
+probably reformat default.toml so that it reflects what's technically going on, rather than what's going on at a human level.
+that way it's easier to add new features:
+- cyrillic ligatures
+- fallback cartouches
+- sitelen sitelen pokis
+- nested/scaled combos
+
+what would a really literal format look like?
+- array of cells/source-drawings
+- array of logical glyphs, which point to source-drawings, sometimes with modifications
+  - separate(?) array of *optional* logical glyphs, for writeins
+- array of ligatures, which point to logical glyphs
+  - separate(?) array of *optional* ligatures, for writeins
+  - as such, a source-drawing can be tied to multiple logical glyphs
