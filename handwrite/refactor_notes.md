@@ -114,8 +114,17 @@ that way it's easier to add new features:
 
 what would a really literal format look like?
 - array of cells/source-drawings
-- array of logical glyphs, which point to source-drawings, sometimes with modifications
-  - separate(?) array of *optional* logical glyphs, for writeins
+  - (is this devoid of content, just numbers 0–179?)
+- array of named glyphs, which point to source-drawings, sometimes with modifications
+  - (is this glyphs.sheet? except we can't add items that aren't on the sheet, because it breaks the array... aaaa)
+    - (maybe each entry in glyphs.sheet should be an array of tables)
+    - (and we can have an array of ligatures)
+  - separate(?) array of *optional* logical glyphs, for writeins, e.g. silapa
 - array of ligatures, which point to logical glyphs
-  - separate(?) array of *optional* ligatures, for writeins
+  - separate(?) array of *optional* ligatures, for writeins, e.g. la2
   - as such, a source-drawing can be tied to multiple logical glyphs
+
+possible architecture:
+- glyphs.sheet is *only* an array of source-drawings
+- UNLESS you add `type="word"`, in which case it adds the glyph name and ligatures?
+- with the most common case handled, the entire rest of the file can be literal
