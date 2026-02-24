@@ -168,11 +168,15 @@ feature liga {
     aliases = default_json_data.get("ligature-aliases", [])
     glyphs = default_json_data.get("glyphs", {}).get("sheet", [])
     for alias in aliases:
+        # NOTE: The following logic introduces bugs if someone tries to write in both a
+        # special character and its name, e.g. ";/semicolon" or "semicolon/;".
+
+        # If:
+        # 1. The ligature alias's target (e.g. "kepekenTok") exists,
+        # 2. And we're not redirecting a writein glyph's ligature (e.g. "k e p e n") to
+        #    a default glyph, thereby preventing the writein from being written:
         if (
-            # If the ligature alias's target (e.g. "kepekenTok") exists:
             alias["target-name"] in cartoucheable_and_stackable
-            # And if we're not redirecting a writein glyph's ligature (e.g. "k e p e n")
-            # to a default glyph, thereby preventing the writein from being written:
             and alias["ligature"].replace(" ", "") + "Tok"
             not in cartoucheable_and_stackable
         ):
@@ -344,6 +348,8 @@ feature liga {                    #          kala stackJoin    lili
         "space",
         "exclamation",
         "question",
+        "semicolon",
+        "comma",
         "underscore",
         "ideographicspace",
         "pipe",
