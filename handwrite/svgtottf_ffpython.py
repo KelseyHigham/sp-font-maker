@@ -355,6 +355,59 @@ def add_glyphs(
                 g.width = 1000
                 g.vwidth = 1000
 
+            #  ▄▄  ▄▄  ▄▄  ▄▄ ▄█▄  ▄▄    ▄▄   ▄▄  ▄▄       ▄▄  ▄  ▄▄▄▄  █▄  ▀ ▄▄   ▄▄  ▄█
+            # █   █   █▄▀ █ █  █  █▄▀    █ █ █   █▄▀ ▀▀▀▀ █   █ █ █ █ █ █ █ █ █ █ █▄▀ █ █
+            #  ▀▀ ▀    ▀▀  ▀▀  ▀▀  ▀▀    █▀  ▀    ▀▀       ▀▀  ▀  ▀ ▀ ▀ ▀▀  ▀ ▀ ▀  ▀▀  ▀▀
+
+            # Todo: Choose glyphs to pre-combine from default.toml
+            if glyph_object["name"] == "tokiTok":
+                lipu_toki_glyph = font.createChar(-1, "lipuTok_nestJoinTok_tokiTok")
+                rotated_glyph_set.append(lipu_toki_glyph)
+
+                to_center_x = -500
+                if version_major < 4 and not pixel:
+                    to_center_y = -500 + 200
+                else:  # new handwritten, or any pixel
+                    to_center_y = -500 + 125
+                if pixel:
+                    # For pixel fonts, rotate around the assumed center pixel,
+                    # with assumed 1px space between glyphs.
+                    pixel_size = config.get("pixel-size", 8)
+                    if pixel_size % 4 == 0:
+                        # If the em size is a multiple of 4, then the total scan
+                        # width is even.
+                        # Normal case. Assume that there's 1px empty space on the
+                        # right.
+                        to_center_x = -1000 / pixel_size * (pixel_size - 1) / 2
+                    else:
+                        # If the total scan width is *odd*, then we've arbitrarily
+                        # chosen to put the extra 1px padding on the left, balancing
+                        # out the 1px empty space on the right.
+                        # Happens with 6px and 10px fonts.
+                        # Weird case. Assume that the glyph is perfectly centered.
+                        to_center_x = -1000 / pixel_size * pixel_size / 2
+                    # Regardless, the vertical scan area is even, so we assume
+                    # there's 1px empty space on the bottom.
+                    to_center_y = -1000 / pixel_size * (pixel_size + 1) / 2 + 125
+
+                font.selection.select("tokiTok")
+                font.copy()
+                font.selection.select("lipuTok_nestJoinTok_tokiTok")
+                font.paste()
+                g = font["lipuTok_nestJoinTok_tokiTok"]
+
+                g.transform(psMat.translate(to_center_x, to_center_y))
+                g.transform(psMat.scale(1 / 3))
+                g.transform(psMat.translate(-to_center_x, -to_center_y))
+
+                font.selection.select("lipuTok")
+                font.copy()
+                font.selection.select("lipuTok_nestJoinTok_tokiTok")
+                font.pasteInto()
+
+                g.width = 1000
+                g.vwidth = 1000
+
             #  ▄▄  ▄▄  ▄▄  ▄▄ ▄█▄  ▄▄     ▄▄ ▄█▄  ▄▄  ▄▄ █ ▄ ▀ ▄▄   ▄▄
             # █   █   █▄▀ █ █  █  █▄▀    ▀▄▄  █  █ █ █   ██  █ █ █ █▄█
             #  ▀▀ ▀    ▀▀  ▀▀  ▀▀  ▀▀    ▀▀   ▀▀  ▀▀  ▀▀ ▀ ▀ ▀ ▀ ▀ ▄▄▀
