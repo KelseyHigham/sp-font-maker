@@ -80,7 +80,7 @@ def create_toml_html(
                     f"\nOpening ilo Linku .TOML for editing. To skip, add `--not-new`.\n"
                 )
         ilo_linku_toml_file = open(ilo_linku_toml_file_path, "w", encoding="utf-8")
-        ilo_linku_toml_file.write(f"""#:schema ../../api/generated/font.json
+        ilo_linku_toml_file.write(f"""#:schema ../../api/generated/v2/font.json
 
 # To submit your font to ilo Linku, for use with the Discord `/sitelenpona` command:
 # 1. Upload your font to a website, like GitHub or Neocities
@@ -92,7 +92,7 @@ def create_toml_html(
 id        = "{family}"
 name      = "{family}"
 filename  = "{filename}"
-creator   = ["{designer}"]
+author    = ["{designer}"]
 license   = "{license}"
 ligatures = true
 ucsur     = true
