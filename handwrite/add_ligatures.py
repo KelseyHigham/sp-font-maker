@@ -68,9 +68,16 @@ feature liga {
         glyphs_derived = json_glyphs.get("derived", [])
         glyphs_spaces = json_glyphs.get("spaces", [])
         glyphs = glyphs_sheet + glyphs_derived + glyphs_spaces
-        # Todo: Move this line to default.toml
-        glyphs.append(
-            {"name": "lipuTok_nestJoinTok_tokiTok", "ligature": "l i p u plus t o k i"}
+        # Pre-combined glyphs. Todo: Move this line to default.toml
+        glyphs.extend(
+            [
+                {
+                    "name": "lipuTok_nestJoinTok_tokiTok",
+                    "ligature": "l i p u plus t o k i",
+                },
+                {"name": "k_zerowidthjoiner_u", "ligature": "k ampersand u"},
+                {"name": "s_zerowidthjoiner_u", "ligature": "s ampersand u"},
+            ]
         )
         for k in glyphs:
             if "ligature" in k:

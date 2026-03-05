@@ -330,65 +330,73 @@ def add_glyphs(
             # █   █▄▀ █ █  █  █▄▀ █
             #  ▀▀  ▀▀ ▀ ▀  ▀▀  ▀▀ ▀
 
-            # Center glyphs (including, but not limited to, rotated ones)
-            for g in rotated_glyph_set:
-                center = glyph_object.get("center", "both")
-                if center == "both" or center == "horizontal":
-                    if not pixel:
-                        left = g.boundingBox()[0]
-                        right = g.boundingBox()[2]
-                        width = right - left
-                        g.transform(psMat.translate(-right + width / 2 + 500, 0))
-                if center == "both" or center == "vertical":
-                    if not pixel:
-                        bottom = g.boundingBox()[1]
-                        top = g.boundingBox()[3]
-                        g.transform(
-                            psMat.translate(
-                                0,
-                                font.ascent
-                                - top
-                                - ((font.ascent + font.descent) - (top - bottom)) / 2,
-                            )
-                        )
-
+            def center_horizontally(g):
+                if not pixel:
+                    left = g.boundingBox()[0]
+                    right = g.boundingBox()[2]
+                    width = right - left
+                    g.transform(psMat.translate(-right + width / 2 + 500, 0))
                 g.width = 1000
                 g.vwidth = 1000
+
+            def center_vertically(g):
+                if not pixel:
+                    bottom = g.boundingBox()[1]
+                    top = g.boundingBox()[3]
+                    g.transform(
+                        psMat.translate(
+                            0,
+                            font.ascent
+                            - top
+                            - ((font.ascent + font.descent) - (top - bottom)) / 2,
+                        )
+                    )
+                g.width = 1000
+                g.vwidth = 1000
+
+            # Center glyphs (including, but not limited to, rotated ones)
+            for ff_glyph in rotated_glyph_set:
+                center = glyph_object.get("center", "both")
+                if center == "both" or center == "horizontal":
+                    center_horizontally(ff_glyph)
+                if center == "both" or center == "vertical":
+                    center_vertically(ff_glyph)
 
             #  ▄▄  ▄▄  ▄▄  ▄▄ ▄█▄  ▄▄    ▄▄   ▄▄  ▄▄       ▄▄  ▄  ▄▄▄▄  █▄  ▀ ▄▄   ▄▄  ▄█
             # █   █   █▄▀ █ █  █  █▄▀    █ █ █   █▄▀ ▀▀▀▀ █   █ █ █ █ █ █ █ █ █ █ █▄▀ █ █
             #  ▀▀ ▀    ▀▀  ▀▀  ▀▀  ▀▀    █▀  ▀    ▀▀       ▀▀  ▀  ▀ ▀ ▀ ▀▀  ▀ ▀ ▀  ▀▀  ▀▀
 
+            to_center_x = -500
+            if version_major < 4 and not pixel:
+                to_center_y = -500 + 200
+            else:  # new handwritten, or any pixel
+                to_center_y = -500 + 125
+            if pixel:
+                # For pixel fonts, rotate around the assumed center pixel,
+                # with assumed 1px space between glyphs.
+                pixel_size = config.get("pixel-size", 8)
+                if pixel_size % 4 == 0:
+                    # If the em size is a multiple of 4, then the total scan
+                    # width is even.
+                    # Normal case. Assume that there's 1px empty space on the
+                    # right.
+                    to_center_x = -1000 / pixel_size * (pixel_size - 1) / 2
+                else:
+                    # If the total scan width is *odd*, then we've arbitrarily
+                    # chosen to put the extra 1px padding on the left, balancing
+                    # out the 1px empty space on the right.
+                    # Happens with 6px and 10px fonts.
+                    # Weird case. Assume that the glyph is perfectly centered.
+                    to_center_x = -1000 / pixel_size * pixel_size / 2
+                # Regardless, the vertical scan area is even, so we assume
+                # there's 1px empty space on the bottom.
+                to_center_y = -1000 / pixel_size * (pixel_size + 1) / 2 + 125
+
             # Todo: Choose glyphs to pre-combine from default.toml
+            # Pre-combine nested lipu+toki
             if glyph_object["name"] == "tokiTok":
                 lipu_toki_glyph = font.createChar(-1, "lipuTok_nestJoinTok_tokiTok")
                 rotated_glyph_set.append(lipu_toki_glyph)
-
-                to_center_x = -500
-                if version_major < 4 and not pixel:
-                    to_center_y = -500 + 200
-                else:  # new handwritten, or any pixel
-                    to_center_y = -500 + 125
-                if pixel:
-                    # For pixel fonts, rotate around the assumed center pixel,
-                    # with assumed 1px space between glyphs.
-                    pixel_size = config.get("pixel-size", 8)
-                    if pixel_size % 4 == 0:
-                        # If the em size is a multiple of 4, then the total scan
-                        # width is even.
-                        # Normal case. Assume that there's 1px empty space on the
-                        # right.
-                        to_center_x = -1000 / pixel_size * (pixel_size - 1) / 2
-                    else:
-                        # If the total scan width is *odd*, then we've arbitrarily
-                        # chosen to put the extra 1px padding on the left, balancing
-                        # out the 1px empty space on the right.
-                        # Happens with 6px and 10px fonts.
-                        # Weird case. Assume that the glyph is perfectly centered.
-                        to_center_x = -1000 / pixel_size * pixel_size / 2
-                    # Regardless, the vertical scan area is even, so we assume
-                    # there's 1px empty space on the bottom.
-                    to_center_y = -1000 / pixel_size * (pixel_size + 1) / 2 + 125
 
                 font.selection.select("tokiTok")
                 font.copy()
@@ -404,6 +412,74 @@ def add_glyphs(
                 font.copy()
                 font.selection.select("lipuTok_nestJoinTok_tokiTok")
                 font.pasteInto()
+
+                g.width = 1000
+                g.vwidth = 1000
+
+            # Todo: Choose glyphs to pre-combine from default.toml
+            # Pre-combine two-letter Latin word
+            if glyph_object["name"] == "kijetesantakaluTok":
+                k_u_glyph = font.createChar(-1, "k_zerowidthjoiner_u")
+                rotated_glyph_set.append(k_u_glyph)
+
+                letter_size = 3 / 4
+                letter_overlap = (letter_size - 1 / 3) * 1000
+
+                font.selection.select("u")
+                font.copy()
+                font.selection.select("k_zerowidthjoiner_u")
+                font.paste()
+                g = font["k_zerowidthjoiner_u"]
+
+                g.transform(psMat.translate(1000 - letter_overlap, 0))
+
+                font.selection.select("k")
+                font.copy()
+                font.selection.select("k_zerowidthjoiner_u")
+                font.pasteInto()
+
+                g.transform(psMat.translate(-(2000 - letter_overlap) / 2 + 500, 0))
+
+                g.transform(psMat.translate(to_center_x, to_center_y))
+                g.transform(psMat.scale(3 / 4))
+                g.transform(psMat.translate(-to_center_x, -to_center_y))
+
+                center_vertically(g)
+                center_horizontally(g)
+
+                g.width = 1000
+                g.vwidth = 1000
+
+            # Todo: Choose glyphs to pre-combine from default.toml
+            # Pre-combine two-letter Latin word
+            if glyph_object["name"] == "kijetesantakaluTok":
+                s_u_glyph = font.createChar(-1, "s_zerowidthjoiner_u")
+                rotated_glyph_set.append(s_u_glyph)
+
+                letter_size = 3 / 4
+                letter_overlap = (letter_size - 1 / 3) * 1000
+
+                font.selection.select("u")
+                font.copy()
+                font.selection.select("s_zerowidthjoiner_u")
+                font.paste()
+                g = font["s_zerowidthjoiner_u"]
+
+                g.transform(psMat.translate(1000 - letter_overlap, 0))
+
+                font.selection.select("s")
+                font.copy()
+                font.selection.select("s_zerowidthjoiner_u")
+                font.pasteInto()
+
+                g.transform(psMat.translate(-(2000 - letter_overlap) / 2 + 500, 0))
+
+                g.transform(psMat.translate(to_center_x, to_center_y))
+                g.transform(psMat.scale(letter_size))
+                g.transform(psMat.translate(-to_center_x, -to_center_y))
+
+                center_vertically(g)
+                center_horizontally(g)
 
                 g.width = 1000
                 g.vwidth = 1000
