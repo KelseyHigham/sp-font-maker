@@ -31,6 +31,11 @@ def create_toml_html(
 
     designer = cli_args_dict.get("designer", "jan pi toki pona")
 
+    # Only say designer once in web page title
+    short_family, short_tan, short_designer = family.partition(" tan ")
+    if not short_designer == designer:
+        short_family = family
+
     # For generating the ilo Linku TOML files for each font,
     # we use short license codes from the SPDX License List: https://spdx.org/licenses/
     license = cli_args_dict.get("license", "All rights reserved")
@@ -52,12 +57,13 @@ def create_toml_html(
         # Two folders up from /wasokeli.github.io/sp-font-maker/:
         two_levels_up = f"{out_dir}..{s}..{s}sona{s}fonts{s}metadata"
         one_level_up = f"{out_dir}..{s}sona{s}fonts{s}metadata"
+        sona_repo_path = ""
         if os.path.isdir(two_levels_up):
             sona_repo_path = two_levels_up
         # Theoretically, some flatter folder:
         elif os.path.isdir(one_level_up):
             sona_repo_path = one_level_up
-        if sona_repo_path:
+        if not sona_repo_path == "":
             ilo_linku_toml_file_path = f"{sona_repo_path}{s}{family}.toml"
             if os.path.exists(ilo_linku_toml_file_path):
                 print(
@@ -342,7 +348,7 @@ features = [
         padding: 1em;
     }}
 </style>
-<h1><a href='{filename}'>{family}</a>, tan {designer}</h1>
+<h1><a href='{filename}'>{short_family}</a>, tan {designer}</h1>
 <!-- vertical test -->
 <!-- <p class="tp" style="writing-mode: vertical-rl; font-feature-settings: 'calt';"> -->
 <!-- 󱤴󱤑󱦐󱥠󱦜󱤑󱦜󱤧󱦝󱦑<br> -->
