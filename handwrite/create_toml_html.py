@@ -28,6 +28,7 @@ def create_toml_html(
     family = cli_args_dict.get("family", None) or filename
 
     filename = filename + ".ttf" if not filename.endswith(".ttf") else filename
+    filename_stripped = filename[:-4] if filename.endswith(".ttf") else filename
 
     designer = cli_args_dict.get("designer", "jan pi toki pona")
 
@@ -64,7 +65,7 @@ def create_toml_html(
         elif os.path.isdir(one_level_up):
             sona_repo_path = one_level_up
         if not sona_repo_path == "":
-            ilo_linku_toml_file_path = f"{sona_repo_path}{s}{family}.toml"
+            ilo_linku_toml_file_path = f"{sona_repo_path}{s}{filename_stripped}.toml"
             if os.path.exists(ilo_linku_toml_file_path):
                 print(
                     f"\nOverwriting `{ilo_linku_toml_file_path}`, and opening for editing. To skip, add `--not-new`.\n"
@@ -75,7 +76,7 @@ def create_toml_html(
                 )
         else:
             # Otherwise, just put it in out_dir.
-            ilo_linku_toml_file_path = out_dir + os.sep + family + ".toml"
+            ilo_linku_toml_file_path = out_dir + os.sep + filename_stripped + ".toml"
             if os.path.exists(ilo_linku_toml_file_path):
                 print(
                     f"\nOverwriting ilo Linku .TOML, and opening for editing. To skip, add `--not-new`.\n"
@@ -95,7 +96,7 @@ def create_toml_html(
 # 4. Submit the .TOML to this page: https://github.com/lipu-linku/sona/tree/main/fonts/metadata
 # 5. Ask for help if you need it! Join the Linku Discord, or make a GitHub Issue on lipu-linku/sona.
 
-id        = "{family}"
+id        = "{filename_stripped.replace("-", " ")}"
 name      = "{family}"
 filename  = "{filename}"
 author    = ["{designer}"]
@@ -181,7 +182,7 @@ features = [
 [links]
 # Autofilled for Kelly's site. If you're not uploading to Kelly's site, these URLs are inaccurate; upload the font to a website like neocities.org or github.io
 # fontfile = "https://wasokeli.github.io/sp-font-maker/{filename.replace(" ", "%20")}"
-# webpage  = "https://wasokeli.github.io/sp-font-maker/{family.replace(" ", "-")}.html"
+# webpage  = "https://wasokeli.github.io/sp-font-maker/{filename_stripped.replace(" ", "-")}.html"
 # repo     = "https://github.com/wasokeli/wasokeli.github.io/tree/main/sp-font-maker"
 """)
         ilo_linku_toml_file.close()
@@ -201,12 +202,12 @@ features = [
 
     print(
         f"🌐 If hosting, give this to {designer}: "
-        + f"https://wasokeli.github.io/sp-font-maker/{family.replace(' ', '-')}"
+        + f"https://wasokeli.github.io/sp-font-maker/{filename_stripped.replace(' ', '-')}"
     )
     print(
         "🏠 Preview in browser: file://"
         + os.path.abspath(
-            out_dir + os.sep + family.replace(" ", "-") + ".html"
+            out_dir + os.sep + filename_stripped.replace(" ", "-") + ".html"
         ).replace("\\", "/")
         + "\n"
     )
@@ -277,7 +278,9 @@ features = [
             other_words[word_index] = word
 
     example_web_page = open(
-        out_dir + os.sep + family.replace(" ", "-") + ".html", "w", encoding="utf-8"
+        out_dir + os.sep + filename_stripped.replace(" ", "-") + ".html",
+        "w",
+        encoding="utf-8",
     )
 
     example_web_page.write(f"""
