@@ -192,8 +192,8 @@ glyphs.sheet = [
   {codepoint = 0xf1977, name = "wileTok",    ligature = "w i l e"},
 
   # row 6!!!
-  {codepoint = 0xf1990, name = "cartoucheStartTok", ligature = "bracketleft",  center = false, scan-shift = "right"},
-  {codepoint = 0xf1991, name = "cartoucheEndTok",   ligature = "bracketright", center = false, scan-shift = "left"},
+  {codepoint = 0xf1990, name = "cartoucheStartTok", ligature = "bracketleft",  center = false, scan-shift = [-0.25, 0]},
+  {codepoint = 0xf1991, name = "cartoucheEndTok",   ligature = "bracketright", center = false, scan-shift = [ 0.25, 0]},
   {codepoint = 0xf199c, name = "middotTok",         ligature = "period"},
   {codepoint = 0xf199d, name = "colonTok",          ligature = "colon"},
   {codepoint = 0x69,    name = "i",                                            center = "horizontal"},

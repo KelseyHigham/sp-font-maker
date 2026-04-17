@@ -432,42 +432,6 @@ def detect_characters(
                             writein_cell_indices[position]
                         ]
 
-    # Here we start messing with glyphs based on their hardcoded indices.
-    # This logic should be reworked to read from default_json instead.
-    # for glyph in default_json:
-    #     if glyph["scan-shift"]:
-    #         do the things
-
-    # cartouches
-    open_cartouche = sorted_characters[120]
-    close_cartouche = sorted_characters[121]
-    glyph_left, glyph_top, glyph_w, glyph_h = (
-        open_cartouche[1],
-        open_cartouche[2],
-        open_cartouche[3],
-        open_cartouche[4],
-    )
-
-    # Shift the open and close cartouche scan area inward, to match how the gray boxes
-    # are shifted.
-    scan_shift = grid_scan_hor_padding * glyph_w / grid_scan_w
-
-    glyph_left = open_cartouche[1] + math.floor(scan_shift)
-    roi = image[
-        int(glyph_top) : int(glyph_top + glyph_h),
-        int(glyph_left) : int(glyph_left + glyph_w),
-    ]
-    sorted_characters[120][0] = roi
-    sorted_characters[120][1] = glyph_left
-
-    glyph_left = close_cartouche[1] - math.ceil(scan_shift)
-    roi = image[
-        int(glyph_top) : int(glyph_top + glyph_h),
-        int(glyph_left) : int(glyph_left + glyph_w),
-    ]
-    sorted_characters[121][0] = roi
-    sorted_characters[121][1] = glyph_left
-
     #          ▄                 █         █
     # ▄▀▄ ▀▄▀ ▀█▀ █▄▀ ▄▀█    ▄▀█ █ █ █ █▀▄ █▀▄ ▄▀▀
     # ▀█▄ ▄▀▄  ▀▄ █   ▀▄█    ▀▄█ █ ▀▄█ █▄▀ █ █ ▄█▀
@@ -493,8 +457,7 @@ def detect_characters(
                 # For the middle portion of the cartouche, grab the rightmost 1px column
                 # of the open cartouche. It'll be automatically stretched to the width
                 # of a glyph when it's converted to BMP, then SVG.
-                scan_shift = grid_scan_hor_padding * source_w / grid_scan_w
-                derived_left = source_left + source_w - 1 - math.floor(scan_shift)
+                derived_left = source_left + source_w - 1
                 roi = image[
                     int(source_top) : int(source_top + source_h),
                     int(derived_left) : int(derived_left + 1),
@@ -567,15 +530,6 @@ def save_images(characters, debug_dir, default_json, cli_args):
     json_data["pixel-size"] = first_char_img.size[0] * 2 / 3
     with open(default_json, "w") as file:
         json.dump(json_data, file, indent=4)
-
-    # Trim cartouche characters
-    # We'll have to do the same thing for long pi,
-    # and any other character that spans two cells
-    pad("right", debug_dir, cli_args, "cartoucheStartTok")
-    pad("right", debug_dir, cli_args, "bracketleft")
-
-    pad("left", debug_dir, cli_args, "cartoucheEndTok")
-    pad("left", debug_dir, cli_args, "bracketright")
 
     # Derived glyphs: cartoucheMiddleTok, underscore, long pi middle, etc.
     with open(default_json) as f:

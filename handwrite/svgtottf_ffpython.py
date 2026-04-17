@@ -226,8 +226,27 @@ def add_glyphs(
             else:
                 g.transform(psMat.translate(500, 500 - 125))
 
-            g.width = 1000
-            g.vwidth = 1000
+            #  ▄▄  ▄▄  ▄▄ ▄▄        ▄▄ █▄  ▀ ▄▀ ▄█▄
+            # ▀▄▄ █   █ █ █ █ ▀▀▀▀ ▀▄▄ █ █ █ █▀  █
+            # ▀▀   ▀▀  ▀▀ ▀ ▀      ▀▀  ▀ ▀ ▀ ▀   ▀▀
+
+            pixel_size = config.get("pixel-size", 8)
+
+            if "scan-shift" in glyph_object:
+                if pixel:
+                    scan_shift_x = math.ceil(glyph_object["scan-shift"][0] * pixel_size)
+                    scan_shift_x = int(scan_shift_x / pixel_size * 1000)
+                    scan_shift_y = math.ceil(glyph_object["scan-shift"][1] * pixel_size)
+                    scan_shift_y = int(scan_shift_y / pixel_size * 1000)
+                else:
+                    scan_shift_x = int(glyph_object["scan-shift"][0] * 1000)
+                    if version_major < 3:
+                        scan_shift_x *= 0.25
+                    scan_shift_y = int(glyph_object["scan-shift"][1] * 1000)
+                g.transform(psMat.translate(scan_shift_x, scan_shift_y))
+
+            g.width = int(glyph_object.get("width", 1.0) * 1000)
+            g.vwidth = int(glyph_object.get("height", 1.0) * 1000)
 
             #  ▄▄  ▄▄  ▄▄  ▄▄ ▄█▄  ▄▄     ▄▄  ▄  ▄█▄  ▄▄ ▄█▄ ▀  ▄  ▄▄   ▄▄
             # █   █   █▄▀ █ █  █  █▄▀    █   █ █  █  █ █  █  █ █ █ █ █ ▀▄▄
