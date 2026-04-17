@@ -365,60 +365,60 @@ glyphs.derived = [
 
 glyphs.spaces = [
   # Support default ASCII ligatures:
-  {codepoint = 0x7c, width = 1000, name = "pipe",   writein = "|"},
-  {codepoint = 0x20, width =    0, name = "space"},
-  {codepoint = 0x2d, width =    0, name = "hyphen", writein = "-"},
-  {codepoint = 0x30, width =    0, name = "zero",   writein = "0"},
-  {codepoint = 0x31, width =    0, name = "one",    writein = "1"},
-  {codepoint = 0x32, width =    0, name = "two",    writein = "2"},
-  {codepoint = 0x33, width =    0, name = "three",  writein = "3"},
-  {codepoint = 0x34, width =    0, name = "four",   writein = "4"},
-  {codepoint = 0x35, width =    0, name = "five",   writein = "5"},
-  {codepoint = 0x36, width =    0, name = "six",    writein = "6"},
-  {codepoint = 0x37, width =    0, name = "seven",  writein = "7"},
-  {codepoint = 0x38, width =    0, name = "eight",  writein = "8"},
-  {codepoint = 0x39, width =    0, name = "nine",   writein = "9"},
+  {codepoint = 0x7c, width = 1.0, name = "pipe",   writein = "|"},
+  {codepoint = 0x20, width =   0, name = "space"},
+  {codepoint = 0x2d, width =   0, name = "hyphen", writein = "-"},
+  {codepoint = 0x30, width =   0, name = "zero",   writein = "0"},
+  {codepoint = 0x31, width =   0, name = "one",    writein = "1"},
+  {codepoint = 0x32, width =   0, name = "two",    writein = "2"},
+  {codepoint = 0x33, width =   0, name = "three",  writein = "3"},
+  {codepoint = 0x34, width =   0, name = "four",   writein = "4"},
+  {codepoint = 0x35, width =   0, name = "five",   writein = "5"},
+  {codepoint = 0x36, width =   0, name = "six",    writein = "6"},
+  {codepoint = 0x37, width =   0, name = "seven",  writein = "7"},
+  {codepoint = 0x38, width =   0, name = "eight",  writein = "8"},
+  {codepoint = 0x39, width =   0, name = "nine",   writein = "9"},
   # Kelly notes, remove later:
   #     Todo: Replace these three, and `v`, with rotated lili. It would be cute
   #     I think:
-  {codepoint = 0x5e, width = 1000, name = "north",  writein = "^"},
-  {codepoint = 0x3c, width = 1000, name = "west",   writein = "<"},
-  {codepoint = 0x3e, width = 1000, name = "east",   writein = ">"},
+  {codepoint = 0x5e, width = 1.0, name = "north",  writein = "^"},
+  {codepoint = 0x3c, width = 1.0, name = "west",   writein = "<"},
+  {codepoint = 0x3e, width = 1.0, name = "east",   writein = ">"},
   # (We treat "v" as a regular letter, instead of naming it "south".)
 
   # Fallback for unsupported SP features:
-  {codepoint = 0x2b, width =    0, name = "plus",        writein = "+"},
-  {codepoint = 0x26, width =    0, name = "ampersand",   writein = "&"},
-  {codepoint = 0x7b, width =    0, name = "opencurly",   writein = "{"},
-  {codepoint = 0x7d, width =    0, name = "closecurly",  writein = "}"},
-  {codepoint = 0x28, width =    0, name = "openparen",   writein = "("},
-  {codepoint = 0x29, width =    0, name = "closeparen",  writein = ")"},
-  {codepoint = 0x2a, width = 1000, name = "asterisk",    writein = "*"},
-  {codepoint = 0x22, width = 1000, name = "doublequote", writein = "'"},
-  {codepoint = 0x2c, width = 1000, name = "comma",       writein = ","},
-  {codepoint = 0x27, width = 1000, name = "singlequote", writein = "'"},
+  {codepoint = 0x2b, width =   0, name = "plus",        writein = "+"},
+  {codepoint = 0x26, width =   0, name = "ampersand",   writein = "&"},
+  {codepoint = 0x7b, width =   0, name = "opencurly",   writein = "{"},
+  {codepoint = 0x7d, width =   0, name = "closecurly",  writein = "}"},
+  {codepoint = 0x28, width =   0, name = "openparen",   writein = "("},
+  {codepoint = 0x29, width =   0, name = "closeparen",  writein = ")"},
+  {codepoint = 0x2a, width = 1.0, name = "asterisk",    writein = "*"},
+  {codepoint = 0x22, width = 1.0, name = "doublequote", writein = "'"},
+  {codepoint = 0x2c, width = 1.0, name = "comma",       writein = ","},
+  {codepoint = 0x27, width = 1.0, name = "singlequote", writein = "'"},
 
   # Fallback for text intended as sitelen Lasina:
-  {codepoint = 0x21, width = 1000, name = "exclamation", writein = "!"},
-  {codepoint = 0x3f, width = 1000, name = "question",    writein = "?"},
-  {codepoint = 0x3b, width = 1000, name = "semicolon",   writein = ";"},
+  {codepoint = 0x21, width = 1.0, name = "exclamation", writein = "!"},
+  {codepoint = 0x3f, width = 1.0, name = "question",    writein = "?"},
+  {codepoint = 0x3b, width = 1.0, name = "semicolon",   writein = ";"},
 
   # UCSUR features:
   # The `space space` ligature doesn't work in HTML, where consecutive
   # whitespace is normally collapsed. In that case, type a space with `|`
   # instead.
-  {codepoint = 0x3000,  width = 1000, name = "ideographicspace", ligature = "space space"},
-  {codepoint = 0x200b,  width =    0, name = "zerowidthspace"},
-  {codepoint = 0xf1995, width =    0, name = "stackJoinTok",     ligature = "hyphen"},
-  {codepoint = 0x200d,  width =    0, name = "zerowidthjoiner",  ligature = "ampersand"},
+  {codepoint = 0x3000,  width = 1.0, name = "ideographicspace", ligature = "space space"},
+  {codepoint = 0x200b,  width =   0, name = "zerowidthspace"},
+  {codepoint = 0xf1995, width =   0, name = "stackJoinTok",     ligature = "hyphen"},
+  {codepoint = 0x200d,  width =   0, name = "zerowidthjoiner",  ligature = "ampersand"},
 
   # Fallback for unsupported UCSUR features:
-  {codepoint = 0xf1996, width =    0, name = "nestJoinTok"},
-  {codepoint = 0xf1997, width =    0}, # SP START OF LONG GLYPH
-  {codepoint = 0xf1998, width =    0}, # SP END OF LONG GLYPH
-  {codepoint = 0xf1999, width =    0}, # SP COMBINING LONG GLYPH EXTENSION
-  {codepoint = 0xf199a, width =    0}, # SP START OF REVERSE LONG GLYPH
-  {codepoint = 0xf199b, width =    0}, # SP END OF REVERSE LONG GLYPH
+  {codepoint = 0xf1996, width =   0, name = "nestJoinTok"},
+  {codepoint = 0xf1997, width =   0}, # SP START OF LONG GLYPH
+  {codepoint = 0xf1998, width =   0}, # SP END OF LONG GLYPH
+  {codepoint = 0xf1999, width =   0}, # SP COMBINING LONG GLYPH EXTENSION
+  {codepoint = 0xf199a, width =   0}, # SP START OF REVERSE LONG GLYPH
+  {codepoint = 0xf199b, width =   0}, # SP END OF REVERSE LONG GLYPH
 ]
 
 

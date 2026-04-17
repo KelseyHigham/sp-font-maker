@@ -609,15 +609,15 @@ def add_glyphs(
             space = font.createChar(codepoint, name)
         else:
             space = font.createChar(codepoint)
-        space.width = width
-        space.vwidth = width
+        space.width = int(width * 1000)
+        space.vwidth = int(width * 1000)
 
     spaces = config.get("glyphs", {}).get("spaces", [])
     for space in spaces:
         create_space(
             space.get("codepoint", -1),
             space.get("name", False),
-            space.get("width", 1000),
+            space.get("width", 1),
         )
 
 
