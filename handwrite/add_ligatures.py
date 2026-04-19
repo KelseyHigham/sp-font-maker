@@ -135,17 +135,13 @@ feature liga {
                         rotated_ligature(lig, " west", name, ".W", 1)
                     pass
 
-                if (
-                    k["name"] != "cartoucheStartTok"
-                    and k["name"] != "cartoucheEndTok"
-                    # and k['name'] != "middotTok"
-                    # and k['name'] != "colonTok"
-                    # and k['name'] != "teTok"
-                    # and k['name'] != "toTok"
-                    and k["name"] != "stackJoinTok"
-                    and k["name"] != "zerowidthjoiner"
-                    and k["name"] != "ideographicspace"
-                ):
+                if k.get("cartoucheable-stackable", True) == True:
+                    # Currently excludes:
+                    # - cartoucheStartTok
+                    # - cartoucheEndTok
+                    # - stackJoinTok
+                    # - zerowidthjoiner
+                    # - ideographicspace
                     cartoucheable_and_stackable.append(k["name"])
 
                 if "rotate" in k and k["rotate"]:

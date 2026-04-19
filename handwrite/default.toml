@@ -192,8 +192,8 @@ glyphs.sheet = [
   {codepoint = 0xf1977, name = "wileTok",    ligature = "w i l e"},
 
   # row 6!!!
-  {codepoint = 0xf1990, name = "cartoucheStartTok", ligature = "bracketleft",  center = false, scan-shift = [-0.25, 0]},
-  {codepoint = 0xf1991, name = "cartoucheEndTok",   ligature = "bracketright", center = false, scan-shift = [ 0.25, 0]},
+  {codepoint = 0xf1990, name = "cartoucheStartTok", ligature = "bracketleft",  center = false, scan-shift = [-0.25, 0], cartoucheable-stackable = false},
+  {codepoint = 0xf1991, name = "cartoucheEndTok",   ligature = "bracketright", center = false, scan-shift = [ 0.25, 0], cartoucheable-stackable = false},
   {codepoint = 0xf199c, name = "middotTok",         ligature = "period"},
   {codepoint = 0xf199d, name = "colonTok",          ligature = "colon"},
   {codepoint = 0x69,    name = "i",                                            center = "horizontal"},
@@ -407,10 +407,10 @@ glyphs.spaces = [
   # The `space space` ligature doesn't work in HTML, where consecutive
   # whitespace is normally collapsed. In that case, type a space with `|`
   # instead.
-  {codepoint = 0x3000,  width = 1.0, name = "ideographicspace", ligature = "space space"},
+  {codepoint = 0x3000,  width = 1.0, name = "ideographicspace", ligature = "space space", cartoucheable-stackable = false},
   {codepoint = 0x200b,  width =   0, name = "zerowidthspace"},
-  {codepoint = 0xf1995, width =   0, name = "stackJoinTok",     ligature = "hyphen"},
-  {codepoint = 0x200d,  width =   0, name = "zerowidthjoiner",  ligature = "ampersand"},
+  {codepoint = 0xf1995, width =   0, name = "stackJoinTok",     ligature = "hyphen",      cartoucheable-stackable = false},
+  {codepoint = 0x200d,  width =   0, name = "zerowidthjoiner",  ligature = "ampersand",   cartoucheable-stackable = false},
 
   # Fallback for unsupported UCSUR features:
   {codepoint = 0xf1996, width =   0, name = "nestJoinTok"},
