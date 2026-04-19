@@ -268,15 +268,6 @@ features = [
     #  █ █  ▀█▄ █▄▀    █▄▀ ▀▄█ ▀▄█ ▀█▄
     #                  █       ▄▄▀
 
-    other_words = []
-    if other_words_string:
-        other_words = other_words_string.split()
-        for word_index, word in enumerate(other_words):
-            if word == "_":
-                word = "|"
-            word = word.split("/")[0]
-            other_words[word_index] = word
-
     example_web_page = open(
         out_dir + os.sep + filename_stripped.replace(" ", "-") + ".html",
         "w",
@@ -361,22 +352,7 @@ features = [
     <!-- word list -->
 """)
 
-    #     # Hardcoded word list
-    #     example_web_page.write(
-    #         f"""
-    # a akesi ala alasa ale anpa ante anu awen e en esun ijo ike ilo insa jaki jan jelo jo<br>
-    # kala kalama kama kasi ken kepeken kili kiwen ko kon kule kulupu kute la lape laso lawa len lete li<br>
-    # lili linja lipu loje lon luka lukin lupa ma mama mani meli mi mije moku moli monsi mu mun musi<br>
-    # mute nanpa nasa nasin nena ni nimi noka o olin ona open pakala pali palisa pan pana pi pilin pimeja<br>
-    # pini pipi poka poki pona pu sama seli selo seme sewi sijelo sike sin sina sinpin sitelen sona soweli suli<br>
-    # suno supa suwi tan taso tawa telo tenpo toki tomo tu unpa uta utala walo wan waso wawa weka wile<br>
-    # [] . : i j k l m p s t u w te to {" ".join(other_words[0:4])}<br>
-    # kijetesantakalu kin kipisi ku lanpan leko misikeke monsuta n namako soko tonsi {" ".join(other_words[4:12])}<br>
-    # epiku jasima linluwi majuna meso oko su {" ".join(other_words[12:25])}<br>
-    # """
-    #     )
-
-    # Softcoded word list
+    # Word list
     with open(default_json) as f:
         default_json_data = json.load(f)
     glyphs = default_json_data.get("glyphs", {})
@@ -424,11 +400,6 @@ features = [
         }
         word = ""
         word_label = ""
-        # word_separator is omitted between cartouche ends to avoid triggering a bug in
-        # the ligature code: A space redundantly inserts the middle of a cartouche,
-        # making `[ ]` appear broken. When that bug is fixed, all words can just get a
-        # `\n` after them.
-        word_separator = ""
         if "ligature" in glyph:
             for letter in glyph["ligature"].split(" "):
                 letter_string = chr(
@@ -440,15 +411,11 @@ features = [
                     word_label += "<br>"
             if word in hyphenations:
                 word_label = hyphenations[word]
-            if glyph["ligature"] != "bracketleft":
-                word_separator += "\n"
         else:
             if "name" in glyph:
                 word += glyph["name"]
-                word_separator += "\n"
             else:
                 word += "|"
-                word_separator += "\n"
                 word_label = " "
         word_list += (
             '        <div class="word">'
@@ -458,7 +425,7 @@ features = [
             + (word_label or word)
             + "</span>"
             + "</div>"
-            + word_separator
+            + "\n"
         )
 
     example_web_page.write('    <div class="word-list">\n' + word_list + "</div>")
