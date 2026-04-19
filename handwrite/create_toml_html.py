@@ -367,40 +367,41 @@ features = [
         if "name" in item
     }
     word_list = ""
+    hyphenations = {
+        "kalama": "ka&shy;lama",
+        "kepeken": "kepe&shy;ken",
+        "kulupu": "ku&shy;lupu",
+        "pakala": "pa&shy;kala",
+        "pimeja": "pi&shy;meja",
+        "sinpin": "sin&shy;pin",
+        "kijetesantakalu": "kijete&shy;santa&shy;kalu",
+        "lanpan": "lan&shy;pan",
+        "misikeke": "misi&shy;keke",
+        "monsuta": "mon&shy;suta",
+        "namako": "na&shy;mako",
+        "jasima": "ja&shy;sima",
+        "linluwi": "lin&shy;luwi",
+        "majuna": "ma&shy;juna",
+        "kokosila": "koko&shy;sila",
+        "melome": "me&shy;lome",
+        "silapa1": "sila&shy;pa1",
+        "silapa2": "sila&shy;pa2",
+        "silapa3": "sila&shy;pa3",
+        "snoweli": "sno&shy;weli",
+        "wasoweli": "waso&shy;weli",
+    }
     for glyph in glyphs_sheet:
         # The glyph field doesn't include the unescaped string to type a glyph. For
         # glyphs with ligatures, we convert from the ligature back into the original
         # string.
         #
         # Note that this isn't recursive. It will break with two-layer ligatures. In
-        # that case, probably just revert to the hard-coded solution above, which
-        # doesn't provide glyph labels.
-        hyphenations = {
-            "kalama": "ka&shy;lama",
-            "kepeken": "kepe&shy;ken",
-            "kulupu": "ku&shy;lupu",
-            "pakala": "pa&shy;kala",
-            "pimeja": "pi&shy;meja",
-            "sinpin": "sin&shy;pin",
-            "kijetesantakalu": "kijete&shy;santa&shy;kalu",
-            "lanpan": "lan&shy;pan",
-            "misikeke": "misi&shy;keke",
-            "monsuta": "mon&shy;suta",
-            "namako": "na&shy;mako",
-            "jasima": "ja&shy;sima",
-            "linluwi": "lin&shy;luwi",
-            "majuna": "ma&shy;juna",
-            "kokosila": "koko&shy;sila",
-            "melome": "me&shy;lome",
-            "silapa1": "sila&shy;pa1",
-            "silapa2": "sila&shy;pa2",
-            "silapa3": "sila&shy;pa3",
-            "snoweli": "sno&shy;weli",
-            "wasoweli": "waso&shy;weli",
-        }
+        # that case, probably hard-code individual cases.
+
         word = ""
         word_label = ""
         if "ligature" in glyph:
+            # Words, like soweli
             for letter in glyph["ligature"].split(" "):
                 letter_string = chr(
                     glyphs_cached.get(letter, {}).get("codepoint", 0x20)
@@ -409,12 +410,16 @@ features = [
                 word_label += letter_string
                 if letter_string == "-" or letter_string == "+" or letter_string == "&":
                     word_label += "<br>"
+            if word.startswith(","):
+                word = "|" + word
             if word in hyphenations:
                 word_label = hyphenations[word]
         else:
             if "name" in glyph:
+                # Letters: ijklmpstuw
                 word += glyph["name"]
             else:
+                # Blank writeins
                 word += "|"
                 word_label = " "
         word_list += (
