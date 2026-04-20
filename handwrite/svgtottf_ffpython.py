@@ -355,8 +355,8 @@ def add_glyphs(
                     right = g.boundingBox()[2]
                     width = right - left
                     g.transform(psMat.translate(-right + width / 2 + 500, 0))
-                g.width = 1000
-                g.vwidth = 1000
+                g.width = int(glyph_object.get("width", 1.0) * 1000)
+                g.vwidth = int(glyph_object.get("height", 1.0) * 1000)
 
             def center_vertically(g):
                 if not pixel:
@@ -370,8 +370,8 @@ def add_glyphs(
                             - ((font.ascent + font.descent) - (top - bottom)) / 2,
                         )
                     )
-                g.width = 1000
-                g.vwidth = 1000
+                g.width = int(glyph_object.get("width", 1.0) * 1000)
+                g.vwidth = int(glyph_object.get("height", 1.0) * 1000)
 
             # Center glyphs (including, but not limited to, rotated ones)
             for ff_glyph in rotated_glyph_set:
