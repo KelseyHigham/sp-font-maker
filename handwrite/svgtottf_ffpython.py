@@ -252,6 +252,35 @@ def add_glyphs(
             # █   █   █▄▀ █ █  █  █▄▀    █   █ █  █  █ █  █  █ █ █ █ █ ▀▄▄
             #  ▀▀ ▀    ▀▀  ▀▀  ▀▀  ▀▀    ▀    ▀   ▀▀  ▀▀  ▀▀ ▀  ▀  ▀ ▀ ▀▀
 
+            to_center_x = -500
+            if version_major < 4 and not pixel:
+                to_center_y = -500 + 200
+            else:  # new handwritten, or any pixel
+                to_center_y = -500 + 125
+
+            if pixel:
+                # For pixel fonts, rotate around the assumed center pixel,
+                # with assumed 1px space between glyphs.
+                pixel_size = config.get("pixel-size", 8)
+                if pixel_size % 4 == 0:
+                    # If the em size is a multiple of 4, then the total scan
+                    # width is even.
+                    # Normal case. Assume that there's 1px empty space on the
+                    # right.
+                    to_center_x = -1000 / pixel_size * (pixel_size - 1) / 2
+                    if name == "aTok":
+                        print("to_center_x", to_center_x, "to_center_y", to_center_y)
+                else:
+                    # If the total scan width is *odd*, then we've arbitrarily
+                    # chosen to put the extra 1px padding on the left, balancing
+                    # out the 1px empty space on the right.
+                    # Happens with 6px and 10px fonts.
+                    # Weird case. Assume that the glyph is perfectly centered.
+                    to_center_x = -1000 / pixel_size * pixel_size / 2
+                # Regardless, the vertical scan area is even, so we assume
+                # there's 1px empty space on the bottom.
+                to_center_y = -1000 / pixel_size * (pixel_size + 1) / 2 + 125
+
             # Create rotated glyphs.
             # Later we'll iterate through rotated_glyph_set[] to generate `.top` and
             # `.bottom` versions of each orientation.
@@ -273,39 +302,10 @@ def add_glyphs(
                     font.paste()
                     rotated_glyph_set.append(rotated_glyph)
 
-                    to_center_x = -500
-                    if version_major < 4 and not pixel:
-                        to_center_y = -500 + 200
-                    else:  # new handwritten, or any pixel
-                        to_center_y = -500 + 125
-
-                    if pixel:
-                        # For pixel fonts, rotate around the assumed center pixel,
-                        # with assumed 1px space between glyphs.
-                        pixel_size = config.get("pixel-size", 8)
-                        if pixel_size % 4 == 0:
-                            # If the em size is a multiple of 4, then the total scan
-                            # width is even.
-                            # Normal case. Assume that there's 1px empty space on the
-                            # right.
-                            to_center_x = -1000 / pixel_size * (pixel_size - 1) / 2
-                        else:
-                            # If the total scan width is *odd*, then we've arbitrarily
-                            # chosen to put the extra 1px padding on the left, balancing
-                            # out the 1px empty space on the right.
-                            # Happens with 6px and 10px fonts.
-                            # Weird case. Assume that the glyph is perfectly centered.
-                            to_center_x = -1000 / pixel_size * pixel_size / 2
-                        # Regardless, the vertical scan area is even, so we assume
-                        # there's 1px empty space on the bottom.
-                        to_center_y = -1000 / pixel_size * (pixel_size + 1) / 2 + 125
-
                     rotated_glyph.transform(psMat.translate(to_center_x, to_center_y))
                     if flip:
                         rotated_glyph.transform(psMat.scale(-1, 1))
-                    rotated_glyph.transform(
-                        psMat.rotate(degrees_ccw / 360 * math.pi * 2)
-                    )
+                    rotated_glyph.transform(psMat.rotate(degrees_ccw / 360 * math.tau))
                     rotated_glyph.transform(psMat.translate(-to_center_x, -to_center_y))
 
                 direction = glyph_object.get("direction", "right")
@@ -381,35 +381,193 @@ def add_glyphs(
                 if center == "both" or center == "vertical":
                     center_vertically(ff_glyph)
 
+            # ▄█▄  ▄▄ █ █ ▄ ▄    ▄▄▄▄   ▄▄  ▄▄ █ ▄  ▄▄
+            #  █  █ █ █ █ ▀▄█    █ █ █ █ █ █   ██  ▀▄▄
+            #  ▀▀  ▀▀ ▀ ▀ ▄▄▀    ▀ ▀ ▀  ▀▀ ▀   ▀ ▀ ▀▀
+
+            # We need to create duplicate tally marks.
+
+            # We do create duplicate ni rotations in this file, so it's probably okay to
+            # create duplicate (rotated!) tallies in this file.
+
+            # However, we can't reference cartoucheMiddleTok to paste it in, because it
+            # hasn't been created yet.
+
+            # So, split the "add glyphs" loop up a bit more - adding glyphs on the first
+            # loop, duplicating glyphs on the second.
+
+            # Doesn't currently do anything
+            if glyph_object.get("type", "") == "combining":
+                g.width = 0
+                g.vwidth = 0
+                g.transform(psMat.translate(-1000, 0))
+
+            if glyph_object.get("type", "") == "tally":
+                g.width = 0
+                g.vwidth = 0
+                g.transform(psMat.translate(-1000, 0))
+
+                if (
+                    glyph_object.get("name", "") == "tallyTok"
+                    or glyph_object.get("name", "") == "commaTok"
+                ):
+                    for tally_count in range(16):  # 1--15
+                        long_tally_name = "tally" + str(tally_count) + "Tok"  # 1--15
+                        g = font.createChar(-1, long_tally_name)
+
+                        # Rotational method
+                        angle_between_tallies = math.radians(8)
+
+                        def rotate_tally(angle_to_rotate):
+                            g.transform(
+                                psMat.translate(1000 + to_center_x, to_center_y - 750)
+                            )
+                            g.transform(psMat.rotate(angle_to_rotate))
+                            g.transform(
+                                psMat.translate(to_center_x - 125, -to_center_y + 750)
+                            )
+
+                        def draw_one_tally():
+                            font.selection.select("tallyTok")
+                            font.copy()
+                            font.selection.select(long_tally_name)
+                            font.pasteInto()
+
+                        def draw_two_tallies():
+                            font.selection.select("tallyTok")
+                            font.copy()
+                            font.selection.select(long_tally_name)
+                            rotate_tally(-angle_between_tallies / 2)
+                            font.pasteInto()
+                            rotate_tally(angle_between_tallies)
+                            font.pasteInto()
+                            rotate_tally(-angle_between_tallies / 2)
+
+                        def draw_three_tallies():
+                            font.selection.select("tallyTok")
+                            font.copy()
+                            font.selection.select(long_tally_name)
+                            rotate_tally(-angle_between_tallies)
+                            font.pasteInto()
+                            rotate_tally(angle_between_tallies)
+                            font.pasteInto()
+                            rotate_tally(angle_between_tallies)
+                            font.pasteInto()
+                            rotate_tally(-angle_between_tallies)
+
+                        def draw_four_tallies():
+                            font.selection.select("tallyTok")
+                            font.copy()
+                            font.selection.select(long_tally_name)
+                            rotate_tally(-angle_between_tallies * 1.5)
+                            font.pasteInto()
+                            rotate_tally(angle_between_tallies)
+                            font.pasteInto()
+                            rotate_tally(angle_between_tallies)
+                            font.pasteInto()
+                            rotate_tally(angle_between_tallies)
+                            font.pasteInto()
+                            rotate_tally(-angle_between_tallies * 1.5)
+
+                        # # Horizontal method
+
+                        # def draw_one_tally():
+                        #     font.selection.select("tallyTok")
+                        #     font.copy()
+                        #     font.selection.select(long_tally_name)
+                        #     font.pasteInto()
+
+                        # def draw_two_tallies():
+                        #     g.transform(psMat.translate(125, 0))
+                        #     font.selection.select("tallyTok")
+                        #     font.copy()
+                        #     font.selection.select(long_tally_name)
+                        #     font.pasteInto()
+                        #     g.transform(psMat.translate(-250, 0))
+                        #     font.pasteInto()
+                        #     g.transform(psMat.translate(125, 0))
+
+                        # def draw_three_tallies():
+                        #     g.transform(psMat.translate(250, 0))
+                        #     font.selection.select("tallyTok")
+                        #     font.copy()
+                        #     font.selection.select(long_tally_name)
+                        #     font.pasteInto()
+                        #     g.transform(psMat.translate(-250, 0))
+                        #     font.pasteInto()
+                        #     g.transform(psMat.translate(-250, 0))
+                        #     font.pasteInto()
+                        #     g.transform(psMat.translate(250, 0))
+
+                        # def draw_four_tallies():
+                        #     g.transform(psMat.translate(250, 0))
+                        #     font.selection.select("tallyTok")
+                        #     font.copy()
+                        #     font.selection.select(long_tally_name)
+                        #     font.pasteInto()
+                        #     g.transform(psMat.translate(-250, 0))
+                        #     font.pasteInto()
+                        #     g.transform(psMat.translate(-250, 0))
+                        #     font.pasteInto()
+                        #     g.transform(psMat.translate(-250, 0))
+                        #     font.pasteInto()
+                        #     g.transform(psMat.translate(500, 0))
+                        #     total_tally_cells = 1.25
+
+                        # If there are more than 4 tallies, split them into groups of 3
+
+                        total_tally_cells = 1
+
+                        if tally_count == 1:
+                            draw_one_tally()
+
+                        elif tally_count == 2:
+                            draw_two_tallies()
+
+                        elif tally_count == 3:
+                            draw_three_tallies()
+
+                        elif tally_count == 4:
+                            draw_four_tallies()
+
+                        else:
+                            groups_of_three = tally_count // 3
+                            print(
+                                "tally_count",
+                                tally_count,
+                                "groups_of_three",
+                                groups_of_three,
+                            )
+                            total_tally_cells = groups_of_three
+                            remaining_tallies = tally_count - groups_of_three * 3
+                            if remaining_tallies > 0:
+                                total_tally_cells += 1
+                            for current_cell in range(groups_of_three):
+                                if "cartoucheMiddleTok" in font:
+                                    print("tallyTok is in font")
+                                    font.selection.select("cartoucheMiddleTok")
+                                    font.copy()
+                                    font.selection.select(long_tally_name)
+                                    font.pasteInto()
+                                else:
+                                    print("cartoucheMiddleTok is not in font")
+                                g.transform(psMat.translate(-1000, 0))
+                                draw_three_tallies()
+                            if remaining_tallies == 1:
+                                g.transform(psMat.translate(-1000, 0))
+                                draw_one_tally()
+                            if remaining_tallies == 2:
+                                g.transform(psMat.translate(-1000, 0))
+                                draw_two_tallies()
+                            g.transform(
+                                psMat.translate(1000 * (total_tally_cells - 1), 0)
+                            )
+                        g.width = (total_tally_cells - 1) * 1000
+                        g.vwidth = g.width
+
             #  ▄▄  ▄▄  ▄▄  ▄▄ ▄█▄  ▄▄    ▄▄   ▄▄  ▄▄       ▄▄  ▄  ▄▄▄▄  █▄  ▀ ▄▄   ▄▄  ▄█
             # █   █   █▄▀ █ █  █  █▄▀    █ █ █   █▄▀ ▀▀▀▀ █   █ █ █ █ █ █ █ █ █ █ █▄▀ █ █
             #  ▀▀ ▀    ▀▀  ▀▀  ▀▀  ▀▀    █▀  ▀    ▀▀       ▀▀  ▀  ▀ ▀ ▀ ▀▀  ▀ ▀ ▀  ▀▀  ▀▀
-
-            to_center_x = -500
-            if version_major < 4 and not pixel:
-                to_center_y = -500 + 200
-            else:  # new handwritten, or any pixel
-                to_center_y = -500 + 125
-            if pixel:
-                # For pixel fonts, rotate around the assumed center pixel,
-                # with assumed 1px space between glyphs.
-                pixel_size = config.get("pixel-size", 8)
-                if pixel_size % 4 == 0:
-                    # If the em size is a multiple of 4, then the total scan
-                    # width is even.
-                    # Normal case. Assume that there's 1px empty space on the
-                    # right.
-                    to_center_x = -1000 / pixel_size * (pixel_size - 1) / 2
-                else:
-                    # If the total scan width is *odd*, then we've arbitrarily
-                    # chosen to put the extra 1px padding on the left, balancing
-                    # out the 1px empty space on the right.
-                    # Happens with 6px and 10px fonts.
-                    # Weird case. Assume that the glyph is perfectly centered.
-                    to_center_x = -1000 / pixel_size * pixel_size / 2
-                # Regardless, the vertical scan area is even, so we assume
-                # there's 1px empty space on the bottom.
-                to_center_y = -1000 / pixel_size * (pixel_size + 1) / 2 + 125
 
             # Todo: Choose glyphs to pre-combine from default.toml
             # Pre-combine nested lipu+toki

@@ -58,8 +58,12 @@ languagesystem latn dflt; # people can edit the font in fontforge after??
 feature liga {
 """
     list_of_ligs = []
+    # Default pre-composed tallies, as distinct from writein sequences of tallies:
+    default_tallies = []
+
     # Cartouchable and stackable glyphs with ligatures:
-    cartoucheable_and_stackable = []
+    cartoucheable = []
+    stackable = []
 
     # Create ligature lines.
     with open(default_json) as f:
@@ -92,7 +96,60 @@ feature liga {
                     )
                 )
 
-                if "rotate" in k and k["rotate"]:
+                if k.get("cartoucheable-stackable", True) == True:
+                    # Currently excludes:
+                    # - cartoucheStartTok
+                    # - cartoucheEndTok
+                    # - stackJoinTok
+                    # - zerowidthjoiner
+                    # - ideographicspace
+                    cartoucheable.append(k["name"])
+                    stackable.append(k["name"])
+
+                if k.get("rotate", False):
+                    direction = k.get("direction", "right")
+
+                    if direction == "up":
+                        cartoucheable.append(k["name"] + ".S")
+                        cartoucheable.append(k["name"] + ".E")
+                        cartoucheable.append(k["name"] + ".W")
+                    elif direction == "down":
+                        cartoucheable.append(k["name"] + ".E")
+                        cartoucheable.append(k["name"] + ".N")
+                        cartoucheable.append(k["name"] + ".W")
+                    elif direction == "left":
+                        cartoucheable.append(k["name"] + ".S")
+                        cartoucheable.append(k["name"] + ".E")
+                        cartoucheable.append(k["name"] + ".N")
+                    else:  # right
+                        cartoucheable.append(k["name"] + ".S")
+                        cartoucheable.append(k["name"] + ".N")
+                        cartoucheable.append(k["name"] + ".W")
+                    cartoucheable.append(k["name"] + ".SE")
+                    cartoucheable.append(k["name"] + ".NE")
+                    cartoucheable.append(k["name"] + ".NW")
+                    cartoucheable.append(k["name"] + ".SW")
+
+                    if direction == "up":
+                        stackable.append(k["name"] + ".S")
+                        stackable.append(k["name"] + ".E")
+                        stackable.append(k["name"] + ".W")
+                    elif direction == "down":
+                        stackable.append(k["name"] + ".E")
+                        stackable.append(k["name"] + ".N")
+                        stackable.append(k["name"] + ".W")
+                    elif direction == "left":
+                        stackable.append(k["name"] + ".S")
+                        stackable.append(k["name"] + ".E")
+                        stackable.append(k["name"] + ".N")
+                    else:  # right
+                        stackable.append(k["name"] + ".S")
+                        stackable.append(k["name"] + ".N")
+                        stackable.append(k["name"] + ".W")
+                    stackable.append(k["name"] + ".SE")
+                    stackable.append(k["name"] + ".NE")
+                    stackable.append(k["name"] + ".NW")
+                    stackable.append(k["name"] + ".SW")
 
                     def rotated_ligature(
                         lig, lig_suffix, name, name_suffix, extra_length
@@ -135,39 +192,24 @@ feature liga {
                         rotated_ligature(lig, " west", name, ".W", 1)
                     pass
 
-                if k.get("cartoucheable-stackable", True) == True:
-                    # Currently excludes:
-                    # - cartoucheStartTok
-                    # - cartoucheEndTok
-                    # - stackJoinTok
-                    # - zerowidthjoiner
-                    # - ideographicspace
-                    cartoucheable_and_stackable.append(k["name"])
+                # Todo: Adjust this so that it only checks if this is a writein for
+                # *one* tally
+                if k.get("type", "") == "tally":
+                    for tally_count in range(15):  # 1--14
+                        # Create tuples of ligature text, followed by ligature length by
+                        # tokens.
+                        tally_lig = "tallyTok " * (tally_count + 1)  # 2--15
+                        tally_name = "tally" + str(tally_count + 1) + "Tok"
+                        default_tallies.append(
+                            (
+                                f"  sub   {tally_lig.rjust(22)}   by   {tally_name.rjust(13)};",
+                                tally_count + 1,  # 2--15
+                            )
+                        )
+                        cartoucheable.append(tally_name)
+                        # stackable.append(tally_name)
 
-                if "rotate" in k and k["rotate"]:
-                    direction = k.get("direction", "right")
-                    if direction == "up":
-                        cartoucheable_and_stackable.append(k["name"] + ".S")
-                        cartoucheable_and_stackable.append(k["name"] + ".E")
-                        cartoucheable_and_stackable.append(k["name"] + ".W")
-                    elif direction == "down":
-                        cartoucheable_and_stackable.append(k["name"] + ".E")
-                        cartoucheable_and_stackable.append(k["name"] + ".N")
-                        cartoucheable_and_stackable.append(k["name"] + ".W")
-                    elif direction == "left":
-                        cartoucheable_and_stackable.append(k["name"] + ".S")
-                        cartoucheable_and_stackable.append(k["name"] + ".E")
-                        cartoucheable_and_stackable.append(k["name"] + ".N")
-                    else:  # right
-                        cartoucheable_and_stackable.append(k["name"] + ".S")
-                        cartoucheable_and_stackable.append(k["name"] + ".N")
-                        cartoucheable_and_stackable.append(k["name"] + ".W")
-                    cartoucheable_and_stackable.append(k["name"] + ".SE")
-                    cartoucheable_and_stackable.append(k["name"] + ".NE")
-                    cartoucheable_and_stackable.append(k["name"] + ".NW")
-                    cartoucheable_and_stackable.append(k["name"] + ".SW")
-
-    # linuwi, kepen, ali, ni-numbers, space space, hyphen
+    # linuwi, kepen, ali, ni-numbers
     aliases = default_json_data.get("ligature-aliases", [])
     glyphs = default_json_data.get("glyphs", {}).get("sheet", [])
     for alias in aliases:
@@ -179,9 +221,8 @@ feature liga {
         # 2. And we're not redirecting a writein glyph's ligature (e.g. "k e p e n") to
         #    a default glyph, thereby preventing the writein from being written:
         if (
-            alias["target-name"] in cartoucheable_and_stackable
-            and alias["ligature"].replace(" ", "") + "Tok"
-            not in cartoucheable_and_stackable
+            alias["target-name"] in cartoucheable
+            and alias["ligature"].replace(" ", "") + "Tok" not in cartoucheable
         ):
             list_of_ligs.append(
                 (
@@ -206,8 +247,31 @@ feature liga {
 
 
 
+# DEFAULT TALLIES
+# (After writein tallies)
 
-# WRITEIN COMBOS
+feature liga {
+"""
+
+    # Sort them by number of tokens.
+    default_tallies.sort(reverse=True, key=lambda x: x[1])
+
+    # Add to our cool string.
+    for line in default_tallies:
+        ligatures_string += line[0] + "\n"
+
+    ligatures_string += """} liga;
+
+
+
+
+
+
+
+
+
+"""
+    ligatures_string += """# WRITEIN COMBOS
 # (Fill this in later)
 
 
@@ -224,7 +288,7 @@ feature liga {
 
 feature liga {
 """
-    for word in cartoucheable_and_stackable:
+    for word in stackable:
         ligatures_string += f"  sub   kulupuTok zerowidthjoiner {word.ljust(12)}   by   kulupuTok_zerowidthjoiner_{word};\n"
 
     ligatures_string += """
@@ -256,7 +320,7 @@ feature liga {
 
 lookup step1_joinBottom {"""
     # sub   kalaTok stackJoinTok   by   kalaTok.bottom;
-    for word in cartoucheable_and_stackable:
+    for word in stackable:
         ligatures_string += (
             f"\n  sub {word.rjust(12)}    stackJoinTok   by {word.rjust(12)}.bottom;"
             f"\n  sub {word.rjust(12)} zerowidthjoiner   by {word.rjust(12)}.bottom;"
@@ -268,7 +332,7 @@ lookup step1_joinBottom {"""
 
 lookup step2_duplicateJoiner {"""
     # sub   kalaTok.bottom   by   kalaTok.bottom stackJoinTok;
-    for word in cartoucheable_and_stackable:
+    for word in stackable:
         ligatures_string += f"\n  sub {word.rjust(12)}.bottom   by {word.rjust(12)}.bottom stackJoinTok;"
     ligatures_string += """
 } step2_duplicateJoiner;
@@ -277,7 +341,7 @@ lookup step2_duplicateJoiner {"""
 
 lookup step3_joinTop {"""
     # sub   stackJoinTok liliTok   by   liliTok.top;
-    for word in cartoucheable_and_stackable:
+    for word in stackable:
         ligatures_string += (
             f"\n  sub   stackJoinTok {word.rjust(12)}   by {word.rjust(12)}.top;"
         )
@@ -306,11 +370,11 @@ feature liga {                    #          kala stackJoin    lili
 
 @cartoucheableGlyph = [
 """
-    for word in cartoucheable_and_stackable:
+    for word in cartoucheable:
         ligatures_string += "  " + word.rjust(12) + "\n"
-    for word in cartoucheable_and_stackable:
+    for word in stackable:
         ligatures_string += "  " + word.rjust(12) + ".bottom\n"
-    for word in cartoucheable_and_stackable:
+    for word in stackable:
         ligatures_string += "  " + word.rjust(12) + ".top\n"
 
     cartoucheable_non_words = [
@@ -369,12 +433,12 @@ feature liga {                    #          kala stackJoin    lili
 """
 
     # ligatures_string += """@stackableBottom = [\n"""
-    # for word in cartoucheable_and_stackable:
+    # for word in stackable:
     #     ligatures_string += "  " + word.rjust(12) + ".bottom\n"
     # ligatures_string += """];\n\n"""
 
     # ligatures_string += """@stackableTop = [\n"""
-    # for word in cartoucheable_and_stackable:
+    # for word in stackable:
     #     ligatures_string += "  " + word.rjust(12) + ".top\n"
     # ligatures_string += """];\n\n\n\n"""
 
@@ -383,13 +447,13 @@ feature liga {                    #          kala stackJoin    lili
   # (The cartouche middle is zero-width and extends to the left,
   #  surrounding the glyph.)
 """
-    for word in cartoucheable_and_stackable:
+    for word in cartoucheable:
         ligatures_string += (
             f"  sub {word.rjust(12)}   by {word.rjust(12)} cartoucheMiddleTok;\n"
         )
-    for word in cartoucheable_and_stackable:
+    for word in stackable:
         ligatures_string += f"  sub {word.rjust(12)}.bottom   by {word.rjust(12)}.bottom cartoucheMiddleTok;\n"
-    for word in cartoucheable_and_stackable:
+    for word in stackable:
         ligatures_string += f"  sub {word.rjust(12)}.top   by {word.rjust(12)}.top cartoucheMiddleTok;\n"
     for non_word in cartoucheable_non_words:
         ligatures_string += f"  sub {non_word.rjust(12)}   by {non_word.rjust(12)} cartoucheMiddleTok;\n"
