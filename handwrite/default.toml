@@ -282,8 +282,8 @@ glyphs.derived = [
   # Punctuation:
   {codepoint = 0x5b, name = "bracketleft",  writein = "[", source-glyph = 120}, # cartoucheStartTok
   {codepoint = 0x5d, name = "bracketright", writein = "]", source-glyph = 121}, # cartoucheEndTok
-  {codepoint = 0x2e, name = "period",                      source-glyph = 122}, # middotTok
-  {codepoint = 0x3a, name = "colon",                       source-glyph = 123}, # colonTok
+  {codepoint = 0x2e, name = "period",       writein = ".", source-glyph = 122}, # middotTok
+  {codepoint = 0x3a, name = "colon",        writein = ":", source-glyph = 123}, # colonTok
 
   # Already-a-word letters, for words like Anna:
   {codepoint = 0x61, name = "a", source-glyph = 0},   # aTok
