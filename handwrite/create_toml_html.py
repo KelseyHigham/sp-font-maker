@@ -411,6 +411,8 @@ features = [
                 word_label += letter_string
                 if letter_string == "-" or letter_string == "+" or letter_string == "&":
                     word_label += "<br>"
+            if word_label == "-<br>-":
+                word_label = "--"
             if word.startswith(","):
                 # Tally mark. Prepend with a space so that it doesn't combine with the
                 # previous character, then insert a combining cartouche extension so
