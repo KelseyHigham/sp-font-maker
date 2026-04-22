@@ -192,22 +192,31 @@ feature liga {
                         rotated_ligature(lig, " west", name, ".W", 1)
                     pass
 
-                # Todo: Adjust this so that it only checks if this is a writein for
-                # *one* tally
                 if k.get("type", "") == "tally":
-                    for tally_count in range(15):  # 1--14
-                        # Create tuples of ligature text, followed by ligature length by
-                        # tokens.
-                        tally_lig = "tallyTok " * (tally_count + 1)  # 2--15
-                        tally_name = "tally" + str(tally_count + 1) + "Tok"
-                        default_tallies.append(
-                            (
-                                f"  sub   {tally_lig.rjust(22)}   by   {tally_name.rjust(13)};",
-                                tally_count + 1,  # 2--15
+                    tally_name = ""
+                    populate_tallies = False
+                    if k.get("name", "") == "tallyTok":
+                        tally_name = "tallyTok"
+                        populate_tallies = True
+                    elif k.get("name", "") == "commaTok":
+                        tally_name = "commaTok"
+                        populate_tallies = True
+                    if populate_tallies:
+                        for tally_count in range(15):  # 0--14
+                            # Create tuples of ligature text, followed by ligature
+                            # length by tokens.
+                            tally_lig = (tally_name + " cartoucheMiddleTok ") * (
+                                tally_count + 1
+                            )  # 1--15
+                            long_tally_name = "tally" + str(tally_count + 1) + "Tok"
+                            default_tallies.append(
+                                (
+                                    f"  sub   {tally_lig.rjust(22)}   by   {long_tally_name.rjust(13)};",
+                                    tally_count + 1,  # 1--15
+                                )
                             )
-                        )
-                        cartoucheable.append(tally_name)
-                        # stackable.append(tally_name)
+                            cartoucheable.append(long_tally_name)
+                            # stackable.append(long_tally_name)
 
     # linuwi, kepen, ali, ni-numbers
     aliases = default_json_data.get("ligature-aliases", [])
@@ -239,30 +248,6 @@ feature liga {
         ligatures_string += line[0] + "\n"
 
     ligatures_string += """} liga;
-
-
-
-
-
-
-
-
-# DEFAULT TALLIES
-# (After writein tallies)
-
-feature liga {
-"""
-
-    # Sort them by number of tokens.
-    default_tallies.sort(reverse=True, key=lambda x: x[1])
-
-    # Add to our cool string.
-    for line in default_tallies:
-        ligatures_string += line[0] + "\n"
-
-    ligatures_string += """} liga;
-
-
 
 
 
@@ -417,7 +402,7 @@ feature liga {                    #          kala stackJoin    lili
         "question",
         "semicolon",
         "comma",
-        "underscore",
+        "equals",
         "ideographicspace",
         "pipe",
         "middotTok",
@@ -480,6 +465,30 @@ feature calt {
   # sub   cartoucheStartTok [@stackableBottom] [@stackableTop]'   lookup add_cartouche_middle;
   # sub   cartoucheMiddleTok [@stackableBottom] [@stackableTop]'   lookup add_cartouche_middle;
 } calt;
+
+
+
+
+
+
+
+
+
+"""
+    ligatures_string += """# DEFAULT TALLIES
+# (Well after writein tallies)
+
+feature liga {
+"""
+
+    # Sort them by number of tokens.
+    default_tallies.sort(reverse=True, key=lambda x: x[1])
+
+    # Add to our cool string.
+    for line in default_tallies:
+        ligatures_string += line[0] + "\n"
+
+    ligatures_string += """} liga;
 
 
 

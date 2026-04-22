@@ -411,7 +411,10 @@ features = [
                 if letter_string == "-" or letter_string == "+" or letter_string == "&":
                     word_label += "<br>"
             if word.startswith(","):
-                word = "|" + word
+                # Tally mark. Prepend with a space so that it doesn't combine with the
+                # previous character, then insert a combining cartouche extension so
+                # that the tally isn't hidden.
+                word = "|=" + word
             if word in hyphenations:
                 word_label = hyphenations[word]
         else:

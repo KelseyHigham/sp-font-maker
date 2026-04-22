@@ -406,16 +406,20 @@ def add_glyphs(
                 g.width = 0
                 g.vwidth = 0
                 g.transform(psMat.translate(-1000, 0))
-
-                if (
-                    glyph_object.get("name", "") == "tallyTok"
-                    or glyph_object.get("name", "") == "commaTok"
-                ):
+                tally_name = ""
+                if glyph_object.get("name", "") == "commaTok":
+                    # Writein
+                    tally_name = "commaTok"
+                if glyph_object.get("name", "") == "tallyTok":
+                    # Default sheet
+                    tally_name = "tallyTok"
+                if tally_name == "tallyTok" or tally_name == "commaTok":
                     for tally_count in range(16):  # 1--15
                         long_tally_name = "tally" + str(tally_count) + "Tok"  # 1--15
                         g = font.createChar(-1, long_tally_name)
 
                         # Rotational method
+
                         angle_between_tallies = math.radians(8)
 
                         def rotate_tally(angle_to_rotate):
@@ -428,13 +432,13 @@ def add_glyphs(
                             )
 
                         def draw_one_tally():
-                            font.selection.select("tallyTok")
+                            font.selection.select(tally_name)
                             font.copy()
                             font.selection.select(long_tally_name)
                             font.pasteInto()
 
                         def draw_two_tallies():
-                            font.selection.select("tallyTok")
+                            font.selection.select(tally_name)
                             font.copy()
                             font.selection.select(long_tally_name)
                             rotate_tally(-angle_between_tallies / 2)
@@ -444,7 +448,7 @@ def add_glyphs(
                             rotate_tally(-angle_between_tallies / 2)
 
                         def draw_three_tallies():
-                            font.selection.select("tallyTok")
+                            font.selection.select(tally_name)
                             font.copy()
                             font.selection.select(long_tally_name)
                             rotate_tally(-angle_between_tallies)
@@ -456,7 +460,7 @@ def add_glyphs(
                             rotate_tally(-angle_between_tallies)
 
                         def draw_four_tallies():
-                            font.selection.select("tallyTok")
+                            font.selection.select(tally_name)
                             font.copy()
                             font.selection.select(long_tally_name)
                             rotate_tally(-angle_between_tallies * 1.5)
@@ -472,14 +476,14 @@ def add_glyphs(
                         # # Horizontal method
 
                         # def draw_one_tally():
-                        #     font.selection.select("tallyTok")
+                        #     font.selection.select(tally_name)
                         #     font.copy()
                         #     font.selection.select(long_tally_name)
                         #     font.pasteInto()
 
                         # def draw_two_tallies():
                         #     g.transform(psMat.translate(125, 0))
-                        #     font.selection.select("tallyTok")
+                        #     font.selection.select(tally_name)
                         #     font.copy()
                         #     font.selection.select(long_tally_name)
                         #     font.pasteInto()
@@ -489,7 +493,7 @@ def add_glyphs(
 
                         # def draw_three_tallies():
                         #     g.transform(psMat.translate(250, 0))
-                        #     font.selection.select("tallyTok")
+                        #     font.selection.select(tally_name)
                         #     font.copy()
                         #     font.selection.select(long_tally_name)
                         #     font.pasteInto()
@@ -500,8 +504,8 @@ def add_glyphs(
                         #     g.transform(psMat.translate(250, 0))
 
                         # def draw_four_tallies():
-                        #     g.transform(psMat.translate(250, 0))
-                        #     font.selection.select("tallyTok")
+                        #     g.transform(psMat.translate(125, 0))
+                        #     font.selection.select(tally_name)
                         #     font.copy()
                         #     font.selection.select(long_tally_name)
                         #     font.pasteInto()
@@ -511,7 +515,7 @@ def add_glyphs(
                         #     font.pasteInto()
                         #     g.transform(psMat.translate(-250, 0))
                         #     font.pasteInto()
-                        #     g.transform(psMat.translate(500, 0))
+                        #     g.transform(psMat.translate(375, 0))
                         #     total_tally_cells = 1.25
 
                         # If there are more than 4 tallies, split them into groups of 3
@@ -544,7 +548,7 @@ def add_glyphs(
                                 total_tally_cells += 1
                             for current_cell in range(groups_of_three):
                                 if "cartoucheMiddleTok" in font:
-                                    print("tallyTok is in font")
+                                    print("cartoucheMiddleTok is in font")
                                     font.selection.select("cartoucheMiddleTok")
                                     font.copy()
                                     font.selection.select(long_tally_name)
@@ -564,6 +568,15 @@ def add_glyphs(
                             )
                         g.width = (total_tally_cells - 1) * 1000
                         g.vwidth = g.width
+                    # Remove outlines from commaTok and tallyTok, so that they're
+                    # invisible outside of cartouches. Inside of cartouches, they're
+                    # replaced with tally1Tok, tally2Tok, etc., which are visible.
+                    g = font[tally_name]
+                    g.clear(1)
+                    g.width = 1000
+                    g.vwidth = 1000
+                    # font.createChar(tally_name)
+                    # font.paste()
 
             #  ▄▄  ▄▄  ▄▄  ▄▄ ▄█▄  ▄▄    ▄▄   ▄▄  ▄▄       ▄▄  ▄  ▄▄▄▄  █▄  ▀ ▄▄   ▄▄  ▄█
             # █   █   █▄▀ █ █  █  █▄▀    █ █ █   █▄▀ ▀▀▀▀ █   █ █ █ █ █ █ █ █ █ █ █▄▀ █ █
