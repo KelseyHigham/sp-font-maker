@@ -193,6 +193,8 @@ feature liga {
                     pass
 
                 if k.get("type", "") == "tally":
+                    # Adopt the following when I'm not juggling two git branches
+                    # tally_name = k.get("name", "")
                     tally_name = ""
                     populate_tallies = False
                     if k.get("name", "") == "tallyTok":
@@ -207,16 +209,15 @@ feature liga {
                             # length by tokens.
                             tally_lig = (tally_name + " cartoucheMiddleTok ") * (
                                 tally_count + 1
-                            )  # 1--15
+                            )
                             long_tally_name = "tally" + str(tally_count + 1) + "Tok"
                             default_tallies.append(
                                 (
                                     f"  sub   {tally_lig.rjust(22)}   by   {long_tally_name.rjust(13)};",
-                                    tally_count + 1,  # 1--15
+                                    tally_count + 1,
                                 )
                             )
                             cartoucheable.append(long_tally_name)
-                            # stackable.append(long_tally_name)
 
     # linuwi, kepen, ali, ni-numbers
     aliases = default_json_data.get("ligature-aliases", [])
