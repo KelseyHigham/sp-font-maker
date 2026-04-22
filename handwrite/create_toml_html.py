@@ -310,7 +310,7 @@ features = [
     }}
     .word {{
         width: 48px;
-        text-align: center;
+        text-align: left;
     }}
     .label {{
         font-family: 'Chalkboard SE', 'Comic Sans MS', sans-serif;
@@ -320,6 +320,7 @@ features = [
         display: inline-block;
         opacity: 0.5;
         overflow-wrap: break-word;
+        text-align: center;
     }}
     .hidden.label {{
         display: none;
@@ -414,7 +415,7 @@ features = [
                 # Tally mark. Prepend with a space so that it doesn't combine with the
                 # previous character, then insert a combining cartouche extension so
                 # that the tally isn't hidden.
-                word = "|=" + word
+                word = "|" + word + "="
             if word in hyphenations:
                 word_label = hyphenations[word]
         else:
