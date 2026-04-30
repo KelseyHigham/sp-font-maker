@@ -394,9 +394,9 @@ glyphs.spaces = [
   {codepoint = 0x28, width =   0, name = "openparen",   writein = "("},
   {codepoint = 0x29, width =   0, name = "closeparen",  writein = ")"},
   {codepoint = 0x2a, width = 1.0, name = "asterisk",    writein = "*"},
-  {codepoint = 0x22, width = 1.0, name = "doublequote", writein = "'"},
+  {codepoint = 0x22, width = 1.0, name = "doublequote", writein = '"'},
   {codepoint = 0x2c, width = 1.0, name = "comma",       writein = ","},
-  {codepoint = 0x27, width = 1.0, name = "singlequote", writein = "'"},
+  {codepoint = 0x27, width = 1.0, name = "apostrophe",  writein = "'"},
 
   # Fallback for text intended as sitelen Lasina:
   {codepoint = 0x21, width = 1.0, name = "exclamation", writein = "!"},
@@ -436,8 +436,8 @@ ligature-aliases = [ # implemented!!!
 
   # Alternate spellings for write-ins. When used as a dialog marker, "la" is
   # clearer than "mu".
-  {ligature = "l a 2",       target-name = "mu2Tok"},
-  {ligature = "m u 2",       target-name = "la2Tok"},
+  {ligature = "l a two",       target-name = "mutwoTok"},
+  {ligature = "m u two",       target-name = "latwoTok"},
 
   # ni-numbers, from the ligature standard:
 
@@ -502,4 +502,19 @@ writein-metadata = [
   {name = "commacommacommacommacommacommacommacommacommacommacommacommacommaTok",           type = "tally", center = false},
   {name = "commacommacommacommacommacommacommacommacommacommacommacommacommacommaTok",      type = "tally", center = false},
   {name = "commacommacommacommacommacommacommacommacommacommacommacommacommacommacommaTok", type = "tally", center = false},
+  {name = "apostropheTok",                                                                                                                                             type = "combining", center = false},
+  {name = "apostropheapostropheTok",                                                                                                                                   type = "combining", center = false},
+  {name = "apostropheapostropheapostropheTok",                                                                                                                         type = "combining", center = false},
+  {name = "apostropheapostropheapostropheapostropheTok",                                                                                                               type = "combining", center = false},
+  {name = "apostropheapostropheapostropheapostropheapostropheTok",                                                                                                     type = "combining", center = false},
+  {name = "apostropheapostropheapostropheapostropheapostropheapostropheTok",                                                                                           type = "combining", center = false},
+  {name = "apostropheapostropheapostropheapostropheapostropheapostropheapostropheTok",                                                                                 type = "combining", center = false},
+  {name = "apostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheTok",                                                                       type = "combining", center = false},
+  {name = "apostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheTok",                                                             type = "combining", center = false},
+  {name = "apostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheTok",                                                   type = "combining", center = false},
+  {name = "apostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheTok",                                         type = "combining", center = false},
+  {name = "apostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheTok",                               type = "combining", center = false},
+  {name = "apostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheTok",                     type = "combining", center = false},
+  {name = "apostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheTok",           type = "combining", center = false},
+  {name = "apostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheapostropheTok", type = "combining", center = false},
 ]

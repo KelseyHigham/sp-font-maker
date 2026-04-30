@@ -423,15 +423,18 @@ def add_glyphs(
 
                         # Rotational method
 
-                        angle_between_tallies = math.radians(8)
+                        angle_between_tallies = math.radians(9)
 
                         def rotate_tally(angle_to_rotate):
+                            # Rotate about the center: `to_center_y`
+                            # Rotate about the top of the cartouche: `to_center_y - 750`
+                            # Rotate about the top of the next cartouche up: `to_center_y - 2250`
                             g.transform(
                                 psMat.translate(1000 + to_center_x, to_center_y - 750)
                             )
                             g.transform(psMat.rotate(angle_to_rotate))
                             g.transform(
-                                psMat.translate(to_center_x - 125, -to_center_y + 750)
+                                psMat.translate(-1000 - to_center_x, -to_center_y + 750)
                             )
 
                         def draw_one_tally():
@@ -507,18 +510,18 @@ def add_glyphs(
                         #     g.transform(psMat.translate(250, 0))
 
                         # def draw_four_tallies():
-                        #     g.transform(psMat.translate(125, 0))
+                        #     g.transform(psMat.translate(337, 0))
                         #     font.selection.select(tally_name)
                         #     font.copy()
                         #     font.selection.select(long_tally_name)
                         #     font.pasteInto()
-                        #     g.transform(psMat.translate(-250, 0))
+                        #     g.transform(psMat.translate(-225, 0))
                         #     font.pasteInto()
-                        #     g.transform(psMat.translate(-250, 0))
+                        #     g.transform(psMat.translate(-225, 0))
                         #     font.pasteInto()
-                        #     g.transform(psMat.translate(-250, 0))
+                        #     g.transform(psMat.translate(-225, 0))
                         #     font.pasteInto()
-                        #     g.transform(psMat.translate(375, 0))
+                        #     g.transform(psMat.translate(337, 0))
                         #     total_tally_cells = 1.25
 
                         # If there are more than 4 tallies, split them into groups of 3
