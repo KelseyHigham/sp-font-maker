@@ -269,7 +269,8 @@ def add_glyphs(
                     # right.
                     to_center_x = -1000 / pixel_size * (pixel_size - 1) / 2
                     if name == "aTok":
-                        print("to_center_x", to_center_x, "to_center_y", to_center_y)
+                        # print("to_center_x", to_center_x, "to_center_y", to_center_y)
+                        pass
                 else:
                     # If the total scan width is *odd*, then we've arbitrarily
                     # chosen to put the extra 1px padding on the left, balancing
@@ -539,25 +540,26 @@ def add_glyphs(
 
                         else:
                             groups_of_three = tally_count // 3
-                            print(
-                                "tally_count",
-                                tally_count,
-                                "groups_of_three",
-                                groups_of_three,
-                            )
+                            # print(
+                            #     "tally_count",
+                            #     tally_count,
+                            #     "groups_of_three",
+                            #     groups_of_three,
+                            # )
                             total_tally_cells = groups_of_three
                             remaining_tallies = tally_count - groups_of_three * 3
                             if remaining_tallies > 0:
                                 total_tally_cells += 1
                             for current_cell in range(groups_of_three):
                                 if "cartoucheMiddleTok" in font:
-                                    print("cartoucheMiddleTok is in font")
+                                    # print("cartoucheMiddleTok is in font")
                                     font.selection.select("cartoucheMiddleTok")
                                     font.copy()
                                     font.selection.select(long_tally_name)
                                     font.pasteInto()
                                 else:
-                                    print("cartoucheMiddleTok is not in font")
+                                    # print("cartoucheMiddleTok is not in font")
+                                    pass
                                 g.transform(psMat.translate(-1000, 0))
                                 draw_three_tallies()
                             if remaining_tallies == 1:
