@@ -352,6 +352,29 @@ feature liga {                    #          kala stackJoin    lili
 
 """
 
+    ligatures_string += """# BIG NESTING WORDS
+
+# We don't support actual nesting yet, but `soweli++` should produce a big soweli.
+# (I'm not sure whether the ASCII Input Standard and UCSUR would prefer `soweli+|` or
+# just `soweli+`, so I'm not supporting either yet.)
+
+feature liga {
+"""
+    for word in stackable:
+        ligatures_string += f"  sub   {word.ljust(12)} plus plus   by   {word}.big;\n"
+
+    ligatures_string += """} liga;
+
+
+
+
+
+
+
+
+
+"""
+
     ligatures_string += """# CARTOUCHES
 
 @cartoucheableGlyph = [
