@@ -686,18 +686,10 @@ def add_glyphs(
             # Create stacking glyphs (including rotated ones)
             for glyph in rotated_glyph_set:
                 stacking = False
-                if "ligature" in glyph_object:
-                    if (
-                        name != "cartoucheStartTok"
-                        and name != "cartoucheEndTok"
-                        # and name != "middotTok"
-                        # and name != "colonTok"
-                        # and name != "teTok"
-                        # and name != "toTok"
-                    ):
-                        stacking = True
-                        g_bottom = font.createChar(-1, glyph.glyphname + ".bottom")
-                        g_top = font.createChar(-1, glyph.glyphname + ".top")
+                if glyph_object.get("cartoucheable-stackable", True):
+                    stacking = True
+                    g_bottom = font.createChar(-1, glyph.glyphname + ".bottom")
+                    g_top = font.createChar(-1, glyph.glyphname + ".top")
 
                 if stacking:
                     font.selection.select(glyph)
@@ -735,19 +727,11 @@ def add_glyphs(
             # Create kulupu'd glyphs (including rotated ones)
             for glyph in rotated_glyph_set:
                 kulupu = False
-                if "ligature" in glyph_object:
-                    if (
-                        name != "cartoucheStartTok"
-                        and name != "cartoucheEndTok"
-                        # and name != "middotTok"
-                        # and name != "colonTok"
-                        # and name != "teTok"
-                        # and name != "toTok"
-                    ):
-                        kulupu = True
-                        g_kulupu = font.createChar(
-                            -1, "kulupuTok_zerowidthjoiner_" + glyph.glyphname
-                        )
+                if glyph_object.get("cartoucheable-stackable", True):
+                    kulupu = True
+                    g_kulupu = font.createChar(
+                        -1, "kulupuTok_zerowidthjoiner_" + glyph.glyphname
+                    )
 
                 if kulupu:
                     # Draw
