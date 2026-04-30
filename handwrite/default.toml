@@ -280,8 +280,8 @@ glyphs.derived = [
   #     `source-glyph`.
 
   # Punctuation:
-  {codepoint = 0x5b, name = "bracketleft",  writein = "[", source-glyph = 120}, # cartoucheStartTok
-  {codepoint = 0x5d, name = "bracketright", writein = "]", source-glyph = 121}, # cartoucheEndTok
+  {codepoint = 0x5b, name = "bracketleft",  writein = "[", source-glyph = 120, cartoucheable-stackable = false}, # cartoucheStartTok
+  {codepoint = 0x5d, name = "bracketright", writein = "]", source-glyph = 121, cartoucheable-stackable = false}, # cartoucheEndTok
   {codepoint = 0x2e, name = "period",       writein = ".", source-glyph = 122}, # middotTok
   {codepoint = 0x3a, name = "colon",        writein = ":", source-glyph = 123}, # colonTok
 
@@ -344,8 +344,8 @@ glyphs.derived = [
   #     Hardcoded in sheettopng.py; improve this when adding long pi. Generated
   #     from row 6, cartoucheStartTok.
 
-  {codepoint = 0xf1992, name = "cartoucheMiddleTok", source-glyph = 120, type = "middle", center = false,                ligature = "equals"},
-  {codepoint = 0x3d,    name = "equals",             source-glyph = 120, type = "middle", center = false, writein = "="}, # cartoucheMiddleTok
+  {codepoint = 0xf1992, name = "cartoucheMiddleTok", source-glyph = 120, type = "middle", center = false, ligature = "equals", cartoucheable-stackable = false},
+  {codepoint = 0x3d,    name = "equals",             source-glyph = 120, type = "middle", center = false, writein = "=",       cartoucheable-stackable = false}, # cartoucheMiddleTok
 
   # Kelly notes, remove later:
   #     Other potential additions to this section:
