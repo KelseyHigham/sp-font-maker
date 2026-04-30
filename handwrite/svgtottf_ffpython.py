@@ -679,6 +679,30 @@ def add_glyphs(
                 g.width = 1000
                 g.vwidth = 1000
 
+            #  ▄▄  ▄▄  ▄▄  ▄▄ ▄█▄  ▄▄    █▄  ▀  ▄▄    █▄   ▄▄  ▄▄  ▄█ ▄▄   ▄  ▄ ▄ ▄▄
+            # █   █   █▄▀ █ █  █  █▄▀    █ █ █ █▄█    █ █ █▄▀ █ █ █ █ █ █ █ █ █ █ █ █
+            #  ▀▀ ▀    ▀▀  ▀▀  ▀▀  ▀▀    ▀▀  ▀ ▄▄▀    ▀ ▀  ▀▀  ▀▀  ▀▀ ▀ ▀  ▀   ▀▀ ▀ ▀
+            # Create big head noun glyphs (including rotated ones)
+            for glyph in rotated_glyph_set:
+                big = False
+                if glyph_object.get("cartoucheable-stackable", True):
+                    big = True
+                    g_big = font.createChar(-1, glyph.glyphname + ".big")
+
+                if big:
+                    font.selection.select(glyph)
+                    font.copy()
+                    font.selection.select(g_big)
+                    font.paste()
+
+                    g_big.transform(psMat.translate(to_center_x, to_center_y))
+                    g_big.transform(psMat.scale(1.5))
+                    g_big.transform(psMat.translate(-to_center_x, -to_center_y))
+                    g_big.transform(psMat.translate(250, 0))
+
+                    g_big.width = 1500
+                    g_big.vwidth = 1500
+
             #  ▄▄  ▄▄  ▄▄  ▄▄ ▄█▄  ▄▄     ▄▄ ▄█▄  ▄▄  ▄▄ █ ▄ ▀ ▄▄   ▄▄
             # █   █   █▄▀ █ █  █  █▄▀    ▀▄▄  █  █ █ █   ██  █ █ █ █▄█
             #  ▀▀ ▀    ▀▀  ▀▀  ▀▀  ▀▀    ▀▀   ▀▀  ▀▀  ▀▀ ▀ ▀ ▀ ▀ ▀ ▄▄▀
