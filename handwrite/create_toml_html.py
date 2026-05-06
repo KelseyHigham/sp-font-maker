@@ -65,7 +65,9 @@ def create_toml_html(
         elif os.path.isdir(one_level_up):
             sona_repo_path = one_level_up
         if not sona_repo_path == "":
-            ilo_linku_toml_file_path = f"{sona_repo_path}{s}{filename_stripped}.toml"
+            ilo_linku_toml_file_path = (
+                f"{sona_repo_path}{s}{filename_stripped.replace("-", " ")}.toml"
+            )
             if os.path.exists(ilo_linku_toml_file_path):
                 print(
                     f"\nOverwriting `{ilo_linku_toml_file_path}`, and opening for editing. To skip, add `--not-new`.\n"
@@ -76,7 +78,9 @@ def create_toml_html(
                 )
         else:
             # Otherwise, just put it in out_dir.
-            ilo_linku_toml_file_path = out_dir + os.sep + filename_stripped + ".toml"
+            ilo_linku_toml_file_path = (
+                out_dir + os.sep + filename_stripped.replace("-", " ") + ".toml"
+            )
             if os.path.exists(ilo_linku_toml_file_path):
                 print(
                     f"\nOverwriting ilo Linku .TOML, and opening for editing. To skip, add `--not-new`.\n"
