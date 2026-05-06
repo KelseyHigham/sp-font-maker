@@ -129,9 +129,48 @@ def add_glyphs(
     # print("Note: If you leave a glyph blank, you'll get a FontForge error like \"I'm")
     # print("      sorry this file is too complex for me to understand (or is erroneous)\".")
     # print("      It's fine, the font still works!")
+
+    pixel = cli_args.get("pixel") or False
+
+    to_center_x = -500
+    if version_major < 4 and not pixel:
+        to_center_y = -500 + 200
+    else:  # new handwritten, or any pixel
+        to_center_y = -500 + 125
+
+    if pixel:
+        # For pixel fonts, rotate around the assumed center pixel,
+        # with assumed 1px space between glyphs.
+        pixel_size = config.get("pixel-size", 8)
+        if pixel_size % 4 == 0:
+            # If the em size is a multiple of 4, then the total scan
+            # width is even.
+            # Normal case. Assume that there's 1px empty space on the
+            # right.
+            to_center_x = -1000 / pixel_size * (pixel_size - 1) / 2
+            # if name == "aTok":
+            #     # print("to_center_x", to_center_x, "to_center_y", to_center_y)
+            #     pass
+        else:
+            # If the total scan width is *odd*, then we've arbitrarily
+            # chosen to put the extra 1px padding on the left, balancing
+            # out the 1px empty space on the right.
+            # Happens with 6px and 10px fonts.
+            # Weird case. Assume that the glyph is perfectly centered.
+            to_center_x = -1000 / pixel_size * pixel_size / 2
+        # Regardless, the vertical scan area is even, so we assume
+        # there's 1px empty space on the bottom.
+        to_center_y = -1000 / pixel_size * (pixel_size + 1) / 2 + 125
+
     default_glyphs = config.get("glyphs", {}).get("sheet", [])
     generated_glyphs = config.get("glyphs", {}).get("derived", [])
     ligature_base_glyphs = config.get("glyphs", {}).get("copies", [])
+
+    #  ▄▀▀  ▀              ▄        █
+    # ▀█▀  ▀█  █▄▀  ▄▀▀▄  ▀█▀       █  ▄▀▀▄  ▄▀▀▄  █▀▀▄
+    #  █    █  █     ▀▄    █        █  █  █  █  █  █  █
+    #  █    █  █    ▀▄▄▀   ▀▄       █  ▀▄▄▀  ▀▄▄▀  █▄▄▀
+    #                                              █
     for glyph_object in default_glyphs + generated_glyphs + ligature_base_glyphs:
         if "name" in glyph_object:
 
@@ -204,8 +243,6 @@ def add_glyphs(
 
             # debug_metrics("aTok", "before scaling")
 
-            pixel = cli_args.get("pixel") or False
-
             # SCALING
 
             # Scale everything up so that the glyphs are 1em tall, instead of the
@@ -254,36 +291,6 @@ def add_glyphs(
             #  ▄▄  ▄▄  ▄▄  ▄▄ ▄█▄  ▄▄     ▄▄  ▄  ▄█▄  ▄▄ ▄█▄ ▀  ▄  ▄▄   ▄▄
             # █   █   █▄▀ █ █  █  █▄▀    █   █ █  █  █ █  █  █ █ █ █ █ ▀▄▄
             #  ▀▀ ▀    ▀▀  ▀▀  ▀▀  ▀▀    ▀    ▀   ▀▀  ▀▀  ▀▀ ▀  ▀  ▀ ▀ ▀▀
-
-            to_center_x = -500
-            if version_major < 4 and not pixel:
-                to_center_y = -500 + 200
-            else:  # new handwritten, or any pixel
-                to_center_y = -500 + 125
-
-            if pixel:
-                # For pixel fonts, rotate around the assumed center pixel,
-                # with assumed 1px space between glyphs.
-                pixel_size = config.get("pixel-size", 8)
-                if pixel_size % 4 == 0:
-                    # If the em size is a multiple of 4, then the total scan
-                    # width is even.
-                    # Normal case. Assume that there's 1px empty space on the
-                    # right.
-                    to_center_x = -1000 / pixel_size * (pixel_size - 1) / 2
-                    if name == "aTok":
-                        # print("to_center_x", to_center_x, "to_center_y", to_center_y)
-                        pass
-                else:
-                    # If the total scan width is *odd*, then we've arbitrarily
-                    # chosen to put the extra 1px padding on the left, balancing
-                    # out the 1px empty space on the right.
-                    # Happens with 6px and 10px fonts.
-                    # Weird case. Assume that the glyph is perfectly centered.
-                    to_center_x = -1000 / pixel_size * pixel_size / 2
-                # Regardless, the vertical scan area is even, so we assume
-                # there's 1px empty space on the bottom.
-                to_center_y = -1000 / pixel_size * (pixel_size + 1) / 2 + 125
 
             # Create rotated glyphs.
             # Later we'll iterate through rotated_glyph_set[] to generate `.top` and
@@ -353,7 +360,11 @@ def add_glyphs(
             # █   █▄▀ █ █  █  █▄▀ █
             #  ▀▀  ▀▀ ▀ ▀  ▀▀  ▀▀ ▀
 
-            def center_horizontally(g):
+            # Rotate before centering, because L-shaped glyphs like kijetesantakalu get
+            # centered differently when rotated diagonally.
+            # Alternately, center again after rotating specifically.
+
+            def center_horizontally(g, glyph_object):
                 if not pixel:
                     left = g.boundingBox()[0]
                     right = g.boundingBox()[2]
@@ -362,7 +373,7 @@ def add_glyphs(
                 g.width = int(glyph_object.get("width", 1.0) * 1000)
                 g.vwidth = int(glyph_object.get("height", 1.0) * 1000)
 
-            def center_vertically(g):
+            def center_vertically(g, glyph_object):
                 if not pixel:
                     bottom = g.boundingBox()[1]
                     top = g.boundingBox()[3]
@@ -381,9 +392,224 @@ def add_glyphs(
             for ff_glyph in rotated_glyph_set:
                 center = glyph_object.get("center", "both")
                 if center == "both" or center == "horizontal":
-                    center_horizontally(ff_glyph)
+                    center_horizontally(ff_glyph, glyph_object)
                 if center == "both" or center == "vertical":
-                    center_vertically(ff_glyph)
+                    center_vertically(ff_glyph, glyph_object)
+
+            #  ▄▄  ▄▄  ▄▄  ▄▄ ▄█▄  ▄▄    ▄▄   ▄▄  ▄▄       ▄▄  ▄  ▄▄▄▄  █▄  ▀ ▄▄   ▄▄  ▄█
+            # █   █   █▄▀ █ █  █  █▄▀    █ █ █   █▄▀ ▀▀▀▀ █   █ █ █ █ █ █ █ █ █ █ █▄▀ █ █
+            #  ▀▀ ▀    ▀▀  ▀▀  ▀▀  ▀▀    █▀  ▀    ▀▀       ▀▀  ▀  ▀ ▀ ▀ ▀▀  ▀ ▀ ▀  ▀▀  ▀▀
+
+            # Todo: Choose glyphs to pre-combine from default.toml
+            # Pre-combine nested lipu+toki
+            if glyph_object["name"] == "tokiTok":
+                lipu_toki_glyph = font.createChar(-1, "lipuTok_nestJoinTok_tokiTok")
+                rotated_glyph_set.append(lipu_toki_glyph)
+
+                font.selection.select("tokiTok")
+                font.copy()
+                font.selection.select("lipuTok_nestJoinTok_tokiTok")
+                font.paste()
+                g = font["lipuTok_nestJoinTok_tokiTok"]
+
+                g.transform(psMat.translate(to_center_x, to_center_y))
+                g.transform(psMat.scale(1 / 3))
+                g.transform(psMat.translate(-to_center_x, -to_center_y))
+
+                font.selection.select("lipuTok")
+                font.copy()
+                font.selection.select("lipuTok_nestJoinTok_tokiTok")
+                font.pasteInto()
+
+                g.width = 1000
+                g.vwidth = 1000
+
+            # Todo: Choose glyphs to pre-combine from default.toml
+            # Pre-combine two-letter Latin word
+            if glyph_object["name"] == "kijetesantakaluTok":
+                k_u_glyph = font.createChar(-1, "k_zerowidthjoiner_u")
+                rotated_glyph_set.append(k_u_glyph)
+
+                letter_size = 3 / 4
+                letter_overlap = (letter_size - 1 / 3) * 1000
+
+                font.selection.select("u")
+                font.copy()
+                font.selection.select("k_zerowidthjoiner_u")
+                font.paste()
+                g = font["k_zerowidthjoiner_u"]
+
+                g.transform(psMat.translate(1000 - letter_overlap, 0))
+
+                font.selection.select("k")
+                font.copy()
+                font.selection.select("k_zerowidthjoiner_u")
+                font.pasteInto()
+
+                g.transform(psMat.translate(-(2000 - letter_overlap) / 2 + 500, 0))
+
+                g.transform(psMat.translate(to_center_x, to_center_y))
+                g.transform(psMat.scale(3 / 4))
+                g.transform(psMat.translate(-to_center_x, -to_center_y))
+
+                center_vertically(g, glyph_object)
+                center_horizontally(g, glyph_object)
+
+                g.width = 1000
+                g.vwidth = 1000
+
+            # Todo: Choose glyphs to pre-combine from default.toml
+            # Pre-combine two-letter Latin word
+            if glyph_object["name"] == "kijetesantakaluTok":
+                s_u_glyph = font.createChar(-1, "s_zerowidthjoiner_u")
+                rotated_glyph_set.append(s_u_glyph)
+
+                letter_size = 3 / 4
+                letter_overlap = (letter_size - 1 / 3) * 1000
+
+                font.selection.select("u")
+                font.copy()
+                font.selection.select("s_zerowidthjoiner_u")
+                font.paste()
+                g = font["s_zerowidthjoiner_u"]
+
+                g.transform(psMat.translate(1000 - letter_overlap, 0))
+
+                font.selection.select("s")
+                font.copy()
+                font.selection.select("s_zerowidthjoiner_u")
+                font.pasteInto()
+
+                g.transform(psMat.translate(-(2000 - letter_overlap) / 2 + 500, 0))
+
+                g.transform(psMat.translate(to_center_x, to_center_y))
+                g.transform(psMat.scale(letter_size))
+                g.transform(psMat.translate(-to_center_x, -to_center_y))
+
+                center_vertically(g, glyph_object)
+                center_horizontally(g, glyph_object)
+
+                g.width = 1000
+                g.vwidth = 1000
+
+            #  ▄▄  ▄▄  ▄▄  ▄▄ ▄█▄  ▄▄    █▄  ▀  ▄▄    █▄   ▄▄  ▄▄  ▄█ ▄▄   ▄  ▄ ▄ ▄▄
+            # █   █   █▄▀ █ █  █  █▄▀    █ █ █ █▄█    █ █ █▄▀ █ █ █ █ █ █ █ █ █ █ █ █
+            #  ▀▀ ▀    ▀▀  ▀▀  ▀▀  ▀▀    ▀▀  ▀ ▄▄▀    ▀ ▀  ▀▀  ▀▀  ▀▀ ▀ ▀  ▀   ▀▀ ▀ ▀
+            # Create big head noun glyphs (including rotated ones)
+            for glyph in rotated_glyph_set:
+                big = False
+                if glyph_object.get("cartoucheable-stackable", True):
+                    big = True
+                    g_big = font.createChar(-1, glyph.glyphname + ".big")
+
+                if big:
+                    font.selection.select(glyph)
+                    font.copy()
+                    font.selection.select(g_big)
+                    font.paste()
+
+                    g_big.transform(psMat.translate(to_center_x, to_center_y))
+                    g_big.transform(psMat.scale(1.5))
+                    g_big.transform(psMat.translate(-to_center_x, -to_center_y))
+                    g_big.transform(psMat.translate(250, 0))
+
+                    g_big.width = 1500
+                    g_big.vwidth = 1500
+
+            #  ▄▄  ▄▄  ▄▄  ▄▄ ▄█▄  ▄▄     ▄▄ ▄█▄  ▄▄  ▄▄ █ ▄ ▀ ▄▄   ▄▄
+            # █   █   █▄▀ █ █  █  █▄▀    ▀▄▄  █  █ █ █   ██  █ █ █ █▄█
+            #  ▀▀ ▀    ▀▀  ▀▀  ▀▀  ▀▀    ▀▀   ▀▀  ▀▀  ▀▀ ▀ ▀ ▀ ▀ ▀ ▄▄▀
+
+            # Create stacking glyphs (including rotated ones)
+            for glyph in rotated_glyph_set:
+                stacking = False
+                if glyph_object.get("cartoucheable-stackable", True):
+                    stacking = True
+                    g_bottom = font.createChar(-1, glyph.glyphname + ".bottom")
+                    g_top = font.createChar(-1, glyph.glyphname + ".top")
+
+                if stacking:
+                    font.selection.select(glyph)
+                    font.copy()
+                    font.selection.select(g_bottom, g_top)
+                    font.paste()
+
+                    if version_major < 4 and not pixel:
+                        descender_height = 200
+                    else:
+                        descender_height = 125
+                    # move up, so that the origin is in the bottom left
+                    g_bottom.transform(psMat.translate(0, descender_height))
+                    g_top.transform(psMat.translate(0, descender_height))
+                    # scale down to 4:3
+                    g_bottom.transform(psMat.scale(1, 0.75))
+                    g_top.transform(psMat.scale(1, 0.75))
+                    # move back down
+                    g_bottom.transform(psMat.translate(0, -descender_height))
+                    g_top.transform(psMat.translate(0, -descender_height))
+
+                    # position
+                    g_bottom.transform(psMat.translate(0, -250))
+                    g_top.transform(psMat.translate(-1000, 500))
+
+                    g_bottom.width = 1000
+                    g_bottom.vwidth = 1000
+                    g_top.width = 0
+                    g_top.vwidth = 1000
+
+            #  ▄▄  ▄▄  ▄▄  ▄▄ ▄█▄  ▄▄    █ ▄ ▄ ▄ █ ▄ ▄ ▄▄  ▄ ▄ ▄▀▄   ▄ ▄ ▄  ▄   ▄▄  ▄█
+            # █   █   █▄▀ █ █  █  █▄▀    ██  █ █ █ █ █ █ █ █ █ ▄▀▀▄▀ ▀▄▀▄▀ █ █ █   █ █
+            #  ▀▀ ▀    ▀▀  ▀▀  ▀▀  ▀▀    ▀ ▀  ▀▀ ▀  ▀▀ █▀   ▀▀  ▀▀ ▀  ▀ ▀   ▀  ▀    ▀▀
+
+            # Create kulupu'd glyphs (including rotated ones)
+            for glyph in rotated_glyph_set:
+                kulupu = False
+                if glyph_object.get("cartoucheable-stackable", True):
+                    kulupu = True
+                    g_kulupu = font.createChar(
+                        -1, "kulupuTok_zerowidthjoiner_" + glyph.glyphname
+                    )
+
+                if kulupu:
+                    # Draw
+                    font.selection.select(glyph)
+                    font.copy()
+                    font.selection.select(g_kulupu)
+                    font.paste()
+                    g_kulupu.transform(psMat.translate(-1000, 0))
+                    font.pasteInto()
+                    g_kulupu.transform(psMat.translate(500, -1000))
+                    font.pasteInto()
+                    g_kulupu.transform(psMat.translate(500, 1000))
+
+                    # Scale
+                    if version_major < 4 and not pixel:
+                        descender_height = 200
+                    else:
+                        descender_height = 125
+                    # move up, so that the origin is in the bottom left
+                    g_kulupu.transform(psMat.translate(0, descender_height))
+                    # scale down to 3:3
+                    g_kulupu.transform(psMat.scale(0.75, 0.75))
+                    # move back down
+                    g_kulupu.transform(psMat.translate(0, -descender_height))
+
+                    # Position
+                    g_kulupu.transform(psMat.translate(0, -250))
+                    g_kulupu.width = 1500
+                    g_kulupu.vwidth = 1500
+
+    #                                  █       █
+    # ▄▀▀▄  ▄▀▀▄  ▄▀▀▄  ▄▀▀▄  █▀▀▄  ▄▀▀█       █  ▄▀▀▄  ▄▀▀▄  █▀▀▄
+    #  ▀▄   █▄▄█  █     █  █  █  █  █  █       █  █  █  █  █  █  █
+    # ▀▄▄▀  ▀▄▄   ▀▄▄▀  ▀▄▄▀  █  █  ▀▄▄█       █  ▀▄▄▀  ▀▄▄▀  █▄▄▀
+    #                                                         █
+    # Second loop that depends on glyphs created during the first, e.g.
+    # cartoucheMiddleTok is used for long tally mark sequences
+
+    for glyph_object in default_glyphs + generated_glyphs + ligature_base_glyphs:
+        if "name" in glyph_object:
+            pass
 
             # ▄█▄  ▄▄ █ █ ▄ ▄    ▄▄▄▄   ▄▄  ▄▄ █ ▄  ▄▄
             #  █  █ █ █ █ ▀▄█    █ █ █ █ █ █   ██  ▀▄▄
@@ -399,6 +625,12 @@ def add_glyphs(
 
             # So, split the "add glyphs" loop up a bit more - adding glyphs on the first
             # loop, duplicating glyphs on the second.
+            # - Alternately, just move *tally marks specifically* to a second loop.
+            # - Pre-composed glyphs can be moved there second. That's slightly
+            #   complicated by the fact that I'm overloading  "rotated_glyph_set" to
+            #   hack them in.
+
+            g = font[glyph_object.get("name", "")]
 
             # Doesn't currently do anything
             if glyph_object.get("type", "") == "combining":
@@ -542,6 +774,18 @@ def add_glyphs(
                             draw_four_tallies()
 
                         else:
+
+                            def draw_cartouche_middle():
+                                if "cartoucheMiddleTok" in font:
+                                    # print("cartoucheMiddleTok is in font")
+                                    font.selection.select("cartoucheMiddleTok")
+                                    font.copy()
+                                    font.selection.select(long_tally_name)
+                                    font.pasteInto()
+                                else:
+                                    # print("cartoucheMiddleTok is not in font")
+                                    pass
+
                             groups_of_three = tally_count // 3
                             # print(
                             #     "tally_count",
@@ -554,21 +798,15 @@ def add_glyphs(
                             if remaining_tallies > 0:
                                 total_tally_cells += 1
                             for current_cell in range(groups_of_three):
-                                if "cartoucheMiddleTok" in font:
-                                    # print("cartoucheMiddleTok is in font")
-                                    font.selection.select("cartoucheMiddleTok")
-                                    font.copy()
-                                    font.selection.select(long_tally_name)
-                                    font.pasteInto()
-                                else:
-                                    # print("cartoucheMiddleTok is not in font")
-                                    pass
+                                draw_cartouche_middle()
                                 g.transform(psMat.translate(-1000, 0))
                                 draw_three_tallies()
                             if remaining_tallies == 1:
+                                draw_cartouche_middle()
                                 g.transform(psMat.translate(-1000, 0))
                                 draw_one_tally()
                             if remaining_tallies == 2:
+                                draw_cartouche_middle()
                                 g.transform(psMat.translate(-1000, 0))
                                 draw_two_tallies()
                             g.transform(
@@ -585,209 +823,6 @@ def add_glyphs(
                     g.vwidth = 1000
                     # font.createChar(tally_name)
                     # font.paste()
-
-            #  ▄▄  ▄▄  ▄▄  ▄▄ ▄█▄  ▄▄    ▄▄   ▄▄  ▄▄       ▄▄  ▄  ▄▄▄▄  █▄  ▀ ▄▄   ▄▄  ▄█
-            # █   █   █▄▀ █ █  █  █▄▀    █ █ █   █▄▀ ▀▀▀▀ █   █ █ █ █ █ █ █ █ █ █ █▄▀ █ █
-            #  ▀▀ ▀    ▀▀  ▀▀  ▀▀  ▀▀    █▀  ▀    ▀▀       ▀▀  ▀  ▀ ▀ ▀ ▀▀  ▀ ▀ ▀  ▀▀  ▀▀
-
-            # Todo: Choose glyphs to pre-combine from default.toml
-            # Pre-combine nested lipu+toki
-            if glyph_object["name"] == "tokiTok":
-                lipu_toki_glyph = font.createChar(-1, "lipuTok_nestJoinTok_tokiTok")
-                rotated_glyph_set.append(lipu_toki_glyph)
-
-                font.selection.select("tokiTok")
-                font.copy()
-                font.selection.select("lipuTok_nestJoinTok_tokiTok")
-                font.paste()
-                g = font["lipuTok_nestJoinTok_tokiTok"]
-
-                g.transform(psMat.translate(to_center_x, to_center_y))
-                g.transform(psMat.scale(1 / 3))
-                g.transform(psMat.translate(-to_center_x, -to_center_y))
-
-                font.selection.select("lipuTok")
-                font.copy()
-                font.selection.select("lipuTok_nestJoinTok_tokiTok")
-                font.pasteInto()
-
-                g.width = 1000
-                g.vwidth = 1000
-
-            # Todo: Choose glyphs to pre-combine from default.toml
-            # Pre-combine two-letter Latin word
-            if glyph_object["name"] == "kijetesantakaluTok":
-                k_u_glyph = font.createChar(-1, "k_zerowidthjoiner_u")
-                rotated_glyph_set.append(k_u_glyph)
-
-                letter_size = 3 / 4
-                letter_overlap = (letter_size - 1 / 3) * 1000
-
-                font.selection.select("u")
-                font.copy()
-                font.selection.select("k_zerowidthjoiner_u")
-                font.paste()
-                g = font["k_zerowidthjoiner_u"]
-
-                g.transform(psMat.translate(1000 - letter_overlap, 0))
-
-                font.selection.select("k")
-                font.copy()
-                font.selection.select("k_zerowidthjoiner_u")
-                font.pasteInto()
-
-                g.transform(psMat.translate(-(2000 - letter_overlap) / 2 + 500, 0))
-
-                g.transform(psMat.translate(to_center_x, to_center_y))
-                g.transform(psMat.scale(3 / 4))
-                g.transform(psMat.translate(-to_center_x, -to_center_y))
-
-                center_vertically(g)
-                center_horizontally(g)
-
-                g.width = 1000
-                g.vwidth = 1000
-
-            # Todo: Choose glyphs to pre-combine from default.toml
-            # Pre-combine two-letter Latin word
-            if glyph_object["name"] == "kijetesantakaluTok":
-                s_u_glyph = font.createChar(-1, "s_zerowidthjoiner_u")
-                rotated_glyph_set.append(s_u_glyph)
-
-                letter_size = 3 / 4
-                letter_overlap = (letter_size - 1 / 3) * 1000
-
-                font.selection.select("u")
-                font.copy()
-                font.selection.select("s_zerowidthjoiner_u")
-                font.paste()
-                g = font["s_zerowidthjoiner_u"]
-
-                g.transform(psMat.translate(1000 - letter_overlap, 0))
-
-                font.selection.select("s")
-                font.copy()
-                font.selection.select("s_zerowidthjoiner_u")
-                font.pasteInto()
-
-                g.transform(psMat.translate(-(2000 - letter_overlap) / 2 + 500, 0))
-
-                g.transform(psMat.translate(to_center_x, to_center_y))
-                g.transform(psMat.scale(letter_size))
-                g.transform(psMat.translate(-to_center_x, -to_center_y))
-
-                center_vertically(g)
-                center_horizontally(g)
-
-                g.width = 1000
-                g.vwidth = 1000
-
-            #  ▄▄  ▄▄  ▄▄  ▄▄ ▄█▄  ▄▄    █▄  ▀  ▄▄    █▄   ▄▄  ▄▄  ▄█ ▄▄   ▄  ▄ ▄ ▄▄
-            # █   █   █▄▀ █ █  █  █▄▀    █ █ █ █▄█    █ █ █▄▀ █ █ █ █ █ █ █ █ █ █ █ █
-            #  ▀▀ ▀    ▀▀  ▀▀  ▀▀  ▀▀    ▀▀  ▀ ▄▄▀    ▀ ▀  ▀▀  ▀▀  ▀▀ ▀ ▀  ▀   ▀▀ ▀ ▀
-            # Create big head noun glyphs (including rotated ones)
-            for glyph in rotated_glyph_set:
-                big = False
-                if glyph_object.get("cartoucheable-stackable", True):
-                    big = True
-                    g_big = font.createChar(-1, glyph.glyphname + ".big")
-
-                if big:
-                    font.selection.select(glyph)
-                    font.copy()
-                    font.selection.select(g_big)
-                    font.paste()
-
-                    g_big.transform(psMat.translate(to_center_x, to_center_y))
-                    g_big.transform(psMat.scale(1.5))
-                    g_big.transform(psMat.translate(-to_center_x, -to_center_y))
-                    g_big.transform(psMat.translate(250, 0))
-
-                    g_big.width = 1500
-                    g_big.vwidth = 1500
-
-            #  ▄▄  ▄▄  ▄▄  ▄▄ ▄█▄  ▄▄     ▄▄ ▄█▄  ▄▄  ▄▄ █ ▄ ▀ ▄▄   ▄▄
-            # █   █   █▄▀ █ █  █  █▄▀    ▀▄▄  █  █ █ █   ██  █ █ █ █▄█
-            #  ▀▀ ▀    ▀▀  ▀▀  ▀▀  ▀▀    ▀▀   ▀▀  ▀▀  ▀▀ ▀ ▀ ▀ ▀ ▀ ▄▄▀
-
-            # Create stacking glyphs (including rotated ones)
-            for glyph in rotated_glyph_set:
-                stacking = False
-                if glyph_object.get("cartoucheable-stackable", True):
-                    stacking = True
-                    g_bottom = font.createChar(-1, glyph.glyphname + ".bottom")
-                    g_top = font.createChar(-1, glyph.glyphname + ".top")
-
-                if stacking:
-                    font.selection.select(glyph)
-                    font.copy()
-                    font.selection.select(g_bottom, g_top)
-                    font.paste()
-
-                    if version_major < 4 and not pixel:
-                        descender_height = 200
-                    else:
-                        descender_height = 125
-                    # move up, so that the origin is in the bottom left
-                    g_bottom.transform(psMat.translate(0, descender_height))
-                    g_top.transform(psMat.translate(0, descender_height))
-                    # scale down to 4:3
-                    g_bottom.transform(psMat.scale(1, 0.75))
-                    g_top.transform(psMat.scale(1, 0.75))
-                    # move back down
-                    g_bottom.transform(psMat.translate(0, -descender_height))
-                    g_top.transform(psMat.translate(0, -descender_height))
-
-                    # position
-                    g_bottom.transform(psMat.translate(0, -250))
-                    g_top.transform(psMat.translate(-1000, 500))
-
-                    g_bottom.width = 1000
-                    g_bottom.vwidth = 1000
-                    g_top.width = 0
-                    g_top.vwidth = 1000
-
-            #  ▄▄  ▄▄  ▄▄  ▄▄ ▄█▄  ▄▄    █ ▄ ▄ ▄ █ ▄ ▄ ▄▄  ▄ ▄ ▄▀▄   ▄ ▄ ▄  ▄   ▄▄  ▄█
-            # █   █   █▄▀ █ █  █  █▄▀    ██  █ █ █ █ █ █ █ █ █ ▄▀▀▄▀ ▀▄▀▄▀ █ █ █   █ █
-            #  ▀▀ ▀    ▀▀  ▀▀  ▀▀  ▀▀    ▀ ▀  ▀▀ ▀  ▀▀ █▀   ▀▀  ▀▀ ▀  ▀ ▀   ▀  ▀    ▀▀
-
-            # Create kulupu'd glyphs (including rotated ones)
-            for glyph in rotated_glyph_set:
-                kulupu = False
-                if glyph_object.get("cartoucheable-stackable", True):
-                    kulupu = True
-                    g_kulupu = font.createChar(
-                        -1, "kulupuTok_zerowidthjoiner_" + glyph.glyphname
-                    )
-
-                if kulupu:
-                    # Draw
-                    font.selection.select(glyph)
-                    font.copy()
-                    font.selection.select(g_kulupu)
-                    font.paste()
-                    g_kulupu.transform(psMat.translate(-1000, 0))
-                    font.pasteInto()
-                    g_kulupu.transform(psMat.translate(500, -1000))
-                    font.pasteInto()
-                    g_kulupu.transform(psMat.translate(500, 1000))
-
-                    # Scale
-                    if version_major < 4 and not pixel:
-                        descender_height = 200
-                    else:
-                        descender_height = 125
-                    # move up, so that the origin is in the bottom left
-                    g_kulupu.transform(psMat.translate(0, descender_height))
-                    # scale down to 3:3
-                    g_kulupu.transform(psMat.scale(0.75, 0.75))
-                    # move back down
-                    g_kulupu.transform(psMat.translate(0, -descender_height))
-
-                    # Position
-                    g_kulupu.transform(psMat.translate(0, -250))
-                    g_kulupu.width = 1500
-                    g_kulupu.vwidth = 1500
 
     # get rid of stray metrics
     print("\r                                                ")
