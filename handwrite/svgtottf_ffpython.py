@@ -562,6 +562,45 @@ def add_glyphs(
             #  ▀▀ ▀    ▀▀  ▀▀  ▀▀  ▀▀    ▀ ▀  ▀▀ ▀  ▀▀ █▀   ▀▀  ▀▀ ▀  ▀ ▀   ▀  ▀    ▀▀
 
             # Create kulupu'd glyphs (including rotated ones)
+
+            def create_kulupu_version(input_glyph, output_glyph, input_is_big):
+                # Draw
+                font.selection.select(input_glyph)
+                font.copy()
+                font.selection.select(output_glyph)
+                font.paste()
+
+                # Existing kulupu combos occupy the full 1.5em height, and 1.5em width
+                if input_is_big:
+                    big = 1.5
+                else:
+                    big = 1
+                output_glyph.transform(psMat.translate(-1000 * big, 0))
+                font.pasteInto()
+                output_glyph.transform(psMat.translate(500 * big, -1000 * big))
+                font.pasteInto()
+                output_glyph.transform(psMat.translate(500 * big, 1000 * big))
+
+                # Scale
+                if version_major < 4 and not pixel:
+                    descender_height = 200
+                else:
+                    descender_height = 125
+                # move up, so that the origin is in the bottom left
+                output_glyph.transform(psMat.translate(0, descender_height))
+                if input_is_big:
+                    output_glyph.transform(psMat.translate(0, 250))
+                    output_glyph.transform(psMat.scale(1 / big))
+                # scale down to 3:3
+                output_glyph.transform(psMat.scale(0.75, 0.75))
+                # move back down
+                output_glyph.transform(psMat.translate(0, -descender_height))
+
+                # Position
+                output_glyph.transform(psMat.translate(0, -250))
+                output_glyph.width = 1500
+                output_glyph.vwidth = 1500
+
             for glyph in rotated_glyph_set:
                 kulupu = False
                 if glyph_object.get("cartoucheable-stackable", True):
@@ -571,33 +610,13 @@ def add_glyphs(
                     )
 
                 if kulupu:
-                    # Draw
-                    font.selection.select(glyph)
-                    font.copy()
-                    font.selection.select(g_kulupu)
-                    font.paste()
-                    g_kulupu.transform(psMat.translate(-1000, 0))
-                    font.pasteInto()
-                    g_kulupu.transform(psMat.translate(500, -1000))
-                    font.pasteInto()
-                    g_kulupu.transform(psMat.translate(500, 1000))
+                    create_kulupu_version(glyph, g_kulupu, False)
 
-                    # Scale
-                    if version_major < 4 and not pixel:
-                        descender_height = 200
-                    else:
-                        descender_height = 125
-                    # move up, so that the origin is in the bottom left
-                    g_kulupu.transform(psMat.translate(0, descender_height))
-                    # scale down to 3:3
-                    g_kulupu.transform(psMat.scale(0.75, 0.75))
-                    # move back down
-                    g_kulupu.transform(psMat.translate(0, -descender_height))
-
-                    # Position
-                    g_kulupu.transform(psMat.translate(0, -250))
-                    g_kulupu.width = 1500
-                    g_kulupu.vwidth = 1500
+                # Sierpinsky triangle kulupu easter egg
+                if kulupu and glyph_object.get("name", "") == "kulupuTok":
+                    # Note: A glyph name can't be longer than 98 characters
+                    g_sierpinski = font.createChar(-1, "sierpinskiTriangleKulupuTok")
+                    create_kulupu_version(g_kulupu, g_sierpinski, True)
 
     #                                  █       █
     # ▄▀▀▄  ▄▀▀▄  ▄▀▀▄  ▄▀▀▄  █▀▀▄  ▄▀▀█       █  ▄▀▀▄  ▄▀▀▄  █▀▀▄

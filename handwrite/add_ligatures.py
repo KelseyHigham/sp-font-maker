@@ -272,7 +272,10 @@ feature liga {
 
     ligatures_string += """# KULUPU COMBOS
 
-feature liga {
+feature liga {"""
+    ligatures_string += """
+  # Sierpinski triangle easter egg
+  sub   kulupuTok zerowidthjoiner kulupuTok zerowidthjoiner kulupuTok   by   sierpinskiTriangleKulupuTok;
 """
     for word in stackable:
         ligatures_string += f"  sub   kulupuTok zerowidthjoiner {word.ljust(12)}   by   kulupuTok_zerowidthjoiner_{word};\n"
