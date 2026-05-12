@@ -257,8 +257,14 @@ feature liga {
 
 
 """
+
+    # ▄ ▄ ▄  ▄▄ ▀ ▄█▄  ▄▄ ▀ ▄▄      ▄▄  ▄  ▄▄▄▄  █▄   ▄   ▄▄
+    # ▀▄▀▄▀ █   █  █  █▄▀ █ █ █    █   █ █ █ █ █ █ █ █ █ ▀▄▄
+    #  ▀ ▀  ▀   ▀  ▀▀  ▀▀ ▀ ▀ ▀     ▀▀  ▀  ▀ ▀ ▀ ▀▀   ▀  ▀▀
+
     ligatures_string += """# WRITEIN COMBOS
 # (Fill this in later)
+# (E.g. `toki+pona` should also produce `tokiTok nestJoinTok ponaTok`)
 
 
 
@@ -269,6 +275,10 @@ feature liga {
 
 
 """
+
+    # █ ▄ ▄ ▄ █ ▄ ▄ ▄▄  ▄ ▄ ▄▀▄
+    # ██  █ █ █ █ █ █ █ █ █ ▄▀▀▄▀
+    # ▀ ▀  ▀▀ ▀  ▀▀ █▀   ▀▀  ▀▀ ▀
 
     ligatures_string += """# KULUPU COMBOS
 
@@ -295,6 +305,10 @@ feature liga {"""
 
 
 """
+
+    #  ▄▄ ▄█▄  ▄▄  ▄▄ █ ▄ ▀ ▄▄   ▄▄
+    # ▀▄▄  █  █ █ █   ██  █ █ █ █▄█
+    # ▀▀   ▀▀  ▀▀  ▀▀ ▀ ▀ ▀ ▀ ▀ ▄▄▀
 
     ligatures_string += """# STACKING COMBOS
 
@@ -355,6 +369,10 @@ feature liga {                    #          kala stackJoin    lili
 
 """
 
+    #  ▄▄ ▀  ▄▄ ▄▄  ▄█▄    █▄   ▄▄  ▄▄  ▄█    ▄▄   ▄  ▄ ▄ ▄▄   ▄▄
+    # █▄█ █ █ █ █ █  █     █ █ █▄▀ █ █ █ █    █ █ █ █ █ █ █ █ ▀▄▄
+    # ▄▄▀ ▀  ▀▀ ▀ ▀  ▀▀    ▀ ▀  ▀▀  ▀▀  ▀▀    ▀ ▀  ▀   ▀▀ ▀ ▀ ▀▀
+
     ligatures_string += """# BIG NESTING WORDS
 
 # We don't support actual nesting yet, but `soweli++` should produce a big soweli.
@@ -377,6 +395,10 @@ feature liga {
 
 
 """
+
+    #  ▄▄  ▄▄  ▄▄ ▄█▄  ▄  ▄ ▄  ▄▄ █▄   ▄▄  ▄▄
+    # █   █ █ █    █  █ █ █ █ █   █ █ █▄▀ ▀▄▄
+    #  ▀▀  ▀▀ ▀    ▀▀  ▀   ▀▀  ▀▀ ▀ ▀  ▀▀ ▀▀
 
     ligatures_string += """# CARTOUCHES
 
@@ -502,6 +524,63 @@ feature calt {
 
 
 """
+
+    # █  ▄  ▄▄   ▄▄    ▄▄  ▀
+    # █ █ █ █ █ █▄█    █ █ █
+    # ▀  ▀  ▀ ▀ ▄▄▀    █▀  ▀
+
+    # Currently, long pi and cartouches can't contain each other, because
+    # cartoucheEndTok and longPiEndTok are both excluded from @cartoucheableGlyph.
+
+    ligatures_string += """# LONG PI
+
+"""
+
+    ligatures_string += """lookup add_long_pi_middle {
+  # Add a long pi middle after the glyph.
+"""
+    ligatures_string += (
+        "  sub cartoucheMiddleTok   by   cartoucheMiddleTok longPiMiddleTok;\n"
+    )
+    for word in cartoucheable:
+        ligatures_string += (
+            f"  sub {word.rjust(12)}   by {word.rjust(12)} longPiMiddleTok;\n"
+        )
+    for word in stackable:
+        ligatures_string += f"  sub {word.rjust(12)}.bottom   by {word.rjust(12)}.bottom longPiMiddleTok;\n"
+    for word in stackable:
+        ligatures_string += (
+            f"  sub {word.rjust(12)}.top   by {word.rjust(12)}.top longPiMiddleTok;\n"
+        )
+    for non_word in cartoucheable_non_words:
+        ligatures_string += (
+            f"  sub {non_word.rjust(12)}   by {non_word.rjust(12)} longPiMiddleTok;\n"
+        )
+
+    ligatures_string += """} add_long_pi_middle;
+
+
+
+# Same logic as cartouches
+feature calt {
+  sub   longPiStartTok  [@cartoucheableGlyph]'   lookup add_long_pi_middle;
+  sub   longPiMiddleTok [@cartoucheableGlyph]'   lookup add_long_pi_middle;
+} calt;
+
+
+
+
+
+
+
+
+
+"""
+
+    # ▄█▄  ▄▄ █ █ ▄ ▄    ▄▄▄▄   ▄▄  ▄▄ █ ▄  ▄▄
+    #  █  █ █ █ █ ▀▄█    █ █ █ █ █ █   ██  ▀▄▄
+    #  ▀▀  ▀▀ ▀ ▀ ▄▄▀    ▀ ▀ ▀  ▀▀ ▀   ▀ ▀ ▀▀
+
     ligatures_string += """# DEFAULT TALLIES
 # (Well after writein tallies)
 

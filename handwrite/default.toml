@@ -344,8 +344,12 @@ glyphs.derived = [
   #     Hardcoded in sheettopng.py; improve this when adding long pi. Generated
   #     from row 6, cartoucheStartTok.
 
-  {codepoint = 0xf1992, name = "cartoucheMiddleTok", source-glyph = 120, type = "middle", center = false, ligature = "equals", cartoucheable-stackable = false},
-  {codepoint = 0x3d,    name = "equals",             source-glyph = 120, type = "middle", center = false, writein = "=",       cartoucheable-stackable = false}, # cartoucheMiddleTok
+  {codepoint = 0xf1992, name = "cartoucheMiddleTok", source-glyph = 120, type = "middle", center = false, ligature = "equals",     cartoucheable-stackable = false},
+  {codepoint = 0x3d,    name = "equals",             source-glyph = 120, type = "middle", center = false, writein = "=",           cartoucheable-stackable = false},
+
+
+  {codepoint = 0xf1999, name = "longPiMiddleTok",    source-glyph = 137, type = "middle", center = false, ligature = "underscore", cartoucheable-stackable = false},
+  {codepoint = 0x5f,    name = "underscore",         source-glyph = 137, type = "middle", center = false,                          cartoucheable-stackable = false},
 
   # Kelly notes, remove later:
   #     Other potential additions to this section:
