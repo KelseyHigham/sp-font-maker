@@ -196,16 +196,16 @@ glyphs.sheet = [
   {codepoint = 0xf1991, name = "cartoucheEndTok",   ligature = "bracketright", center = false, scan-shift = [ 0.25, 0], cartoucheable-stackable = false},
   {codepoint = 0xf199c, name = "middotTok",         ligature = "period"},
   {codepoint = 0xf199d, name = "colonTok",          ligature = "colon"},
-  {codepoint = 0x69,    name = "i",                                            center = "horizontal"},
-  {codepoint = 0x6a,    name = "j",                                            center = "horizontal"},
-  {codepoint = 0x6b,    name = "k",                                            center = "horizontal"},
-  {codepoint = 0x6c,    name = "l",                                            center = "horizontal"},
-  {codepoint = 0x6d,    name = "m",                                            center = "horizontal"},
-  {codepoint = 0x70,    name = "p",                                            center = "horizontal"},
-  {codepoint = 0x73,    name = "s",                                            center = "horizontal"},
-  {codepoint = 0x74,    name = "t",                                            center = "horizontal"},
-  {codepoint = 0x75,    name = "u",                                            center = "horizontal"},
-  {codepoint = 0x77,    name = "w",                                            center = "horizontal"},
+  {codepoint = 0x69,    name = "i",                                            center = false,    width = 0.5},
+  {codepoint = 0x6a,    name = "j",                                            center = false,    width = 0.5},
+  {codepoint = 0x6b,    name = "k",                                            center = false,    width = 0.5},
+  {codepoint = 0x6c,    name = "l",                                            center = false,    width = 0.5},
+  {codepoint = 0x6d,    name = "m",                                            center = false,    width = 0.5},
+  {codepoint = 0x70,    name = "p",                                            center = false,    width = 0.5},
+  {codepoint = 0x73,    name = "s",                                            center = false,    width = 0.5},
+  {codepoint = 0x74,    name = "t",                                            center = false,    width = 0.5},
+  {codepoint = 0x75,    name = "u",                                            center = false,    width = 0.5},
+  {codepoint = 0x77,    name = "w",                                            center = false,    width = 0.5},
   {codepoint = 0x300c,  name = "teTok",             ligature = "t e",          center = false},
   {codepoint = 0x300d,  name = "toTok",             ligature = "t o",          center = false},
   {}, # These blank rows get populated from `other_words_string` in `cli.py`
@@ -296,16 +296,16 @@ glyphs.derived = [
   {codepoint = 0x4f, name = "O", source-glyph = 68},  # oTok
 
   # Capital letters, for words like Pingo:
-  {codepoint = 0x49, name = "I", source-glyph = 124}, # i
-  {codepoint = 0x4a, name = "J", source-glyph = 125}, # j
-  {codepoint = 0x4b, name = "K", source-glyph = 126}, # k
-  {codepoint = 0x4c, name = "L", source-glyph = 127}, # l
-  {codepoint = 0x4d, name = "M", source-glyph = 128}, # m
-  {codepoint = 0x50, name = "P", source-glyph = 129}, # p
-  {codepoint = 0x53, name = "S", source-glyph = 130}, # s
-  {codepoint = 0x54, name = "T", source-glyph = 131}, # t
-  {codepoint = 0x55, name = "U", source-glyph = 132}, # u
-  {codepoint = 0x57, name = "W", source-glyph = 133}, # w
+  {codepoint = 0x49, name = "I", width = 0.5, source-glyph = 125}, # i
+  {codepoint = 0x4a, name = "J", width = 0.5, source-glyph = 126}, # j
+  {codepoint = 0x4b, name = "K", width = 0.5, source-glyph = 127}, # k
+  {codepoint = 0x4c, name = "L", width = 0.5, source-glyph = 128}, # l
+  {codepoint = 0x4d, name = "M", width = 0.5, source-glyph = 129}, # m
+  {codepoint = 0x50, name = "P", width = 0.5, source-glyph = 130}, # p
+  {codepoint = 0x53, name = "S", width = 0.5, source-glyph = 131}, # s
+  {codepoint = 0x54, name = "T", width = 0.5, source-glyph = 132}, # t
+  {codepoint = 0x55, name = "U", width = 0.5, source-glyph = 133}, # u
+  {codepoint = 0x57, name = "W", width = 0.5, source-glyph = 134}, # w
 
   # Weird substitutions, for words like yutu:
   {codepoint = 0x62, name = "b", source-glyph = 129}, # p
