@@ -196,6 +196,7 @@ glyphs.sheet = [
   {codepoint = 0xf1991, name = "cartoucheEndTok",   ligature = "bracketright", center = false, scan-shift = [ 0.25, 0], cartoucheable-stackable = false},
   {codepoint = 0xf199c, name = "middotTok",         ligature = "period"},
   {codepoint = 0xf199d, name = "colonTok",          ligature = "colon"},
+  {},  # {                     name = "tallyTok",          ligature = "comma",   type = "tally",  scan-shift = [0, -0.25]},
   {codepoint = 0x69,    name = "i",                                            center = false,    width = 0.5},
   {codepoint = 0x6a,    name = "j",                                            center = false,    width = 0.5},
   {codepoint = 0x6b,    name = "k",                                            center = false,    width = 0.5},
@@ -208,16 +209,14 @@ glyphs.sheet = [
   {codepoint = 0x77,    name = "w",                                            center = false,    width = 0.5},
   {codepoint = 0x300c,  name = "teTok",             ligature = "t e",          center = false},
   {codepoint = 0x300d,  name = "toTok",             ligature = "t o",          center = false},
+  {                     name = "longPiStartTok",    ligature = "p i openparen",    width = 1.0,  scan-shift = [-0.25, 0], cartoucheable-stackable = false},
+  {                     name = "longPiEndTok",      ligature = "closeparen",       width = 0,    scan-shift = [ 0.25, 0], cartoucheable-stackable = false},
   {}, # These blank rows get populated from `other_words_string` in `cli.py`
-  {},
-  {},
-  {},
 
   # row 7
   {codepoint = 0xf1980, name = "kijetesantakaluTok", ligature = "k i j e t e s a n t a k a l u", rotate = true},
   {codepoint = 0xf1979, name = "kinTok",      ligature = "k i n"},
   {codepoint = 0xf197b, name = "kipisiTok",   ligature = "k i p i s i"},
-  {codepoint = 0xf1988, name = "kuTok",       ligature = "k u"},
   {codepoint = 0xf1985, name = "lanpanTok",   ligature = "l a n p a n"},
   {codepoint = 0xf197c, name = "lekoTok",     ligature = "l e k o"},
   {codepoint = 0xf1987, name = "misikekeTok", ligature = "m i s i k e k e"},
@@ -234,6 +233,7 @@ glyphs.sheet = [
   {},
   {},
   {},
+  {},
 
   # row 8
   {codepoint = 0xf1983, name = "epikuTok",   ligature = "e p i k u"},
@@ -242,7 +242,7 @@ glyphs.sheet = [
   {codepoint = 0xf19a2, name = "majunaTok",  ligature = "m a j u n a"},
   {codepoint = 0xf1982, name = "mesoTok",    ligature = "m e s o"},
   {codepoint = 0xf197a, name = "okoTok",     ligature = "o k o"},
-  {                     name = "suTok",      ligature = "s u"},
+  {},
   {},
   {},
   {},
@@ -308,30 +308,30 @@ glyphs.derived = [
   {codepoint = 0x57, name = "W", width = 0.5, source-glyph = 134}, # w
 
   # Weird substitutions, for words like yutu:
-  {codepoint = 0x62, name = "b", source-glyph = 129}, # p
-  {codepoint = 0x42, name = "B", source-glyph = 129}, # p
-  {codepoint = 0x63, name = "c", source-glyph = 130}, # s
-  {codepoint = 0x43, name = "C", source-glyph = 130}, # s
-  {codepoint = 0x64, name = "d", source-glyph = 131}, # t
-  {codepoint = 0x44, name = "D", source-glyph = 131}, # t
-  {codepoint = 0x66, name = "f", source-glyph = 129}, # p
-  {codepoint = 0x46, name = "F", source-glyph = 129}, # p
-  {codepoint = 0x67, name = "g", source-glyph = 126}, # k
-  {codepoint = 0x47, name = "G", source-glyph = 126}, # k
-  {codepoint = 0x68, name = "h", source-glyph = 126}, # k
-  {codepoint = 0x48, name = "H", source-glyph = 126}, # k
-  {codepoint = 0x71, name = "q", source-glyph = 126}, # k
-  {codepoint = 0x51, name = "Q", source-glyph = 126}, # k
-  {codepoint = 0x72, name = "r", source-glyph = 133}, # w
-  {codepoint = 0x52, name = "R", source-glyph = 133}, # w
-  {codepoint = 0x76, name = "v", source-glyph = 133}, # w
-  {codepoint = 0x56, name = "V", source-glyph = 133}, # w
-  {codepoint = 0x78, name = "x", source-glyph = 130}, # s
-  {codepoint = 0x58, name = "X", source-glyph = 130}, # s
-  {codepoint = 0x79, name = "y", source-glyph = 125}, # j
-  {codepoint = 0x59, name = "Y", source-glyph = 125}, # j
-  {codepoint = 0x7a, name = "z", source-glyph = 130}, # s
-  {codepoint = 0x5a, name = "Z", source-glyph = 130}, # s
+  {codepoint = 0x62, name = "b", width = 0.5, source-glyph = 130}, # p
+  {codepoint = 0x42, name = "B", width = 0.5, source-glyph = 130}, # p
+  {codepoint = 0x63, name = "c", width = 0.5, source-glyph = 131}, # s
+  {codepoint = 0x43, name = "C", width = 0.5, source-glyph = 131}, # s
+  {codepoint = 0x64, name = "d", width = 0.5, source-glyph = 132}, # t
+  {codepoint = 0x44, name = "D", width = 0.5, source-glyph = 132}, # t
+  {codepoint = 0x66, name = "f", width = 0.5, source-glyph = 130}, # p
+  {codepoint = 0x46, name = "F", width = 0.5, source-glyph = 130}, # p
+  {codepoint = 0x67, name = "g", width = 0.5, source-glyph = 127}, # k
+  {codepoint = 0x47, name = "G", width = 0.5, source-glyph = 127}, # k
+  {codepoint = 0x68, name = "h", width = 0.5, source-glyph = 127}, # k
+  {codepoint = 0x48, name = "H", width = 0.5, source-glyph = 127}, # k
+  {codepoint = 0x71, name = "q", width = 0.5, source-glyph = 127}, # k
+  {codepoint = 0x51, name = "Q", width = 0.5, source-glyph = 127}, # k
+  {codepoint = 0x72, name = "r", width = 0.5, source-glyph = 134}, # w
+  {codepoint = 0x52, name = "R", width = 0.5, source-glyph = 134}, # w
+  {codepoint = 0x76, name = "v", width = 0.5, source-glyph = 134}, # w
+  {codepoint = 0x56, name = "V", width = 0.5, source-glyph = 134}, # w
+  {codepoint = 0x78, name = "x", width = 0.5, source-glyph = 131}, # s
+  {codepoint = 0x58, name = "X", width = 0.5, source-glyph = 131}, # s
+  {codepoint = 0x79, name = "y", width = 0.5, source-glyph = 126}, # j
+  {codepoint = 0x59, name = "Y", width = 0.5, source-glyph = 126}, # j
+  {codepoint = 0x7a, name = "z", width = 0.5, source-glyph = 131}, # s
+  {codepoint = 0x5a, name = "Z", width = 0.5, source-glyph = 131}, # s
 
   # `type = "middle"` creates a combining glyph, derived from the source glyph's
   # rightmost column of pixels, stretched to full width.
