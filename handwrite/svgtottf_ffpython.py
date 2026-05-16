@@ -20,7 +20,8 @@ import psMat
 #                █           █
 
 
-print("🚨🚨🚨 RESET DEFAULT.TOML BEFORE GENERATING SOMEONE'S FONT 🚨🚨🚨")
+print("🚨🚨🚨 SWITCH TO `dev` BRANCH BEFORE GENERATING SOMEONE'S FONT 🚨🚨🚨")
+print("(this message is in svgtottf_ffpython.py)")
 
 
 def set_properties(font, cli_args, version_major, version_minor, version_patch):
@@ -856,7 +857,16 @@ def add_glyphs(
     generated_glyphs = config.get("glyphs", {}).get("derived", [])
     ligature_base_glyphs = config.get("glyphs", {}).get("copies", [])
     for glyph_object in default_glyphs + generated_glyphs + ligature_base_glyphs:
-        if glyph_object.get("type", "none") == "middle":
+        glyph_type = glyph_object.get("type", "none")
+        if glyph_type == "cartouche-middle":
+            font[glyph_object["name"]].width = 0
+            font[glyph_object["name"]].vwidth = 0
+            font[glyph_object["name"]].transform(psMat.translate(-1000, 0))
+        if glyph_type == "long-pi-middle":
+            font[glyph_object["name"]].width = 0
+            font[glyph_object["name"]].vwidth = 0
+            font[glyph_object["name"]].transform(psMat.translate(-1250, 0))
+        if glyph_type == "long-pi-end":
             font[glyph_object["name"]].width = 0
             font[glyph_object["name"]].vwidth = 0
             font[glyph_object["name"]].transform(psMat.translate(-1000, 0))

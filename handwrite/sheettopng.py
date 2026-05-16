@@ -453,7 +453,7 @@ def detect_characters(
                 source[3],
                 source[4],
             )
-            if glyph_derived.get("type", "none") == "middle":
+            if glyph_derived.get("type", "none") == "cartouche-middle":
                 # For the middle portion of the cartouche, grab the rightmost 1px column
                 # of the open cartouche. It'll be automatically stretched to the width
                 # of a glyph when it's converted to BMP, then SVG.
@@ -465,6 +465,31 @@ def detect_characters(
                 sorted_characters.append(
                     [roi, derived_left, source_top, source_w, source_h]
                 )
+            elif glyph_derived.get("type", "none") == "long-pi-middle":
+                # For the middle portion of long pi, grab the 1px column that's 3/4em
+                # from the left side of the em box, which is 4/6em from the left side of
+                # the scan area. It'll be automatically stretched to the width
+                # of a glyph when it's converted to BMP, then SVG.
+                #
+                # We may have to add math.floor() or math.ceil(), depending on what's
+                # ideal for 6px and 10px fonts.
+                #
+                # For 6px, test it both ways and decide what feels nicest - having more
+                # control over the vertical part's left-right position, or having more
+                # control over the horizontal part's end position.
+                derived_left = source_left + source_w * 4 / 6 - 1
+                roi = image[
+                    int(source_top) : int(source_top + source_h),
+                    int(derived_left) : int(derived_left + 1),
+                ]
+                sorted_characters.append(
+                    [roi, derived_left, source_top, source_w, source_h]
+                )
+            elif glyph_derived.get("type", "none") == "long-pi-end":
+                # For long-pi-end, grab the entire long-pi-start glyph. Later, cover up
+                # the leftmost 3/4 of the glyph.
+                sorted_characters.append(source)
+
             else:
                 # Plain copy.
                 # Mostly base glyphs for ASCII ligatures: [_].:, a-z, A-Z
@@ -532,18 +557,24 @@ def save_images(characters, debug_dir, default_json, cli_args):
         json.dump(json_data, file, indent=4)
 
     # Derived glyphs: cartoucheMiddleTok, underscore, long pi middle, etc.
+    # Also long pi start, because it needs to be cropped
     with open(default_json) as f:
         default_json_data = json.load(f)
+        sheet_glyphs = default_json_data.get("glyphs", {}).get("sheet", [])
         derived_glyphs = default_json_data.get("glyphs", {}).get("derived", [])
         copied_glyphs = default_json_data.get("glyphs", {}).get("copies", [])
-        combined_glyphs = derived_glyphs + copied_glyphs
+        combined_glyphs = sheet_glyphs + derived_glyphs + copied_glyphs
         for glyph in combined_glyphs:
-            if glyph.get("type", "none") == "middle":
-                pad("right", debug_dir, cli_args, glyph["name"], True)
-                pad("left", debug_dir, cli_args, glyph["name"], True)
+            glyph_type = glyph.get("type", "none")
+            if glyph_type == "cartouche-middle" or glyph_type == "long-pi-middle":
+                crop("middle", debug_dir, cli_args, glyph["name"], True)
+            if glyph_type == "long-pi-start":
+                crop("long-pi-start", debug_dir, cli_args, glyph["name"], True)
+            if glyph_type == "long-pi-end":
+                crop("long-pi-end", debug_dir, cli_args, glyph["name"], True)
 
 
-def pad(side, debug_dir, cli_args, char_name, resize=False):
+def crop(type, debug_dir, cli_args, char_name, resize=False):
     char_img = Image.open(debug_dir + "/" + char_name + "/" + char_name + ".png")
 
     # Resize the cartouche middle from 1px wide to the standard width (for a given sheet
@@ -586,21 +617,23 @@ def pad(side, debug_dir, cli_args, char_name, resize=False):
         # which have 1px more padding on the left side
         left_scan_padding = math.ceil(grid_scan_hor_padding * in_pixels)
         right_scan_padding = math.floor(grid_scan_hor_padding * in_pixels)
+        cartouche_overlap_vector = 0
         cartouche_overlap_pixel = 1
-        cartouche_overlap = 0
     else:
         left_scan_padding = grid_scan_hor_padding * in_pixels
         right_scan_padding = grid_scan_hor_padding * in_pixels
-        cartouche_overlap = grid_glyph_w * in_pixels / 42
+        cartouche_overlap_vector = grid_glyph_w * in_pixels / 42
         cartouche_overlap_pixel = 0
-    if side == "left":
+
+    if type == "middle":
+        # Crop out extra scan area on left
         draw.rectangle(
             (
                 (left, top),
                 (
                     left
                     + left_scan_padding
-                    - cartouche_overlap
+                    - cartouche_overlap_vector
                     - cartouche_overlap_pixel
                     - 1,
                     bottom,
@@ -608,11 +641,42 @@ def pad(side, debug_dir, cli_args, char_name, resize=False):
             ),
             fill="white",
         )
-    if side == "right":
+        # Crop out extra scan area on right
         draw.rectangle(
             (
-                (right - right_scan_padding + cartouche_overlap + 1, top),
+                (right - right_scan_padding + cartouche_overlap_vector + 1, top),
                 (right, bottom),
+            ),
+            fill="white",
+        )
+
+    # Long pi doesn't appear in sheet v2, so these are metrics for v3 and up.
+    left_pi_padding = 4 * in_pixels
+    right_pi_padding = 2 * in_pixels
+
+    if type == "long-pi-start":
+        # Crop out the rightmost 1/4em
+        draw.rectangle(
+            (
+                (right - right_pi_padding + cartouche_overlap_vector + 1, top),
+                (right, bottom),
+            ),
+            fill="white",
+        )
+
+    if type == "long-pi-end":
+        # Crop out the leftmost 3/4em
+        draw.rectangle(
+            (
+                (left, top),
+                (
+                    left
+                    + left_pi_padding
+                    - cartouche_overlap_vector
+                    - cartouche_overlap_pixel
+                    - 1,
+                    bottom,
+                ),
             ),
             fill="white",
         )

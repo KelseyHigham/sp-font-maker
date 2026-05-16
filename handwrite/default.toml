@@ -196,7 +196,7 @@ glyphs.sheet = [
   {codepoint = 0xf1991, name = "cartoucheEndTok",   ligature = "bracketright", center = false, scan-shift = [ 0.25, 0], cartoucheable-stackable = false},
   {codepoint = 0xf199c, name = "middotTok",         ligature = "period"},
   {codepoint = 0xf199d, name = "colonTok",          ligature = "colon"},
-  {},  # {                     name = "tallyTok",          ligature = "comma",   type = "tally",  scan-shift = [0, -0.25]},
+  {                     name = "tallyTok",          ligature = "comma",   type = "tally",  scan-shift = [0, -0.25]},
   {codepoint = 0x69,    name = "i",                                            center = false,    width = 0.5},
   {codepoint = 0x6a,    name = "j",                                            center = false,    width = 0.5},
   {codepoint = 0x6b,    name = "k",                                            center = false,    width = 0.5},
@@ -209,9 +209,9 @@ glyphs.sheet = [
   {codepoint = 0x77,    name = "w",                                            center = false,    width = 0.5},
   {codepoint = 0x300c,  name = "teTok",             ligature = "t e",          center = false},
   {codepoint = 0x300d,  name = "toTok",             ligature = "t o",          center = false},
-  {                     name = "longPiStartTok",    ligature = "p i openparen",    width = 1.0,  scan-shift = [-0.25, 0], cartoucheable-stackable = false},
-  {                     name = "longPiEndTok",      ligature = "closeparen",       width = 0,    scan-shift = [ 0.25, 0], cartoucheable-stackable = false},
+  {                     name = "longPiStartTok",    ligature = "p i openparen",    type = "long-pi-start",              cartoucheable-stackable = false},
   {}, # These blank rows get populated from `other_words_string` in `cli.py`
+  {},
 
   # row 7
   {codepoint = 0xf1980, name = "kijetesantakaluTok", ligature = "k i j e t e s a n t a k a l u", rotate = true},
@@ -333,23 +333,30 @@ glyphs.derived = [
   {codepoint = 0x7a, name = "z", width = 0.5, source-glyph = 131}, # s
   {codepoint = 0x5a, name = "Z", width = 0.5, source-glyph = 131}, # s
 
-  # `type = "middle"` creates a combining glyph, derived from the source glyph's
+  # `type = "cartouche-middle"` creates a combining glyph, derived from the source glyph's
   # rightmost column of pixels, stretched to full width.
   #
-  # This doesn't generate ligatures; only the glyph. Custom additions like long
+  # `type = "long-pi-middle"` creates a combining glyph, derived from the
+  # source glyph's column of pixels 3/4em from the left, stretched to full
+  # width. (Looking at template v5, it's the column of pixels that the "a" is
+  # centered on.)
+  #
+  # `type = "long-pi-end"` creates a combining glyph which is simply the
+  # rightmost 1/4em of the original long pi drawing, with no stretching.
+  #
+  # These don't generate ligatures; only the glyph. Custom additions like long
   # glyphs and sitelen suwi cartouches need ligature code added manually to
   # `add_ligatures.py`.
 
-  # Kelly notes, remove later:
-  #     Hardcoded in sheettopng.py; improve this when adding long pi. Generated
-  #     from row 6, cartoucheStartTok.
+  {codepoint = 0xf1992, name = "cartoucheMiddleTok", source-glyph = 120, type = "cartouche-middle",         center = false, ligature = "equals",     cartoucheable-stackable = false},
+  {codepoint = 0x3d,    name = "equals",             source-glyph = 120, type = "cartouche-middle",         center = false, writein = "=",           cartoucheable-stackable = false},
 
-  {codepoint = 0xf1992, name = "cartoucheMiddleTok", source-glyph = 120, type = "middle", center = false, ligature = "equals",     cartoucheable-stackable = false},
-  {codepoint = 0x3d,    name = "equals",             source-glyph = 120, type = "middle", center = false, writein = "=",           cartoucheable-stackable = false},
+  {codepoint = 0xf1999, name = "longPiMiddleTok",    source-glyph = 137, type = "long-pi-middle", center = false, ligature = "underscore", cartoucheable-stackable = false},
+  {codepoint = 0x5f,    name = "underscore",         source-glyph = 137, type = "long-pi-middle", center = false,                          cartoucheable-stackable = false},
 
+  {                     name = "longPiEndTok",       source-glyph = 137, type = "long-pi-end",    center = false, ligature = "closeparen", cartoucheable-stackable = false},
+  {codepoint = 0x29,    name = "closeparen",         source-glyph = 137, type = "long-pi-end",    center = false,                          cartoucheable-stackable = false},
 
-  {codepoint = 0xf1999, name = "longPiMiddleTok",    source-glyph = 137, type = "middle", center = false, ligature = "underscore", cartoucheable-stackable = false},
-  {codepoint = 0x5f,    name = "underscore",         source-glyph = 137, type = "middle", center = false,                          cartoucheable-stackable = false},
 
   # Kelly notes, remove later:
   #     Other potential additions to this section:
@@ -489,8 +496,7 @@ writein-metadata = [
   {                     name = "wakenTok",    rotate = true},
   {                     name = "wasoweliTok", rotate = true},
 
-  # Kelly notes, implement later:
-  # Tally marks from "nasin sitelen kalama pi linja lili"
+  # Up to 15 tally marks from "nasin sitelen kalama pi linja lili"
   {name = "commaTok",                                                                       type = "tally", center = false},
   {name = "commacommaTok",                                                                  type = "tally", center = false},
   {name = "commacommacommaTok",                                                             type = "tally", center = false},

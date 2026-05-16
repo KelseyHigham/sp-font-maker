@@ -415,8 +415,11 @@ features = [
                 word_label += letter_string
                 if letter_string == "-" or letter_string == "+" or letter_string == "&":
                     word_label += "<br>"
-            if word_label == "-<br>-":
+            if word_label == "-<br>-<br>":
                 word_label = "--"
+            if word == "pi(":
+                word = "pi()"
+                word_label = "pi()"
             if word.startswith(","):
                 # Tally mark. Prepend with a space so that it doesn't combine with the
                 # previous character, then insert a combining cartouche extension so
@@ -457,7 +460,7 @@ features = [
 </p>
 
 <span class="tp">
-<textarea class="tp" title="sina ken pana-wile e kulupu&sitelen lon ni<v">sina ken pana-wile e kulupu&sitelen lon ni<v
+<textarea class="tp" title="sina ken pana-wile e kulupu&sitelen lon insa pi(poki niv<)">sina ken pana-wile e kulupu&sitelen lon insa pi(poki niv<)
 
 </textarea>
 </span>
