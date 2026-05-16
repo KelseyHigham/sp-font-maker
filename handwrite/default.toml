@@ -288,11 +288,11 @@ glyphs.derived = [
   # Already-a-word letters, for words like Anna:
   {codepoint = 0x61, name = "a", source-glyph = 0},   # aTok
   {codepoint = 0x65, name = "e", source-glyph = 9},   # eTok
-  {codepoint = 0x6e, name = "n", source-glyph = 148}, # nTok
+  {codepoint = 0x6e, name = "n", source-glyph = 147}, # nTok
   {codepoint = 0x6f, name = "o", source-glyph = 68},  # oTok
   {codepoint = 0x41, name = "A", source-glyph = 0},   # aTok
   {codepoint = 0x45, name = "E", source-glyph = 9},   # eTok
-  {codepoint = 0x4e, name = "N", source-glyph = 148}, # nTok
+  {codepoint = 0x4e, name = "N", source-glyph = 147}, # nTok
   {codepoint = 0x4f, name = "O", source-glyph = 68},  # oTok
 
   # Capital letters, for words like Pingo:
