@@ -65,6 +65,13 @@ feature liga {
     cartoucheable = []
     stackable = []
 
+    # Disable kulupu combos unless a "kulupuTok" glyph is found in the font, to allow
+    # for alternative sheets like tuki tiki
+    enable_kulupu_combos = False
+    # Disable long pi unless a "longPiStartTok" glyph is found in the font, to allow for
+    # older versions of the sheet that didn't include it
+    enable_long_pi = False
+
     # Create ligature lines.
     with open(default_json) as f:
         json_glyphs = json.load(f).get("glyphs", {})
@@ -192,6 +199,10 @@ feature liga {
                         rotated_ligature(lig, " west", name, ".W", 1)
                     pass
 
+                if k.get("name", "") == "kulupuTok":
+                    enable_kulupu_combos = True
+                if k.get("type", "") == "long-pi-start":
+                    enable_long_pi = True
                 if k.get("type", "") == "tally":
                     # Adopt the following when I'm not juggling two git branches
                     # tally_name = k.get("name", "")
@@ -532,32 +543,30 @@ feature calt {
     # Currently, long pi and cartouches can't contain each other, because
     # cartoucheEndTok and longPiEndTok are both excluded from @cartoucheableGlyph.
 
-    ligatures_string += """# LONG PI
+    if enable_long_pi:
+
+        ligatures_string += """# LONG PI
 
 """
 
-    ligatures_string += """lookup add_long_pi_middle {
+        ligatures_string += """lookup add_long_pi_middle {
   # Add a long pi middle after the glyph.
 """
-    ligatures_string += (
-        "  sub cartoucheMiddleTok   by   cartoucheMiddleTok longPiMiddleTok;\n"
-    )
-    for word in cartoucheable:
         ligatures_string += (
-            f"  sub {word.rjust(12)}   by {word.rjust(12)} longPiMiddleTok;\n"
+            "  sub cartoucheMiddleTok   by   cartoucheMiddleTok longPiMiddleTok;\n"
         )
-    for word in stackable:
-        ligatures_string += f"  sub {word.rjust(12)}.bottom   by {word.rjust(12)}.bottom longPiMiddleTok;\n"
-    for word in stackable:
-        ligatures_string += (
-            f"  sub {word.rjust(12)}.top   by {word.rjust(12)}.top longPiMiddleTok;\n"
-        )
-    for non_word in cartoucheable_non_words:
-        ligatures_string += (
-            f"  sub {non_word.rjust(12)}   by {non_word.rjust(12)} longPiMiddleTok;\n"
-        )
+        for word in cartoucheable:
+            ligatures_string += (
+                f"  sub {word.rjust(12)}   by {word.rjust(12)} longPiMiddleTok;\n"
+            )
+        for word in stackable:
+            ligatures_string += f"  sub {word.rjust(12)}.bottom   by {word.rjust(12)}.bottom longPiMiddleTok;\n"
+        for word in stackable:
+            ligatures_string += f"  sub {word.rjust(12)}.top   by {word.rjust(12)}.top longPiMiddleTok;\n"
+        for non_word in cartoucheable_non_words:
+            ligatures_string += f"  sub {non_word.rjust(12)}   by {non_word.rjust(12)} longPiMiddleTok;\n"
 
-    ligatures_string += """} add_long_pi_middle;
+        ligatures_string += """} add_long_pi_middle;
 
 
 

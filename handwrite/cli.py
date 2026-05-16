@@ -68,9 +68,15 @@ def converters(
         print("Debug directory does not exist. Creating it at", debug_dir)
         os.makedirs(debug_dir, exist_ok=True)
 
-    default_json = os.path.join(
-        os.path.dirname(os.path.realpath(__file__)), "default.toml"
-    )
+    sheet_version = cli_args.get("sheet_version") or "99999999.999999.999999"
+    if Version(sheet_version) < Version("5"):
+        default_json = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)), "default_v1_to_v4.toml"
+        )
+    else:
+        default_json = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)), "default.toml"
+        )
 
     # Read initial config data from TOML.
     with open(default_json, "rb") as file:
@@ -82,35 +88,6 @@ def converters(
     for cell_index, cell in enumerate(glyphs_json):
         if not cell:
             writein_cell_indices.append(cell_index)
-
-    sheet_version = cli_args.get("sheet_version") or "99999999.999999.999999"
-    if Version(sheet_version) < Version("5"):
-        # This block replaces the word list in default.toml with a word list from
-        # another file, such as `default-sheet-v1--v4.toml`.
-        # Currently, there haven't been any word list updates, so it replaces with data
-        # from the same file, which is redundant.
-
-        # Overwrite glyphs.sheet from the older TOML.
-        # If we update the word list in v5, then replace this line with something like
-        # `default-sheet-v1--v4.toml`.
-        old_toml = os.path.join(
-            os.path.dirname(os.path.realpath(__file__)), "default.toml"
-        )
-        with open(old_toml, "rb") as file:
-            old_font_data = tomllib.load(file)
-        old_glyphs_json = old_font_data.get("glyphs", {}).get("sheet", [])
-        font_data["glyphs"]["sheet"] = old_glyphs_json
-        glyphs_json = font_data.get("glyphs", {}).get("sheet", [])
-
-        # Regenerate from the overwritten sheet.
-        writein_cell_indices = []
-        for cell_index, cell in enumerate(glyphs_json):
-            if not cell:
-                writein_cell_indices.append(cell_index)
-    else:
-        # v5 or newer. If the new word list is the same as the old one, then this should
-        # behave identically.
-        pass
 
     # Save as JSON in debug directory. We'll edit it to add custom words.
     # Extra config sheets should be merged into the same working JSON file.
