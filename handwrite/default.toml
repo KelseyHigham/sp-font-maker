@@ -296,42 +296,42 @@ glyphs.derived = [
   {codepoint = 0x4f, name = "O", source-glyph = 68},  # oTok
 
   # Capital letters, for words like Pingo:
-  {codepoint = 0x49, name = "I", width = 0.5, source-glyph = 125}, # i
-  {codepoint = 0x4a, name = "J", width = 0.5, source-glyph = 126}, # j
-  {codepoint = 0x4b, name = "K", width = 0.5, source-glyph = 127}, # k
-  {codepoint = 0x4c, name = "L", width = 0.5, source-glyph = 128}, # l
-  {codepoint = 0x4d, name = "M", width = 0.5, source-glyph = 129}, # m
-  {codepoint = 0x50, name = "P", width = 0.5, source-glyph = 130}, # p
-  {codepoint = 0x53, name = "S", width = 0.5, source-glyph = 131}, # s
-  {codepoint = 0x54, name = "T", width = 0.5, source-glyph = 132}, # t
-  {codepoint = 0x55, name = "U", width = 0.5, source-glyph = 133}, # u
-  {codepoint = 0x57, name = "W", width = 0.5, source-glyph = 134}, # w
+  {codepoint = 0x49, name = "I", width = 0.5, center = false, source-glyph = 125}, # i
+  {codepoint = 0x4a, name = "J", width = 0.5, center = false, source-glyph = 126}, # j
+  {codepoint = 0x4b, name = "K", width = 0.5, center = false, source-glyph = 127}, # k
+  {codepoint = 0x4c, name = "L", width = 0.5, center = false, source-glyph = 128}, # l
+  {codepoint = 0x4d, name = "M", width = 0.5, center = false, source-glyph = 129}, # m
+  {codepoint = 0x50, name = "P", width = 0.5, center = false, source-glyph = 130}, # p
+  {codepoint = 0x53, name = "S", width = 0.5, center = false, source-glyph = 131}, # s
+  {codepoint = 0x54, name = "T", width = 0.5, center = false, source-glyph = 132}, # t
+  {codepoint = 0x55, name = "U", width = 0.5, center = false, source-glyph = 133}, # u
+  {codepoint = 0x57, name = "W", width = 0.5, center = false, source-glyph = 134}, # w
 
   # Weird substitutions, for words like yutu:
-  {codepoint = 0x62, name = "b", width = 0.5, source-glyph = 130}, # p
-  {codepoint = 0x42, name = "B", width = 0.5, source-glyph = 130}, # p
-  {codepoint = 0x63, name = "c", width = 0.5, source-glyph = 131}, # s
-  {codepoint = 0x43, name = "C", width = 0.5, source-glyph = 131}, # s
-  {codepoint = 0x64, name = "d", width = 0.5, source-glyph = 132}, # t
-  {codepoint = 0x44, name = "D", width = 0.5, source-glyph = 132}, # t
-  {codepoint = 0x66, name = "f", width = 0.5, source-glyph = 130}, # p
-  {codepoint = 0x46, name = "F", width = 0.5, source-glyph = 130}, # p
-  {codepoint = 0x67, name = "g", width = 0.5, source-glyph = 127}, # k
-  {codepoint = 0x47, name = "G", width = 0.5, source-glyph = 127}, # k
-  {codepoint = 0x68, name = "h", width = 0.5, source-glyph = 127}, # k
-  {codepoint = 0x48, name = "H", width = 0.5, source-glyph = 127}, # k
-  {codepoint = 0x71, name = "q", width = 0.5, source-glyph = 127}, # k
-  {codepoint = 0x51, name = "Q", width = 0.5, source-glyph = 127}, # k
-  {codepoint = 0x72, name = "r", width = 0.5, source-glyph = 134}, # w
-  {codepoint = 0x52, name = "R", width = 0.5, source-glyph = 134}, # w
-  {codepoint = 0x76, name = "v", width = 0.5, source-glyph = 134}, # w
-  {codepoint = 0x56, name = "V", width = 0.5, source-glyph = 134}, # w
-  {codepoint = 0x78, name = "x", width = 0.5, source-glyph = 131}, # s
-  {codepoint = 0x58, name = "X", width = 0.5, source-glyph = 131}, # s
-  {codepoint = 0x79, name = "y", width = 0.5, source-glyph = 126}, # j
-  {codepoint = 0x59, name = "Y", width = 0.5, source-glyph = 126}, # j
-  {codepoint = 0x7a, name = "z", width = 0.5, source-glyph = 131}, # s
-  {codepoint = 0x5a, name = "Z", width = 0.5, source-glyph = 131}, # s
+  {codepoint = 0x62, name = "b", width = 0.5, center = false, source-glyph = 130}, # p
+  {codepoint = 0x42, name = "B", width = 0.5, center = false, source-glyph = 130}, # p
+  {codepoint = 0x63, name = "c", width = 0.5, center = false, source-glyph = 131}, # s
+  {codepoint = 0x43, name = "C", width = 0.5, center = false, source-glyph = 131}, # s
+  {codepoint = 0x64, name = "d", width = 0.5, center = false, source-glyph = 132}, # t
+  {codepoint = 0x44, name = "D", width = 0.5, center = false, source-glyph = 132}, # t
+  {codepoint = 0x66, name = "f", width = 0.5, center = false, source-glyph = 130}, # p
+  {codepoint = 0x46, name = "F", width = 0.5, center = false, source-glyph = 130}, # p
+  {codepoint = 0x67, name = "g", width = 0.5, center = false, source-glyph = 127}, # k
+  {codepoint = 0x47, name = "G", width = 0.5, center = false, source-glyph = 127}, # k
+  {codepoint = 0x68, name = "h", width = 0.5, center = false, source-glyph = 127}, # k
+  {codepoint = 0x48, name = "H", width = 0.5, center = false, source-glyph = 127}, # k
+  {codepoint = 0x71, name = "q", width = 0.5, center = false, source-glyph = 127}, # k
+  {codepoint = 0x51, name = "Q", width = 0.5, center = false, source-glyph = 127}, # k
+  {codepoint = 0x72, name = "r", width = 0.5, center = false, source-glyph = 134}, # w
+  {codepoint = 0x52, name = "R", width = 0.5, center = false, source-glyph = 134}, # w
+  {codepoint = 0x76, name = "v", width = 0.5, center = false, source-glyph = 134}, # w
+  {codepoint = 0x56, name = "V", width = 0.5, center = false, source-glyph = 134}, # w
+  {codepoint = 0x78, name = "x", width = 0.5, center = false, source-glyph = 131}, # s
+  {codepoint = 0x58, name = "X", width = 0.5, center = false, source-glyph = 131}, # s
+  {codepoint = 0x79, name = "y", width = 0.5, center = false, source-glyph = 126}, # j
+  {codepoint = 0x59, name = "Y", width = 0.5, center = false, source-glyph = 126}, # j
+  {codepoint = 0x7a, name = "z", width = 0.5, center = false, source-glyph = 131}, # s
+  {codepoint = 0x5a, name = "Z", width = 0.5, center = false, source-glyph = 131}, # s
 
   # `type = "cartouche-middle"` creates a combining glyph, derived from the source glyph's
   # rightmost column of pixels, stretched to full width.
