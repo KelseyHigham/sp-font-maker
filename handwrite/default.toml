@@ -196,7 +196,7 @@ glyphs.sheet = [
   {codepoint = 0xf1991, name = "cartoucheEndTok",   ligature = "bracketright", center = false, scan-shift = [ 0.25, 0], cartoucheable-stackable = false},
   {codepoint = 0xf199c, name = "middotTok",         ligature = "period"},
   {codepoint = 0xf199d, name = "colonTok",          ligature = "colon"},
-  {                     name = "tallyTok",          ligature = "tally",   type = "tally",  scan-shift = [0, -0.25]},
+  {                     name = "tallyTok",          ligature = "tally",        center = false, scan-shift = [0, -0.25], type = "tally"},
   {codepoint = 0x69,    name = "i",                                            center = false,    width = 0.5},
   {codepoint = 0x6a,    name = "j",                                            center = false,    width = 0.5},
   {codepoint = 0x6b,    name = "k",                                            center = false,    width = 0.5},
