@@ -204,17 +204,9 @@ feature liga {
                 if k.get("type", "") == "long-pi-start":
                     enable_long_pi = True
                 if k.get("type", "") == "tally":
-                    # Adopt the following when I'm not juggling two git branches
-                    # tally_name = k.get("name", "")
-                    tally_name = ""
-                    populate_tallies = False
+                    # Check for single tally, as opposed to "tallytallytallyTok"
                     if k.get("name", "") == "tallyTok":
                         tally_name = "tallyTok"
-                        populate_tallies = True
-                    elif k.get("name", "") == "commaTok":
-                        tally_name = "commaTok"
-                        populate_tallies = True
-                    if populate_tallies:
                         for tally_count in range(15):  # 0--14
                             # Create tuples of ligature text, followed by ligature
                             # length by tokens.
@@ -461,7 +453,7 @@ feature liga {
         "exclamation",
         "question",
         "semicolon",
-        "comma",
+        "tally",
         "equals",
         "ideographicspace",
         "pipe",

@@ -19,8 +19,13 @@ import psMat
 # ▄█▀ ▀█▄  ▀▄    █▄▀ █   ▀▄▀ █▄▀ ▀█▄ █    ▀▄ █ ▀█▄ ▄█▀
 #                █           █
 
-
-print("🚨🚨🚨 SWITCH TO `dev` BRANCH BEFORE GENERATING SOMEONE'S FONT 🚨🚨🚨")
+print("🚨🚨🚨 TIME FOR TESTING THE `v5` BRANCH!!! 🚨🚨🚨")
+print("""check:
+- latin letters, uppercase and lowercase
+- tally writeins
+- comma writeins
+- ku/su
+- big head nouns""")
 print("(this message is in svgtottf_ffpython.py)")
 
 
@@ -662,14 +667,9 @@ def add_glyphs(
                 g.width = 0
                 g.vwidth = 0
                 g.transform(psMat.translate(-1000, 0))
-                tally_name = ""
-                if glyph_object.get("name", "") == "commaTok":
-                    # Writein
-                    tally_name = "commaTok"
                 if glyph_object.get("name", "") == "tallyTok":
                     # Default sheet
                     tally_name = "tallyTok"
-                if tally_name == "tallyTok" or tally_name == "commaTok":
                     for tally_count in range(16):  # 1--15
                         long_tally_name = "tally" + str(tally_count) + "Tok"  # 1--15
                         g = font.createChar(-1, long_tally_name)
