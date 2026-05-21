@@ -19,15 +19,6 @@ import psMat
 # ▄█▀ ▀█▄  ▀▄    █▄▀ █   ▀▄▀ █▄▀ ▀█▄ █    ▀▄ █ ▀█▄ ▄█▀
 #                █           █
 
-print("🚨🚨🚨 TIME FOR TESTING THE `v5` BRANCH!!! 🚨🚨🚨")
-print("""check:
-- latin letters, uppercase and lowercase
-- tally writeins
-- comma writeins
-- ku/su
-- big head nouns""")
-print("(this message is in svgtottf_ffpython.py)")
-
 
 def set_properties(font, cli_args, version_major, version_minor, version_patch):
     """Set metadata of the font."""
