@@ -220,51 +220,52 @@ features = [
     #   █▀▄ ▄▀█ ▀█▀
     # ▄ █▄▀ ▀▄█  ▀▄
 
+    bat_string = ""
+    c = cli_args_dict
+    bat_string += f"\nhandwrite --debug-directory ./debug/ "
+    if c["sheet_version"]:
+        bat_string += f"--sheet-version {c['sheet_version'].ljust(5)} "
+    else:
+        bat_string += f"                      "
+    if c["license"]:
+        if len(c["license"]) == 3:
+            bat_string += f"--license {c['license']} "
+        else:
+            # Write license later, for alignment.
+            bat_string += f"              "
+    else:
+        bat_string += f"              "
+    if c["designer"]:
+        bat_string += f"--designer {f'"{c['designer']}"'.ljust(20)} "
+    else:
+        bat_string += f"                                "
+    if c["family"]:
+        bat_string += f"--family {f'"{c['family']}"'.ljust(33)} "
+    if c["filename"]:
+        # If filename is just family with hyphens, then we can omit it, because
+        # the script generates that filename anyway
+        if c.get("family", "").replace(" ", "-") != c["filename"]:
+            bat_string += f'--filename "{c["filename"]}" '
+    bat_string += f"{c['input_path']} "
+    bat_string += f"{c['output_directory']} "
+    if c["other_words"]:
+        bat_string += f'--other-words "{c["other_words"]}" '
+    if c["license"]:
+        if len(c["license"]) != 3:
+            bat_string += f'--license "{c["license"]}" '
+    if c["license_url"]:
+        bat_string += f'--license-url "{c["license_url"]}" '
+    if c["pixel"]:
+        bat_string += f"--pixel"
+    print("🗃️ Nicely-formatted command for Kelly's .bat file:", bat_string)
+    print()
+
     # Add to `generate_all_fonts.bat`, if it exists.
     bat_path = f"{out_dir}{os.sep}generate all fonts.bat"
-    bat_string = ""
     if os.path.exists(bat_path):
         if not not_new:
             bat_file = open(bat_path, "a", encoding="utf-8")
-            c = cli_args_dict
-            bat_string += f"\nhandwrite --debug-directory ./debug/ "
-            if c["sheet_version"]:
-                bat_string += f"--sheet-version {c['sheet_version'].ljust(5)} "
-            else:
-                bat_string += f"                      "
-            if c["license"]:
-                if len(c["license"]) == 3:
-                    bat_string += f"--license {c['license']} "
-                else:
-                    # Write license later, for alignment.
-                    bat_string += f"              "
-            else:
-                bat_string += f"              "
-            if c["designer"]:
-                bat_string += f"--designer {f'"{c['designer']}"'.ljust(20)} "
-            else:
-                bat_string += f"                                "
-            if c["family"]:
-                bat_string += f"--family {f'"{c['family']}"'.ljust(33)} "
-            if c["filename"]:
-                # If filename is just family with hyphens, then we can omit it, because
-                # the script generates that filename anyway
-                if c.get("family", "").replace(" ", "-") != c["filename"]:
-                    bat_string += f'--filename "{c["filename"]}" '
-            bat_string += f"{c['input_path']} "
-            bat_string += f"{c['output_directory']} "
-            if c["other_words"]:
-                bat_string += f'--other-words "{c["other_words"]}" '
-            if c["license"]:
-                if len(c["license"]) != 3:
-                    bat_string += f'--license "{c["license"]}" '
-            if c["license_url"]:
-                bat_string += f'--license-url "{c["license_url"]}" '
-            if c["pixel"]:
-                bat_string += f"--pixel"
             bat_file.write(bat_string)
-            print("Nicely-formatted command for Kelly's .bat file:", bat_string)
-            print()
             bat_file.close()
 
     #           █
