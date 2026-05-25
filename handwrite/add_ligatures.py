@@ -111,7 +111,15 @@ feature liga {
                     # - zerowidthjoiner
                     # - ideographicspace
                     cartoucheable.append(k["name"])
-                    stackable.append(k["name"])
+
+                    # These glyphs are very tall. Creating stackable, big, or kulupu&
+                    # versions of them will increase the font's render bounds, which in
+                    # turn will increase the Win Ascent and Win Descent, which are
+                    # incorrectly used for line height in some software, including
+                    # Android and IbisPaint.
+                    name = k.get("name", "")
+                    if name != "teTok" and name != "toTok" and name != "tallyTok":
+                        stackable.append(k["name"])
 
                 if k.get("rotate", False):
                     direction = k.get("direction", "right")

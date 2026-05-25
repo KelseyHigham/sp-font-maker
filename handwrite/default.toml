@@ -279,6 +279,9 @@ glyphs.derived = [
   #     then it can hopefully reference a `target-name` instead of
   #     `source-glyph`.
 
+  # Todo:
+  # - split `cartoucheable-stackable` into `embeddable` (cartouche and long pi) and `square` (kulupu&, stacking, and giant)
+
   # Punctuation:
   {codepoint = 0x5b, name = "bracketleft",  writein = "[", source-glyph = 120, cartoucheable-stackable = false}, # cartoucheStartTok
   {codepoint = 0x5d, name = "bracketright", writein = "]", source-glyph = 121, cartoucheable-stackable = false}, # cartoucheEndTok

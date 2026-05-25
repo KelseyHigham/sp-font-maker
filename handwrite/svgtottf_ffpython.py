@@ -496,10 +496,20 @@ def add_glyphs(
             for glyph in rotated_glyph_set:
                 big = False
                 if glyph_object.get("cartoucheable-stackable", True):
-                    big = True
-                    g_big = font.createChar(-1, glyph.glyphname + ".big")
+                    # These glyphs are very tall. Creating big versions of them will
+                    # increase the font's render bounds, which in turn will increase the
+                    # Win Ascent and Win Descent, which are incorrectly used for line
+                    # height in some software, including Android and IbisPaint.
+                    if (
+                        glyph_object.get("name", "") != "teTok"
+                        and glyph_object.get("name", "") != "toTok"
+                        and glyph_object.get("name") != "tallyTok"
+                    ):
+                        big = True
+                        g_big = font.createChar(-1, glyph.glyphname + ".big")
 
                 if big:
+                    # pass
                     font.selection.select(glyph)
                     font.copy()
                     font.selection.select(g_big)
@@ -521,9 +531,18 @@ def add_glyphs(
             for glyph in rotated_glyph_set:
                 stacking = False
                 if glyph_object.get("cartoucheable-stackable", True):
-                    stacking = True
-                    g_bottom = font.createChar(-1, glyph.glyphname + ".bottom")
-                    g_top = font.createChar(-1, glyph.glyphname + ".top")
+                    # These glyphs are very tall. Creating stacked versions of them will
+                    # increase the font's render bounds, which in turn will increase the
+                    # Win Ascent and Win Descent, which are incorrectly used for line
+                    # height in some software, including Android and IbisPaint.
+                    if (
+                        glyph_object.get("name", "") != "teTok"
+                        and glyph_object.get("name", "") != "toTok"
+                        and glyph_object.get("name") != "tallyTok"
+                    ):
+                        stacking = True
+                        g_bottom = font.createChar(-1, glyph.glyphname + ".bottom")
+                        g_top = font.createChar(-1, glyph.glyphname + ".top")
 
                 if stacking:
                     font.selection.select(glyph)
@@ -601,10 +620,19 @@ def add_glyphs(
             for glyph in rotated_glyph_set:
                 kulupu = False
                 if glyph_object.get("cartoucheable-stackable", True):
-                    kulupu = True
-                    g_kulupu = font.createChar(
-                        -1, "kulupuTok_zerowidthjoiner_" + glyph.glyphname
-                    )
+                    # These glyphs are very tall. Creating stacked versions of them will
+                    # increase the font's render bounds, which in turn will increase the
+                    # Win Ascent and Win Descent, which are incorrectly used for line
+                    # height in some software, including Android and IbisPaint.
+                    if (
+                        glyph_object.get("name", "") != "teTok"
+                        and glyph_object.get("name", "") != "toTok"
+                        and glyph_object.get("name") != "tallyTok"
+                    ):
+                        kulupu = True
+                        g_kulupu = font.createChar(
+                            -1, "kulupuTok_zerowidthjoiner_" + glyph.glyphname
+                        )
 
                 if kulupu:
                     create_kulupu_version(glyph, g_kulupu, False)
