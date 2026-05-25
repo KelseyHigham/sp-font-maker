@@ -10,6 +10,7 @@ import os
 import platform
 import subprocess
 from datetime import datetime
+from packaging.version import Version
 
 #    ▄            █
 #   ▀█▀ ▄▀▄ █▀▄▀▄ █
@@ -148,6 +149,10 @@ version      = "1"
         if pixel:
             prefix_handwritten = "# "
             prefix_pixelated = ""
+        prefix_long_pi = "# "
+        sheet_version = cli_args_dict.get("sheet_version") or "99999999.999999.999999"
+        if Version(sheet_version) >= Version("5"):
+            prefix_long_pi = ""
 
         ilo_linku_toml_file.write(f"""
 features = [
@@ -156,6 +161,7 @@ features = [
   "cartouches",
   "SP Font Maker words v2.2",        # unless they didn't fill out all the words
 
+  {prefix_long_pi}"long pi",
   # "incomplete",
   # "variable weight",
   {prefix_names}"name glyphs",
@@ -166,7 +172,6 @@ features = [
   # "community requested nimisin",
 
   # Not implemented in SP Font Maker:
-  # "long pi",
   # "randomized jaki",
   # "ZWJ sequences",
   # "tuki tiki",
