@@ -33,15 +33,15 @@
      labelstyle="default"
      inkscape:lockguides="true"
      inkscape:export-bgcolor="#ffffffff"
-     inkscape:zoom="0.17409826"
-     inkscape:cx="947.74066"
-     inkscape:cy="2286.0654"
+     inkscape:zoom="0.34819652"
+     inkscape:cx="594.49187"
+     inkscape:cy="2642.1861"
      inkscape:window-width="1280"
      inkscape:window-height="730"
      inkscape:window-x="-6"
      inkscape:window-y="-6"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g1-9-7-8-1-2-4">
+     inkscape:current-layer="g8">
     <inkscape:grid
        id="grid1"
        units="px"
@@ -6421,7 +6421,7 @@
            x="216"
            y="423"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:36px;line-height:32px;-inkscape-font-specification:'Chalkboard SE, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
-           dy="0 0 0 0 0 0 0 0 0 -10">cartouche¹</tspan></text>
+           dy="0 0 0 0 0 0 0 0 0 -6.3000002">cartouche¹</tspan></text>
       <text
          xml:space="preserve"
          style="font-size:28px;line-height:45px;-inkscape-font-specification:'Chalkboard SE, Normal';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:url(#linearGradient31);stroke:url(#swatch3);stroke-opacity:1;paint-order:stroke fill markers"
@@ -6463,7 +6463,7 @@
            x="594"
            y="422.99997"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:36px;line-height:32px;-inkscape-font-specification:'Chalkboard SE, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
-           dy="0 0 0 0 0 -10">tally²</tspan></text>
+           dy="0 0 0 0 0 -6.3000002">tally²</tspan></text>
       <text
          xml:space="preserve"
          style="font-size:28px;line-height:45px;-inkscape-font-specification:'Chalkboard SE, Normal';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;display:inline;fill:url(#linearGradient23);stroke:url(#swatch3);stroke-opacity:1;paint-order:stroke fill markers"
@@ -6620,7 +6620,7 @@
            x="1782"
            y="423"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:36px;line-height:32px;-inkscape-font-specification:'Chalkboard SE, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
-           dy="0 0 -10">te³</tspan></text>
+           dy="0 0 -6.3000002">te³</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:36px;line-height:32px;-inkscape-font-specification:'Chalkboard SE, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:url(#swatch-black);fill-opacity:1;stroke:none;stroke-width:4;stroke-linejoin:round;stroke-dasharray:none;stroke-dashoffset:6;stroke-opacity:1;paint-order:stroke fill markers"
@@ -6634,7 +6634,7 @@
            x="1890"
            y="423"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:36px;line-height:32px;-inkscape-font-specification:'Chalkboard SE, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
-           dy="0 0 -10">to³</tspan></text>
+           dy="0 0 -6.3000002">to³</tspan></text>
       <text
          xml:space="preserve"
          style="font-size:28px;line-height:45px;-inkscape-font-specification:'Chalkboard SE, Normal';text-align:end;writing-mode:lr-tb;direction:ltr;text-anchor:end;display:inline;fill:url(#linearGradient464);stroke:url(#swatch3);stroke-opacity:1;paint-order:stroke fill markers"
@@ -6674,7 +6674,7 @@
            x="2007"
            y="423"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:36px;line-height:32px;-inkscape-font-specification:'Chalkboard SE, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:url(#swatch24)"
-           dy="0 0 0 0 0 0 0 -10">long pi⁴</tspan></text>
+           dy="0 0 0 0 0 0 0 0">long pi⁴</tspan></text>
     </g>
     <g
        id="g9"
