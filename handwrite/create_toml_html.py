@@ -48,6 +48,8 @@ def create_toml_html(
     if license == "cc0":
         license = "CC0-1.0"
         licenseurl = "https://creativecommons.org/publicdomain/zero/1.0/"
+    if license == "arr":
+        license = "All rights reserved"
 
     not_new = cli_args_dict.get("not_new", False)
     if not_new:
@@ -114,33 +116,50 @@ writing_system = "sitelen pona" # pick one: sitelen pona, sitelen sitelen, alpha
 last_updated = "{datetime.now().strftime("%Y-%m")}"
 version      = "1"
 """)
+        sheet_version = cli_args_dict.get("sheet_version") or "99999999.999999.999999"
         other_words = []
+        kokosila = False
+        nimisin = False
         apeja = False
         pake = False
         powe = False
-        prefix_nimisin = "# "
-        prefix_kokosila = "# "
+        if Version(sheet_version) >= Version("5"):
+            ku = False
+            su = False
+        else:
+            ku = True
+            su = True
+        prefix_linku_2024 = "# "
+        prefix_ku_suli = "# "
         prefix_names = "# "
         prefix_variants = "# "
         if other_words_string:
             other_words = other_words_string.split()
             for word_index, word in enumerate(other_words):
-                if word == "nimisin":
-                    prefix_nimisin = ""
                 if word == "kokosila":
-                    prefix_kokosila = ""
+                    kokosila = True
+                if word == "nimisin":
+                    nimisin = True
                 if word == "apeja":
                     apeja = True
                 if word == "pake":
                     pake = True
                 if word == "powe":
                     powe = True
+                if word == "ku":
+                    ku = True
+                if word == "su":
+                    su = True
                 if word[0].isupper():
                     prefix_names = ""
                 if any(char.isdigit() for char in word):
                     prefix_variants = ""
         prefix_ucsur_2022 = "# "
-        if prefix_kokosila == "" and apeja and pake and powe:
+        if nimisin and ku and su:
+            prefix_linku_2024 = ""
+        if kokosila and ku:
+            prefix_ku_suli = ""
+        if kokosila and apeja and pake and powe and ku:
             prefix_ucsur_2022 = ""
 
         prefix_handwritten = ""
@@ -150,7 +169,6 @@ version      = "1"
             prefix_handwritten = "# "
             prefix_pixelated = ""
         prefix_long_pi = "# "
-        sheet_version = cli_args_dict.get("sheet_version") or "99999999.999999.999999"
         if Version(sheet_version) >= Version("5"):
             prefix_long_pi = ""
 
@@ -159,16 +177,16 @@ features = [
   "ASCII transcription and codepoints",
   "UCSUR-compliant",
   "cartouches",
-  "SP Font Maker words v2.2",        # unless they didn't fill out all the words
+  "SP Font Maker words v5",        # unless they didn't fill out all the words
 
   {prefix_long_pi}"long pi",
   # "incomplete",
   # "variable weight",
   {prefix_names}"name glyphs",
   {prefix_variants}"character variants",
-  {prefix_nimisin}"Linku common & uncommon 2024",  # nimisin
-  {prefix_kokosila}"all ku suli",                   # kokosila
-  {prefix_ucsur_2022}"all UCSUR 2022 words",          # kokosila, apeja, pake, powe
+  {prefix_linku_2024}"Linku common & uncommon 2024",  # nimisin, ku, su
+  {prefix_ku_suli}"all ku suli",                   # kokosila, ku
+  {prefix_ucsur_2022}"all UCSUR 2022 words",          # kokosila, apeja, pake, powe, ku
   # "community requested nimisin",
 
   # Not implemented in SP Font Maker:
@@ -198,12 +216,12 @@ features = [
 
         if platform.system() == "Windows":
             os.startfile(ilo_linku_toml_file_path)
-        elif plaform.system() == "Darwin":  # macOS
+        elif platform.system() == "Darwin":  # macOS
             try:
                 subprocess.run(["open", ilo_linku_toml_file_path])
             except:
                 pass
-        elif plaform.system() == "Linux":
+        elif platform.system() == "Linux":
             try:
                 subprocess.run(["xdg-open", ilo_linku_toml_file_path])
             except:
